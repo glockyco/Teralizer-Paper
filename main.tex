@@ -188,40 +188,97 @@ Abstract text.
 \section{Evaluation}
 \label{sec:evaluation}
 
-Primary effects, ancillary effects, runtime requirements, limitations.
+primary effects, ancillary effects, runtime requirements, limitations
 
 \begin{itemize}
-  \item RQ1: To which degree does generalization affect the mutation score of the generalized test suites?
-  \item RQ2: To which degree does generalization affect the size and runtime of the gneralized test suites?
+  \item RQ1: To which degree does generalization affect the mutation score of the target test suites?
+  \item RQ2: To which degree does generalization affect the size and runtime of the target test suites?
   \item RQ3: What are the runtime requirements of the generalization approach?
   \item RQ4: What are the causes of unsuccessful generalization attempts?
 \end{itemize}
 
 \subsection{Target Programs}
 
-\paragraph{EqBench with EvoSuite Tests}
-\paragraph{Apache Commons Utils with EvoSuite Tests}
-\paragraph{Apache Commons Utils with Original Tests}
+\subsubsection{EqBench}
+
+no test suite available;
+tests generated with EvoSuite;
+3 different test suites with search budgets: 1s, 10s, 60s (= EvoSuite default);
+no other changes to default EvoSuite configuration
+
+descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
+
+\subsubsection{Apache Commons Utils}
+
+manually collected;
+utility classes from apache commons projects;
+classes identified via SourceGraph (based on SPF limitations);
+corresponding test classes manually identified;
+additionally same 3 EvoSuite generated test suites as above
+
+descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
+
+\subsection{Evaluation Setup}
+
+Hardware: MacBook Air, M2, 24 GB memory
+
+target programs as above
+
+variants:
+
+\begin{itemize}
+  \item ORIGINAL: before any processing
+  \item INITIAL: after SPF execution
+  \item BASELINE: after generalization (only original test inputs)
+  \item NAIVE (with 10 / 50 / 200 tries): after generalization (naive input selection)
+  \item IMPROVED (with 10 / 50 / 200 tries): after generalization (improved input selection)
+\end{itemize}
 
 \subsection{RQ1: Effects on Mutation Score}
 
-\paragraph{Setup}
-\paragraph{Results}
+number of mutants per project + mutator (for variant INITIAL?)
 
-\subsection{RQ2: Runtime Requirements}
+number of covered / uncovered mutants per project (for variant INITIAL?)
+mention degree of coverage change as a sidenote (no (large) change is by design)
 
-\paragraph{Setup}
-\paragraph{Results}
+percentage of survived / detected / ... mutants per project + variant (relative to number of covered mutants)
 
-\subsection{RQ3: Effects on Test Suite Size and Runtime}
+number of newly killed mutants  per project + variant
 
-\paragraph{Setup}
-\paragraph{Results}
+number / percentage of killing generalizations
+
+differences between killed / unkilled mutants (here or in RQ4?)
+
+\subsection{RQ2: Effects on Test Suite Size and Runtime}
+
+effects on the number of tests in the test suite
+
+effects on the number of lines of code in the test suite
+
+effects on the execution time of individual tests
+
+effects on the total execution time of the test suite
+
+\subsection{RQ3: Runtime Requirements}
+
+only one run for each configuration (due to high runtime requirements)
+investigation for a subset of configurations confirmed that the trends hold
+
+total runtime (+ runtime per project?)
+
+runtime per project + processing stage + variant
+
+efficiency relative to higher EvoSuite search budgets
 
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
 
-\paragraph{Setup}
-\paragraph{Results}
+overall test / assertion / generalization exclusions
+
+filtering-based test / assertion / generalization exclusions
+
+exclusions caused by JFP execution failures
+
+differences between killed / unkilled mutants (here or in RQ1?)
 
 % ----------------------------------------------------------------------------------------------------------------------
 % DISCUSSION
