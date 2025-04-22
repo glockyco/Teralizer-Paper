@@ -114,15 +114,15 @@ Abstract text.
 \end{abstract}
 
 %%Graphical abstract
-\begin{graphicalabstract}
+%\begin{graphicalabstract}
 %\includegraphics{grabs}
-\end{graphicalabstract}
+%\end{graphicalabstract}
 
 %%Research highlights
-\begin{highlights}
-\item Research highlight 1
-\item Research highlight 2
-\end{highlights}
+%\begin{highlights}
+%\item Research highlight 1
+%\item Research highlight 2
+%\end{highlights}
 
 %% Keywords
 \begin{keyword}
@@ -258,109 +258,6 @@ Primary effects, ancillary effects, runtime requirements, limitations.
 \section{Conclusions}
 \label{sec:conclusions}
 
-Section text. See Subsection \ref{subsec1}.
-
-%% Use \subsection commands to start a subsection.
-\subsection{Example Subsection}
-\label{subsec1}
-
-Subsection text.
-
-%% Use \subsubsection, \paragraph, \subparagraph commands to 
-%% start 3rd, 4th and 5th level sections.
-%% Refer following link for more details.
-%% https://en.wikibooks.org/wiki/LaTeX/Document_Structure#Sectioning_commands
-
-\subsubsection{Mathematics}
-%% Inline mathematics is tagged between $ symbols.
-This is an example for the symbol $\alpha$ tagged as inline mathematics.
-
-%% Displayed equations can be tagged using various environments. 
-%% Single line equations can be tagged using the equation environment.
-\begin{equation}
-f(x) = (x+a)(x+b)
-\end{equation}
-
-%% Unnumbered equations are tagged using starred versions of the environment.
-%% amsmath package needs to be loaded for the starred version of equation environment.
-\begin{equation*}
-f(x) = (x+a)(x+b)
-\end{equation*}
-
-%% align or eqnarray environments can be used for multi line equations.
-%% & is used to mark alignment points in equations.
-%% \\ is used to end a row in a multiline equation.
-\begin{align}
- f(x) &= (x+a)(x+b) \\
-      &= x^2 + (a+b)x + ab
-\end{align}
-
-\begin{eqnarray}
- f(x) &=& (x+a)(x+b) \nonumber\\ %% If equation numbering is not needed for a row use \nonumber.
-      &=& x^2 + (a+b)x + ab
-\end{eqnarray}
-
-%% Unnumbered versions of align and eqnarray
-\begin{align*}
- f(x) &= (x+a)(x+b) \\
-      &= x^2 + (a+b)x + ab
-\end{align*}
-
-\begin{eqnarray*}
- f(x)&=& (x+a)(x+b) \\
-     &=& x^2 + (a+b)x + ab
-\end{eqnarray*}
-
-%% Refer following link for more details.
-%% https://en.wikibooks.org/wiki/LaTeX/Mathematics
-%% https://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics
-
-%% Use a table environment to create tables.
-%% Refer following link for more details.
-%% https://en.wikibooks.org/wiki/LaTeX/Tables
-\begin{table}[t]%% placement specifier
-%% Use tabular environment to tag the tabular data.
-%% https://en.wikibooks.org/wiki/LaTeX/Tables#The_tabular_environment
-\centering%% For centre alignment of tabular.
-\begin{tabular}{l c r}%% Table column specifiers
-%% Tabular cells are separated by &
-  1 & 2 & 3 \\ %% A tabular row ends with \\
-  4 & 5 & 6 \\
-  7 & 8 & 9 \\
-\end{tabular}
-%% Use \caption command for table caption and label.
-\caption{Table Caption}\label{fig1}
-\end{table}
-
-
-%% Use figure environment to create figures
-%% Refer following link for more details.
-%% https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions
-\begin{figure}[t]%% placement specifier
-%% Use \includegraphics command to insert graphic files. Place graphics files in 
-%% working directory.
-\centering%% For centre alignment of image.
-\includegraphics{example-image-a}
-%% Use \caption command for figure caption and label.
-\caption{Figure Caption}\label{fig1}
-%% https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics#Importing_external_graphics
-\end{figure}
-
-
-%% The Appendices part is started with the command \appendix;
-%% appendix sections are then done as normal sections
-\appendix
-\section{Example Appendix Section}
-\label{app1}
-
-Appendix text.
-
-%% For citations use: 
-%%       \citet{<label>} ==> Lamport (1994)
-%%       \citep{<label>} ==> (Lamport, 1994)
-%%
-Example citation, See \citet{lamport94}.
-
 %% If you have bib database file and want bibtex to generate the
 %% bibitems, please use
 %%
@@ -379,12 +276,12 @@ Example citation, See \citet{lamport94}.
 %% \bibitem[Author(year)]{label}
 %% Text of bibliographic item
 
-\bibitem[Lamport(1994)]{lamport94}
-  Leslie Lamport,
-  \textit{\LaTeX: a document preparation system},
-  Addison Wesley, Massachusetts,
-  2nd edition,
-  1994.
+% \bibitem[Lamport(1994)]{lamport94}
+%   Leslie Lamport,
+%   \textit{\LaTeX: a document preparation system},
+%   Addison Wesley, Massachusetts,
+%   2nd edition,
+%   1994.
 
 \end{thebibliography}
 \end{document}
