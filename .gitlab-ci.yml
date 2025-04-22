@@ -1,0 +1,25 @@
+image: texlive/texlive:latest
+
+stages:
+  - build
+
+variables:
+  GIT_DEPTH: 1  # Shallow clone for better performance
+
+compile_pdf:
+  stage: build
+  tags:
+    - maven
+    - java
+  script:
+    - latexmk -pdf -interaction=nonstopmode -file-line-error main.tex
+  artifacts:
+    paths:
+      - main.pdf
+      - "*.log"
+      - "*.aux"
+      - "*.bbl"
+      - "*.blg"
+      - "*.out"
+    expire_in: 30 days
+    when: always
