@@ -362,6 +362,17 @@ runtime per project + processing stage + variant
 
 efficiency relative to higher EvoSuite search budgets
 
+mutation testing runtimes could likely be improved significantly
+through the use of the pitest accelerator plugin (https://docs.arcmutate.com/docs/accelerator.html),
+thus, further improving results of Teralizer relative to EvoSuite
+(website claims "analysis time for Commons Lang is reduced from over 55 minutes to under 18");
+however, the plugin is not available without a license
+
+also, parallelization would be possible rather easily for many Teralizer tasks
+(and also for PIT, which only runs single-threaded by default)
+
+for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
+
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
 
 overall test / assertion / generalization exclusions
