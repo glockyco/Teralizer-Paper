@@ -281,6 +281,8 @@ built for junit 4;
 \subsubsection{"BASELINE" Generalization}
 
 transforms target test into a property-based test;
+one test class per generalizable assertion;
+(PIT only offers class-level selections / exclusions, so generating classes causes less "collateral damage" for failing generalizations);
 uses only the original set of input values;
 
 allows us to see how much runtime overhead jqwik introduces even without any generation of input values;
