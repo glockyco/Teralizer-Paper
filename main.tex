@@ -362,16 +362,7 @@ runtime per project + processing stage + variant
 
 efficiency relative to higher EvoSuite search budgets
 
-mutation testing runtimes could likely be improved significantly
-through the use of the pitest accelerator plugin (https://docs.arcmutate.com/docs/accelerator.html),
-thus, further improving results of Teralizer relative to EvoSuite
-(website claims "analysis time for Commons Lang is reduced from over 55 minutes to under 18");
-however, the plugin is not available without a license
-
-also, parallelization would be possible rather easily for many Teralizer tasks
-(and also for PIT, which only runs single-threaded by default)
-
-for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
+large potential for runtime improvements, see examples in the discussion
 
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
 
@@ -396,6 +387,23 @@ differences between killed / unkilled mutants (here or in RQ1?)
 
 \subsubsection{Improving the Mutation Score of Generalized Tests}
 \subsubsection{Improving the Size of Generalized Tests}
+
+\subsubsection{Improving the Runtime of Test Generalization}
+
+primary runtime costs are from external tools (i.e., jqwik + PIT)
+
+mutation testing runtimes could likely be improved
+through the use of the pitest accelerator plugin (\url{https://docs.arcmutate.com/docs/accelerator.html}),
+thus, further improving results of Teralizer relative to EvoSuite
+(website claims "analysis time for Commons Lang is reduced from over 55 minutes to under 18");
+however, the plugin is not available without a license
+
+also, parallelization would be possible rather easily for many Teralizer tasks
+(and also for PIT, which only runs single-threaded by default)
+(supposedly, jqwik will get parallelization support in major version 2, source (2024-05-14): \url{https://github.com/jqwik-team/jqwik/issues/45#issuecomment-2109949764})
+
+for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
+
 \subsubsection{Using Test Generalization for Test Suite Reduction}
 
 \subsection{Threats to Validity}
