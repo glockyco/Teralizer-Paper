@@ -287,8 +287,14 @@ selection criteria: can be processed by SPF (=> java 8!, numeric inputs + output
 
 \subsubsection{EqBench}
 
-no test suite available;
+well-suited for processing with SPF, but no test suite available;
+
 tests generated with EvoSuite;
+came "third" in SBFT Tool Competition 2025 - Java Test Case Generation Track (https://arxiv.org/pdf/2504.09168), but differences between top 3 not statistically significant per the paper;
+can't find a summary paper for SBFT 2024;
+performed best on the SBFT Tool Competition 2023 - Java Test Case Generation Track for line and branch coverage metrics, and second-best for understandability metric;
+also the overall winner for SBST Tool Competition 2022 and SBST Tool Competition 2021 which use line + branch (via JaCoCo) and mutation coverage (via PIT) as metrics;
+
 3 different test suites with search budgets: 1s, 10s, 60s (= EvoSuite default);
 no other changes to default EvoSuite configuration
 
