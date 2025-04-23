@@ -322,9 +322,48 @@ apply the a = b = c filter (trivial in this case => use a more interesting examp
 
 \subsection{Filtering}
 
+describe filtering here or in RQ4?
+
+we need to ensure that:
+1: we do not generate any incompilable code;
+2: we have a green test suite for mutation testing (PIT only works with green suites - otherwise it throws an error);
+also, we would like to avoid spending processing effort on generalization attempts that are unlikely to be successful (=> early excludes);
+to achieve this, we apply filtering at multiple stages + levels in the processing pipeline (for filtering data, see RQ4).
+
+(note: large reduction of required filtering would be possible by putting in more engineering effort)
+
 \subsubsection{Test-level Filtering}
+
+filterTestOriginal:
+NonPassingTestFilter: filters failing tests (PIT requires green suite, and generalization of failing tests does not seem useful anyway);
+TestTypeFilter: filters tests with unsupported test annotations (we currently only support @Test annotations);
+
+filterTest:
+NoAssertionsFilter: filters tests without assertions (with no assertions, choosing a target method is even trickier than it already is, and we have no useful output specification);
+
 \subsubsection{Assertion-level Filtering}
+
+filterAssertion:
+ExcludedTestFilter: filters assertions that are part of filtered or otherwise excluded tests (if the tests cannot be handled, assertion-level results cannot override this);
+MissingValueFilter: filters assertions for which no tested method could be identified (without a tested method, we don't have specifications, so cannot perform generalization);
+VoidReturnTypeFilter: filters assertions with a tested method that has a void return type (no return type -> no output specification -> no generalization);
+UnsupportedAssertionFilter: filters unsupported assertions (we currently only support assertEquals, assertTrue, assertFalse, and (with some caveats?) asserThrows);
+ParameterTypeFilter: filters assertions with a tested method that has no parameters of supported types (we can currently generalize parameters of types byte, short, int, long, float, double);
+
 \subsubsection{Generalization-level Filtering}
+
+filterGeneralization:
+NonPassingTestFilter: filters generalizations that fail during test execution (PIT requires green suite, can be either due to "incorrect" generalization or due to "bad" original tests);
+
+\subsubsection{Other Limits / Safeguards}
+
+During SPF execution:
+maximum PC size limit;
+maximum depth limit;
+maximum execution time;
+
+During Test Transformation:
+maximum Java specification size;
 
 % ------------------------------------------------------------------------------
 % EVALUATION
@@ -432,6 +471,8 @@ efficiency relative to higher EvoSuite search budgets
 large potential for runtime improvements, see examples in the discussion
 
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
+
+describe filtering here or in RQ4?
 
 overall test / assertion / generalization exclusions
 
