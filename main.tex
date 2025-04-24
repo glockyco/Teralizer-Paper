@@ -283,7 +283,7 @@ built for junit 4;
 transforms target test into a property-based test;
 one test class per generalizable assertion;
 (PIT only offers class-level selections / exclusions, so generating classes causes less "collateral damage" for failing generalizations);
-uses only the original set of input values;
+uses only the original set of input values via custom arbitrary;
 
 allows us to see how much runtime overhead jqwik introduces even without any generation of input values;
 
@@ -295,6 +295,7 @@ basic approach:
 step 1: randomly generate sets of values that match the types of input parameters;
 step 2: apply filter to keep only value sets that satisfy the input specification;
 repeat until desired number of input sets (we use 10, 50, 200 in the evaluation) has been generated (automatically done by jqwik, we just set how many we want);
+still preserves original test inputs via a custom arbitrary => no reduction of mutation score due to "bad" random values;
 
 problem: many TooManyFilterMissesExceptions;
 reason: depending on the input specification, randomly selecting sets of input values can be (very) unlikely to produce satisfying inputs (e.g., a = b = c => 3 random ints that are equal);
@@ -313,12 +314,31 @@ basic approach:
 step 1: generate sets of input values that already take into account "as many constraints as possible";
 step 2: apply filter to keep only value sets that satisfy the full input specification;
 repeat until the desired number of input sets has been generated;
+like NAIVE, IMPROVED also preserves original test inputs via a custom arbitrary;
 
 example: a = b = c (all ints);
 randomly generate a since we don't have any constraints to consider yet;
 generate b such that b = a (i.e., take into account the a = b constraint);
 generate c such that b = c (i.e., take into account the b = c constraint);
 apply the a = b = c filter (trivial in this case => use a more interesting example);
+
+currently only considers the following constraints:
+var1 == (var2 | const);
+var1 < (var2 | const);
+var1 <= (var2 | const);
+var1 > (var2 | const);
+var1 >= (var2 | const);
+
+supported types: byte, short, int, long, float, double;
+mixed-type constraints are also supported (e.g., int-var < float-var);
+
+more complex terms (e.g., "compound" terms (is this the correct terminology?), (trigonometric) function calls) are not taken into account (e.g., a < b - c, a == cos(b));
+constraints that are not equality, upper- or lower-bound constraints are not taken into account either (e.g., inequality constraints);
+=> show some statistics about used vs. unused constraints -> further details in RQ4 or the discussion;
+
+some current limitations could be resolved through more engineering effort (e.g., custom arbitraries);
+one way to generate values that satisfy all / more constraints would be through constraint solving (add references);
+however, this would have a significant runtime cost and would still suffer various limitations (add references);
 
 \subsection{Filtering}
 
