@@ -381,6 +381,12 @@ similar transformations are applied for all suppored constraints (==, <, <=, >, 
 (todo: find the correct terminology to describe this; perhaps constraint rewriting / simplification?
 other related terms: constraint satisfaction problems, variable elimination, constraint propagation, domain reduction, and arc consistency algorithms)
 
+in some cases, choices of early variables lead to unsatisfiable constraints later on;
+for example: b > a \&\& b <= 0 -> no satisfying assignment for b if a a >= 0;
+in this cases, we return an empty arbitrary for b, thus prompting jqwik to pick a new value for a;
+similar situations occur for over-/underflows, e.g., b > a with a = Integer.MAX\_VALUE;
+in this case, b = a + 1 = Integer.MIN\_VALUE, which will be rejected by filtering;
+
 some current limitations could be resolved through more engineering effort (e.g., custom arbitraries);
 one way to generate values that satisfy all / more constraints would be through constraint solving (add references);
 however, this would have a significant runtime cost and would still suffer various limitations (add references);
