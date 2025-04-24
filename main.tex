@@ -303,6 +303,18 @@ FILTER\_GENERALIZATIONS(31),
 COLLECT\_JACOCO\_DATA\_GENERALIZED(32),
 COLLECT\_PIT\_DATA\_GENERALIZED(33);
 
+basically:
+- instrument project
+- detect test methods + assertions + tested methods
+- for each assertion / tested method, collect input + output specification with SPF
+- for each assertion / tested method, create generalization with 3 variants (utilizing extracted specifications): BASELINE, NAIVE, IMPROVED
+
+at various points, apply filtering to avoid processing of tests / assertions / generalizations that are unlikely to successfully pass all processing steps (or even guaranteed to fail)
+
+thoughout the pipeline, track (i) runtime, (ii) (intermediate) results (success? failure? causes? other task outputs / created files?), (iii) mutation / coverage / test data;
+
+offers a cleanup task to revert any changes applied by generalization (we only add files, so cleanup is just removing files; no existing files are modified);
+
 \subsection{Project Instrumentation}
 
 \subsection{Specification Extraction}
