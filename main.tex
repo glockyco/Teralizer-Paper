@@ -317,6 +317,18 @@ offers a cleanup task to revert any changes applied by generalization (we only a
 
 \subsection{Project Instrumentation}
 
+(shorten + merge this with the overview? we have so many subsections...)
+
+accepts either a URL to Git repository or a path to local directory as target;
+if target is a URL to a Git repository, the project is cloned automatically (with Git's default settings);
+processing then continues the same for both types of projects;
+
+detects JUnit 4 vs. JUnit 5 testing framework, others not supported;
+detects Maven vs. Gradle (Groovy DSL) projects, others not supported;
+adds required dependencies based on detected project type (update JUnit, add JUnit Vintage, add JaCoCo, add PIT, add jqwik);
+creates separate pom.xml / build.gradle (with comments for additions by Teralizer) - original file is left untouched;
+to verify successful instrumentation, project is built, tests executed, test / coverage / mutation results collected;
+
 \subsection{Specification Extraction}
 
 \subsubsection{Driver Generation}
