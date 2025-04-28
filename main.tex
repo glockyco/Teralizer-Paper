@@ -354,7 +354,7 @@ the main method:
 
 the SPF configuration:
 (i) sets the main method of the driver program as the entrypoint for SPF execution,
-(ii) sets the tested method as SPF's "symbolicMethod",
+(ii) sets the tested method as SPF's "symbolicMethod" (using symbolic inputs for generalizable input parameters),
 (ii) configures SPF to run in constraint-collection mode (=> no constraint solving, just following the concrete execution path),
 (iii) registers + configures a custom listener that extracts input-output specifications (see next Section "SPF Execution"),
 (iv) configures several execution limits (depth limit, execution time limit, etc.; see Section "Other Limits / Safeguards").
@@ -363,6 +363,23 @@ the SPF configuration:
 (note: we're actually also creating an instrumented version of the test class / method, but that's only there so we can more easily identify the tested method call during SPF execution if the same method is called multiple times.)
 
 \subsubsection{SPF Execution}
+
+execute SPF once for each driver program;
+start tracking symbolic state when entering the tested method;
+when exiting the tested method:
+(i) write the concrete input values to a file,
+(ii) write the concrete output values to a file,
+(iii) write the symbolic input values to a file (=> path condition / input specification),
+(iv) write the symbolic output values to a file (=> output specification),
+then immediately terminate the execution (no need to keep going - we have everything we need);
+
+((show an example of extracted data here))
+
+for tested methods that exit via thrown exception,
+use the thrown exception (type) as the concrete output value.
+no symbolic output value can be collected in this case
+(because the (type of the) thrown exception is not a function of the symbolic input values,
+but is instead constant for all sets of inputs in the partition).
 
 \subsection{Test Transformation}
 
