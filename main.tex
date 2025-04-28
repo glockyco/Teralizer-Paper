@@ -331,6 +331,15 @@ to verify successful instrumentation, project is built, tests executed, test / c
 
 \subsection{Test / Assertion Detection and Analysis}
 
+execute test suite;
+identify executed test methods via junit / surefire XML reports;
+for each test method, identify all assertions in the method via Spoon (calls to methods in "org.junit.Assert" (JUnit 4) or "org.junit.jupiter.api.Assertions" (JUnit 5)));
+for each (supported) assertion (assertEquals, assertTrue, assertFalse, assertThrows), identify one tested method call via Spoon (for assertThrows: the executed method, for assertEquals/True/False: the method that returned the "actual" value of the assertion);
+we assume each assertion "tests" one method, and do not consider side effects => no support for, e.g., method sequences that modify object state (e.g.: list.add(...), assert(..., list.size()));
+side effects could be modeled as inputs/outputs of the tested method;
+
+tests and assertions are filtered if they cannot be (correctly) handled by the current implementation. for details, see Section "Test / Assertion / Generalization Filtering".
+
 \subsection{Specification Extraction}
 
 \subsubsection{Driver Generation}
