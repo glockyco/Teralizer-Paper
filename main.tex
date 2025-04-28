@@ -343,6 +343,25 @@ tests and assertions are filtered if they cannot be (correctly) handled by the c
 \subsection{Specification Extraction}
 
 \subsubsection{Driver Generation}
+
+for each assertion / tested method call, create a driver program and a corresponding SPF configuration;
+the driver program is a single class with a "public static void main(...)" method;
+
+the main method:
+(i) executes any setup methods of the test class (JUnit 4: "@Before", "@BeforeClass", JUnit 5: "@BeforeAll", "@BeforeEach"),
+(ii) creates an instance of the test class, and then
+(iii) calls the tested method.
+
+the SPF configuration:
+(i) sets the main method of the driver program as the entrypoint for SPF execution,
+(ii) sets the tested method as SPF's "symbolicMethod",
+(ii) configures SPF to run in constraint-collection mode (=> no constraint solving, just following the concrete execution path),
+(iii) registers + configures a custom listener that extracts input-output specifications (see next Section "SPF Execution"),
+(iv) configures several execution limits (depth limit, execution time limit, etc.; see Section "Other Limits / Safeguards").
+
+(note: we had to modify (fix?) SPF to disable constraint solving during constraint-collection mode execution.)
+(note: we're actually also creating an instrumented version of the test class / method, but that's only there so we can more easily identify the tested method call during SPF execution if the same method is called multiple times.)
+
 \subsubsection{SPF Execution}
 
 \subsection{Test Transformation}
