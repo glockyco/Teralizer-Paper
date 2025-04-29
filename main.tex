@@ -565,7 +565,33 @@ maximum Java specification size;
 
 \subsection{Program Output / Collected Data}
 
+primarily, we provide 1 property-based test for each original assertion (excluding ones that are filtered throughout the processing pipeline).
 (do we need this section? or are outputs / data already explained well enough in the other section? even then, might still be useful to have a condensed overview here)
+
+additionally, we provide (i) a PostgreSQL database with data about the processed projects and (ii) various intermediate results / log files.
+(perhaps move this information to some "Data Availability" section.)
+
+The database contains tables:
+- project,
+- test,
+- assertion,
+- generaliztion,
+- filter\_result,
+- (evosuite\_runtime),
+- (evosuite\_report),
+- junit\_test\_report,
+- jacoco\_coverage\_report,
+- pit\_coverage\_report,
+- pit\_mutation\_report,
+- task.
+
+The intermediate results / log files contain:
+- modified pom.xml / build.gradle files,
+- command-data (all executed commands + output logs + error logs),
+- jacoco-data (JaCoCo coverage CSV reports per project + variant),
+- jpf-data (output logs, input-output values + specifications, driver + config + instrumented test files),
+- junit-data (JUnit / Surefire XML reports per project + variant),
+- pit-data (PIT linecoverage + mutations XML reports per project variant),
 
 % ------------------------------------------------------------------------------
 % EVALUATION
