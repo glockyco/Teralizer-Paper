@@ -648,26 +648,59 @@ target programs as above
 variants:
 
 \begin{itemize}
-  \item ORIGINAL: before any processing
+  \item (ORIGINAL: before any processing)
   \item INITIAL: after SPF execution
   \item BASELINE: after generalization (only original test inputs)
   \item NAIVE (with 10 / 50 / 200 tries): after generalization (naive input selection)
   \item IMPROVED (with 10 / 50 / 200 tries): after generalization (improved input selection)
 \end{itemize}
 
-\subsection{RQ1: Effects on Mutation Score}
-
 using PIT for mutation testing;
 most mutation testing tools do not provide results in a structured format that's suitable for automated processing
 and / or do not provide (official) support for Java 8, and / or are not actively maintained anymore
 (according to the PIT website: \url{https://pitest.org/java_mutation_testing_systems/#summary-of-mutation-testing-systems})
 
-number of mutants per project + mutator (for variant INITIAL?)
+\subsection{RQ1: Effects on Mutation Score}
+\label{sec:primary-effects-eval}
 
-number of covered / uncovered mutants per project (for variant INITIAL?)
-mention degree of coverage change as a sidenote (no (large) change is by design)
+\begin{table}[H] \caption{Number of total, covered, and uncovered mutants per project.} \label{tab:mutants-per-project} \begin{tabular}{lrrrrr} \toprule Project & Total & Covered & Uncovered & Covered (\%) & Uncovered (\%) \\ \midrule commons-utils & 8096 & 5215 & 2881 & 64.41 & 35.59 \\ commons-utils-es-default-1s & 8581 & 7536 & 1045 & 87.82 & 12.18 \\ commons-utils-es-default-10s & 8391 & 7939 & 452 & 94.61 & 5.39 \\ commons-utils-es-default-60s & 8354 & 8109 & 245 & 97.07 & 2.93 \\ eqbench-es-default-1s & 23905 & 21492 & 2413 & 89.91 & 10.09 \\ eqbench-es-default-10s & 23654 & 21657 & 1997 & 91.56 & 8.44 \\ eqbench-es-default-60s & 23663 & 22010 & 1653 & 93.01 & 6.99 \\ \bottomrule \end{tabular} \end{table}
 
-percentage of survived / detected / ... mutants per project + variant (relative to number of covered mutants)
+Table \ref{tab:mutants-per-project} shows the number of total, covered, and uncovered mutants per project for the INITIAL variant.
+Around 8000 mutants across for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
+Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_mutation_detection_results}
+  \caption{Percentage of detected mutants per project and generalization variant.}
+  %\Description{@TODO}
+  \label{fig:mutation-detection-results}
+\end{figure}
+
+% Overall observations:
+Figure~\ref{fig:mutation-detection-results} shows the percentage of detected mutants per project and generalization variant.
+Results are relative to detected mutants, because our generalization approach --- by design --- does not affect coverage.
+Detected mutants includes killed (X\% of overall detections), timed-out (A\%), memory error (B\%), and run error (C\%).
+
+Generalization improves detected mutants for all evaluated projects and generalization variants (comparison with increasing EvoSuite runtime in Section~\ref{sec:runtime-eval}).
+NAIVE and IMPROVED achieve similar improvements, with NAIVE performing slightly better on the eqbench projects, and IMPROVED performing slightly better on the commons-utils projects.
+Using a higher \texttt{tries} setting for jqwik also increases the percentage of detected mutants. However, there seem to be diminishing returns: increasing tries from 10 to 50 achieves a larger improvement in mutation scores than increasing tries from 50 to 200.
+
+% Observations on commons-utils with original tests:
+(TODO: Observations on commons-utils with original tests)
+The lowest improvements are seen for the commons-utils project with 
+
+% Observations on commons-utils with EvoSuite tests:
+(TODO: Observations on commons-utils with EvoSuite tests)
+
+% Observations on eqbench with EvoSuite tests:
+(TODO: Observations on eqbench with EvoSuite tests)
+
+\begin{table} \caption{Number of mutants and percentage of detections per mutator.} \label{tab:mutants-per-mutator} \begin{tabular}{lrrrrcrrrr} \toprule & & & & & \multicolumn{5}{c}{Detected \%} \\ \cmidrule{6-10} Mutator & Total & Total \% & Min \% & Max \% & INITIAL & \multicolumn{2}{c}{NAIVE$_{200}$} & \multicolumn{2}{c}{IMPROVED$_{200}$} \\ \midrule Math & 61841 & 59.10 & 52.34 & 62.16 & 50.99 & 54.98 & (+3.99) & 54.36 & (+3.37) \\ RemoveConditionalOrderElse & 11501 & 10.99 & 8.50 & 11.94 & 61.08 & 62.29 & (+1.21) & 62.47 & (+1.39) \\ ConditionalsBoundary & 11501 & 10.99 & 8.50 & 11.94 & 27.68 & 28.89 & (+1.21) & 30.23 & (+2.55) \\ PrimitiveReturns & 7731 & 7.39 & 6.15 & 10.09 & 89.42 & 89.63 & (+0.20) & 89.90 & (+0.47) \\ RemoveConditionalEqualElse & 5536 & 5.29 & 3.21 & 10.40 & 58.80 & 60.87 & (+2.07) & 61.00 & (+2.20) \\ InvertNegs & 3122 & 2.98 & 2.94 & 3.12 & 58.91 & 60.61 & (+1.70) & 60.99 & (+2.08) \\ VoidMethodCall & 973 & 0.93 & 0.58 & 1.35 & 24.96 & 24.96 & (+0.00) & 25.49 & (+0.53) \\ NullReturnVals & 933 & 0.89 & 2.13 & 3.38 & 98.77 & 98.77 & (+0.00) & 98.77 & (+0.00) \\ BooleanTrueReturnVals & 569 & 0.54 & 0.17 & 1.44 & 98.55 & 98.55 & (+0.00) & 98.55 & (+0.00) \\ Increments & 546 & 0.52 & 0.50 & 0.54 & 72.81 & 73.38 & (+0.57) & 73.50 & (+0.69) \\ BooleanFalseReturnVals & 250 & 0.24 & 0.09 & 0.63 & 87.87 & 87.87 & (+0.00) & 87.87 & (+0.00) \\ EmptyObjectReturnVals & 141 & 0.13 & 0.41 & 0.43 & 90.30 & 90.30 & (+0.00) & 90.30 & (+0.00) \\ \bottomrule \end{tabular} \end{table}
+
+Table \ref{tab:mutants-per-mutator} shows the total number of mutants across all projects for each of the 12 mutators.
+(Add explanations of the different mutators?)
+Percentages are similar across projects, with the most common mutants coming from \texttt{MathMutator} (X--Y\% of total mutants across projects), \texttt{ConditionalsBoundaryMutator} (X--Y\%), and \texttt{RemoveConditionalMutator\_\-ORDER\_\-ELSE} (X--Y\%).
 
 number of newly killed mutants  per project + variant
 
@@ -676,6 +709,7 @@ number / percentage of killing generalizations
 differences between killed / unkilled mutants (here or in RQ4?)
 
 \subsection{RQ2: Effects on Test Suite Size and Runtime}
+\label{sec:ancillary-effects-eval}
 
 effects on the number of tests in the test suite
 
@@ -686,6 +720,7 @@ effects on the execution time of individual tests
 effects on the total execution time of the test suite
 
 \subsection{RQ3: Runtime Requirements}
+\label{sec:runtime-eval}
 
 only one run for each configuration (due to high runtime requirements)
 investigation for a subset of configurations confirmed that the trends hold
@@ -699,6 +734,7 @@ efficiency relative to higher EvoSuite search budgets
 large potential for runtime improvements, see examples in the discussion
 
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
+\label{sec:filtering-eval}
 
 describe filtering here or in RQ4?
 
