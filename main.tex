@@ -243,7 +243,10 @@
 \label{sec:background}
 
 \subsection{Property-based Testing}
+\label{sec:property-based-testing}
+
 \subsection{Test Generalization}
+\label{sec:test-generalization}
 
 % ------------------------------------------------------------------------------
 % APPROACH
@@ -253,6 +256,7 @@
 \label{sec:approach}
 
 \subsection{Overview}
+\label{sec:approach-overview}
 
 processing pipeline:
 CLEANUP\_PROJECT(0),
@@ -316,6 +320,7 @@ thoughout the pipeline, track (i) runtime, (ii) (intermediate) results (success?
 offers a cleanup task to revert any changes applied by generalization (we only add files, so cleanup is just removing files; no existing files are modified);
 
 \subsection{Project Instrumentation}
+\label{sec:project-instrumentation}
 
 (shorten + merge this with the overview? we have so many subsections...)
 
@@ -330,6 +335,7 @@ creates separate pom.xml / build.gradle (with comments for additions by Teralize
 to verify successful instrumentation, project is built, tests executed, test / coverage / mutation results collected;
 
 \subsection{Test / Assertion Detection and Analysis}
+\label{sec:test-analysis}
 
 execute test suite;
 identify executed test methods via junit / surefire XML reports;
@@ -341,8 +347,10 @@ side effects could be modeled as inputs/outputs of the tested method;
 tests and assertions are filtered if they cannot be (correctly) handled by the current implementation. for details, see Section "Test / Assertion / Generalization Filtering".
 
 \subsection{Specification Extraction}
+\label{sec:specification-extraction}
 
 \subsubsection{Driver Generation}
+\label{sec:driver-generation}
 
 for each assertion / tested method call, create a driver program and a corresponding SPF configuration;
 the driver program is a single class with a "public static void main(...)" method;
@@ -363,6 +371,7 @@ the SPF configuration:
 (note: we're actually also creating an instrumented version of the test class / method, but that's only there so we can more easily identify the tested method call during SPF execution if the same method is called multiple times.)
 
 \subsubsection{SPF Execution}
+\label{sec:spf-execution}
 
 execute SPF once for each driver program;
 start tracking symbolic state when entering the tested method;
@@ -382,6 +391,8 @@ no symbolic output value can be collected in this case
 but is instead constant for all sets of inputs in the partition).
 
 \subsection{Test Transformation}
+\label{sec:test-transformation}
+
 
 using jqwik (1.8.5) for property-based testing (\url{https://github.com/jqwik-team/jqwik});
 last official release in 2024 (1.9.2);
@@ -406,6 +417,7 @@ last commit 6 years ago;
 built for junit 4;
 
 \subsubsection{"BASELINE" Generalization}
+\label{sec:baseline-generalization}
 
 transforms target test into a property-based test;
 one test class per generalizable assertion;
@@ -439,6 +451,7 @@ some of this could likely be avoided by putting in more engineering effort, e.g.
 alternatively, we could add multiple TestParameters parameters (one for each generalized assertion) - but that might not be very maintainable either;
 
 \subsubsection{"NAIVE" Generalization}
+\label{sec:naive-generalization}
 
 same basic processing flow as BASELINE variant (clone class, add TestParameters + Supplier, remove other tests + assertions);
 uses "naive" approach for selecting sets of input values;
@@ -459,6 +472,7 @@ randomly generate c;
 apply the a = b = c filter (likely not a match => throw away and try again; after too many non-matching attempts => TooManyFilterMissesExceptions)
 
 \subsubsection{"IMPROVED" Generalization}
+\label{sec:improved-generalization}
 
 same basic processing flow as BASELINE variant (clone class, add TestParameters + Supplier, remove other tests + assertions);
 uses "improved" approach for selecting sets of input values to reduce TooManyFilterMissesExceptions;
@@ -519,6 +533,7 @@ one way to generate values that satisfy all / more constraints would be through 
 however, this would have a significant runtime cost and would still suffer various limitations (add references);
 
 \subsection{Test / Assertion / Generalization Filtering}
+\label{sec:all-filtering}
 
 describe filtering here or in RQ4?
 
@@ -531,6 +546,7 @@ to achieve this, we apply filtering at multiple stages + levels in the processin
 (note: large reduction of required filtering would be possible by putting in more engineering effort)
 
 \subsubsection{Test-level Filtering}
+\label{sec:test-filtering}
 
 filterTestOriginal:
 NonPassingTestFilter: filters failing tests (PIT requires green suite, and generalization of failing tests does not seem useful anyway);
@@ -540,6 +556,7 @@ filterTest:
 NoAssertionsFilter: filters tests without assertions (with no assertions, choosing a target method is even trickier than it already is, and we have no useful output specification);
 
 \subsubsection{Assertion-level Filtering}
+\label{sec:assertion-filtering}
 
 filterAssertion:
 ExcludedTestFilter: filters assertions that are part of filtered or otherwise excluded tests (if the tests cannot be handled, assertion-level results cannot override this);
@@ -549,11 +566,13 @@ UnsupportedAssertionFilter: filters unsupported assertions (we currently only su
 ParameterTypeFilter: filters assertions with a tested method that has no parameters of supported types (we can currently generalize parameters of types byte, short, int, long, float, double);
 
 \subsubsection{Generalization-level Filtering}
+\label{sec:generalization-filtering}
 
 filterGeneralization:
 NonPassingTestFilter: filters generalizations that fail during test execution (PIT requires green suite, can be either due to "incorrect" generalization or due to "bad" original tests);
 
 \subsubsection{Other Limits / Safeguards}
+\label{sec:other-filtering}
 
 During SPF execution:
 maximum PC size limit;
@@ -564,6 +583,7 @@ During Test Transformation:
 maximum Java specification size;
 
 \subsection{Program Output / Collected Data}
+\label{sec:collected-data}
 
 primarily, we provide 1 property-based test for each original assertion (excluding ones that are filtered throughout the processing pipeline).
 (do we need this section? or are outputs / data already explained well enough in the other section? even then, might still be useful to have a condensed overview here)
@@ -610,10 +630,12 @@ primary effects, ancillary effects, runtime requirements, limitations
 \end{itemize}
 
 \subsection{Target Programs}
+\label{sec:target-programs}
 
 selection criteria: can be processed by SPF (=> java 8!, numeric inputs + outputs, no randomness), use junit 4 or 5 for testing, use maven or gradle as build system, ...?
 
 \subsubsection{EqBench}
+\label{sec:eqbench}
 
 well-suited for processing with SPF, but no test suite available;
 
@@ -629,6 +651,7 @@ no other changes to default EvoSuite configuration
 descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
 
 \subsubsection{Apache Commons Utils}
+\label{sec:apache-commons-utils}
 
 manually collected;
 utility classes from apache commons projects;
@@ -640,6 +663,7 @@ additionally same 3 EvoSuite generated test suites as above
 descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
 
 \subsection{Evaluation Setup}
+\label{sec:evaluation-setup}
 
 Hardware: MacBook Air, M2, 24 GB memory
 
@@ -754,13 +778,19 @@ differences between killed / unkilled mutants (here or in RQ1?)
 \label{sec:discussion}
 
 \subsection{Benefits of the Approach}
+\label{sec:benefits-of-the-approach}
 
 \subsection{Potential for Future Improvements}
+\label{sec:potential-for-improvements}
 
 \subsubsection{Improving the Mutation Score of Generalized Tests}
+\label{sec:improving-the-mutation-score}
+
 \subsubsection{Improving the Size of Generalized Tests}
+\label{sec:improving-the-test-size}
 
 \subsubsection{Improving the Runtime of Test Generalization}
+\label{sec:improving-the-runtime}
 
 primary runtime costs are from external tools (i.e., jqwik + PIT)
 
@@ -777,12 +807,19 @@ also, parallelization would be possible rather easily for many Teralizer tasks
 for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
 
 \subsubsection{Using Test Generalization for Test Suite Reduction}
+\label{sec:test-suite-reduction}
 
 \subsection{Threats to Validity}
+\label{sec:threats-to-validity}
 
 \subsubsection{Construct Validity}
+\label{sec:construct-validity}
+
 \subsubsection{Internal Validity}
+\label{sec:internal-validity}
+
 \subsubsection{External Validity}
+\label{sec:external-validity}
 
 % ------------------------------------------------------------------------------
 % RELATED WORK
