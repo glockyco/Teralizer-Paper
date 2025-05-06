@@ -751,11 +751,27 @@ The number of used constraints could be improved in future work.
 
 effects on the number of tests in the test suite
 
+\begin{table}[H] \caption{Number of tests before and after generalization, with changes, per project.} \label{tab:tests-per-project} \begin{tabular}{lrrrrrr} \toprule & \multicolumn{6}{c}{Tests} \\ \cmidrule(lr){2-7} Project & Before & Added & Removed & After & Delta & Delta \% \\ \midrule commons-utils & 725 & 3 & 0 & 728 & +3 & +0.41 \\ commons-utils-es-default-1s & 2481 & 69 & 68 & 2482 & +1 & +0.04 \\ commons-utils-es-default-10s & 2738 & 70 & 69 & 2739 & +1 & +0.04 \\ commons-utils-es-default-60s & 2735 & 75 & 74 & 2736 & +1 & +0.04 \\ eqbench-es-default-1s & 4718 & 206 & 206 & 4718 & +0 & +0.00 \\ eqbench-es-default-10s & 4875 & 211 & 210 & 4876 & +1 & +0.02 \\ eqbench-es-default-60s & 4974 & 210 & 210 & 4974 & +0 & +0.00 \\ \bottomrule \end{tabular} \end{table}
+
 effects on the number of lines of code in the test suite
+
+\begin{table}[H] \caption{Number of test lines before and after generalization, with changes, per project.} \label{tab:lines-per-project} \begin{tabular}{lrrrrrr} \toprule & \multicolumn{6}{c}{Lines} \\ \cmidrule(lr){2-7} Project & Before & Added & Removed & After & Delta & Delta \% \\ \midrule commons-utils & 8561 & 457 & 0 & 9018 & +457 & +5.34 \\ commons-utils-es-default-1s & 16563 & 5261 & 413 & 21411 & +4848 & +29.27 \\ commons-utils-es-default-10s & 18124 & 5423 & 421 & 23126 & +5002 & +27.60 \\ commons-utils-es-default-60s & 17886 & 5801 & 452 & 23235 & +5349 & +29.91 \\ eqbench-es-default-1s & 30989 & 19019 & 1302 & 48706 & +17717 & +57.17 \\ eqbench-es-default-10s & 32503 & 20353 & 1284 & 51572 & +19069 & +58.67 \\ eqbench-es-default-60s & 33510 & 20288 & 1285 & 52513 & +19003 & +56.71 \\ \bottomrule \end{tabular} \end{table}
+
+effects on the total execution time of the test suite
+
+\begin{table}[H] \caption{Test suite runtime before and after generalization, with changes, per project.} \label{tab:runtime-per-project} \begin{tabular}{lrrrrrr} \toprule & \multicolumn{6}{c}{Runtime (in seconds)} \\ \cmidrule(lr){2-7} Project & Before & Added & Removed & After & Delta & Delta \% \\ \midrule commons-utils & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.36 \\ commons-utils-es-default-1s & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.55 \\ commons-utils-es-default-10s & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.34 \\ commons-utils-es-default-60s & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.08 \\ eqbench-es-default-1s & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.72 \\ eqbench-es-default-10s & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.93 \\ eqbench-es-default-60s & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +680.98 \\ \bottomrule \end{tabular} \end{table}
 
 effects on the execution time of individual tests
 
-effects on the total execution time of the test suite
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
+  \caption{Runtime Comparison: Test vs. Generalization.}
+  %\Description{@TODO}
+  \label{fig:test-runtime-differences}
+\end{figure}
+
+@TODO: Split Figure~\ref{fig:test-runtime-differences} into two (sub-)figures to make each one individually referenceable.
 
 \subsection{RQ3: Runtime Requirements}
 \label{sec:runtime-eval}
