@@ -864,7 +864,33 @@ overall test / assertion / generalization exclusions
 
 filtering-based test / assertion / generalization exclusions
 
-exclusions caused by JFP execution failures
+\begin{table}[H]
+  \caption{Filtering results for tests, assertions, and generalizations by filter and (generalization) variant.}
+  \label{tab:exclusions-filtering}
+  \begin{tabular}{lllrrrr}
+    \toprule
+    Variant & Filter Type & Filter Name & Total & Accept & Reject & Defer \\
+    \midrule
+    SHARED & Test & NonPassingTestFilter & 23246 & 21719 & 1527 & 0 \\
+    SHARED & Test & TestTypeFilter & 23246 & 23066 & 180 & 0 \\
+    SHARED & Test & NoAssertionsFilter & 21532 & 19306 & 2226 & 0 \\
+    \midrule
+    SHARED & Assertion & ExcludedTestFilter & 28923 & 27326 & 1597 & 0 \\
+    SHARED & Assertion & MissingValueFilter & 28923 & 21766 & 7157 & 0 \\
+    SHARED & Assertion & ParameterTypeFilter & 28923 & 17835 & 4458 & 6630 \\
+    SHARED & Assertion & UnsupportedAssertionFilter & 28923 & 28180 & 743 & 0 \\
+    SHARED & Assertion & VoidReturnTypeFilter & 28923 & 21763 & 3 & 7157 \\
+    \midrule
+    BASELINE & Generalization & NonPassingTestFilter & 13836 & 13814 & 22 & 0 \\
+    NAIVE$_{10}$ & Generalization & NonPassingTestFilter & 13804 & 10743 & 3061 & 0 \\
+    NAIVE$_{50}$ & Generalization & NonPassingTestFilter & 13804 & 9964 & 3840 & 0 \\
+    NAIVE$_{200}$ & Generalization & NonPassingTestFilter & 13804 & 9881 & 3923 & 0 \\
+    IMPROVED$_{10}$ & Generalization & NonPassingTestFilter & 13804 & 11788 & 2016 & 0 \\
+    IMPROVED$_{50}$ & Generalization & NonPassingTestFilter & 13804 & 11660 & 2144 & 0 \\
+    IMPROVED$_{200}$ & Generalization & NonPassingTestFilter & 13804 & 11597 & 2207 & 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 failing tests
 
@@ -885,6 +911,8 @@ failing tests
     \bottomrule
   \end{tabular}
 \end{table}
+
+exclusions caused by JFP execution failures
 
 % ------------------------------------------------------------------------------
 % DISCUSSION
