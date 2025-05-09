@@ -693,7 +693,7 @@ Table \ref{tab:mutants-per-project} shows the number of total, covered, and unco
 Around 8000 mutants across for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
 Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{fig_mutation_detection_comparison}
   \caption{Percentage of detected mutants and improvement over INITIAL per project and generalization variant.}
@@ -858,8 +858,6 @@ large potential for runtime improvements, see examples in the discussion
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
 \label{sec:filtering-eval}
 
-describe filtering here or in RQ4?
-
 overall test / assertion / generalization exclusions
 
 filtering-based test / assertion / generalization exclusions
@@ -912,7 +910,25 @@ failing tests
   \end{tabular}
 \end{table}
 
-exclusions caused by JFP execution failures
+exclusions caused by SFP execution failures
+
+\begin{table}[H]
+  \centering
+  \caption{Number of SPF execution failures by error type.}
+  \label{tab:exclusions-spf}
+  \begin{tabular}{lrr}
+    \toprule
+    Error Type & Total & Percent \\
+    \midrule
+    SPF exception & 1540 & 51.42 \\
+    PC size limit exceeded & 790 & 26.38 \\
+    Depth limit exceeded & 524 & 17.50 \\
+    Teralizer exception & 97 & 3.24 \\
+    Execution timeout & 28 & 0.93 \\
+    OutOfMemoryError & 16 & 0.53 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 % ------------------------------------------------------------------------------
 % DISCUSSION
