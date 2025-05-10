@@ -712,7 +712,24 @@ and / or do not provide (official) support for Java 8, and / or are not actively
 \subsection{RQ1: Effects on Mutation Score}
 \label{sec:primary-effects-eval}
 
-\begin{table}[H] \caption{Number of total, covered, and uncovered mutants per project.} \label{tab:mutants-per-project} \begin{tabular}{lrrrrr} \toprule Project & Total & Covered & Uncovered & Covered \% & Uncovered \% \\ \midrule commons-utils & 8096 & 5215 & 2881 & 64.41 & 35.59 \\ commons-utils-es-default-1s & 8581 & 7536 & 1045 & 87.82 & 12.18 \\ commons-utils-es-default-10s & 8391 & 7939 & 452 & 94.61 & 5.39 \\ commons-utils-es-default-60s & 8354 & 8109 & 245 & 97.07 & 2.93 \\ eqbench-es-default-1s & 23905 & 21492 & 2413 & 89.91 & 10.09 \\ eqbench-es-default-10s & 23654 & 21657 & 1997 & 91.56 & 8.44 \\ eqbench-es-default-60s & 23663 & 22010 & 1653 & 93.01 & 6.99 \\ \bottomrule \end{tabular} \end{table}
+\begin{table}[H]
+  \caption{Number of total, covered, and uncovered mutants per project.}
+  \label{tab:mutants-per-project}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Project & Total & Covered & Uncovered & Covered \% & Uncovered \% \\
+    \midrule
+    commons-utils & 8096 & 5215 & 2881 & 64.41 \% & 35.59 \% \\
+    commons-utils-es-default-1s & 8581 & 7536 & 1045 & 87.82 \% & 12.18 \% \\
+    commons-utils-es-default-10s & 8391 & 7939 & 452 & 94.61 \% & 5.39 \% \\
+    commons-utils-es-default-60s & 8354 & 8109 & 245 & 97.07 \% & 2.93 \% \\
+    \midrule
+    eqbench-es-default-1s & 23905 & 21492 & 2413 & 89.91 \% & 10.09 \% \\
+    eqbench-es-default-10s & 23654 & 21657 & 1997 & 91.56 \% & 8.44 \% \\
+    eqbench-es-default-60s & 23663 & 22010 & 1653 & 93.01 \% & 6.99 \% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 Table \ref{tab:mutants-per-project} shows the number of total, covered, and uncovered mutants per project for the INITIAL variant.
 Around 8000 mutants across for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
