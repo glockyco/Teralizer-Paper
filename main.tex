@@ -660,7 +660,32 @@ corresponding test classes manually identified;
 modified pom.xml to disable license header requirement, no other changes;
 additionally same 3 EvoSuite generated test suites as above
 
+
+\subsubsection{Dataset Statistics}
+\label{sec:dataset-statistics}
+
 descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
+
+\begin{table}[H]
+  \caption{Number of files, classes, lines, and test methods per project.}
+  \label{tab:dataset-statistics}
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    & \multicolumn{3}{c}{Implementation} & \multicolumn{4}{c}{Test} \\
+    \cmidrule(lr){2-4} \cmidrule(lr){5-8}
+    Project & Files & Classes & Lines & Files & Classes & Lines & Methods \\
+    \midrule
+    commons-utils & 106 & 262 & 19709 & 80 & 132 & 14389 & 725 \\
+    commons-utils-es-default-1s & 106 & 262 & 19709 & 103 & 103 & 17524 & 2481 \\
+    commons-utils-es-default-10s & 106 & 262 & 19709 & 103 & 103 & 19082 & 2738 \\
+    commons-utils-es-default-60s & 106 & 262 & 19709 & 102 & 102 & 18839 & 2735 \\
+    \midrule
+    eqbench-es-default-1s & 544 & 652 & 27871 & 544 & 544 & 35666 & 4718 \\
+    eqbench-es-default-10s & 544 & 652 & 27871 & 543 & 543 & 36937 & 4875 \\
+    eqbench-es-default-60s & 544 & 652 & 27871 & 544 & 544 & 37836 & 4974 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \subsection{Evaluation Setup}
 \label{sec:evaluation-setup}
