@@ -759,7 +759,32 @@ number / percentage of killing generalizations
 
 differences between killed / unkilled mutants (here or in RQ4?)
 
-\begin{table}[H] \caption{Comparison of un-/detected mutants of variant IMPROVED$_{200}$. Model Size (number of characters in the Java representation of the model), Operations, Constraints, and Constraints Used are mean values across all un-/detected mutants in the project.} \label{tab:mutation-detection-comparison} \begin{tabular}{lcrrrrr} \toprule Project & Detected & Mutants & Model Size & Operations & Constraints & Constr. Used \% \\ \midrule commons-utils & no & 1022 & 1520.78 & 173.74 & 4.98 & 19.75 \\ commons-utils & yes & 4193 & 981.72 & 107.74 & 4.98 & 25.56 \\ commons-utils-es-default-1s & no & 3183 & 4958.50 & 389.17 & 12.51 & 11.82 \\ commons-utils-es-default-1s & yes & 4390 & 3812.30 & 290.06 & 7.32 & 43.94 \\ commons-utils-es-default-10s & no & 3309 & 6148.77 & 507.45 & 8.98 & 10.24 \\ commons-utils-es-default-10s & yes & 4660 & 5718.18 & 467.73 & 6.72 & 46.78 \\ commons-utils-es-default-60s & no & 3288 & 5273.79 & 423.55 & 10.35 & 11.14 \\ commons-utils-es-default-60s & yes & 4821 & 4712.94 & 374.58 & 6.36 & 47.20 \\ eqbench-es-default-1s & no & 10347 & 2217.15 & 224.83 & 11.56 & 23.56 \\ eqbench-es-default-1s & yes & 11145 & 1399.75 & 147.13 & 6.10 & 47.05 \\ eqbench-es-default-10s & no & 9999 & 2234.11 & 231.44 & 8.29 & 57.53 \\ eqbench-es-default-10s & yes & 11658 & 1330.09 & 139.13 & 6.20 & 62.13 \\ eqbench-es-default-60s & no & 9958 & 2131.86 & 218.93 & 6.78 & 67.79 \\ eqbench-es-default-60s & yes & 12052 & 1315.67 & 137.70 & 5.50 & 69.99 \\ \bottomrule \end{tabular} \end{table}
+\begin{table}[H]
+  \caption{Comparison of un-/detected mutants of variant IMPROVED$_{200}$. Model Size (number of characters in the Java representation of the model), Operations, Constraints, and Constraints Used \% are mean values across all un-/detected mutants in the project.}
+  \label{tab:mutation-detection-comparison}
+  \begin{tabular}{lcrrrrr}
+    \toprule
+    Project & Detected & Mutants & Model Size & Operations & Constraints & Constr. Used \% \\
+    \midrule
+    commons-utils & yes & 4193 & 981.72 & 107.74 & 4.98 & 25.56 \% \\
+    commons-utils & no & 1022 & 1520.78 & 173.74 & 4.98 & 19.75 \% \\
+    \midrule
+    commons-utils-es-default-1s & yes & 4390 & 3812.30 & 290.06 & 7.32 & 43.94 \% \\
+    commons-utils-es-default-1s & no & 3183 & 4958.50 & 389.17 & 12.51 & 11.82 \% \\
+    commons-utils-es-default-10s & yes & 4660 & 5718.18 & 467.73 & 6.72 & 46.78 \% \\
+    commons-utils-es-default-10s & no & 3309 & 6148.77 & 507.45 & 8.98 & 10.24 \% \\
+    commons-utils-es-default-60s & yes & 4821 & 4712.94 & 374.58 & 6.36 & 47.20 \% \\
+    commons-utils-es-default-60s & no & 3288 & 5273.79 & 423.55 & 10.35 & 11.14 \% \\
+    \midrule
+    eqbench-es-default-1s & yes & 11145 & 1399.75 & 147.13 & 6.10 & 47.05 \% \\
+    eqbench-es-default-1s & no & 10347 & 2217.15 & 224.83 & 11.56 & 23.56 \% \\
+    eqbench-es-default-10s & yes & 11658 & 1330.09 & 139.13 & 6.20 & 62.13 \% \\
+    eqbench-es-default-10s & no & 9999 & 2234.11 & 231.44 & 8.29 & 57.53 \% \\
+    eqbench-es-default-60s & yes & 12052 & 1315.67 & 137.70 & 5.50 & 69.99 \% \\
+    eqbench-es-default-60s & no & 9958 & 2131.86 & 218.93 & 6.78 & 67.79 \% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 @TODO: Check why model size / operations / constraints differ so much across the commons-utils projects. After all, the underlying program code is the same.
 
