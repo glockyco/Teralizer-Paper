@@ -804,28 +804,33 @@ number / percentage of killing generalizations
 differences between killed / unkilled mutants (here or in RQ4?)
 
 \begin{table}[H]
-  \caption{Comparison of un-/detected mutants of variant IMPROVED$_{200}$. Model Size (number of characters in the Java representation of the model), Operations, Constraints, and Constraints Used \% are mean values across all un-/detected mutants in the project.}
+  \caption{Model properties of mutants that are (not) detected by the IMPROVED$_{200}$ variant.}
   \label{tab:mutation-detection-comparison}
   \begin{tabular}{lcrrrrr}
     \toprule
-    Project & Detected & Mutants & Model Size & Operations & Constraints & Constr. Used \% \\
+            &          &         & Model Size & Operations & Constraints & Constr. Used \% \\
+    Project & Detected & Mutants & (Median) & (Median) & (Median) & (Mean / Median) \\
     \midrule
-    commons-utils & yes & 4193 & 981.72 & 107.74 & 4.98 & 25.56 \% \\
-    commons-utils & no & 1022 & 1520.78 & 173.74 & 4.98 & 19.75 \% \\
+    commons-utils & yes & 4193 & 124 & 11 & 4 & 26 \% / \phantom{0}75 \% \\
+    commons-utils & no & 1022 & 100 & 10 & 4 & 20 \% / \phantom{0}75 \% \\
     \midrule
-    commons-utils-es-default-1s & yes & 4390 & 3812.30 & 290.06 & 7.32 & 43.94 \% \\
-    commons-utils-es-default-1s & no & 3183 & 4958.50 & 389.17 & 12.51 & 11.82 \% \\
-    commons-utils-es-default-10s & yes & 4660 & 5718.18 & 467.73 & 6.72 & 46.78 \% \\
-    commons-utils-es-default-10s & no & 3309 & 6148.77 & 507.45 & 8.98 & 10.24 \% \\
-    commons-utils-es-default-60s & yes & 4821 & 4712.94 & 374.58 & 6.36 & 47.20 \% \\
-    commons-utils-es-default-60s & no & 3288 & 5273.79 & 423.55 & 10.35 & 11.14 \% \\
+    commons-utils-es-default-1s & yes & 4390 & 201 & 15 & 5 & 44 \% / \phantom{0}84 \% \\
+    commons-utils-es-default-1s & no & 3183 & 550 & 45 & 6 & 12 \% / \phantom{0}50 \% \\
     \midrule
-    eqbench-es-default-1s & yes & 11145 & 1399.75 & 147.13 & 6.10 & 47.05 \% \\
-    eqbench-es-default-1s & no & 10347 & 2217.15 & 224.83 & 11.56 & 23.56 \% \\
-    eqbench-es-default-10s & yes & 11658 & 1330.09 & 139.13 & 6.20 & 62.13 \% \\
-    eqbench-es-default-10s & no & 9999 & 2234.11 & 231.44 & 8.29 & 57.53 \% \\
-    eqbench-es-default-60s & yes & 12052 & 1315.67 & 137.70 & 5.50 & 69.99 \% \\
-    eqbench-es-default-60s & no & 9958 & 2131.86 & 218.93 & 6.78 & 67.79 \% \\
+    commons-utils-es-default-10s & yes & 4660 & 267 & 23 & 5 & 47 \% / \phantom{0}85 \% \\
+    commons-utils-es-default-10s & no & 3309 & 507 & 46 & 6 & 10 \% / \phantom{0}56 \% \\
+    \midrule
+    commons-utils-es-default-60s & yes & 4821 & 246 & 20 & 5 & 47 \% / \phantom{0}85 \% \\
+    commons-utils-es-default-60s & no & 3288 & 417 & 41 & 6 & 11 \% / \phantom{0}54 \% \\
+    \midrule
+    eqbench-es-default-1s & yes & 11145 & 182 & 9 & 2 & 47 \% / \phantom{0}80 \% \\
+    eqbench-es-default-1s & no & 10347 & 207 & 16 & 5 & 24 \% / \phantom{0}50 \% \\
+    \midrule
+    eqbench-es-default-10s & yes & 11658 & 183 & 9 & 2 & 62 \% / 100 \% \\
+    eqbench-es-default-10s & no & 9999 & 200 & 15 & 2 & 58 \% / 100 \% \\
+    \midrule
+    eqbench-es-default-60s & yes & 12052 & 182 & 9 & 2 & 70 \% / 100 \% \\
+    eqbench-es-default-60s & no & 9958 & 171 & 11 & 2 & 68 \% / 100 \% \\
     \bottomrule
   \end{tabular}
 \end{table}
