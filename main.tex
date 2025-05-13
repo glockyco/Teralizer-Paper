@@ -713,20 +713,22 @@ and / or do not provide (official) support for Java 8, and / or are not actively
 \label{sec:primary-effects-eval}
 
 \begin{table}[H]
-  \caption{Number of total, covered, and uncovered mutants per project.}
+  \caption{Number of total, covered, and uncovered mutants in included classes per project.}
   \label{tab:mutants-per-project}
   \begin{tabular}{lrrrrr}
     \toprule
-    Project & Total & Covered & Uncovered & Covered \% & Uncovered \% \\
+            & Included     & Included      & \multicolumn{3}{r}{Mutants} \\
+                                             \cmidrule(lr){4-6}
+    Project & Test Methods & Impl. Classes & Total & Covered & Uncovered \\
     \midrule
-    commons-utils & 8096 & 5215 & 2881 & 64.41 \% & 35.59 \% \\
-    commons-utils-es-default-1s & 8581 & 7536 & 1045 & 87.82 \% & 12.18 \% \\
-    commons-utils-es-default-10s & 8391 & 7939 & 452 & 94.61 \% & 5.39 \% \\
-    commons-utils-es-default-60s & 8354 & 8109 & 245 & 97.07 \% & 2.93 \% \\
+    commons-utils & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
+    commons-utils-es-default-1s & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
+    commons-utils-es-default-10s & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
+    commons-utils-es-default-60s & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
     \midrule
-    eqbench-es-default-1s & 23905 & 21492 & 2413 & 89.91 \% & 10.09 \% \\
-    eqbench-es-default-10s & 23654 & 21657 & 1997 & 91.56 \% & 8.44 \% \\
-    eqbench-es-default-60s & 23663 & 22010 & 1653 & 93.01 \% & 6.99 \% \\
+    eqbench-es-default-1s & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
+    eqbench-es-default-10s & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
+    eqbench-es-default-60s & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
     \bottomrule
   \end{tabular}
 \end{table}
