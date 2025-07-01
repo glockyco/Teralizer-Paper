@@ -1006,8 +1006,15 @@ efficiency relative to higher EvoSuite search budgets
 
 large potential for runtime improvements, see examples in the discussion
 
-\subsection{RQ4: Causes of Unsuccessful Generalizations}
+\subsection{RQ4 (Part 1 of 2): Causes of Unsuccessful Generalizations in the Evaluation Dataset}
 \label{sec:filtering-eval}
+
+In this section, we describe causes of unsuccessful generalizations in the main
+evaluation dataset (commons-utils + evosuite-variants, eqbench + evosuite variants).
+To get more generalizable results that enable better informed decisions about future
+research directions, we also evaluated generalization success vs. failure in <number>
+additional open source projects beyond the main evaluation dataset. Results of the
+extended evaluation are discussed in Section~\ref{sec:filtering-eval-extended}.
 
 overall test / assertion / generalization exclusions
 
@@ -1100,6 +1107,18 @@ failing tests
     \bottomrule
   \end{tabular}
 \end{table}
+
+\subsection{RQ4 (Part 2 of 2): Causes of Unsuccessful Generalizations in Other Open Source Projects}
+\label{sec:filtering-eval-extended}
+
+To get a more representative view of current limitations and directions for future
+extensions of the approach, we additionally applied Teralizer to <number> projects
+from the <reference> dataset. Filter criteria: Java projects that (i) use Java 1.5
+to 1.8 (ii) use JUnit 4 or 5, (iii) use Maven, (iv) have 5000-50000 LOC, (v) have
+20\%-80\% of the code in test classes (vi) follow the expected folder structure,
+i.e., have implementation in src/main/java and tests in src/test/java (vii) have
+a total repository size less than 100MB. This evaluation only uses the IMPROVED$_{200}$
+generalization variant, but results also apply to all other variants.
 
 % ------------------------------------------------------------------------------
 % DISCUSSION
