@@ -104,6 +104,7 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
+\usepackage{tabularx}
 
 %%
 %% end of the preamble, start of the body of the document source.
@@ -1143,6 +1144,27 @@ generalization variant, but results also apply to all other variants.
     Successfully processed & - & 10\; (\phantom{0}0.9 \%) \\
     \bottomrule
   \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \caption{Causes of processing failures per processing stage.}
+  \label{tab:processing-failure-causes}
+  \begin{tabularx}{\textwidth}{l X}
+    \toprule
+    Processing Stage & Causes of Processing Failures \\
+    \midrule
+    SETUP\_PROJECT & dependency resolution error (329), sources / tests not found (26) \\
+    BUILD\_PROJECT\_ORIGINAL & compilation error (171), compilation outputs not found (18) \\
+    BUILD\_SPOON\_MODEL & Spoon execution error (8) \\
+    EXECUTE\_TESTS\_ORIGINAL & JUnit execution error (13), timeout exceeded (48) \\
+    COLLECT\_JUNIT\_REPORTS\_ORIGINAL & JUnit outputs not found (31) \\
+    BUILD\_PROJECT\_INSTRUMENTED & compilation error (1) \\
+    EXECUTE\_TESTS\_INITIAL & all tests excluded (129), timeout exceeded (1) \\
+    COLLECT\_JACOCO\_DATA\_INITIAL & JaCoCo execution error (1), JaCoCo outputs not found (40) \\
+    COLLECT\_PIT\_DATA\_INITIAL & PIT execution error (16), PIT outputs not found (4), all classes excluded (3), failed to map PIT data to a test (1), timeout exceeded (40) \\
+    COLLECT\_PIT\_DATA\_GENERALIZED & all generalizations excluded (269), failed to map PIT data to a generalization (1) \\
+    \bottomrule
+  \end{tabularx}
 \end{table}
 
 % ------------------------------------------------------------------------------
