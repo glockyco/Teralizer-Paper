@@ -1246,6 +1246,11 @@ for practical application scenarios, could add configuration to target only spec
 \subsubsection{Dealing with Overfitting}
 \label{sec:overfitting}
 
+We do not generate assertions, so overfitting is less pronounced than if we did.
+However, we still rely on the current implementation as the source of truth,
+encoding the exact behavior of it in the generalized tests (at least as far as
+the behavior is tested by assertions in the original, non-generalized test suite).
+
 \subsection{Threats to Validity}
 \label{sec:threats-to-validity}
 
