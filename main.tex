@@ -1198,6 +1198,19 @@ so also offer comparatively little opportunity for improvements.
   \end{tabular}
 \end{table}
 
+The most common filtering reasons are unsupported parameter and return types.
+
+@TODO: Better explain these filtering results by prooviding information about:
+(i) which types are identified in the tested method signatures, and
+(ii) which assertions are used in the tests.
+
+Successful generalizations did not improve mutation scores in any of the successfully
+processed projects. However, some generalizations indicate that there weak
+preconditions are used in the source / test code of the original implementation.
+
+@TODO: Check which generalizations fail the "NonPassingTest" filter due to (i) bugs in
+our generalization implemenation vs. (ii) weak preconditions.
+
 % Performance improvements of Teralizer itself can NOT be used as a substitute for
 % (i) because the timeouts occur for tasks that are performed by external tools.
 
