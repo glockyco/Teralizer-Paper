@@ -642,8 +642,40 @@ describe the results of the evaluation, answering RQ1--RQ4.
 \subsection{Target Programs}
 \label{sec:target-programs}
 
-selection criteria: can be processed by SPF (=> java 8!, numeric inputs + outputs, no randomness), use junit 4 or 5 for testing, use maven or gradle as build system, ...?
-using eqbench and apache-commons-utils for RQ1-RQ4, and additional-oss for RQ4.
+Evaluation of our test generalization approach requires a dataset consisting of projects for which
+(i) the source code of the implementation and corresponding tests is available.
+Additionally, included projects
+(ii) need to be processable by SPF (which does not support newer Java versions than Java 8),
+(iii) need to use JUnit 4 or JUnit 5 as a testing framework,
+(iv) need to use Maven or Gradle as a build tool,
+(v) should use (partially) numeric inputs and numeric outputs for methods targeted by the generalization
+(because Teralizer currently only supports generalization of numeric inputs and outputs,
+as discussed in Section~\ref{sec:specification-extraction}).
+
+While various publicly available benchmarks exist that fulfill requirements i--iv,
+these benchmarks are often based on code from popular libraries such as Apache Commons, Google Gson, ... .
+For example, ... (list + describe some benchmarks that support this claim).
+Because these libraries need to be useable in different application scenarios,
+and maintainable by a large number of simultaneous contributors,
+they tend to make heavy use of encapsulation, inheritance, polymorphism, reflection, etc.
+As a result, such projects are largely incompatible
+with the basic specification extraction approach used by Teralizer
+because most implementation code does not fulfill requirement (v).
+Furthermore, due to their widespread use, active development communities, and long-running nature,
+these libraries are often more thoroughly tested than other projects are.
+Consequently, evaluating any test generalization approach on them
+would see only little opportunity to improve the effectiveness of the test suite.
+
+To achieve a thorough evaluation of our approach
+that provides generalizable results for both its strengths as well as its weaknesses
+in the presence of the requirements and considerations discussed above,
+we built our own evaluation dataset using projects from three different sources:
+the EqBench Benchmark,
+Apache Commons projects, and
+additional open source projects from the ... dataset.
+Further details about the included projects
+are provided in the follwing Sections~\ref{sec:eqbench}--\ref{sec:additional-oss-projects}.
+Descriptive statistics are available in Section~\ref{sec:dataset-statistics}.
 
 \subsubsection{EqBench}
 \label{sec:eqbench}
