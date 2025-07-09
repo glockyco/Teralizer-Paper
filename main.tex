@@ -642,9 +642,9 @@ describe the results of the evaluation, answering RQ1--RQ4.
 \subsection{Target Programs}
 \label{sec:target-programs}
 
-Evaluation of our test generalization approach requires a dataset consisting of projects for which
+Evaluation of the test generalization approach requires a dataset consisting of projects for which
 (i) the source code of the implementation and corresponding tests is available.
-Additionally, included projects
+Additionally, as discussed throughout Section~\ref{sec:approach}, included projects
 (ii) need to be processable by SPF (which does not support newer Java versions than Java 8),
 (iii) need to use JUnit 4 or JUnit 5 as a testing framework,
 (iv) need to use Maven or Gradle as a build tool,
@@ -670,9 +670,9 @@ To achieve a thorough evaluation of our approach
 that provides generalizable results for both its strengths as well as its weaknesses
 in the presence of the requirements and considerations discussed above,
 we built our own evaluation dataset using projects from three different sources:
-the EqBench Benchmark,
-Apache Commons projects, and
-additional open source projects from the ... dataset.
+the \DatasetEqBench{} Benchmark \cite{badihi_2021_eqbench},
+utility classses of {TODO: number} Apache Commons projects, and
+{TODO: number} open source projects from the RepoReapers dataset \cite{munaiah_2017_reporeapers}.
 Further details about the included projects
 are provided in the follwing Sections~\ref{sec:eqbench}--\ref{sec:additional-oss-projects}.
 Descriptive statistics are available in Section~\ref{sec:dataset-statistics}.
