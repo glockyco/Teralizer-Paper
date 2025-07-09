@@ -680,18 +680,38 @@ Descriptive statistics are available in Section~\ref{sec:dataset-statistics}.
 \subsubsection{EqBench}
 \label{sec:eqbench}
 
-well-suited for processing with SPF, but no test suite available;
+To represent projects that are well-suited for processing by \ToolTeralizer{},
+we include the \DatasetEqBench{} benchmark as the first part of our evaluation dataset.
+The \DatasetEqBench{} benchmark is a dataset built by \citeauthor{badihi_2021_eqbench}
+to evaluate the effectiveness of equivalence checking tools \cite{badihi_2021_eqbench}.
+The datasets contains Java (and C) implementations of non-equivalent program pairs.
+Since many equivalence checking tools such as ... \cite{TODO} and ... \cite{TODO}
+rely (partially) on symbolic execution for their analysis,
+\DatasetEqBench{} is well suited for processing with \ToolSPFLong{}-based tools such as \ToolTeralizer{}.
+The dataset achieves this by focusing primarily on programs that process numeric inputs,
+and by avoiding use of language features such as recursion and reflection
+which contemporary equivalence checking approaches only offer limited support for \cite{TODO}.
+Because the dataset only contains implementation code, but does not contain test code,
+we used \toolEvoSuite{} to generate test suites
+that can be used as input for the generalization.
+We chose \toolEvoSuite{} for test generation
+because it consistently achieved top placements in recent test generation tool competitions \cite{TODO}.
+For the test generation, we used three different timeout settings
+for \toolEvoSuite{} to approximate different strengths of test suites:
+60 seconds per class (\toolEvoSuite{}'s default), 10 seconds per class, and 1 second per class.
+All other configuration settings were left at \toolEvoSuite{}'s default values. We refer to
+the corresponding projects consisting of \DatasetEqBench{} implementation code and
+\toolEvoSuite{} generated test code as \textit{\DatasetEqBenchA{}}, \textit{\DatasetEqBenchB{}}, and \textit{\DatasetEqBenchC{}}.
+Descriptive statistics for these projects are provided in Section~\ref{sec:dataset-statistics}.
 
-tests generated with EvoSuite;
-came "third" in SBFT Tool Competition 2025 - Java Test Case Generation Track (https://arxiv.org/pdf/2504.09168), but differences between top 3 not statistically significant per the paper;
-can't find a summary paper for SBFT 2024;
-performed best on the SBFT Tool Competition 2023 - Java Test Case Generation Track for line and branch coverage metrics, and second-best for understandability metric;
-also the overall winner for SBST Tool Competition 2022 and SBST Tool Competition 2021 which use line + branch (via JaCoCo) and mutation coverage (via PIT) as metrics;
+% tests generated with EvoSuite;
+% came "third" in SBFT Tool Competition 2025 - Java Test Case Generation Track (https://arxiv.org/pdf/2504.09168), but differences between top 3 not statistically significant per the paper;
+% can't find a summary paper for SBFT 2024;
+% performed best on the SBFT Tool Competition 2023 - Java Test Case Generation Track for line and branch coverage metrics, and second-best for understandability metric;
+% also the overall winner for SBST Tool Competition 2022 and SBST Tool Competition 2021 which use line + branch (via JaCoCo) and mutation coverage (via PIT) as metrics;
 
-3 different test suites with search budgets: 1s, 10s, 60s (= EvoSuite default);
-no other changes to default EvoSuite configuration
-
-descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
+% 3 different test suites with search budgets: 1s, 10s, 60s (= EvoSuite default);
+% no other changes to default EvoSuite configuration
 
 \subsubsection{Apache Commons Utils}
 \label{sec:apache-commons-utils}
