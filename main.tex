@@ -120,7 +120,7 @@
 \newcommand{\DatasetEqBenchA}{eqbench-es-default-1s}
 \newcommand{\DatasetEqBenchB}{eqbench-es-default-10s}
 \newcommand{\DatasetEqBenchC}{eqbench-es-default-60s}
-\newcommand{\DatasetsEqBenchES}{eqbench-es-$*$}
+\newcommand{\DatasetsEqBenchEs}{eqbench-es-$*$}
 
 \newcommand{\DatasetCommons}{commons-utils}
 \newcommand{\DatasetCommonsA}{commons-utils-es-default-1s}
@@ -813,6 +813,8 @@ For the \DatasetRepoReapers{} projects,
 we list the total, mean, and median values
 across all 1160 included (sub-)projects.
 
+@TODO: Describe the \DatasetsEqBenchEs{} numbers.
+
 @TODO: Describe the \DatasetCommons{} numbers.
 
 The developer-written tests in \DatasetCommons{}
@@ -831,8 +833,6 @@ For practical examples of these differences, see Figure~\ref{fig:@TODO}.
 
 @TODO: add a figure showing test cases in \DatasetCommons{} vs. \DatasetCommonsA{} / \DatasetCommonsB{} / \DatasetCommonsC{}.
 
-@TODO: Describe the \DatasetEqBench{} numbers.
-
 @TODO: Describe the \DatasetRepoReapers{} numbers.
 
 descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
@@ -846,14 +846,14 @@ descriptive statistics (evosuite runtime, number of classes, number of tests, LO
     \cmidrule(lr){2-4} \cmidrule(lr){5-8}
     Project & Files & Classes & SLOC & Files & Classes & SLOC & Methods \\
     \midrule
+    eqbench-es-default-1s & 544 & 652 & 27,871 & 544 & 544 & 35,666 & 4,718 \\
+    eqbench-es-default-10s & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
+    eqbench-es-default-60s & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
+    \midrule
     commons-utils & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
     commons-utils-es-default-1s & 106 & 247 & 19,709 & 103 & 103 & 17,524 & 2,481 \\
     commons-utils-es-default-10s & 106 & 247 & 19,709 & 103 & 103 & 19,082 & 2,738 \\
     commons-utils-es-default-60s & 106 & 247 & 19,709 & 102 & 102 & 18,839 & 2,735 \\
-    \midrule
-    eqbench-es-default-1s & 544 & 652 & 27,871 & 544 & 544 & 35,666 & 4,718 \\
-    eqbench-es-default-10s & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
-    eqbench-es-default-60s & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
     \midrule
     repo-reapers (total) & 79,789 & 96,589 & 5,203,516 & 40,872 & 55,038 & 3,905,071 & 167,046 \\
     repo-reapers (mean) & 68 & 83 & 4,478 & 35 & 47 & 3,360 & 143 \\
@@ -896,14 +896,14 @@ and / or do not provide (official) support for Java 8, and / or are not actively
                                              \cmidrule(lr){4-6}
     Project & Test Methods & Impl. Classes & Total & Covered & Uncovered \\
     \midrule
+    eqbench-es-default-1s & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
+    eqbench-es-default-10s & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
+    eqbench-es-default-60s & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
+    \midrule
     commons-utils & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
     commons-utils-es-default-1s & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
     commons-utils-es-default-10s & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
     commons-utils-es-default-60s & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
-    \midrule
-    eqbench-es-default-1s & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
-    eqbench-es-default-10s & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
-    eqbench-es-default-60s & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -986,6 +986,15 @@ differences between killed / unkilled mutants (here or in RQ4?)
             &          &         & Model Size & Operations & Constraints & Constr. Used \% \\
     Project & Detected & Mutants & (Median) & (Median) & (Median) & (Mean / Median) \\
     \midrule
+    eqbench-es-default-1s & yes & 11145 & 182 & 9 & 2 & 47 \% / \phantom{0}80 \% \\
+    eqbench-es-default-1s & no & 10347 & 207 & 16 & 5 & 24 \% / \phantom{0}50 \% \\
+    \midrule
+    eqbench-es-default-10s & yes & 11658 & 183 & 9 & 2 & 62 \% / 100 \% \\
+    eqbench-es-default-10s & no & 9999 & 200 & 15 & 2 & 58 \% / 100 \% \\
+    \midrule
+    eqbench-es-default-60s & yes & 12052 & 182 & 9 & 2 & 70 \% / 100 \% \\
+    eqbench-es-default-60s & no & 9958 & 171 & 11 & 2 & 68 \% / 100 \% \\
+    \midrule
     commons-utils & yes & 4193 & 124 & 11 & 4 & 26 \% / \phantom{0}75 \% \\
     commons-utils & no & 1022 & 100 & 10 & 4 & 20 \% / \phantom{0}75 \% \\
     \midrule
@@ -997,15 +1006,6 @@ differences between killed / unkilled mutants (here or in RQ4?)
     \midrule
     commons-utils-es-default-60s & yes & 4821 & 246 & 20 & 5 & 47 \% / \phantom{0}85 \% \\
     commons-utils-es-default-60s & no & 3288 & 417 & 41 & 6 & 11 \% / \phantom{0}54 \% \\
-    \midrule
-    eqbench-es-default-1s & yes & 11145 & 182 & 9 & 2 & 47 \% / \phantom{0}80 \% \\
-    eqbench-es-default-1s & no & 10347 & 207 & 16 & 5 & 24 \% / \phantom{0}50 \% \\
-    \midrule
-    eqbench-es-default-10s & yes & 11658 & 183 & 9 & 2 & 62 \% / 100 \% \\
-    eqbench-es-default-10s & no & 9999 & 200 & 15 & 2 & 58 \% / 100 \% \\
-    \midrule
-    eqbench-es-default-60s & yes & 12052 & 182 & 9 & 2 & 70 \% / 100 \% \\
-    eqbench-es-default-60s & no & 9958 & 171 & 11 & 2 & 68 \% / 100 \% \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1034,13 +1034,14 @@ effects on the number of tests in the test suite
 \cmidrule(lr){2-7}
 Project & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
+eqbench-es-default-1s & 4718 & 206 & 206 & 4718 & -- & -- \\
+eqbench-es-default-10s & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
+eqbench-es-default-60s & 4974 & 210 & 210 & 4974 & -- & -- \\
+\midrule
 commons-utils & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
 commons-utils-es-default-1s & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
 commons-utils-es-default-10s & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
 commons-utils-es-default-60s & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
-eqbench-es-default-1s & 4718 & 206 & 206 & 4718 & -- & -- \\
-eqbench-es-default-10s & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
-eqbench-es-default-60s & 4974 & 210 & 210 & 4974 & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1056,13 +1057,14 @@ effects on the number of lines of code in the test suite
 \cmidrule(lr){2-7}
 Project & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
+eqbench-es-default-1s & 30989 & 19019 & 1302 & 48706 & +17717 & +57.2 \% \\
+eqbench-es-default-10s & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
+eqbench-es-default-60s & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
+\midrule
 commons-utils & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
 commons-utils-es-default-1s & 16563 & 5261 & 413 & 21411 & +4848 & +29.3 \% \\
 commons-utils-es-default-10s & 18124 & 5423 & 421 & 23126 & +5002 & +27.6 \% \\
 commons-utils-es-default-60s & 17886 & 5801 & 452 & 23235 & +5349 & +29.9 \% \\
-eqbench-es-default-1s & 30989 & 19019 & 1302 & 48706 & +17717 & +57.2 \% \\
-eqbench-es-default-10s & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
-eqbench-es-default-60s & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1078,13 +1080,14 @@ effects on the total execution time of the test suite
 \cmidrule(lr){2-7}
 Project & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
+eqbench-es-default-1s & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.7 \% \\
+eqbench-es-default-10s & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
+eqbench-es-default-60s & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
+\midrule
 commons-utils & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
 commons-utils-es-default-1s & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.5 \% \\
 commons-utils-es-default-10s & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.3 \% \\
 commons-utils-es-default-60s & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.1 \% \\
-eqbench-es-default-1s & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.7 \% \\
-eqbench-es-default-10s & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
-eqbench-es-default-60s & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1110,9 +1113,28 @@ investigation for a subset of configurations confirmed that the trends hold
 total runtime (+ runtime per project?)
 @TOOD: Probably can remove Table~\ref{tab:teralizer-runtimes} and just mention the total runtime somewhere. We have a more detailed overview in Figure~\ref{fig:teralizer-runtimes} anyway.
 
-\begin{table}[H] \caption{Total runtimes of Teralizer for all evaluated projects.} \label{tab:teralizer-runtimes} \begin{tabular}{lr} \toprule Project & Runtime \\ \midrule commons-utils & 3h 23min 22s \\ commons-utils-es-default-1s & 8h 13min 55s \\ commons-utils-es-default-10s & 9h 46min 48s \\ commons-utils-es-default-60s & 9h 04min 32s \\ eqbench-es-default-1s & 24h 46min 27s \\ eqbench-es-default-10s & 28h 16min 32s \\ eqbench-es-default-60s & 30h 53min 22s \\ \bottomrule \end{tabular} \end{table}
+\begin{table}[H]
+  \caption{Total runtimes of Teralizer for all evaluated projects.}
+  \label{tab:teralizer-runtimes}
+  \begin{tabular}{lr}
+    \toprule
+    Project & Runtime \\ 
+    \midrule
+    eqbench-es-default-1s & 24h 46min 27s \\ 
+    eqbench-es-default-10s & 28h 16min 32s \\ 
+    eqbench-es-default-60s & 30h 53min 22s \\ 
+    \midrule 
+    commons-utils & 3h 23min 22s \\ 
+    commons-utils-es-default-1s & 8h 13min 55s \\ 
+    commons-utils-es-default-10s & 9h 46min 48s \\ 
+    commons-utils-es-default-60s & 9h 04min 32s \\ 
+    \bottomrule 
+  \end{tabular} 
+\end{table}
 
 runtime per project + processing stage + variant
+
+@TODO: Show \DatasetsEqBenchEs{} results before \DatasetCommons{} results in Figure~\ref{fig:teralizer-runtimes}.
 
 \begin{figure}[H]
   \centering
@@ -1124,11 +1146,13 @@ runtime per project + processing stage + variant
 
 efficiency relative to higher EvoSuite search budgets
 
+@TODO: Show \DatasetsEqBenchEs{} results before \DatasetCommons{} results in Figure~\ref{fig:teralizer-efficiency}.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{fig_teralizer_efficiency.pdf}
   \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
-  \label{fig:teralizer_efficiency}
+  \label{fig:teralizer-efficiency}
   \begin{minipage}[t]{0.48\textwidth}
       \centering
       \captionof{table}{Pareto points for project: commons-utils.}
