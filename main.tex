@@ -750,12 +750,26 @@ Descriptive statistics for these projects are provided in Section~\ref{sec:datas
 \subsubsection{Apache Commons Utils}
 \label{sec:apache-commons-utils}
 
-manually collected;
-utility classes from apache commons projects;
-classes identified via SourceGraph (based on SPF limitations);
-corresponding test classes manually identified;
-modified pom.xml to disable license header requirement, no other changes;
-additionally same 3 EvoSuite generated test suites as above
+To have some representation of large open source libraries in our evaluation dataset,
+we extracted source code and corresponding test code of utility methods from \{number\} Apache Commons projects.
+We identified appropriate utility methods via Sourcegraph's RegEx-based repository search\footnote{\url{https://sourcegraph.com/search}}.
+More specifically, we searched for public static methods
+with at least one numeric or boolean input parameter
+and a numeric or boolean output value.
+The exact search query we used is available in our replication package.
+To construct the dataset from the Souregraph search results,
+we manually created a new project and added to it:
+(i) all matching utility methods,
+(ii) all methods that are (transitively) called by the utility methods,
+(iii) all tests that cover the utility methods, and
+(iii) all dependencies that are needed to compile the included code.
+Beyond the original test suite consisting of test classes extracted from Apache Commons projects,
+we also generated three additional test suites via \toolEvoSuite{}
+using the same settings that we used for the \DatasetEqBench{} test generation.
+Thus, four variants of the created project are included in the evaluation dataset:
+\textit{\DatasetCommons{}} (which uses the original test suite)
+as well as \textit{\DatasetCommonsA{}}, \textit{\DatasetCommonsB{}}, and \textit{\DatasetCommonsC{}}
+(which use \toolEvoSuite{} generated test suites).
 
 \subsubsection{Additional Open Source Software Projects}
 \label{sec:additional-oss-projects}
