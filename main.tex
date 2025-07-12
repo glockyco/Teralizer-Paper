@@ -116,15 +116,19 @@
 
 \newcommand{\toolEvoSuite}{\textsc{EvoSuite}}
 
-\newcommand{\DatasetCommons}{commons-utils}
-\newcommand{\DatasetCommonsA}{commons-utils-es-default-1s}
-\newcommand{\DatasetCommonsB}{commons-utils-es-default-10s}
-\newcommand{\DatasetCommonsC}{commons-utils-es-default-60s}
-
 \newcommand{\DatasetEqBench}{\textsc{EqBench}}
 \newcommand{\DatasetEqBenchA}{eqbench-es-default-1s}
 \newcommand{\DatasetEqBenchB}{eqbench-es-default-10s}
 \newcommand{\DatasetEqBenchC}{eqbench-es-default-60s}
+\newcommand{\DatasetsEqBenchES}{eqbench-es-$*$}
+
+\newcommand{\DatasetCommons}{commons-utils}
+\newcommand{\DatasetCommonsA}{commons-utils-es-default-1s}
+\newcommand{\DatasetCommonsB}{commons-utils-es-default-10s}
+\newcommand{\DatasetCommonsC}{commons-utils-es-default-60s}
+\newcommand{\DatasetsCommonsEs}{commons-utils-es-$*$}
+
+\newcommand{\DatasetRepoReapers}{repo-reapers}
 
 \newcommand{\VariantOriginal}{\textsc{Original}}
 \newcommand{\VariantInitial}{\textsc{Initial}}
@@ -771,19 +775,65 @@ Thus, four variants of the created project are included in the evaluation datase
 as well as \textit{\DatasetCommonsA{}}, \textit{\DatasetCommonsB{}}, and \textit{\DatasetCommonsC{}}
 (which use \toolEvoSuite{} generated test suites).
 
-\subsubsection{Additional Open Source Software Projects}
+\subsubsection{RepoReapers}
 \label{sec:additional-oss-projects}
 
-To get a more representative view of current limitations and directions for future
-extensions of the approach, we additionally applied Teralizer to <number> projects
-from the <reference> dataset for RQ4. Filter criteria: Java projects that (i) use Java 1.5
-to 1.8 (ii) use JUnit 4 or 5, (iii) use Maven, (iv) have 5000-50000 LOC, (v) have
-20\%-80\% of the code in test classes (vi) follow the expected folder structure,
-i.e., have implementation in src/main/java and tests in src/test/java (vii) have
-a total repository size less than 100MB. 
+To get a more representative view
+of current capabilities and limitations of the approach in a real-world setting,
+we additionally applied Teralizer to <number> projects
+from the RepoReapers dataset\cite{munaiah_2017_reporeapers}.
+@TODO: Write 1-2 sentences about the RepoReapears dataset.
+To select these projects from the full RepoReapers dataset,
+we applied the following selection criteria: projects
+(i)~have to be implemented in Java 1.5 to 1.8
+(ii)~have to use JUnit 4 or 5 for testing,
+(iii)~have to use Maven as a build tool,
+(iv)~have to follow the expected folder structure (i.e., have implementation in src/main/java and tests in src/test/java) 
+(v)~have to contain 5000-50000 LOC,
+(vi)~have to contain 20\%-80\% of the total source code in test classes
+(vii)~have to have a total repository size less than 100MB.
+Selection criteria (i) is imposed by the \toolSPF{} dependency of \ToolTeralizer{}.
+Criteria (ii) to (iv) are current limitations of the implemented protopye
+(as discussed in Section~\ref{sec:approach}),
+but could be lifted with additional engineering effort.
+The remaining selection criteria (v) to (vii) were applied
+to keep the overall size of the dataset to a manageable amount
+while focusing on a subset that has
+a good balance between implementation code and test code.
+We refer to this dataset as \textit{\DatasetRepoReapers{}} throughout the rest of this paper.
 
 \subsubsection{Dataset Statistics}
 \label{sec:dataset-statistics}
+
+Table~\ref{tab:dataset-statistics} provides descriptive statistics
+of the projects that are included in the dataset.
+We separately list the number of files, classes, and source lines of code (SLOC)
+for both the implementation code as well as the test code of the projects.
+For the \DatasetRepoReapers{} projects,
+we list the total, mean, and median values
+across all 1160 included (sub-)projects.
+
+@TODO: Describe the \DatasetCommons{} numbers.
+
+The developer-written tests in \DatasetCommons{}
+often have several times as many lines of code
+as the automatically generated \toolEvoSuite{} tests
+in \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}.
+This is because the developer-written tests often
+test multiple sets of input values
+and / or multiple target methods
+in a single single test method.
+The \toolEvoSuite{} generated test suites, on the other hand,
+use very isolated / focused test methods
+that generally cover only a single target method
+using a single set of input values.
+For practical examples of these differences, see Figure~\ref{fig:@TODO}.
+
+@TODO: add a figure showing test cases in \DatasetCommons{} vs. \DatasetCommonsA{} / \DatasetCommonsB{} / \DatasetCommonsC{}.
+
+@TODO: Describe the \DatasetEqBench{} numbers.
+
+@TODO: Describe the \DatasetRepoReapers{} numbers.
 
 descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
 
