@@ -114,6 +114,10 @@
 \newcommand{\ToolSPFLong}{Symbolic PathFinder}
 \newcommand{\ToolSPF}{SPF}
 
+\newcommand{\ToolJqwik}{jqwik}
+\newcommand{\ToolJacoco}{JaCoCo}
+\newcommand{\ToolPit}{PIT}
+
 \newcommand{\ToolEvoSuite}{\textsc{EvoSuite}}
 
 \newcommand{\DatasetEqBench}{\textsc{EqBench}}
@@ -652,6 +656,16 @@ The intermediate results / log files contain:
 - junit-data (JUnit / Surefire XML reports per project + variant),
 - pit-data (PIT linecoverage + mutations XML reports per project variant),
 
+using PIT for mutation testing because;
+most mutation testing tools
+(i) do not provide results in a structured format
+that's suitable for automated processing
+and / or (ii) do not provide (official) support for Java 8,
+and / or (iii) are not actively maintained anymore
+(according to the PIT website:
+\url{https://pitest.org/java_mutation_testing_systems/#summary-of-mutation-testing-systems})
+
+
 % ------------------------------------------------------------------------------
 % EVALUATION
 % ------------------------------------------------------------------------------
@@ -865,24 +879,70 @@ descriptive statistics (evosuite runtime, number of classes, number of tests, LO
 \subsection{Evaluation Setup}
 \label{sec:evaluation-setup}
 
-Hardware: MacBook Air, M2, 24 GB memory
-
-target programs as above
-
-variants:
+To collect the necessary data to answer RQ1-RQ4,
+we executed \ToolTeralizer{} once for every project in the evaluation dataset
+on a MacBook Air with M2 processor and 24~GB of memory
+(for threats to validity resulting from this setup, see Section~\ref{sec:threats-to-validity}).
+The JVM settings for \texttt{InitialHeapSize} and \texttt{MaxHeapSize}
+were kept at their default values, i.e., 384~MB (${1/64}$th of memory) for \texttt{InitialialHeapSize} and 6~GB (${1/4}$th of memory) for \texttt{MaxHeapSize}.
+As described in Section~\ref{sec:approach},
+\ToolTeralizer{} creates several variants of each target project throughout its execution
+and stores them for use in later processing steps
+as well as to include them in our replication package~\cite{replicationpackage}.
+We refer to these variants as:
 
 \begin{itemize}
-  \item (ORIGINAL: before any processing)
-  \item INITIAL: after SPF execution
-  \item BASELINE: after generalization (only original test inputs)
-  \item NAIVE (with 10 / 50 / 200 tries): after generalization (naive input selection)
-  \item IMPROVED (with 10 / 50 / 200 tries): after generalization (improved input selection)
+  \item \VariantOriginal{}:
+    The original project without any modifications applied by \ToolTeralizer{}.
+  \item \VariantInitial{}:
+    The state of the project
+    after project instrumentation, test analysis, and specification extraction have concluded 
+    (see Sections~\ref{sec:project-instrumentation}--\ref{sec:specification-extraction})
+    but before any tests have been generalized.
+    Tests for which these steps were not successful
+    are excluded from this project variant and,
+    therefore, are not included in any further generalization steps.
+    An overview of excluded tests is provided in Section~\ref{sec:filtering-eval}
+    when discussing the results of RQ4.
+  \item \VariantBaseline{}:
+    The state of the project
+    after \VariantBaseline{} generalization has been applied
+    (see Section~\ref{sec:baseline-generalization}).
+  \item \VariantNaiveA{}, \VariantNaiveB{}, \VariantNaiveC{}:
+    The state of the project
+    after \VariantNaive{} generalization has been applied.
+    As described in Section~\ref{sec:naive-generalization},
+    the subscript values indicate the values used for \ToolJqwik{}'s \texttt{tries} setting.
+  \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}:
+    The state of the project
+    after \VariantImproved{} generalization has been applied
+    (see Section~\ref{sec:improved-generalization}).
+    The subscript values indicate the values used for \ToolJqwik{}'s \texttt{tries} setting.
 \end{itemize}
 
-using PIT for mutation testing;
-most mutation testing tools do not provide results in a structured format that's suitable for automated processing
-and / or do not provide (official) support for Java 8, and / or are not actively maintained anymore
-(according to the PIT website: \url{https://pitest.org/java_mutation_testing_systems/#summary-of-mutation-testing-systems})
+In addition to the source code of the two pre-generalization variants
+(\VariantOriginal{} and \VariantInitial)
+as well as the seven post-generalization variants
+(\VariantBaseline{},
+\VariantNaive{} with 10 / 50 / 100 tries,
+and \VariantImproved{} with 10 / 50 /100 tries),
+\ToolTeralizer{} also stores (meta) data and (intermediate) processing results
+at various stages throughout its execution
+in a PostgreSQL database and in log files.
+This data includes, for example,
+(i) descriptions of identified tests and assertions
+(e.g., names, involved data types, lines of code),
+(ii) information about executed processing tasks
+(e.g., processing status, causes of failures, execution time),
+and (iii) raw tool outputs
+(e.g., console output logs, JUnit / \ToolJacoco{} / \ToolPit{} reports , extracted input-/output-specifications).
+For a more thorough discussion of collected data and produced outputs, see Section~\ref{sec:collected-data}.
+The evaluation results presented in the following sections
+are generated from the collected data via Python code in Jupyter notebooks.
+To aid independent validation and replication of our results,
+all of the collected data, the full Java implementation of \ToolTeralizer{},
+and the Python / Jupyter scripts used for the evaluation
+are publicly available in our replication package~\cite{replicationpackage}.
 
 \subsection{RQ1: Effects on Mutation Score}
 \label{sec:primary-effects-eval}
