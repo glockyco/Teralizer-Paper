@@ -795,7 +795,7 @@ as well as \textit{\DatasetCommonsA{}}, \textit{\DatasetCommonsB{}}, and \textit
 To get a more representative view
 of current limitations of the approach in a real-world setting,
 we additionally applied Teralizer to <number> projects
-from the RepoReapers dataset\cite{munaiah_2017_reporeapers} for RQ4.
+from the RepoReapers dataset\cite{munaiah_2017_reporeapers}.
 @TODO: Write 1-2 sentences about the RepoReapears dataset.
 To select these projects from the full RepoReapers dataset,
 we applied the following selection criteria: projects
@@ -815,6 +815,12 @@ to keep the overall size of the dataset to a manageable amount
 while focusing on a subset that has
 a good balance between implementation code and test code.
 We refer to this dataset as \textit{\DatasetRepoReapers{}} throughout the rest of this paper.
+Note, however, that \DatasetRepoReapers{} is only discussed in detail in RQ4,
+which covers current limitations of the prototype
+(see Section~\ref{sec:filtering-eval-extended}),
+but not throughout RQ1--RQ3.
+This is because the current implementation of \ToolTeralizer{}
+is largely unsuccessful at generalizing tests from these projects.
 
 \subsubsection{Dataset Statistics}
 \label{sec:dataset-statistics}
