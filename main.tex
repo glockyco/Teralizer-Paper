@@ -936,7 +936,7 @@ as well as the seven post-generalization variants
 (\VariantBaseline{},
 \VariantNaive{} with 10 / 50 / 100 tries,
 and \VariantImproved{} with 10 / 50 /100 tries),
-\ToolTeralizer{} also stores (meta) data and (intermediate) processing results
+\ToolTeralizer{} also creates and stores (meta) data and (intermediate) processing results
 at various stages throughout its execution
 in a PostgreSQL database and in log files.
 This data includes, for example,
@@ -946,12 +946,12 @@ This data includes, for example,
 (e.g., processing status, causes of failures, execution time),
 and (iii) raw tool outputs
 (e.g., console output logs, JUnit / \ToolJacoco{} / \ToolPit{} reports , extracted input-/output-specifications).
-For a more thorough discussion of collected data and produced outputs, see Section~\ref{sec:collected-data}.
+For a more detailed overview of the collected data, see Section~\ref{sec:collected-data}.
 The evaluation results presented in the following sections
-are generated from the collected data via Python code in Jupyter notebooks.
+are generated from the collected data via Jupyter notebooks.
 To aid independent validation and replication of our results,
 all of the collected data, the full Java implementation of \ToolTeralizer{},
-and the Python / Jupyter scripts used for the evaluation
+and the Jupyter notebooks used for the evaluation
 are publicly available in our replication package~\cite{replicationpackage}.
 
 \subsection{RQ1: Effects on Mutation Score}
