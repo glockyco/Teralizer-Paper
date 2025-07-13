@@ -112,9 +112,9 @@
 \newcommand{\ToolJPF}{JPF}
 
 \newcommand{\ToolSPFLong}{Symbolic PathFinder}
-\newcommand{\toolSPF}{SPF}
+\newcommand{\ToolSPF}{SPF}
 
-\newcommand{\toolEvoSuite}{\textsc{EvoSuite}}
+\newcommand{\ToolEvoSuite}{\textsc{EvoSuite}}
 
 \newcommand{\DatasetEqBench}{\textsc{EqBench}}
 \newcommand{\DatasetEqBenchA}{eqbench-es-default-1s}
@@ -730,16 +730,16 @@ The dataset achieves this by focusing primarily on programs that process numeric
 and by avoiding use of language features such as recursion and reflection
 which contemporary equivalence checking approaches only offer limited support for \cite{TODO}.
 Because the dataset only contains implementation code, but does not contain test code,
-we used \toolEvoSuite{} to generate test suites
+we used \ToolEvoSuite{} to generate test suites
 that can be used as input for the generalization.
-We chose \toolEvoSuite{} for test generation
+We chose \ToolEvoSuite{} for test generation
 because it consistently achieved top placements in recent test generation tool competitions \cite{TODO}.
 For the test generation, we used three different timeout settings
-for \toolEvoSuite{} to approximate different strengths of test suites:
-60 seconds per class (\toolEvoSuite{}'s default), 10 seconds per class, and 1 second per class.
-All other configuration settings were left at \toolEvoSuite{}'s default values. We refer to
+for \ToolEvoSuite{} to approximate different strengths of test suites:
+60 seconds per class (\ToolEvoSuite{}'s default), 10 seconds per class, and 1 second per class.
+All other configuration settings were left at \ToolEvoSuite{}'s default values. We refer to
 the corresponding projects consisting of \DatasetEqBench{} implementation code and
-\toolEvoSuite{} generated test code as \textit{\DatasetEqBenchA{}}, \textit{\DatasetEqBenchB{}}, and \textit{\DatasetEqBenchC{}}.
+\ToolEvoSuite{} generated test code as \textit{\DatasetEqBenchA{}}, \textit{\DatasetEqBenchB{}}, and \textit{\DatasetEqBenchC{}}.
 Descriptive statistics for these projects are provided in Section~\ref{sec:dataset-statistics}.
 
 % tests generated with EvoSuite;
@@ -768,12 +768,12 @@ we manually created a new project and added to it:
 (iii) all tests that cover the utility methods, and
 (iii) all dependencies that are needed to compile the included code.
 Beyond the original test suite consisting of test classes extracted from Apache Commons projects,
-we also generated three additional test suites via \toolEvoSuite{}
+we also generated three additional test suites via \ToolEvoSuite{}
 using the same settings that we used for the \DatasetEqBench{} test generation.
 Thus, four variants of the created project are included in the evaluation dataset:
 \textit{\DatasetCommons{}} (which uses the original test suite)
 as well as \textit{\DatasetCommonsA{}}, \textit{\DatasetCommonsB{}}, and \textit{\DatasetCommonsC{}}
-(which use \toolEvoSuite{} generated test suites).
+(which use \ToolEvoSuite{} generated test suites).
 
 \subsubsection{RepoReapers}
 \label{sec:additional-oss-projects}
@@ -792,7 +792,7 @@ we applied the following selection criteria: projects
 (v)~have to contain 5000-50000 LOC,
 (vi)~have to contain 20\%-80\% of the total source code in test classes
 (vii)~have to have a total repository size less than 100MB.
-Selection criteria (i) is imposed by the \toolSPF{} dependency of \ToolTeralizer{}.
+Selection criteria (i) is imposed by the \ToolSPF{} dependency of \ToolTeralizer{}.
 Criteria (ii) to (iv) are current limitations of the implemented protopye
 (as discussed in Section~\ref{sec:approach}),
 but could be lifted with additional engineering effort.
@@ -819,13 +819,13 @@ across all 1160 included (sub-)projects.
 
 The developer-written tests in \DatasetCommons{}
 often have several times as many lines of code
-as the automatically generated \toolEvoSuite{} tests
+as the automatically generated \ToolEvoSuite{} tests
 in \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}.
 This is because the developer-written tests often
 test multiple sets of input values
 and / or multiple target methods
 in a single single test method.
-The \toolEvoSuite{} generated test suites, on the other hand,
+The \ToolEvoSuite{} generated test suites, on the other hand,
 use very isolated / focused test methods
 that generally cover only a single target method
 using a single set of input values.
