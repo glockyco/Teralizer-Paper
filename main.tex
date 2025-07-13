@@ -885,8 +885,15 @@ on a MacBook Air with M2 processor and 24~GB of memory
 (for threats to validity resulting from this setup, see Section~\ref{sec:threats-to-validity}).
 The JVM settings for \texttt{InitialHeapSize} and \texttt{MaxHeapSize}
 were kept at their default values, i.e., 384~MB (${1/64}$th of memory) for \texttt{InitialialHeapSize} and 6~GB (${1/4}$th of memory) for \texttt{MaxHeapSize}.
+Since there are no existing approaches
+that that automatically create property-based tests from existing (unit) tests,
+no other tools are included in the evaluation.
+Instead, we compare \ToolTeralizer{} generated test suites
+to the developer written and \ToolEvoSuite{} generated test suites in the dataset.
 As described in Section~\ref{sec:approach},
-\ToolTeralizer{} creates several variants of each target project throughout its execution
+\ToolTeralizer{} creates several variants
+of each target project / test suite
+throughout its execution
 and stores them for use in later processing steps
 as well as to include them in our replication package~\cite{replicationpackage}.
 We refer to these variants as:
