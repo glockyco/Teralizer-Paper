@@ -965,6 +965,42 @@ are publicly available in our replication package~\cite{replicationpackage}.
 \subsection{RQ1: Effects on Mutation Score}
 \label{sec:primary-effects-eval}
 
+To evaluate the effects that generalization via \ToolTeralizer{} has on mutation scores,
+we compare the mutation scores reported by \ToolPit{}
+for the \VariantInitial{} variants of the the target projects
+to the mutation scores reported for
+the \VariantBaseline{}, \VariantNaive{} and \VariantImproved{} variants
+using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
+
+The first three columns of Table~\ref{tab:mutants-per-project} show
+how many of the test methods and implementation classes
+of the \VariantOriginal{} projects are included in the \VariantInitial{} project variants.
+Tests are counted as included
+if they successfully pass test analysis (see Section~\ref{sec:test-analysis}) 
+and specification extraction (see Section~\ref{sec:specification-extraction}).
+Implementation classes are counted as included
+if at least one line of the corresponding class
+is covered by an included test
+according to the \ToolJacoco{} coverage reports
+of the \VariantInitial{} project variant.
+For the projects with \ToolEvoSuite{} generated test suites
+(i.e., \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}), 
+83--85\% of test methods from \VariantOriginal{} are included in \VariantInitial{}.
+For the \DatasetCommons{} project, 
+Further details about the causes of test exclusions
+are provided when discussing the results for RQ4 in Section~\ref{sec:filtering-eval}.
+
+The last three columns for Table~\ref{tab:mutants-per-project} show the number of total, covered, and uncovered mutants per project.
+Total mutants are all mutants that are created by \ToolPit{} in the included classes.
+Covered mutants are the subset of total mutants that are executed by at least one included test.
+Uncovered mutants are the subset of total mutants that are not executed by any included tests.
+@TODO: Describe actual values in the table.
+%Around 8000 mutants for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
+%Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
+Since test generalization via \ToolTeralizer{} does not cause any coverage changes
+(see Sections~\ref{sec:naive-generalization} and \ref{sec:improved-generalization}), 
+all of the following evaluation results focus only on covered mutants.
+
 \begin{table}[H]
   \caption{Number of total, covered, and uncovered mutants in included classes per project.}
   \label{tab:mutants-per-project}
@@ -986,9 +1022,6 @@ are publicly available in our replication package~\cite{replicationpackage}.
   \end{tabular}
 \end{table}
 
-Table \ref{tab:mutants-per-project} shows the number of total, covered, and uncovered mutants per project for the INITIAL variant.
-Around 8000 mutants across for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
-Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
 
 \begin{figure}[H]
   \centering
