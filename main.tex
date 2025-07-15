@@ -997,9 +997,6 @@ Uncovered mutants are the subset of total mutants that are not executed by any i
 @TODO: Describe actual values in the table.
 %Around 8000 mutants for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
 %Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
-Since test generalization via \ToolTeralizer{} does not cause any coverage changes
-(see Sections~\ref{sec:naive-generalization} and \ref{sec:improved-generalization}), 
-all of the following evaluation results focus only on covered mutants.
 
 \begin{table}[H]
   \caption{Number of total, covered, and uncovered mutants in included classes per project.}
@@ -1022,7 +1019,6 @@ all of the following evaluation results focus only on covered mutants.
   \end{tabular}
 \end{table}
 
-
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{fig_mutation_detection_comparison}
@@ -1032,15 +1028,44 @@ all of the following evaluation results focus only on covered mutants.
 \end{figure}
 
 % Overall observations:
-Figure~\ref{fig:mutation-detection-results} shows the percentage of detected mutants per project and generalization variant.
-Results are relative to detected mutants, because our generalization approach --- by design --- does not affect coverage.
-Detected mutants includes killed (X\% of overall detections), timed-out (A\%), memory error (B\%), and run error (C\%).
+Figure~\ref{fig:mutation-detection-results} shows
+the percentage of detected mutants
+and improvement over \VariantInitial{}
+per project and generalization variant.
+Detected mutants includes
+killed (X\% of overall detections), timed-out (A\%), memory error (B\%), and run error (C\%),
+which matches the classification used by \ToolPit{}.
+Since test generalization via \ToolTeralizer{} does not affect coverage
+(as described in Sections~\ref{sec:naive-generalization} and \ref{sec:improved-generalization}),
+all results are relative to covered mutants
+(i.e., uncovered mutants are not considered in the comparison,
+because \ToolTeralizer{} --- by design --- cannot achieve any coverage improvements).
+We are using \VariantInitial{} as the baseline for mutation score comparisons
+with generalized project variants,
+which ensures that the only difference
+across compared projects is the absence or presence of generalized test cases.
+\VariantOriginal{} is not used for comparison
+because it contains additional non-generalized tests
+that are excluded in \VariantInitial{} as well as generalized project variants.
+\VariantBaseline{} is not included in the comparison
+because it always uses the same test inputs as \VariantInitial{}
+(as described in Section~\ref{sec:baseline-generalization}).
+Therefore, \VariantInitial{} and \VariantBaseline{} always achieve the same detection rates.
 
-Generalization improves detected mutants for all evaluated projects and generalization variants (comparison with increasing EvoSuite runtime in Section~\ref{sec:runtime-eval}).
-NAIVE and IMPROVED achieve similar improvements, with NAIVE performing slightly better on the eqbench projects, and IMPROVED performing slightly better on the commons-utils projects.
-Using a higher \texttt{tries} setting for jqwik also increases the percentage of detected mutants. However, there seem to be diminishing returns: increasing tries from 10 to 50 achieves a larger improvement in mutation scores than increasing tries from 50 to 200.
+Generalization improves detected mutants for all evaluated projects and generalization variants
+(comparison with increasing \ToolEvoSuite{} runtime in Section~\ref{sec:runtime-eval}).
+\VariantNaive{} and \VariantImproved{} achieve similar improvements,
+with \VariantNaive{} performing slightly better on the \DatasetEqBench{} projects,
+and \VariantImproved{} performing slightly better on \DatasetCommons{} projects.
+Using a higher \texttt{tries} setting for jqwik also increases the percentage of detected mutants.
+However, there seem to be diminishing returns:
+increasing tries from 10 to 50 achieves a larger improvement in mutation scores
+than increasing tries from 50 to 200.
+In absolute numbers, generalization detects 3 new mutants for commons-utils,
+X--Y new mutants for the \DatasetsCommonsEs{} projects,
+and X--Y new mutants for the .
 
-In absolute numbers, generalization detects 3 new mutants for commons-utils, X--Y new mutants for commons-utils-es-1s to 60s, and X--Y new mutants for eqbench-es-1s to 60s. ...
+@TODO: Extend discussion of mutation score results.
 
 @TODO: Mention that running EvoSuite + Teralizer generally achieves better results than running EvoSuite with a larger search budget (see \ref{sec:runtime-eval}).
 
