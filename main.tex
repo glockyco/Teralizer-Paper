@@ -965,14 +965,29 @@ are publicly available in our replication package~\cite{replicationpackage}.
 \subsection{RQ1: Effects on Mutation Score}
 \label{sec:primary-effects-eval}
 
+In the following, we first describe
+how many tests, implementation classes, and corresponding mutants
+from the evaluation dataset
+are included in the evaluation
+in Section~\ref{sec:included-mutants}.
+Section~\ref{sec:overall-detection-rates}
+focuses on the overall detection rates
+achived by the implemented generalization variants.
+In Section~\ref{sec:detection-rates-per-mutator},
+we provide the detection rate results for each individual mutator.
+Section~\ref{sec:boundary-detection-effectiveness}
+concludes the results for RQ1
+by investigating the effectiveness of the partition boundary detection
+used by \VariantImproved{} variants to guide input value selection.
+
+\subsubsection{Included Mutants}
+\label{sec:included-mutants}
 To evaluate the effects that generalization via \ToolTeralizer{} has on mutation scores,
 we compare the mutation scores reported by \ToolPit{}
 for the \VariantInitial{} variants of the the target projects
 to the mutation scores reported for
 the \VariantBaseline{}, \VariantNaive{} and \VariantImproved{} variants
 using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
-
-\subsubsection{Included Tests, Classes, and Mutants}
 The first three columns of Table~\ref{tab:mutants-per-project} show
 how many of the test methods and implementation classes
 of the \VariantOriginal{} projects are included in the \VariantInitial{} project variants.
@@ -1030,6 +1045,7 @@ Uncovered mutants are the subset of total mutants that are not executed by any i
 
 % Overall observations:
 \subsubsection{Overall Mutation Detection Rates}
+\label{sec:overall-detection-rates}
 Figure~\ref{fig:mutation-detection-results} shows
 the percentage of detected mutants
 and improvement over \VariantInitial{}
@@ -1042,6 +1058,7 @@ Since test generalization via \ToolTeralizer{} does not affect coverage
 all results are relative to covered mutants
 (i.e., uncovered mutants are not considered in the comparison,
 because \ToolTeralizer{} --- by design --- cannot achieve any coverage improvements).
+
 We are using \VariantInitial{} as the baseline for mutation score comparisons
 with generalized project variants,
 which ensures that the only difference
@@ -1054,6 +1071,7 @@ because it always uses the same test inputs as \VariantInitial{}
 (as described in Section~\ref{sec:baseline-generalization}).
 Therefore, \VariantInitial{} and \VariantBaseline{} always achieve the same detection rates.
 
+@TODO: Separate this according to the paragraph structure.
 Generalization improves detected mutants for all evaluated projects and generalization variants
 (comparison with increasing \ToolEvoSuite{} runtime in Section~\ref{sec:runtime-eval}).
 \VariantNaive{} and \VariantImproved{} achieve similar improvements,
@@ -1080,6 +1098,12 @@ The lowest improvements are seen for the commons-utils project with
 
 % Observations on eqbench with EvoSuite tests:
 (@TODO: Observations on eqbench with EvoSuite tests)
+
+\paragraph{\VariantNaive{} Detection Rates}
+
+\paragraph{\VariantImproved{} Detection Rates}
+
+\paragraph{Comparison of \VariantNaive{} and \VariantImproved{}}
 
 \begin{table}[H]
   \caption{Number of mutants and percentage of detections per mutator.}
