@@ -1130,15 +1130,93 @@ The lowest improvements are seen for the commons-utils project with
   \end{tabular}
 \end{table}
 
-Table \ref{tab:detections-per-mutator} shows the total number of mutants across all projects for each of the 12 mutators.
-(Add explanations of the different mutators?)
-Percentages are similar across projects, with the most common mutants coming from \texttt{MathMutator} (X--Y\% of total mutants across projects), \texttt{ConditionalsBoundaryMutator} (X--Y\%), and \texttt{RemoveConditionalMutator\_\-ORDER\_\-ELSE} (X--Y\%).
+\subsubsection{Mutation Detection Rates per Mutator}
+\label{sec:detection-rates-per-mutator}
+Table \ref{tab:detections-per-mutator} shows the total number of mutants across all projects
+for each of the 12 mutators in \ToolPit{}'s \texttt{DEFAULTS} group of mutators.
+(Add explanations of the different mutators? Or just a link to the PIT website where mutators are described?)
 
-number of newly killed mutants  per project + variant
+\paragraph{Prevalence of Mutants}
+The three most common mutants are ... (X--Y\% of total mutants across projects), ... (...), and ... (...).
+Overall, these make up ... \% of the total mutants.
+% @TODO: Put these numbers in perspective? E.g., list how many occur on average per class / method / LOC?
+The least common mutants are ... .
+Overall, these make up ... \% of the total mutants.
+% @TODO: Put these numbers in perspective? E.g., list how many occur on average per class / method / LOC?
+(@TODO: Mutations that are more (less) common across the overall dataset
+are generally also more (less) common in the individual projects.
+The largest differences in mutation prevalance can be observed for ... .)
 
-number / percentage of killing generalizations
+\paragraph{Detection Rate Results}
+Detection rates for \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} as well as
+detection rate improvements compared \VariantInitial{}
+are shown in the last three columns of the table.
+Detection rates exhibit large differences across different mutators.
+The highest detection rates of 90\%--99\% are achieved
+for mutators that directly modify return values.
+The lowest detection rates are observed
+for the \texttt{VoidMethodCall} mutator (... \% detection rate), 
+which removes calls to methods that do not produce a return value,
+and the \texttt{ConditionalsBoundary} mutator (... \% detection rate),
+which modifies the boundaries of conditionals by replacing
+\texttt{<} with \texttt{<=} and \texttt{>} with \texttt{>=} (or vice-versa).
 
-differences between killed / unkilled mutants (here or in RQ4?)
+\VariantNaive{} achieves the largest improvements over \VariantInitial{}
+for the ... (...), ... (...), and ... (...) mutations.
+However, \VariantNaive{} does not improve detection rates
+for mutants created by the ... mutators.
+(@TODO: Possible explanations: (i) high initial detection rates, (ii) new assertions needed.)
+\VariantImproved{} achieves the largest improvements
+for the ... (...), ... (...), and ... (...) mutations.
+It does not achieve any improvements
+for mutants created by the ... mutators.
+
+Results for the 10 / 50 \texttt{tries} variants of \VariantNaive{} and \VariantImproved{}
+generally follow the same trends as those for the listed variants with 200 \texttt{tries},
+albeit with correspondingly smaller detection rate improvements over \VariantInitial{}.
+(@TODO: Check the results for \VariantImprovedA{}. Those might be much worse for mutants that don't relate to conditionals.)
+Full results for all variants are available in our replication package~\cite{replicationpackage}.
+
+\paragraph{Comparison of \VariantNaiveC{} and \VariantImprovedC{}}
+\VariantImprovedC{} outperforms \VariantNaiveC{} in terms of detection rate
+for 7 of 12 mutators,
+is on par for 4 of 12 mutators (all of which achieve no improvement for either variant),
+and underperforms for 1 of 12 mutators.
+The largest benefit of \VariantImprovedC{} over \VariantNaiveC{} is observed
+for the detection of mutants created by the \texttt{ConditionalsBound} mutator.
+Here, \VariantImprovedC{} achieves an increase of ... percentage points over \VariantInitial{},
+whereas \VariantNaiveC{} only increases detection rates by ... percentage points.
+This suggests that the improvements implemented in \VariantImproved{} variants
+to favor boundary values during input generation achieve their intended benefits.
+
+However, \VariantImprovedC{}'s benefits for the detection rate of \texttt{ConditionalsBoundary} mutants
+appear to come at the cost of decreased detection rates for \texttt{Math} mutants.
+Since the only difference between the two variants is the way in which test inputs are selected
+--- \VariantNaive{} variants select inputs randomly from the given input partition; 
+\VariantImproved{} variants start with inputs at the edges of the partition  ---
+this suggests that focusing too much on boundary values
+can have detrimental effects for the detection of mutants
+that are not related to input boundaries.
+Due to the high prevalence of \texttt{Math} mutants,
+this can also result in an \emph{overall} decrease in detection rates.
+
+To counteract the detrimental effects on
+detection rates of \texttt{Math} mutants
+incurred by the input selection procedure used by \VariantImproved{} variants,
+the number of \texttt{tries} could, for example,
+be increased for the \VariantImproved{} variants
+to adjust for the additional \texttt{tries} spent on boundary testing
+while keeping non-boundary testing at \VariantNaive{} levels.
+More sophisticated input selection approaches
+that aim to better balance boundary and non-boundary testing
+without large increases to the number of executed \texttt{tries}
+could perhaps further increase detection rates
+while keeping the runtime impact
+resulting from a higher number of \texttt{tries} to a minimum.
+For a more in-depth evaluation of runtime requirements
+across different variants and numbers of \texttt{tries}
+see Section~\ref{sec:runtime-eval}.
+
 
 \begin{table}[H]
   \caption{Model properties of mutants that are (not) detected by the IMPROVED$_{200}$ variant.}
