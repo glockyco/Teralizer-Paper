@@ -1217,48 +1217,163 @@ For a more in-depth evaluation of runtime requirements
 across different variants and numbers of \texttt{tries}
 see Section~\ref{sec:runtime-eval}.
 
+\subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
+
+@TODO: Add intro. Basically: Offer more thorough explanations
+why \VariantImproved{} (sometimes?) performs better than \VariantNaive{}
+on the \DatasetsEqBenchEs{} projects, but not on the \DatasetsCommonsEs{} ones.
+
+\paragraph{Evaluation Metrics}
+Table~\ref{tab:mutation-detection-comparison} shows 
+the model properties of mutants that are (not) detected
+by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
+The term \emph{model}, in this case, refers to an 
+input specification extracted by \ToolTeralizer{}.
+Therefore, the (input) model(s) of a mutant
+are all input specifications
+that describe an input partition
+which contains at least one set of inputs
+that cause the mutant to be exercised during test execution.
+In other words, the model(s) of a mutant
+are all input specifications
+that were extracted by \ToolTeralizer{}'s
+specification extraction step (see Section~\ref{sec:specification-extraction})
+during execution of a test that covers the corresponding mutant.
+
+Included model properties are
+the median number of model operations
+and the median number of model constraints.
+%The number of (nested) operations is given by
+%the total number of operators in the model.
+%The number of constraints is determined
+%by counting the number of boolean conditions or variables
+%connected by \texttt{\&\&} operators.
+%There can never be \texttt{||} operators in a model
+%because the two operands on both sides of the \texttt{||}
+%represent different input partitions and, therefore,
+%describe different models.
+%
+In addition to the model properties,
+the last column of Table~\ref{tab:mutation-detection-comparison}
+lists the mean and median percentage of constraints
+that are used by the created property-based tests
+when generating inputs for test execution.
+As described in more detail in Section~\ref{sec:improved-generalization}, 
+the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
+only considers simple in-/equalities on numeric and boolean variables or constants.
+More complex constraints are not encoded
+in the initial input value generation of the \VariantImproved{} property-based tests
+but are still enforced during \ToolPit{}'s default value filtering step.
+
+For example, take the following (Java represented) model:
+\texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
+This model contains 5 operators
+(i.e., \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and \texttt{\&\&}),
+so has a total of 5 (nested) operations.
+Furthermore, the model's contains 3 constraints:
+(i) \texttt{a < 0}, (ii) \texttt{a == (b + 1)}, and (iii) \texttt{c}.
+Constraints (i) and (iii) are used by the \VariantImproved{} variants.
+Constraint (ii) is not used
+because it contains the compound term \texttt{b + 1}.
+
+\paragraph{Model Properties of Detected vs.\ Undetected Mutants}
+As shown in Table~\ref{tab:mutation-detection-comparison},
+undetected mutants often have more complex models
+%(i.e., are easier to reach during testing)
+than detected ones.
+For example, in the \DatasetsEqBenchEs{} projects,
+mean and median operation counts
+are around 1.2--1.7 times larger
+for undetected mutants than for detected ones
+(e.g., mean of 231 vs.\ 139 and median of 15 vs.\ 9 for \DatasetEqBenchB{}).
+Operation counts in the \DatasetsCommonsEs{} projects
+show even more pronounced differences,
+with values of undetected mutants being 1.3--3 times larger
+than those of detected ones
+(e.g., mean of 45 vs.\ 15 and median of 12 vs.\ 7 for \DatasetCommonsB{}).
+The only project where models of undetected mutants
+have lower median operation counts than detected ones (10 vs.\ 11)
+is \DatasetCommons{} with its developer written test suite.
+However, mean operation counts are still larger for undetected mutants
+at 173 vs.\ 107 for detected ones.
+Constraint counts show a similar trend to operation counts,
+with mean values being 1.0--1.7 times as large
+and median values being 1.0--2.5 times as large
+for undetected mutants as for detected ones.
+Values for \DatasetCommons{} are very different from
+the other \DatasetsCommonsEs{} projects because it 
+covers a much smaller subset of mutants,
+as previously discussed in \ref{sec:included-mutants}.
+
+\paragraph{Constraints Used by \VariantImproved{} Generalization}
+The mean (median) number of used constraints across all projects
+ranges from 25--69 \% (75--100 \%) for detected mutants
+and 10--67 \% (50--100 \%) for undetected ones,
+with usage rates being consistently higher
+for detected mutants than for undetected ones.
+Because the current implementation of \ToolTeralizer{} focuses on simple constraints,
+this provides further evidence
+that models of undetected mutants are not only larger than those of detected ones
+(i.e., contain more operations and constraints)
+but also more complex
+(e.g., contain more compound terms,
+show more common use of non-numeric data types,
+and use more math functions that are not fully modeled by SPF).
+This suggests that improving \ToolTeralizer{}'s support
+for more complex constraints
+holds further potential for additional increases in mutation detection rates.
+
+Furthermore, the high constraint usage rates
+as well as the comparatively small operation and constraint counts
+of the \DatasetsEqBenchEs{} projects suggest that it is relatively easy
+to find input values that match the models.
+This could explain, at least in part,
+why \VariantImproved{} generalization variants are more effective
+relative to the corresponding \VariantNaive{} variants
+when used in the \DatasetCommons{} projects
+than in the \DatasetsEqBenchEs{} projects
+(as seen in Figure~\ref{fig:mutation-detection-results}).
+After all, if mutated input partition boundaries are easy to identify,
+there is a higher likelihood that they will be covered
+even without the more sophisticated value selection
+employed by \VariantImproved{} variants.
+Thus, taking into account the complexity of the underlying models
+during generalization might offer further opportunities
+to improve the effectiveness and/or efficiency
+of test generalization approaches such as \ToolTeralizer{}.
 
 \begin{table}[H]
-  \caption{Model properties of mutants that are (not) detected by the IMPROVED$_{200}$ variant.}
+  \caption{Model properties of mutants that are (not) detected by the \VariantImprovedC{} variant.}
   \label{tab:mutation-detection-comparison}
-  \begin{tabular}{lcrrrrr}
+  \begin{tabular}{lcrrrrrrr}
     \toprule
-            &          &         & Model Size & Operations & Constraints & Constr. Used \% \\
-    Project & Detected & Mutants & (Median) & (Median) & (Median) & (Mean / Median) \\
+            &          &         & \multicolumn{2}{c}{Operations} & \multicolumn{2}{c}{Constraints} & \multicolumn{2}{c}{Constr. Used \%} \\
+    \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+    Project & Detected & Mutants & Mean & Med. & Mean & Med. & Mean & Med. \\
     \midrule
-    eqbench-es-default-1s & yes & 11145 & 182 & 9 & 2 & 47 \% / \phantom{0}80 \% \\
-    eqbench-es-default-1s & no & 10347 & 207 & 16 & 5 & 24 \% / \phantom{0}50 \% \\
+    eqbench-es-default-1s & yes & 11145 & 147 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}47 \% & \phantom{0}80 \% \\
+    eqbench-es-default-1s & no & 10347 & 224 & 16 & 11 & 5 & \phantom{0}23 \% & \phantom{0}50 \% \\
     \midrule
-    eqbench-es-default-10s & yes & 11658 & 183 & 9 & 2 & 62 \% / 100 \% \\
-    eqbench-es-default-10s & no & 9999 & 200 & 15 & 2 & 58 \% / 100 \% \\
+    eqbench-es-default-10s & yes & 11658 & 139 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}62 \% & 100 \% \\
+    eqbench-es-default-10s & no & 9999 & 231 & 15 & \phantom{0}8 & 2 & \phantom{0}57 \% & 100 \% \\
     \midrule
-    eqbench-es-default-60s & yes & 12052 & 182 & 9 & 2 & 70 \% / 100 \% \\
-    eqbench-es-default-60s & no & 9958 & 171 & 11 & 2 & 68 \% / 100 \% \\
+    eqbench-es-default-60s & yes & 12052 & 137 & \phantom{0}9 & \phantom{0}5 & 2 & \phantom{0}69 \% & 100 \% \\
+    eqbench-es-default-60s & no & 9958 & 218 & 11 & \phantom{0}6 & 2 & \phantom{0}67 \% & 100 \% \\
     \midrule
-    commons-utils & yes & 4193 & 124 & 11 & 4 & 26 \% / \phantom{0}75 \% \\
-    commons-utils & no & 1022 & 100 & 10 & 4 & 20 \% / \phantom{0}75 \% \\
+    commons-utils & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
+    commons-utils & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
     \midrule
-    commons-utils-es-default-1s & yes & 4390 & 201 & 15 & 5 & 44 \% / \phantom{0}84 \% \\
-    commons-utils-es-default-1s & no & 3183 & 550 & 45 & 6 & 12 \% / \phantom{0}50 \% \\
+    commons-utils-es-default-1s & yes & 4390 & 290 & 15 & \phantom{0}7 & 5 & \phantom{0}43 \% & \phantom{0}84 \% \\
+    commons-utils-es-default-1s & no & 3183 & 389 & 45 & 12 & 6 & \phantom{0}11 \% & \phantom{0}50 \% \\
     \midrule
-    commons-utils-es-default-10s & yes & 4660 & 267 & 23 & 5 & 47 \% / \phantom{0}85 \% \\
-    commons-utils-es-default-10s & no & 3309 & 507 & 46 & 6 & 10 \% / \phantom{0}56 \% \\
+    commons-utils-es-default-10s & yes & 4660 & 467 & 23 & \phantom{0}6 & 5 & \phantom{0}46 \% & \phantom{0}85 \% \\
+    commons-utils-es-default-10s & no & 3309 & 507 & 46 & \phantom{0}8 & 6 & \phantom{0}10 \% & \phantom{0}56 \% \\
     \midrule
-    commons-utils-es-default-60s & yes & 4821 & 246 & 20 & 5 & 47 \% / \phantom{0}85 \% \\
-    commons-utils-es-default-60s & no & 3288 & 417 & 41 & 6 & 11 \% / \phantom{0}54 \% \\
+    commons-utils-es-default-60s & yes & 4821 & 374 & 20 & \phantom{0}6 & 5 & \phantom{0}47 \% & \phantom{0}85 \% \\
+    commons-utils-es-default-60s & no & 3288 & 423 & 41 & 10 & 6 & \phantom{0}11 \% & \phantom{0}54 \% \\
     \bottomrule
   \end{tabular}
 \end{table}
-
-@TODO: Check why model size / operations / constraints differ so much across the commons-utils projects. After all, the underlying program code is the same.
-
-Detected mutants generally have smaller models with fewer operations as well as fewer and less complex constraints.
-As a result, fewer of the constraints are used by the generalization (see explanation in \ref{sec:improved-generalization}).
-
-Improvements in detected mutants are larger for the eqbench projects (which use more constraints)
-than for the commons-utils projects (which use fewer constraints) (see Table~\ref{tab:mutants-per-mutator}).
-
-The number of used constraints could be improved in future work.
 
 \subsection{RQ2: Effects on Test Suite Size and Runtime}
 \label{sec:ancillary-effects-eval}
