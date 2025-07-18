@@ -1383,20 +1383,29 @@ effects on the number of tests in the test suite
 \begin{table}[H]
 \caption{Number of tests before and after generalization, with changes, per project.}
 \label{tab:tests-per-project}
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{llrrrrrr}
 \toprule
- & \multicolumn{6}{c}{Tests} \\
-\cmidrule(lr){2-7}
-Project & Before & Added & Removed & After & Delta & Delta \% \\
+ & & \multicolumn{6}{c}{Tests} \\
+\cmidrule(lr){3-8}
+Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
-eqbench-es-default-1s & 4718 & 206 & 206 & 4718 & -- & -- \\
-eqbench-es-default-10s & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
-eqbench-es-default-60s & 4974 & 210 & 210 & 4974 & -- & -- \\
+eqbench-es-default-1s & \VariantNaiveC{} & 4718 & 177 & 177 & 4718 & -- & -- \\
+eqbench-es-default-10s & \VariantNaiveC{} & 4875 & 174 & 173 & 4876 & +1 & +0.02 \% \\
+eqbench-es-default-60s & \VariantNaiveC{} & 4974 & 174 & 174 & 4974 & -- & -- \\
 \midrule
-commons-utils & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
-commons-utils-es-default-1s & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
-commons-utils-es-default-10s & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
-commons-utils-es-default-60s & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
+eqbench-es-default-1s & \VariantImprovedC{} & 4718 & 206 & 206 & 4718 & -- & -- \\
+eqbench-es-default-10s & \VariantImprovedC{} & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
+eqbench-es-default-60s & \VariantImprovedC{} & 4974 & 210 & 210 & 4974 & -- & -- \\
+\midrule
+commons-utils & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+commons-utils-es-default-1s & \VariantNaiveC{} & 2481 & 60 & 59 & 2482 & +1 & +0.04 \% \\
+commons-utils-es-default-10s & \VariantNaiveC{} & 2738 & 63 & 62 & 2739 & +1 & +0.04 \% \\
+commons-utils-es-default-60s & \VariantNaiveC{} & 2735 & 60 & 59 & 2736 & +1 & +0.04 \% \\
+\midrule
+commons-utils & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+commons-utils-es-default-1s & \VariantImprovedC{} & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
+commons-utils-es-default-10s & \VariantImprovedC{} & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
+commons-utils-es-default-60s & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
