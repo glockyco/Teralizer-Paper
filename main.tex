@@ -1378,7 +1378,18 @@ of test generalization approaches such as \ToolTeralizer{}.
 \subsection{RQ2: Effects on Test Suite Size and Runtime}
 \label{sec:ancillary-effects-eval}
 
-effects on the number of tests in the test suite
+In this section, we describe the secondary effects caused by the generalization
+in terms of changes in test suite size and test suite runtime.
+To describe these changes, we employ the following four metrics: 
+(i) the number of tests in the test suite (presented in Section~\ref{sec:test-suite-test-count}),
+(ii) the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
+(iii) the overall execution time of the test suite (Section~\ref{sec:test-suite-execution-time}),
+and (iv) the execution time of individual tests (Section\ref{sec:test-execution-time}).
+%Results are presented in the following
+%Sections~\ref{sec:test-suite-test-count}--\ref{sec:test-execution-time}.
+
+\subsubsection{Number of Tests in the Test Suite}
+\label{sec:test-suite-test-count}
 
 \begin{table}[H]
 \caption{Number of tests before and after generalization, with changes, per project.}
@@ -1409,6 +1420,9 @@ commons-utils-es-default-60s & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsubsection{Lines of Code in the Test Suite}
+\label{sec:test-suite-line-count}
 
 effects on the number of lines of code in the test suite
 
@@ -1442,6 +1456,9 @@ commons-utils-es-default-60s & \VariantImprovedC{} & 17886 & 5801 & 452 & 23235 
 \end{tabular}
 \end{table}
 
+\subsubsection{Execution Time of the Test Suite}
+\label{sec:test-suite-execution-time}
+
 effects on the total execution time of the test suite
 
 \begin{table}[H]
@@ -1474,7 +1491,8 @@ commons-utils-es-default-60s & \VariantImprovedC{} & 6.30 & 28.07 & 0.08 & 34.29
 \end{tabular}
 \end{table}
 
-effects on the execution time of individual tests
+\subsubsection{Execution Time of Individual Tests}
+\label{sec:test-execution-time}
 
 \begin{figure}[H]
   \centering
