@@ -872,10 +872,11 @@ descriptive statistics (evosuite runtime, number of classes, number of tests, LO
     eqbench-es-default-10s & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
     eqbench-es-default-60s & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
     \midrule
-    commons-utils & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
     commons-utils-es-default-1s & 106 & 247 & 19,709 & 103 & 103 & 17,524 & 2,481 \\
     commons-utils-es-default-10s & 106 & 247 & 19,709 & 103 & 103 & 19,082 & 2,738 \\
     commons-utils-es-default-60s & 106 & 247 & 19,709 & 102 & 102 & 18,839 & 2,735 \\
+    \midrule
+    commons-utils & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
     \midrule
     repo-reapers (total) & 79,789 & 96,589 & 5,203,516 & 40,872 & 55,038 & 3,905,071 & 167,046 \\
     repo-reapers (mean) & 68 & 83 & 4,478 & 35 & 47 & 3,360 & 143 \\
@@ -1032,10 +1033,11 @@ Uncovered mutants are the subset of total mutants that are not executed by any i
     eqbench-es-default-10s & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
     eqbench-es-default-60s & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
     \midrule
-    commons-utils & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
     commons-utils-es-default-1s & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
     commons-utils-es-default-10s & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
     commons-utils-es-default-60s & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
+    \midrule
+    commons-utils & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1417,9 +1419,6 @@ of test generalization approaches such as \ToolTeralizer{}.
     eqbench-es-default-60s & yes & 12052 & 137 & \phantom{0}9 & \phantom{0}5 & 2 & \phantom{0}69 \% & 100 \% \\
     eqbench-es-default-60s & no & 9958 & 218 & 11 & \phantom{0}6 & 2 & \phantom{0}67 \% & 100 \% \\
     \midrule
-    commons-utils & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
-    commons-utils & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
-    \midrule
     commons-utils-es-default-1s & yes & 4390 & 290 & 15 & \phantom{0}7 & 5 & \phantom{0}43 \% & \phantom{0}84 \% \\
     commons-utils-es-default-1s & no & 3183 & 389 & 45 & 12 & 6 & \phantom{0}11 \% & \phantom{0}50 \% \\
     \midrule
@@ -1428,6 +1427,9 @@ of test generalization approaches such as \ToolTeralizer{}.
     \midrule
     commons-utils-es-default-60s & yes & 4821 & 374 & 20 & \phantom{0}6 & 5 & \phantom{0}47 \% & \phantom{0}85 \% \\
     commons-utils-es-default-60s & no & 3288 & 423 & 41 & 10 & 6 & \phantom{0}11 \% & \phantom{0}54 \% \\
+    \midrule
+    commons-utils & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
+    commons-utils & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1465,15 +1467,17 @@ eqbench-es-default-1s & \VariantImprovedC{} & 4718 & 206 & 206 & 4718 & -- & -- 
 eqbench-es-default-10s & \VariantImprovedC{} & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
 eqbench-es-default-60s & \VariantImprovedC{} & 4974 & 210 & 210 & 4974 & -- & -- \\
 \midrule
-commons-utils & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
 commons-utils-es-default-1s & \VariantNaiveC{} & 2481 & 60 & 59 & 2482 & +1 & +0.04 \% \\
 commons-utils-es-default-10s & \VariantNaiveC{} & 2738 & 63 & 62 & 2739 & +1 & +0.04 \% \\
 commons-utils-es-default-60s & \VariantNaiveC{} & 2735 & 60 & 59 & 2736 & +1 & +0.04 \% \\
 \midrule
-commons-utils & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
 commons-utils-es-default-1s & \VariantImprovedC{} & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
 commons-utils-es-default-10s & \VariantImprovedC{} & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
 commons-utils-es-default-60s & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
+\midrule
+commons-utils & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+\midrule
+commons-utils & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1500,15 +1504,17 @@ eqbench-es-default-1s & \VariantImprovedC{} & 30989 & 19019 & 1302 & 48706 & +17
 eqbench-es-default-10s & \VariantImprovedC{} & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
 eqbench-es-default-60s & \VariantImprovedC{} & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
 \midrule
-commons-utils & \VariantNaiveC{} & 8561 & 421 & 0 & 8982 & +421 & +4.9 \% \\
 commons-utils-es-default-1s & \VariantNaiveC{} & 16563 & 3733 & 359 & 19937 & +3374 & +20.4 \% \\
 commons-utils-es-default-10s & \VariantNaiveC{} & 18124 & 3942 & 379 & 21687 & +3563 & +19.7 \% \\
 commons-utils-es-default-60s & \VariantNaiveC{} & 17886 & 3723 & 361 & 21248 & +3362 & +18.8 \% \\
 \midrule
-commons-utils & \VariantImprovedC{} & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
 commons-utils-es-default-1s & \VariantImprovedC{} & 16563 & 5261 & 413 & 21411 & +4848 & +29.3 \% \\
 commons-utils-es-default-10s & \VariantImprovedC{} & 18124 & 5423 & 421 & 23126 & +5002 & +27.6 \% \\
 commons-utils-es-default-60s & \VariantImprovedC{} & 17886 & 5801 & 452 & 23235 & +5349 & +29.9 \% \\
+\midrule
+commons-utils & \VariantNaiveC{} & 8561 & 421 & 0 & 8982 & +421 & +4.9 \% \\
+\midrule
+commons-utils & \VariantImprovedC{} & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1535,15 +1541,17 @@ eqbench-es-default-1s & \VariantImprovedC{} & 17.44 & 101.62 & 0.68 & 118.38 & +
 eqbench-es-default-10s & \VariantImprovedC{} & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
 eqbench-es-default-60s & \VariantImprovedC{} & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
 \midrule
-commons-utils & \VariantNaiveC{} & 7.95 & 4.54 & 0.00 & 12.48 & +4.54 & +57.1 \% \\
 commons-utils-es-default-1s & \VariantNaiveC{} & 4.31 & 114.42 & 0.09 & 118.64 & +114.33 & +2651.5 \% \\
 commons-utils-es-default-10s & \VariantNaiveC{} & 7.40 & 148.54 & 0.14 & 155.80 & +148.40 & +2005.2 \% \\
 commons-utils-es-default-60s & \VariantNaiveC{} & 6.30 & 122.11 & 0.07 & 128.34 & +122.04 & +1936.2 \% \\
 \midrule
-commons-utils & \VariantImprovedC{} & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
 commons-utils-es-default-1s & \VariantImprovedC{} & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.5 \% \\
 commons-utils-es-default-10s & \VariantImprovedC{} & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.3 \% \\
 commons-utils-es-default-60s & \VariantImprovedC{} & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.1 \% \\
+\midrule
+commons-utils & \VariantNaiveC{} & 7.95 & 4.54 & 0.00 & 12.48 & +4.54 & +57.1 \% \\
+\midrule
+commons-utils & \VariantImprovedC{} & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1580,11 +1588,12 @@ total runtime (+ runtime per project?)
     eqbench-es-default-1s & 24h 46min 27s \\ 
     eqbench-es-default-10s & 28h 16min 32s \\ 
     eqbench-es-default-60s & 30h 53min 22s \\ 
-    \midrule 
-    commons-utils & 3h 23min 22s \\ 
+    \midrule
     commons-utils-es-default-1s & 8h 13min 55s \\ 
     commons-utils-es-default-10s & 9h 46min 48s \\ 
     commons-utils-es-default-60s & 9h 04min 32s \\ 
+    \midrule
+    commons-utils & 3h 23min 22s \\ 
     \bottomrule 
   \end{tabular} 
 \end{table}
