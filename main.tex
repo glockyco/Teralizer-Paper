@@ -126,10 +126,11 @@
 \newcommand{\DatasetEqBenchC}{eqbench-es-60s}
 \newcommand{\DatasetsEqBenchEs}{eqbench-es-$*$}
 
-\newcommand{\DatasetCommons}{commons-utils}
+\newcommand{\DatasetCommonsDev}{commons-utils-dev}
 \newcommand{\DatasetCommonsA}{commons-utils-es-1s}
 \newcommand{\DatasetCommonsB}{commons-utils-es-10s}
 \newcommand{\DatasetCommonsC}{commons-utils-es-60s}
+\newcommand{\DatasetsCommons}{commons-utils-$*$}
 \newcommand{\DatasetsCommonsEs}{commons-utils-es-$*$}
 
 \newcommand{\DatasetRepoReapers}{repo-reapers}
@@ -789,7 +790,7 @@ Beyond the original test suite consisting of test classes extracted from Apache 
 we also generated three additional test suites via \ToolEvoSuite{}
 using the same settings that we used for the \DatasetEqBench{} test generation.
 Thus, four variants of the created project are included in the evaluation dataset:
-\textit{\DatasetCommons{}} (which uses the original developer written test suite)
+\textit{\DatasetCommonsDev{}} (which uses the original developer written test suite)
 as well as \textit{\DatasetCommonsA{}}, \textit{\DatasetCommonsB{}}, and \textit{\DatasetCommonsC{}}
 (which use \ToolEvoSuite{} generated test suites).
 
@@ -839,9 +840,9 @@ across all 1160 included (sub-)projects.
 
 @TODO: Describe the \DatasetsEqBenchEs{} numbers.
 
-@TODO: Describe the \DatasetCommons{} numbers.
+@TODO: Describe the \DatasetsCommons{} numbers.
 
-The developer-written tests in \DatasetCommons{}
+The developer-written tests in \DatasetCommonsDev{}
 often have several times as many lines of code
 as the automatically generated \ToolEvoSuite{} tests
 in \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}.
@@ -855,7 +856,7 @@ that generally cover only a single target method
 using a single set of input values.
 For practical examples of these differences, see Figure~\ref{fig:@TODO}.
 
-@TODO: add a figure showing test cases in \DatasetCommons{} vs. \DatasetCommonsA{} / \DatasetCommonsB{} / \DatasetCommonsC{}.
+@TODO: add a figure showing test cases in \DatasetCommonsDev{} vs. \DatasetCommonsA{} / \DatasetCommonsB{} / \DatasetCommonsC{}.
 
 @TODO: Describe the \DatasetRepoReapers{} numbers.
 
@@ -866,23 +867,23 @@ descriptive statistics (evosuite runtime, number of classes, number of tests, LO
   \label{tab:dataset-statistics}
   \begin{tabular}{lrrrrrrr}
     \toprule
-    & \multicolumn{3}{r}{Implementation} & \multicolumn{4}{r}{Test} \\
+    & \multicolumn{3}{c}{Implementation} & \multicolumn{4}{c}{Test} \\
     \cmidrule(lr){2-4} \cmidrule(lr){5-8}
     Project & Files & Classes & SLOC & Files & Classes & SLOC & Methods \\
     \midrule
-    eqbench-es-default-1s & 544 & 652 & 27,871 & 544 & 544 & 35,666 & 4,718 \\
-    eqbench-es-default-10s & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
-    eqbench-es-default-60s & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
+    \DatasetEqBenchA{} & 544 & 652 & 27,871 & 544 & 544 & 35,666 & 4,718 \\
+    \DatasetEqBenchB{} & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
+    \DatasetEqBenchC{} & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
     \midrule
-    commons-utils-es-default-1s & 106 & 247 & 19,709 & 103 & 103 & 17,524 & 2,481 \\
-    commons-utils-es-default-10s & 106 & 247 & 19,709 & 103 & 103 & 19,082 & 2,738 \\
-    commons-utils-es-default-60s & 106 & 247 & 19,709 & 102 & 102 & 18,839 & 2,735 \\
+    \DatasetCommonsA{} & 106 & 247 & 19,709 & 103 & 103 & 17,524 & 2,481 \\
+    \DatasetCommonsB{} & 106 & 247 & 19,709 & 103 & 103 & 19,082 & 2,738 \\
+    \DatasetCommonsC{} & 106 & 247 & 19,709 & 102 & 102 & 18,839 & 2,735 \\
     \midrule
-    commons-utils & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
+    \DatasetCommonsDev{} & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
     \midrule
-    repo-reapers (total) & 79,789 & 96,589 & 5,203,516 & 40,872 & 55,038 & 3,905,071 & 167,046 \\
-    repo-reapers (mean) & 68 & 83 & 4,478 & 35 & 47 & 3,360 & 143 \\
-    repo-reapers (median) & 51 & 57 & 3,241 & 22 & 26 & 2,053 & 69 \\
+    \DatasetRepoReapers{} (total) & 79,789 & 96,589 & 5,203,516 & 40,872 & 55,038 & 3,905,071 & 167,046 \\
+    \DatasetRepoReapers{} (mean) & 68 & 83 & 4,478 & 35 & 47 & 3,360 & 143 \\
+    \DatasetRepoReapers{} (median) & 51 & 57 & 3,241 & 22 & 26 & 2,053 & 69 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1006,7 +1007,7 @@ of the \VariantInitial{} project variant.
 For the projects with \ToolEvoSuite{} generated test suites
 (i.e., \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}), 
 83--85 \% of test methods from \VariantOriginal{} are included in \VariantInitial{}.
-For \DatasetCommons{}, 63.6 \% are included.
+For \DatasetCommonsDev{}, 63.6 \% are included.
 Exclusions are primarily caused by 
 (i) tests without assertions (... \%),
 (ii) tests for which no tested method can be identified by \ToolTeralizer{},
@@ -1032,15 +1033,15 @@ Uncovered mutants are the subset of total mutants that are not executed by any i
                                              \cmidrule(lr){4-6}
     Project & Test Methods & Impl. Classes & Total & Covered & Uncovered \\
     \midrule
-    eqbench-es-default-1s & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
-    eqbench-es-default-10s & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
-    eqbench-es-default-60s & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
+    \DatasetEqBenchA{} & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
+    \DatasetEqBenchB{} & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
+    \DatasetEqBenchC{} & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
     \midrule
-    commons-utils-es-default-1s & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
-    commons-utils-es-default-10s & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
-    commons-utils-es-default-60s & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
+    \DatasetCommonsA{} & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
+    \DatasetCommonsB{} & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
+    \DatasetCommonsC{} & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
     \midrule
-    commons-utils & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
+    \DatasetCommonsDev{} & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1111,11 +1112,11 @@ albeit with overall smaller improvements
 of 0.82--1.23 percentage points
 (i.e., a relative increases of 1.43--2.17 \%)
 compared to the \VariantInitial{} test suites.
-For the \DatasetCommons{} project,
+For the \DatasetCommonsDev{} project,
 improvements are even smaller,
 increasing detection rates
 by only 0.05--0.07 percentage points.
-However, overall detection rates for \DatasetCommons{}
+However, overall detection rates for \DatasetCommonsDev{}
 are much higher than for the other projects
 with an \VariantInitial{} detection rate of 80.35 \%.
 Therefore, it is expected
@@ -1138,7 +1139,7 @@ for all seven evaluated projects.
 More specifically, it reaches relative improvements
 of 6.04--7.82 \% for the \DatasetsEqBenchEs{} projects,
 2.02--2.29 \% for \DatasetsCommonsEs{},
-and 0.06 \% for \DatasetCommons{}.
+and 0.06 \% for \DatasetCommonsDev{}.
 \VariantImprovedA{} and \VariantImprovedB{}
 consistently achieve larger improvements
 than the corresponding \VariantNaive{} variants
@@ -1193,12 +1194,21 @@ For a more in-depth discussion of this, see Section~\ref{sec:boundary-detection-
 
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
-Table \ref{tab:detections-per-mutator} shows the total number of mutants across all projects
+Table \ref{tab:detections-per-mutator}
+shows the total number of mutants
+across \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
 for each of the 12 mutators in \ToolPit{}'s \texttt{DEFAULTS} group of mutators.
+The \texttt{Math} mutator replaces operators in arithmetic operations (e.g., ).
+\texttt{ConditionalsBoundary} replaces operators in 
+
+
 (Add explanations of the different mutators? Or just a link to the PIT website where mutators are described?)
 
 \paragraph{Prevalence of Mutants}
-The three most common mutants are ... (X--Y\% of total mutants across projects), ... (...), and ... (...).
+The three most common mutants are
+\texttt{Math} mutants (52.34--62.16\% of total mutants across projects),
+\texttt{RemoveConditionalOrderElse} mutants (),
+and ... (...).
 Overall, these make up ... \% of the total mutants.
 % @TODO: Put these numbers in perspective? E.g., list how many occur on average per class / method / LOC?
 The least common mutants are ... .
@@ -1355,14 +1365,14 @@ than those of detected ones
 (e.g., mean of 45 vs.\ 15 and median of 12 vs.\ 7 for \DatasetCommonsB{}).
 The only project where models of undetected mutants
 have lower median operation counts than detected ones (10 vs.\ 11)
-is \DatasetCommons{} with its developer written test suite.
+is \DatasetCommonsDev{} with its developer written test suite.
 However, mean operation counts are still larger for undetected mutants
 at 173 vs.\ 107 for detected ones.
 Constraint counts show a similar trend to operation counts,
 with mean values being 1.0--1.7 times as large
 and median values being 1.0--2.5 times as large
 for undetected mutants as for detected ones.
-Values for \DatasetCommons{} are very different from
+Values for \DatasetCommonsDev{} are very different from
 the other \DatasetsCommonsEs{} projects because it 
 covers a much smaller subset of mutants,
 as previously discussed in \ref{sec:included-mutants}.
@@ -1392,7 +1402,7 @@ to find input values that match the models.
 This could explain, at least in part,
 why \VariantImproved{} generalization variants are more effective
 relative to the corresponding \VariantNaive{} variants
-when used in the \DatasetCommons{} projects
+when used in the \DatasetsCommons{} projects
 than in the \DatasetsEqBenchEs{} projects
 (as seen in Figure~\ref{fig:mutation-detection-results}).
 After all, if mutated input partition boundaries are easy to identify,
@@ -1409,30 +1419,30 @@ of test generalization approaches such as \ToolTeralizer{}.
   \label{tab:mutation-detection-comparison}
   \begin{tabular}{lcrrrrrrr}
     \toprule
-            &          &         & \multicolumn{2}{c}{Operations} & \multicolumn{2}{c}{Constraints} & \multicolumn{2}{c}{Constr. Used \%} \\
+            &          &         & \multicolumn{2}{c}{Operations} & \multicolumn{2}{c}{Constraints} & \multicolumn{2}{r}{Constraints Used} \\
     \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
-    Project & Detected & Mutants & Mean & Med. & Mean & Med. & Mean & Med. \\
+    Project & Detected & Mutants & Mean & Median & Mean & Median & Mean & Median \\
     \midrule
-    eqbench-es-default-1s & yes & 11145 & 147 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}47 \% & \phantom{0}80 \% \\
-    eqbench-es-default-1s & no & 10347 & 224 & 16 & 11 & 5 & \phantom{0}23 \% & \phantom{0}50 \% \\
+    \DatasetEqBenchA{} & yes & 11145 & 147 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}47 \% & \phantom{0}80 \% \\
+    \DatasetEqBenchA{} & no & 10347 & 224 & 16 & 11 & 5 & \phantom{0}23 \% & \phantom{0}50 \% \\
     \midrule
-    eqbench-es-default-10s & yes & 11658 & 139 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}62 \% & 100 \% \\
-    eqbench-es-default-10s & no & 9999 & 231 & 15 & \phantom{0}8 & 2 & \phantom{0}57 \% & 100 \% \\
+    \DatasetEqBenchB{} & yes & 11658 & 139 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}62 \% & 100 \% \\
+    \DatasetEqBenchB{} & no & 9999 & 231 & 15 & \phantom{0}8 & 2 & \phantom{0}57 \% & 100 \% \\
     \midrule
-    eqbench-es-default-60s & yes & 12052 & 137 & \phantom{0}9 & \phantom{0}5 & 2 & \phantom{0}69 \% & 100 \% \\
-    eqbench-es-default-60s & no & 9958 & 218 & 11 & \phantom{0}6 & 2 & \phantom{0}67 \% & 100 \% \\
+    \DatasetEqBenchC{} & yes & 12052 & 137 & \phantom{0}9 & \phantom{0}5 & 2 & \phantom{0}69 \% & 100 \% \\
+    \DatasetEqBenchC{} & no & 9958 & 218 & 11 & \phantom{0}6 & 2 & \phantom{0}67 \% & 100 \% \\
     \midrule
-    commons-utils-es-default-1s & yes & 4390 & 290 & 15 & \phantom{0}7 & 5 & \phantom{0}43 \% & \phantom{0}84 \% \\
-    commons-utils-es-default-1s & no & 3183 & 389 & 45 & 12 & 6 & \phantom{0}11 \% & \phantom{0}50 \% \\
+    \DatasetCommonsA{} & yes & 4390 & 290 & 15 & \phantom{0}7 & 5 & \phantom{0}43 \% & \phantom{0}84 \% \\
+    \DatasetCommonsA{} & no & 3183 & 389 & 45 & 12 & 6 & \phantom{0}11 \% & \phantom{0}50 \% \\
     \midrule
-    commons-utils-es-default-10s & yes & 4660 & 467 & 23 & \phantom{0}6 & 5 & \phantom{0}46 \% & \phantom{0}85 \% \\
-    commons-utils-es-default-10s & no & 3309 & 507 & 46 & \phantom{0}8 & 6 & \phantom{0}10 \% & \phantom{0}56 \% \\
+    \DatasetCommonsB{} & yes & 4660 & 467 & 23 & \phantom{0}6 & 5 & \phantom{0}46 \% & \phantom{0}85 \% \\
+    \DatasetCommonsB{} & no & 3309 & 507 & 46 & \phantom{0}8 & 6 & \phantom{0}10 \% & \phantom{0}56 \% \\
     \midrule
-    commons-utils-es-default-60s & yes & 4821 & 374 & 20 & \phantom{0}6 & 5 & \phantom{0}47 \% & \phantom{0}85 \% \\
-    commons-utils-es-default-60s & no & 3288 & 423 & 41 & 10 & 6 & \phantom{0}11 \% & \phantom{0}54 \% \\
+    \DatasetCommonsC{} & yes & 4821 & 374 & 20 & \phantom{0}6 & 5 & \phantom{0}47 \% & \phantom{0}85 \% \\
+    \DatasetCommonsC{} & no & 3288 & 423 & 41 & 10 & 6 & \phantom{0}11 \% & \phantom{0}54 \% \\
     \midrule
-    commons-utils & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
-    commons-utils & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
+    \DatasetCommonsDev{} & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
+    \DatasetCommonsDev{} & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1462,25 +1472,25 @@ and (iv) the execution time of individual tests (Section\ref{sec:test-execution-
 \cmidrule(lr){3-8}
 Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
-eqbench-es-default-1s & \VariantNaiveC{} & 4718 & 177 & 177 & 4718 & -- & -- \\
-eqbench-es-default-10s & \VariantNaiveC{} & 4875 & 174 & 173 & 4876 & +1 & +0.02 \% \\
-eqbench-es-default-60s & \VariantNaiveC{} & 4974 & 174 & 174 & 4974 & -- & -- \\
+\DatasetEqBenchA{} & \VariantNaiveC{} & 4718 & 177 & 177 & 4718 & -- & -- \\
+\DatasetEqBenchB{} & \VariantNaiveC{} & 4875 & 174 & 173 & 4876 & +1 & +0.02 \% \\
+\DatasetEqBenchC{} & \VariantNaiveC{} & 4974 & 174 & 174 & 4974 & -- & -- \\
 \midrule
-eqbench-es-default-1s & \VariantImprovedC{} & 4718 & 206 & 206 & 4718 & -- & -- \\
-eqbench-es-default-10s & \VariantImprovedC{} & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
-eqbench-es-default-60s & \VariantImprovedC{} & 4974 & 210 & 210 & 4974 & -- & -- \\
+\DatasetEqBenchA{} & \VariantImprovedC{} & 4718 & 206 & 206 & 4718 & -- & -- \\
+\DatasetEqBenchB{} & \VariantImprovedC{} & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
+\DatasetEqBenchC{} & \VariantImprovedC{} & 4974 & 210 & 210 & 4974 & -- & -- \\
 \midrule
-commons-utils-es-default-1s & \VariantNaiveC{} & 2481 & 60 & 59 & 2482 & +1 & +0.04 \% \\
-commons-utils-es-default-10s & \VariantNaiveC{} & 2738 & 63 & 62 & 2739 & +1 & +0.04 \% \\
-commons-utils-es-default-60s & \VariantNaiveC{} & 2735 & 60 & 59 & 2736 & +1 & +0.04 \% \\
+\DatasetCommonsA{} & \VariantNaiveC{} & 2481 & 60 & 59 & 2482 & +1 & +0.04 \% \\
+\DatasetCommonsB{} & \VariantNaiveC{} & 2738 & 63 & 62 & 2739 & +1 & +0.04 \% \\
+\DatasetCommonsC{} & \VariantNaiveC{} & 2735 & 60 & 59 & 2736 & +1 & +0.04 \% \\
 \midrule
-commons-utils-es-default-1s & \VariantImprovedC{} & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
-commons-utils-es-default-10s & \VariantImprovedC{} & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
-commons-utils-es-default-60s & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
+\DatasetCommonsA{} & \VariantImprovedC{} & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
+\DatasetCommonsB{} & \VariantImprovedC{} & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
+\DatasetCommonsC{} & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
 \midrule
-commons-utils & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+\DatasetCommonsDev{} & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
 \midrule
-commons-utils & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+\DatasetCommonsDev{} & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1499,25 +1509,25 @@ effects on the number of lines of code in the test suite
 \cmidrule(lr){3-8}
 Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
-eqbench-es-default-1s & \VariantNaiveC{} & 30989 & 11780 & 1127 & 41642 & +10653 & +34.4 \% \\
-eqbench-es-default-10s & \VariantNaiveC{} & 32503 & 11520 & 1061 & 42962 & +10459 & +32.2 \% \\
-eqbench-es-default-60s & \VariantNaiveC{} & 33510 & 11623 & 1069 & 44064 & +10554 & +31.5 \% \\
+\DatasetEqBenchA{} & \VariantNaiveC{} & 30989 & 11780 & 1127 & 41642 & +10653 & +34.4 \% \\
+\DatasetEqBenchB{} & \VariantNaiveC{} & 32503 & 11520 & 1061 & 42962 & +10459 & +32.2 \% \\
+\DatasetEqBenchC{} & \VariantNaiveC{} & 33510 & 11623 & 1069 & 44064 & +10554 & +31.5 \% \\
 \midrule
-eqbench-es-default-1s & \VariantImprovedC{} & 30989 & 19019 & 1302 & 48706 & +17717 & +57.2 \% \\
-eqbench-es-default-10s & \VariantImprovedC{} & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
-eqbench-es-default-60s & \VariantImprovedC{} & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
+\DatasetEqBenchA{} & \VariantImprovedC{} & 30989 & 19019 & 1302 & 48706 & +17717 & +57.2 \% \\
+\DatasetEqBenchB{} & \VariantImprovedC{} & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
+\DatasetEqBenchC{} & \VariantImprovedC{} & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
 \midrule
-commons-utils-es-default-1s & \VariantNaiveC{} & 16563 & 3733 & 359 & 19937 & +3374 & +20.4 \% \\
-commons-utils-es-default-10s & \VariantNaiveC{} & 18124 & 3942 & 379 & 21687 & +3563 & +19.7 \% \\
-commons-utils-es-default-60s & \VariantNaiveC{} & 17886 & 3723 & 361 & 21248 & +3362 & +18.8 \% \\
+\DatasetCommonsA{} & \VariantNaiveC{} & 16563 & 3733 & 359 & 19937 & +3374 & +20.4 \% \\
+\DatasetCommonsB{} & \VariantNaiveC{} & 18124 & 3942 & 379 & 21687 & +3563 & +19.7 \% \\
+\DatasetCommonsC{} & \VariantNaiveC{} & 17886 & 3723 & 361 & 21248 & +3362 & +18.8 \% \\
 \midrule
-commons-utils-es-default-1s & \VariantImprovedC{} & 16563 & 5261 & 413 & 21411 & +4848 & +29.3 \% \\
-commons-utils-es-default-10s & \VariantImprovedC{} & 18124 & 5423 & 421 & 23126 & +5002 & +27.6 \% \\
-commons-utils-es-default-60s & \VariantImprovedC{} & 17886 & 5801 & 452 & 23235 & +5349 & +29.9 \% \\
+\DatasetCommonsA{} & \VariantImprovedC{} & 16563 & 5261 & 413 & 21411 & +4848 & +29.3 \% \\
+\DatasetCommonsB{} & \VariantImprovedC{} & 18124 & 5423 & 421 & 23126 & +5002 & +27.6 \% \\
+\DatasetCommonsC{} & \VariantImprovedC{} & 17886 & 5801 & 452 & 23235 & +5349 & +29.9 \% \\
 \midrule
-commons-utils & \VariantNaiveC{} & 8561 & 421 & 0 & 8982 & +421 & +4.9 \% \\
+\DatasetCommonsDev{} & \VariantNaiveC{} & 8561 & 421 & 0 & 8982 & +421 & +4.9 \% \\
 \midrule
-commons-utils & \VariantImprovedC{} & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
+\DatasetCommonsDev{} & \VariantImprovedC{} & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1536,25 +1546,25 @@ effects on the total execution time of the test suite
 \cmidrule(lr){3-8}
 Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \midrule
-eqbench-es-default-1s & \VariantNaiveC{} & 17.44 & 100.94 & 0.74 & 117.65 & +100.20 & +574.5 \% \\
-eqbench-es-default-10s & \VariantNaiveC{} & 16.70 & 106.19 & 0.66 & 122.23 & +105.53 & +632.0 \% \\
-eqbench-es-default-60s & \VariantNaiveC{} & 18.21 & 221.07 & 0.76 & 238.52 & +220.31 & +1210.0 \% \\
+\DatasetEqBenchA{} & \VariantNaiveC{} & 17.44 & 100.94 & 0.74 & 117.65 & +100.20 & +574.5 \% \\
+\DatasetEqBenchB{} & \VariantNaiveC{} & 16.70 & 106.19 & 0.66 & 122.23 & +105.53 & +632.0 \% \\
+\DatasetEqBenchC{} & \VariantNaiveC{} & 18.21 & 221.07 & 0.76 & 238.52 & +220.31 & +1210.0 \% \\
 \midrule
-eqbench-es-default-1s & \VariantImprovedC{} & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.7 \% \\
-eqbench-es-default-10s & \VariantImprovedC{} & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
-eqbench-es-default-60s & \VariantImprovedC{} & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
+\DatasetEqBenchA{} & \VariantImprovedC{} & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.7 \% \\
+\DatasetEqBenchB{} & \VariantImprovedC{} & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
+\DatasetEqBenchC{} & \VariantImprovedC{} & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
 \midrule
-commons-utils-es-default-1s & \VariantNaiveC{} & 4.31 & 114.42 & 0.09 & 118.64 & +114.33 & +2651.5 \% \\
-commons-utils-es-default-10s & \VariantNaiveC{} & 7.40 & 148.54 & 0.14 & 155.80 & +148.40 & +2005.2 \% \\
-commons-utils-es-default-60s & \VariantNaiveC{} & 6.30 & 122.11 & 0.07 & 128.34 & +122.04 & +1936.2 \% \\
+\DatasetCommonsA{} & \VariantNaiveC{} & 4.31 & 114.42 & 0.09 & 118.64 & +114.33 & +2651.5 \% \\
+\DatasetCommonsB{} & \VariantNaiveC{} & 7.40 & 148.54 & 0.14 & 155.80 & +148.40 & +2005.2 \% \\
+\DatasetCommonsC{} & \VariantNaiveC{} & 6.30 & 122.11 & 0.07 & 128.34 & +122.04 & +1936.2 \% \\
 \midrule
-commons-utils-es-default-1s & \VariantImprovedC{} & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.5 \% \\
-commons-utils-es-default-10s & \VariantImprovedC{} & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.3 \% \\
-commons-utils-es-default-60s & \VariantImprovedC{} & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.1 \% \\
+\DatasetCommonsA{} & \VariantImprovedC{} & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.5 \% \\
+\DatasetCommonsB{} & \VariantImprovedC{} & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.3 \% \\
+\DatasetCommonsC{} & \VariantImprovedC{} & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.1 \% \\
 \midrule
-commons-utils & \VariantNaiveC{} & 7.95 & 4.54 & 0.00 & 12.48 & +4.54 & +57.1 \% \\
+\DatasetCommonsDev{} & \VariantNaiveC{} & 7.95 & 4.54 & 0.00 & 12.48 & +4.54 & +57.1 \% \\
 \midrule
-commons-utils & \VariantImprovedC{} & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
+\DatasetCommonsDev{} & \VariantImprovedC{} & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1588,22 +1598,22 @@ total runtime (+ runtime per project?)
     \toprule
     Project & Runtime \\ 
     \midrule
-    eqbench-es-default-1s & 24h 46min 27s \\ 
-    eqbench-es-default-10s & 28h 16min 32s \\ 
-    eqbench-es-default-60s & 30h 53min 22s \\ 
+    \DatasetEqBenchA{} & 24h 46min 27s \\ 
+    \DatasetEqBenchB{} & 28h 16min 32s \\ 
+    \DatasetEqBenchC{} & 30h 53min 22s \\ 
     \midrule
-    commons-utils-es-default-1s & 8h 13min 55s \\ 
-    commons-utils-es-default-10s & 9h 46min 48s \\ 
-    commons-utils-es-default-60s & 9h 04min 32s \\ 
+    \DatasetCommonsA{} & 8h 13min 55s \\ 
+    \DatasetCommonsB{} & 9h 46min 48s \\ 
+    \DatasetCommonsC{} & 9h 04min 32s \\ 
     \midrule
-    commons-utils & 3h 23min 22s \\ 
+    \DatasetCommonsDev{} & 3h 23min 22s \\ 
     \bottomrule 
   \end{tabular} 
 \end{table}
 
 runtime per project + processing stage + variant
 
-@TODO: Show \DatasetsEqBenchEs{} results before \DatasetCommons{} results in Figure~\ref{fig:teralizer-runtimes}.
+@TODO: Show \DatasetsEqBenchEs{} results before \DatasetsCommons{} results in Figure~\ref{fig:teralizer-runtimes}.
 
 \begin{figure}[H]
   \centering
@@ -1615,7 +1625,7 @@ runtime per project + processing stage + variant
 
 efficiency relative to higher EvoSuite search budgets
 
-@TODO: Show \DatasetsEqBenchEs{} results before \DatasetCommons{} results in Figure~\ref{fig:teralizer-efficiency}.
+@TODO: Show \DatasetsEqBenchEs{} results before \DatasetsCommons{} results in Figure~\ref{fig:teralizer-efficiency}.
 
 \begin{figure}[H]
   \centering
@@ -1624,11 +1634,11 @@ efficiency relative to higher EvoSuite search budgets
   \label{fig:teralizer-efficiency}
   \begin{minipage}[t]{0.48\textwidth}
       \centering
-      \captionof{table}{Pareto points for project: commons-utils.}
+      \captionof{table}{Pareto points for project commons-utils.}
       \setlength{\tabcolsep}{4pt}
       \begin{tabular}{rrlrr}
           \toprule
-          Pt. & EvoSuite & Teralizer & Det. \% & Runtime (s) \\
+          Pt. & \ToolEvoSuite{} & \ToolTeralizer{} & Det. \% & Runtime (s) \\
           \midrule
           1 & 1s & - & 56.8 & 4648.7 \\
           2 & 10s & - & 57.3 & 5597.3 \\
@@ -1647,11 +1657,11 @@ efficiency relative to higher EvoSuite search budgets
   \hfill
   \begin{minipage}[t]{0.48\textwidth}
       \centering
-      \captionof{table}{Pareto points for project: eqbench.}
+      \captionof{table}{Pareto points for project \DatasetEqBench{}.}
       \setlength{\tabcolsep}{4pt}
       \begin{tabular}{rrlrr}
           \toprule
-          Pt. & EvoSuite & Teralizer & Det. \% & Runtime (s) \\
+          Pt. & \ToolEvoSuite{} & \ToolTeralizer{} & Det. \% & Runtime (s) \\
           \midrule
           1 & 1s & - & 48.1 & 26479.3 \\
           2 & 10s & - & 50.6 & 29861.1 \\
