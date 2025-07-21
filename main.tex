@@ -1002,10 +1002,14 @@ according to the \ToolJacoco{} coverage reports
 of the \VariantInitial{} project variant.
 For the projects with \ToolEvoSuite{} generated test suites
 (i.e., \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}), 
-83--85\% of test methods from \VariantOriginal{} are included in \VariantInitial{}.
-For the \DatasetCommons{} project, 
+83--85 \% of test methods from \VariantOriginal{} are included in \VariantInitial{}.
+For \DatasetCommons{}, 63.6 \% are included.
+Exclusions are primarily caused by 
+(i) tests without assertions (... \%),
+(ii) tests for which no tested method can be identified by \ToolTeralizer{},
+and (iii) tests that exercise a tested method that has no generalizable input parameters.
 Further details about the causes of test exclusions
-are provided when discussing the results for RQ4 in Section~\ref{sec:filtering-eval}.
+are provided when discussing RQ4 in Section~\ref{sec:filtering-eval}.
 
 The last three columns for Table~\ref{tab:mutants-per-project} show the number of total, covered, and uncovered mutants per project.
 Total mutants are all mutants that are created by \ToolPit{} in the included classes.
