@@ -1243,18 +1243,38 @@ follow the same trends as for \VariantNaiveC{} and \VariantImprovedC{} but are o
 The full results for all variants are available in our replication package~\cite{replicationpackage}.
 
 \paragraph{Prevalence of Mutants}
-The three most common mutants are
-\texttt{Math} mutants (52.34--62.16\% of total mutants across projects),
-\texttt{RemoveConditionalOrderElse} mutants (),
-and ... (...).
-Overall, these make up ... \% of the total mutants.
-% @TODO: Put these numbers in perspective? E.g., list how many occur on average per class / method / LOC?
-The least common mutants are ... .
-Overall, these make up ... \% of the total mutants.
-% @TODO: Put these numbers in perspective? E.g., list how many occur on average per class / method / LOC?
-(@TODO: Mutations that are more (less) common across the overall dataset
-are generally also more (less) common in the individual projects.
-The largest differences in mutation prevalance can be observed for ... .)
+The three most common mutants,
+which represent~81.08 \% of total mutants, are
+\texttt{Math}~(59.10~\% of mutants),
+\texttt{Remove\-Conditional\-OrderElse}~(10.99~\%),
+and \texttt{Conditionals\-Boundary}~(10.99~\%) mutants
+(prevalence of \texttt{Remove\-Conditional\-Order\-Else}
+and \texttt{Conditionals\-Boundary}
+is the same because both mutators modify inequality checks).
+On the other hand, the three least common mutants are
+\texttt{Increments}~(0.52~\%),
+\texttt{Boolean\-False\-Return\-Vals}~(0.24~\%),
+and \texttt{Empty\-Object\-Return\-Vals}~(0.13~\%) mutants.
+Due to these large differences in mutant prevalences,
+overall mutation scores are much more strongly affected
+by changes in, e.g., \texttt{Math} detection rates
+than by changes in, e.g., \texttt{Increments} detection rates.
+This holds not only on an overall, aggregate level
+(i.e., across all evaluated projects),
+but also for each individual project.
+After all, prevalence of individual mutants
+shows only comparatively small differences across projects,
+as highlighted by the minimum and maximum prevalence results.
+In other words,
+mutants that are common in one project
+are also common in the others,
+whereas mutants that are uncommon in one project
+are also uncommon in the others.
+For example, \texttt{Math} mutants represent 52.34~\% of mutants
+in the project where they are least common,
+but \texttt{Increments} mutants
+represent only 0.54~\% of mutants
+in the project where they are most common.
 
 \paragraph{Detection Rate Results}
 Detection rates for \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} as well as
