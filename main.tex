@@ -148,6 +148,8 @@
 \newcommand{\VariantImprovedB}{\textsc{Improved\textsubscript{50}}}
 \newcommand{\VariantImprovedC}{\textsc{Improved\textsubscript{200}}}
 
+\newcommand{\tries}{\texttt{tries}}
+
 %%
 %% end of the preamble, start of the body of the document source.
 \begin{document}
@@ -931,20 +933,20 @@ We refer to these variants as:
     The state of the project
     after \VariantNaive{} generalization has been applied.
     As described in Section~\ref{sec:naive-generalization},
-    the subscript values indicate the values used for \ToolJqwik{}'s \texttt{tries} setting.
+    the subscript values indicate the values used for \ToolJqwik{}'s \tries{} setting.
   \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}:
     The state of the project
     after \VariantImproved{} generalization has been applied
     (see Section~\ref{sec:improved-generalization}).
-    The subscript values indicate the values used for \ToolJqwik{}'s \texttt{tries} setting.
+    The subscript values indicate the values used for \ToolJqwik{}'s \tries{} setting.
 \end{itemize}
 
 In addition to the source code of the two pre-generalization variants
 (\VariantOriginal{} and \VariantInitial)
 as well as the seven post-generalization variants
 (\VariantBaseline{},
-\VariantNaive{} with 10 / 50 / 200 tries,
-and \VariantImproved{} with 10 / 50 / 200 tries),
+\VariantNaive{} with 10 / 50 / 200 \tries{},
+and \VariantImproved{} with 10 / 50 / 200 \tries{}),
 \ToolTeralizer{} also creates and stores (meta) data and (intermediate) processing results
 at various stages throughout its execution
 in a PostgreSQL database and in log files.
@@ -1096,12 +1098,12 @@ increasing \ToolEvoSuite{}'s test generation timeout
 from 1 second per class to 10 s or even 60 s
 (for total runtime costs of test generation and generalization,
 see Section~\ref{sec:runtime-eval}).
-Furthermore, higher \texttt{tries} settings generally achieve
-better detection rates than lower \texttt{tries} settings.
+Furthermore, higher \tries{} settings generally achieve
+better detection rates than lower \tries{} settings.
 However, there seem to be diminishing returns:
-increasing \texttt{tries} from 10 to 50
+increasing \tries{} from 10 to 50
 achieves a larger improvement in detection rates
-than increasing \texttt{tries} from 50 to 200.
+than increasing \tries{} from 50 to 200.
 
 Results for \DatasetsCommonsEs{} projects follow similar trends,
 albeit with overall smaller improvements
@@ -1158,7 +1160,7 @@ on the \DatasetsEqBenchEs{} projects.
 This is likely because \VariantImproved{} variants
 very effectively identify input partition boundaries
 in the \DatasetsEqBenchEs{} projects.
-As a result, most or even all \texttt{tries} of the \VariantImprovedA{} variant
+As a result, most or even all \tries{} of the \VariantImprovedA{} variant
 are spent on boundary testing, leaving little opportunity to detect mutants
 introduced via non-boundary mutations.
 For a more in-depth discussion of this, see Section~\ref{sec:boundary-detection-effectiveness}.
@@ -1229,8 +1231,8 @@ for the ... (...), ... (...), and ... (...) mutations.
 It does not achieve any improvements
 for mutants created by the ... mutators.
 
-Results for the 10 / 50 \texttt{tries} variants of \VariantNaive{} and \VariantImproved{}
-generally follow the same trends as those for the listed variants with 200 \texttt{tries},
+Results for the 10 / 50 \tries{} variants of \VariantNaive{} and \VariantImproved{}
+generally follow the same trends as those for the listed variants with 200 \tries{},
 albeit with correspondingly smaller detection rate improvements over \VariantInitial{}.
 (@TODO: Check the results for \VariantImprovedA{}. Those might be much worse for mutants that don't relate to conditionals.)
 Full results for all variants are available in our replication package~\cite{replicationpackage}.
@@ -1261,18 +1263,18 @@ this can also result in an \emph{overall} decrease in detection rates.
 To counteract the detrimental effects on
 detection rates of \texttt{Math} mutants
 incurred by the input selection procedure used by \VariantImproved{} variants,
-the number of \texttt{tries} could, for example,
+the number of \tries{} could, for example,
 be increased for the \VariantImproved{} variants
-to adjust for the additional \texttt{tries} spent on boundary testing
+to adjust for the additional \tries{} spent on boundary testing
 while keeping non-boundary testing at \VariantNaive{} levels.
 More sophisticated input selection approaches
 that aim to better balance boundary and non-boundary testing
-without large increases to the number of executed \texttt{tries}
+without large increases to the number of executed \tries{}
 could perhaps further increase detection rates
 while keeping the runtime impact
-resulting from a higher number of \texttt{tries} to a minimum.
+resulting from a higher number of \tries{} to a minimum.
 For a more in-depth evaluation of runtime requirements
-across different variants and numbers of \texttt{tries}
+across different variants and numbers of \tries{}
 see Section~\ref{sec:runtime-eval}.
 
 \subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
