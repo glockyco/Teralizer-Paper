@@ -1224,15 +1224,23 @@ For a more in-depth discussion of this, see Section~\ref{sec:boundary-detection-
 
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
+To evaluate how capable generalized tests are
+at detecting mutants created by different mutation operators,
+we compare the detection rates
+of \VariantNaiveC{} and \VariantImprovedC{}
+to the detection rates achieved by the \VariantInitial{} test suite.
 Table \ref{tab:detections-per-mutator}
-shows the total number of mutants
-across \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
-for each of the 12 mutators in \ToolPit{}'s \texttt{DEFAULTS} group of mutators.
-The \texttt{Math} mutator replaces operators in arithmetic operations (e.g., ).
-\texttt{ConditionalsBoundary} replaces operators in 
-
-
-(Add explanations of the different mutators? Or just a link to the PIT website where mutators are described?)
+shows the results of this evaluation,
+listing for each mutant:
+the total number of occurrences
+across the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects;
+the mean, minimum, and maximum prevalence per project
+relative to the total number of mutants;
+the detection rates of the \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} test suites,
+as well as how much the two generalized variants improve detection rates relative to \VariantInitial{}.
+Results for \VariantNaive{} and \VariantImproved{} generalizations with lower \tries{}
+follow the same trends as for \VariantNaiveC{} and \VariantImprovedC{} but are omitted for brevity.
+The full results for all variants are available in our replication package~\cite{replicationpackage}.
 
 \paragraph{Prevalence of Mutants}
 The three most common mutants are
