@@ -1511,12 +1511,19 @@ of test generalization approaches such as \ToolTeralizer{}.
 In this section, we describe the secondary effects caused by the generalization
 in terms of changes in test suite size and test suite runtime.
 To describe these changes, we employ the following four metrics: 
-(i) the number of tests in the test suite (presented in Section~\ref{sec:test-suite-test-count}),
-(ii) the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
-(iii) the overall execution time of the test suite (Section~\ref{sec:test-suite-execution-time}),
-and (iv) the execution time of individual tests (Section\ref{sec:test-execution-time}).
-%Results are presented in the following
-%Sections~\ref{sec:test-suite-test-count}--\ref{sec:test-execution-time}.
+\begin{enumerate}
+  \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
+  \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
+  \item the overall execution time of the test suite (Section~\ref{sec:test-suite-execution-time}),
+  \item the execution time of individual tests (Section~\ref{sec:test-execution-time}).
+\end{enumerate}
+
+For (1)--(3), we only present the results
+of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
+The results for the remaining variants follow similar trends
+but are omitted for brevity.
+The full results for all generalization variants
+are available in our replication package~\cite{replicationpackage}.
 
 \subsubsection{Number of Tests in the Test Suite}
 \label{sec:test-suite-test-count}
