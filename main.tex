@@ -1620,6 +1620,7 @@ overall lines of code (LOC) in the test suites increase
 by 31.5--58.7~\% for the \DatasetsEqBenchEs{} projects,
 by 18.8--29.9~\% for the \DatasetsEqBenchEs{} projects,
 and by 4.9--5.3~\% for the \DatasetCommonsDev{} project.
+
 Increases in test suite size are strongly correlated with
 the number of tests added to the test suite (see Table~\ref{tab:tests-per-project}),
 even if added tests are compensated for by test removals.
@@ -1639,10 +1640,31 @@ that contain the generalized test methods,
 \ToolTeralizer{} copies all shared code
 (i.e., setup/teardown methods, non-test methods, class fields, ...)
 from the \VariantOriginal{} test classes
+into each generalized test class
 (as described in Section~\ref{sec:test-generalization})
 which results in additional LOC increases due to duplicated code.
 
-Both of these causes
+The effects of (i) are more pronounced
+for \VariantImproved{} generalization variants
+than for \VariantNaive{} ones
+because of the more precise (but also more complex)
+identification of input ranges used by \VariantImproved{} variants.
+For example, the generalized test suite created by 
+\VariantImprovedC{} for \DatasetCommonsDev{}
+has 36 additional LOC compared to \VariantNaiveC{}
+(9018 vs.\ 8982~LOC, see Table~\ref{tab:lines-per-project})
+even though the same three tests are added as a result of generalization
+(as shown in Table~\ref{tab:tests-per-project}).
+This difference in LOC of individual tests generalized
+via \VariantImproved{} vs.\ \VariantNaive{} variants
+is generally larger for tested methods
+with a larger number of input parameters.
+The reason for this is that each input parameter
+needs to be separately restricted
+to match the constraints that involve that parameter
+in the input specification.
+
+Both of the causes mentioned above
 could be resolved with additional engineering effort.
 For example, generalized test methods created by \ToolTeralizer{}
 could be added to the \VariantOriginal{} test classes
