@@ -1612,7 +1612,57 @@ Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
 
-effects on the number of lines of code in the test suite
+While generalization has only minor effects
+on the number of tests in the evaluated test suites,
+the lines of code in the test suites are more strongly affected.
+As shown in Table~\ref{tab:lines-per-project},
+overall lines of code (LOC) in the test suites increase
+by 31.5--58.7~\% for the \DatasetsEqBenchEs{} projects,
+by 18.8--29.9~\% for the \DatasetsEqBenchEs{} projects,
+and by 4.9--5.3~\% for the \DatasetCommonsDev{} project.
+Increases in test suite size are strongly correlated with
+the number of tests added to the test suite (see Table~\ref{tab:tests-per-project}),
+even if added tests are compensated for by test removals.
+For example, \VariantNaive{} adds 177 tests to \DatasetEqBenchA{}
+and allows the same number of \VariantOriginal{} tests to be removed
+(as shown in Table~\ref{tab:tests-per-project}).
+Despite this, 11780 LOC are added
+but only 1127 LOC are removed
+(as shown in Table~\ref{tab:lines-per-project}).
+This is expected for two reasons:
+(i) generalized test classes
+contain all of the code that is needed
+to set valid input ranges for \ToolPit{}'s input value generators
+(as described in Section~\ref{sec:test-generalization}), and
+(ii) when creating the classes
+that contain the generalized test methods,
+\ToolTeralizer{} copies all shared code
+(i.e., setup/teardown methods, non-test methods, class fields, ...)
+from the \VariantOriginal{} test classes
+(as described in Section~\ref{sec:test-generalization})
+which results in additional LOC increases due to duplicated code.
+
+Both of these causes
+could be resolved with additional engineering effort.
+For example, generalized test methods created by \ToolTeralizer{}
+could be added to the \VariantOriginal{} test classes
+instead of creating a new classes for each one, thus resolving cause (ii).
+The primary reason we avoided this in the current implementation
+was to keep \ToolTeralizer{}'s changes as unintrusive and isolated
+from the original test suite (and other generalized tests) as possible
+to avoid unintended adverse side-effects on developer written code
+as well as unintended interactions between generalized tests.
+However, there is no technical reason
+that strictly requires generalized test methods
+to be added to newly created classes.
+Similarly, the code to set input value ranges
+that satisfy the extracted input specifications
+could be extracted to a library
+that abstracts away the corresponding implementation details.
+In the test code of the target projects,
+only minor changes would remain then
+(i.e., modified test annotations, inputs, and expected outputs),
+thus resolving cause (i).
 
 \begin{table}[H]
 \caption{Number of test lines before and after generalization, with changes, per project.}
