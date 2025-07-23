@@ -1514,11 +1514,10 @@ To describe these changes, we employ the following four metrics:
 \begin{enumerate}
   \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
   \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
-  \item the overall execution time of the test suite (Section~\ref{sec:test-suite-execution-time}),
-  \item the execution time of individual tests (Section~\ref{sec:test-execution-time}).
+  \item the execution time of the test suite (Section~\ref{sec:test-suite-execution-time}).
 \end{enumerate}
 
-For (1)--(3), we only present the results
+We focus primarily on the results
 of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
 The results for the remaining variants follow similar trends
 but are omitted for brevity.
@@ -1723,6 +1722,14 @@ Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 
 effects on the total execution time of the test suite
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
+  \caption{Runtime Comparison: Test vs. Generalization.}
+  %\Description{@TODO}
+  \label{fig:test-runtime-differences}
+\end{figure}
+
 \begin{table}[H]
 \caption{Test suite runtime before and after generalization, with changes, per project.}
 \label{tab:runtime-per-project}
@@ -1754,17 +1761,6 @@ Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\subsubsection{Execution Time of Individual Tests}
-\label{sec:test-execution-time}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
-  \caption{Runtime Comparison: Test vs. Generalization.}
-  %\Description{@TODO}
-  \label{fig:test-runtime-differences}
-\end{figure}
 
 @TODO: Split Figure~\ref{fig:test-runtime-differences} into two (sub-)figures to make each one individually referenceable.
 
