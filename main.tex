@@ -1804,6 +1804,40 @@ would require a more thorough microbenchmarking setup
 that properly accounts for confounding factors such JVM warmup,
 which is beyond the scope of this evaluation.
 
+\paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
+
+Runtime increases are generally larger
+for \VariantNaive{} than for \VariantImproved{}
+when comparing the same tests.
+For example, \VariantNaiveC{} and \VariantImprovedC{}
+both generalize the same three tests of \DatasetCommonsDev{}
+(see Table~\ref{tab:tests-per-project}).
+Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
+generalization with \VariantNaiveC{}
+increases overall test suite runtime by 4.54 seconds
+(+57.1~\% compared to \VariantOriginal{}).
+\VariantImprovedC{}, on the other hand,
+only increases runtime by 0.74 seconds (+9.4\%).
+The more pronounced runtime impact of \VariantNaive{} variants is caused by 
+the input value generation approach used by these variants.
+As described in Section~\ref{sec:naive-generalization},
+\VariantNaive{} generalization selects inputs for test execution
+by first randomly generating inputs
+that match the parameter types of the tested method,
+and then discarding any inputs that do not satisfy the input specification.
+Especially for cases with restrictive input specifications (e.g., \texttt{a~==~b~\&\&~b~==~c}),
+this causes a large runtime overhead
+because many discard-and-regenerate cycles are required
+until a valid set of inputs is identified
+(or \ToolJqwik{} aborts the process due to \texttt{TooManyFilterMisses}).
+\VariantImproved{} variants are less affected by this
+because they already consider (some) input constraints
+during initial input value generation
+(as described in Section~\ref{sec:improved-generalization}).
+As a result, fewer inputs need to be discarded and regenerated,
+which lessens the overall runtime impact of \VariantImproved{} generalization
+despite the more involved input value generation process.
+
 \begin{table}[H]
 \caption{Test suite runtime before and after generalization, with changes, per project.}
 \label{tab:runtime-per-project}
