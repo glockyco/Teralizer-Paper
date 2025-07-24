@@ -1741,6 +1741,36 @@ we discuss how each of the above factors
 influences overall test suite execution times
 and how these factors interact with each other.
 
+\paragraph{Added Tests}
+
+Execution of conventional JUnit tests has a lower runtime cost
+than execution of corresponding property-based jqwik tests.
+More specifically, individual property-based tests
+created with the \VariantBaseline{} generalization variant 
+take, on average, 149.56 milliseconds (ms) longer to execute
+than the corresponding \VariantOriginal{} tests
+(as shown in the left plot of Figure~\ref{fig:test-runtime-differences})
+which have a mean execution time of only 3.6~ms. % 0.0035570506476290337
+% Exact number = 0.0035570506476290337 via:
+% SELECT AVG(runtime)
+% FROM junit_test_report jtr
+% JOIN generalization g ON g.test_id = jtr.test_id
+% WHERE stage = 'COLLECT_JUNIT_REPORTS_ORIGINAL'
+% AND g.is_included;
+Therefore, overall test suite execution time increases,
+on average, by at least 149.56~ms per jqwik test
+that is added during the generalization process,
+even if no new test inputs are exercised
+and the added tests are compensated for by removed JUnit tests.
+Since these runtime increases are inherent to the use of jqwik,
+they are orthogonal to our specific generalization approach.
+That is, any manual or automated transformation of JUnit tests
+to jqwik tests incurs the same runtime overhead,
+and this overhead can only be reduced
+if fewer jqwik tests are created
+(e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
+or if the runtime performance of jqwik is improved.
+
 \begin{table}[H]
 \caption{Test suite runtime before and after generalization, with changes, per project.}
 \label{tab:runtime-per-project}
