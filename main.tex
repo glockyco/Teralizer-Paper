@@ -1771,6 +1771,39 @@ if fewer jqwik tests are created
 (e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
 or if the runtime performance of jqwik is improved.
 
+\paragraph{Number of \tries{}}
+
+Increasing the number of \tries{}
+directly increases the number test inputs
+that need to be generated and exercised
+during the execution of the property-based tests.
+For example, as shown in Figure~\ref{fig:test-runtime-differences},
+ execution time of \VariantNaive{} tests
+is, on average, 286.13 milliseconds (ms) longer per test
+than for \VariantOriginal{} tests when using 10 \tries{}
+(a +91.3~\% increase compared to the \VariantBaseline{} overhead of 149.56~ms),
+348.56~ms (+118.5~\%) longer with 50 \tries{},
+and 1136.21~ms (+659.7~\%) longer with 200 \tries{}.
+Similarly, execution time of \VariantImproved{} tests
+is 189.17~ms (+26.5~\%) longer with 10 \tries{},
+246.85~ms (+65.1~\%) longer with 50 \tries{},
+and 395.26~ms (+164.3~\%) longer with 200 \tries{}.
+While overall runtime increases
+get larger as \texttt{tries} increase,
+runtime increases per \texttt{try}
+get smaller as \texttt{tries} increase.
+More specifically, \VariantNaive{} variants
+show per-\texttt{try} increases
+of 28.61~ms, 6.97~ms, and 5.68~ms.
+\VariantImproved{} variants show
+per-\texttt{try} increases 
+of 18.92~ms, 4.94~ms, and 1.98~ms.
+However, to attribute these observed
+improvements in per-\texttt{try} efficiency to any specific causes
+would require a more thorough microbenchmarking setup
+that properly accounts for confounding factors such JVM warmup,
+which is beyond the scope of this evaluation.
+
 \begin{table}[H]
 \caption{Test suite runtime before and after generalization, with changes, per project.}
 \label{tab:runtime-per-project}
