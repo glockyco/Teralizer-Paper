@@ -1719,15 +1719,27 @@ Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \subsubsection{Execution Time of the Test Suite}
 \label{sec:test-suite-execution-time}
 
-effects on the total execution time of the test suite
+As shown in Table~\ref{tab:runtime-per-project},
+generalization with \VariantNaiveC{} and \VariantImprovedC{}
+increases overall test suite runtimes
+for all \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
+More specifically, test suite runtimes
+show increases of 574.5--1210.0~\% for the \DatasetsEqBenchEs{} projects,
+444.1--2651.5~\% for the \DatasetsCommonsEs{} projects,
+and 9.4--57.1~\% for the \DatasetCommonsDev{} project.
+Runtime increases are primarily affected by the following factors:
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
-  \caption{Runtime Comparison: Test vs. Generalization.}
-  %\Description{@TODO}
-  \label{fig:test-runtime-differences}
-\end{figure}
+\begin{enumerate}
+  \item the number of tests added by the generalization, even if they are compensated for by removed tests,
+  \item the number of \tries{} used during property-based testing,
+  \item the used generalization approach, i.e., \VariantNaive{} vs. \VariantImproved{} generalization,
+  \item the complexity of input partition constraints.
+\end{enumerate}
+
+In the following paragraphs,
+we discuss how each of the above factors
+influences overall test suite execution times
+and how these factors interact with each other.
 
 \begin{table}[H]
 \caption{Test suite runtime before and after generalization, with changes, per project.}
@@ -1760,6 +1772,14 @@ Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
+  \caption{Runtime Comparison: Test vs. Generalization.}
+  %\Description{@TODO}
+  \label{fig:test-runtime-differences}
+\end{figure}
 
 @TODO: Split Figure~\ref{fig:test-runtime-differences} into two (sub-)figures to make each one individually referenceable.
 
