@@ -1840,6 +1840,40 @@ As a result, fewer inputs need to be discarded and regenerated,
 which lessens the overall runtime impact of \VariantImproved{} generalization
 despite the more involved input value generation process.
 
+\paragraph{Complexity of Constraints}
+
+As complexity of input specifications increases,
+required runtime also increases.
+This is because more complex constraints
+cause more filter-and-regenerate cycles to occur
+during execution of property-based tests.
+While \VariantNaive{} generalization
+is more strongly affected by this than \VariantImproved{}
+because it does not consider any constraints during value generation
+(as discussed in the previous paragraph),
+the issue also affects \VariantImproved{} generalization
+in cases where less than 100~\% of constraints can be used
+(for further details on constraint use,
+see Sections~\ref{sec:improved-generalization} and \ref{sec:boundary-detection-effectiveness}).
+For example, as shown in Table~\ref{tab:tests-per-project},
+\VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
+as it adds to \DatasetCommonsA{}.
+Nevertheless, the difference in runtime increases
+is much less pronounced at +578.7~\% vs.\ +680.5~\%.
+This is because input specifications in \DatasetEqBenchA{}
+have fewer operations (mean: 159.1 vs.\ 208.0, median: 10 vs.\ 15)
+and constraints (mean: 6.5 vs.\ 7.5, median: 2 vs.\ 5)
+than in \DatasetCommonsA{}, 
+and fewer of these constraints
+can be used during input value generation
+(mean: 42.9~\% vs.61.5~\%, median: 80~\% vs.\ 100~\%).
+This indicates that better support for more complex input constraints
+not only holds the potential to increase detection rates
+(as suggested in Section~\ref{sec:boundary-detection-effectiveness})
+but could also reduce the runtime cost of generalized tests at the same time.
+
+@TODO: Add answer for RQ2.
+
 \begin{table}[H]
 \caption{Test suite runtime before and after generalization, with changes, per project.}
 \label{tab:runtime-per-project}
