@@ -32,28 +32,29 @@ Additionally, as discussed throughout Section~\ref{sec:approach}, included proje
 as discussed in Section~\ref{sec:specification-extraction}).
 
 While various publicly available benchmarks exist that fulfill requirements i--iv,
-these benchmarks are often based on code from popular libraries such as Apache Commons, Google Gson, ... .
+these benchmarks are often based on code from popular libraries such as Apache Commons and Google Gson.
 For example, ... (list + describe some benchmarks that support this claim).
-Because these libraries need to be useable in different application scenarios,
+Because these libraries need to be useable in different application scenarios
 and maintainable by a large number of simultaneous contributors,
 they tend to make heavy use of encapsulation, inheritance, polymorphism, reflection, etc.
 As a result, such projects are largely incompatible
-with the basic specification extraction approach used by Teralizer
-because most implementation code does not fulfill requirement (v).
+with the basic specification extraction approach used by Teralizer,
+as most implementation code does not fulfill requirement (v).
 Furthermore, due to their widespread use, active development communities, and long-running nature,
 these libraries are often more thoroughly tested than other projects are.
 Consequently, evaluating any test generalization approach on them
-would see only little opportunity to improve the effectiveness of the test suite.
+would provide limited opportunity to improve the effectiveness of the test suite.
 
 To achieve a thorough evaluation of our approach
-that provides generalizable results for both its strengths as well as its weaknesses
+that provides generalizable results for both its strengths and weaknesses
 in the presence of the requirements and considerations discussed above,
-we built our own evaluation dataset using projects from three different sources:
+we built our own evaluation dataset.
+This dataset uses projects from three different sources:
 the \DatasetEqBench{} Benchmark \cite{badihi_2021_eqbench},
-utility classses of {TODO: number} Apache Commons projects, and
+utility classes of {TODO: number} Apache Commons projects, and
 {TODO: number} open source projects from the RepoReapers dataset \cite{munaiah_2017_reporeapers}.
 Further details about the included projects
-are provided in the follwing Sections~\ref{sec:eqbench}--\ref{sec:additional-oss-projects}.
+are provided in the following Sections~\ref{sec:eqbench}--\ref{sec:additional-oss-projects}.
 Descriptive statistics are available in Section~\ref{sec:dataset-statistics}.
 
 \subsubsection{EqBench}
@@ -63,7 +64,7 @@ To represent projects that are well-suited for processing by \ToolTeralizer{},
 we include the \DatasetEqBench{} benchmark as the first part of our evaluation dataset.
 The \DatasetEqBench{} benchmark is a dataset built by \citeauthor{badihi_2021_eqbench}
 to evaluate the effectiveness of equivalence checking tools \cite{badihi_2021_eqbench}.
-The datasets contains Java (and C) implementations of non-equivalent program pairs.
+The dataset contains Java (and C) implementations of non-equivalent program pairs.
 Since many equivalence checking tools such as ... \cite{TODO} and ... \cite{TODO}
 rely (partially) on symbolic execution for their analysis,
 \DatasetEqBench{} is well suited for processing with \ToolSPFLong{}-based tools such as \ToolTeralizer{}.
@@ -102,12 +103,12 @@ More specifically, we searched for public static methods
 with at least one numeric or boolean input parameter
 and a numeric or boolean output value.
 The exact search query we used is available in our replication package~\cite{replicationpackage}.
-To construct the dataset from the Souregraph search results,
+To construct the dataset from the Sourcegraph search results,
 we manually created a new project and added to it:
 (i) all matching utility methods,
 (ii) all methods that are (transitively) called by the utility methods,
 (iii) all tests that cover the utility methods, and
-(iii) all dependencies that are needed to compile the included code.
+(iv) all dependencies that are needed to compile the included code.
 Beyond the original test suite consisting of test classes extracted from Apache Commons projects,
 we also generated three additional test suites via \ToolEvoSuite{}
 using the same settings that we used for the \DatasetEqBench{} test generation.
@@ -123,7 +124,7 @@ To get a more representative view
 of current limitations of the approach in a real-world setting,
 we additionally applied Teralizer to <number> projects
 from the RepoReapers dataset\cite{munaiah_2017_reporeapers}.
-@TODO: Write 1-2 sentences about the RepoReapears dataset.
+@TODO: Write 1-2 sentences about the RepoReapers dataset.
 To select these projects from the full RepoReapers dataset,
 we applied the following selection criteria: projects
 (i)~have to be implemented in Java 1.5 to 1.8
@@ -134,7 +135,7 @@ we applied the following selection criteria: projects
 (vi)~have to contain 20\%-80\% of the total source code in test classes
 (vii)~have to have a total repository size less than 100MB.
 Selection criteria (i) is imposed by the \ToolSPF{} dependency of \ToolTeralizer{}.
-Criteria (ii) to (iv) are current limitations of the implemented protopye
+Criteria (ii) to (iv) are current limitations of the implemented prototype
 (as discussed in Section~\ref{sec:approach}),
 but could be lifted with additional engineering effort.
 The remaining selection criteria (v) to (vii) were applied
@@ -171,7 +172,7 @@ in \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}.
 This is because the developer-written tests often
 test multiple sets of input values
 and / or multiple target methods
-in a single single test method.
+in a single test method.
 The \ToolEvoSuite{} generated test suites, on the other hand,
 use very isolated / focused test methods
 that generally cover only a single target method
