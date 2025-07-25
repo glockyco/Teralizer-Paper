@@ -1919,11 +1919,23 @@ Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
 \subsection{RQ3: Runtime Requirements}
 \label{sec:runtime-eval}
 
-only one run for each configuration (due to high runtime requirements)
-investigation for a subset of configurations confirmed that the trends hold
-
-total runtime (+ runtime per project?)
-@TOOD: Probably can remove Table~\ref{tab:teralizer-runtimes} and just mention the total runtime somewhere. We have a more detailed overview in Figure~\ref{fig:teralizer-runtimes} anyway.
+As previously described in Section~\ref{sec:evaluation-setup},
+we measure the runtime requirements of \ToolTeralizer{}
+by executing the tool once for each of the seven \DatasetsEqBenchEs{} and \DatasetsCommons{} projects
+using a MacBook Air with M2 processor and 24~GB of memory.
+Since all generalization variants require the same input data
+(i.e., source code of target projects as well as extracted input/output specifications),
+\ToolTeralizer{} executes the corresponding processing steps
+(i.e., project instrumentation, test analysis, and specification extraction)
+only once and then reuses the collected specifications
+across all generalizations of the project.
+Because no other tools exist
+that transform conventional unit tests to property-based tests,
+we measure the efficiency of \ToolTeralizer{}
+by comparing the mutation score increase that \ToolTeralizer{} achieves 
+when increasing the used \tries{} (thus increasing its runtime)
+to the corresponding increase that \ToolEvoSuite{} achieves
+when increasing the test generation timeout.
 
 \begin{table}[H]
   \caption{Total runtimes of Teralizer for all evaluated projects.}
