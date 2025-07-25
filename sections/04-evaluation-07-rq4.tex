@@ -1,0 +1,98 @@
+\subsection{RQ4 (Part 2 of 2): Causes of Unsuccessful Generalizations in Other Open Source Projects}
+\label{sec:filtering-eval-extended}
+
+This evaluation only uses the IMPROVED$_{200}$
+generalization variant, but results also apply to all other variants.
+
+\begin{table}[H]
+  \caption{Number of processing failures and remaining projects per processing stage.}
+  \label{tab:processing-failures-per-stage}
+  \begin{tabular}{l r r}
+    \toprule
+    Processing Stage & Failures & Remaining Projects \\
+    \midrule
+    Total projects & - & 1160\; (\phantom{.}100 \%) \\
+    \cmidrule(lr){1-3}
+    SETUP\_PROJECT & 355 & 805\; (69.4 \%) \\
+    BUILD\_PROJECT\_ORIGINAL & 189 & 616\; (53.1 \%) \\
+    BUILD\_SPOON\_MODEL & 8 & 608\; (52.4 \%) \\
+    EXECUTE\_TESTS\_ORIGINAL & 61 & 547\; (47.2 \%) \\
+    COLLECT\_JUNIT\_REPORTS\_ORIGINAL & 31 & 516\; (44.5 \%) \\
+    BUILD\_PROJECT\_INSTRUMENTED & 1 & 515\; (44.4 \%) \\
+    EXECUTE\_TESTS\_INITIAL & 130 & 385\; (33.2 \%) \\
+    COLLECT\_JACOCO\_DATA\_INITIAL & 41 & 344\; (29.7 \%) \\
+    COLLECT\_PIT\_DATA\_INITIAL & 64 & 280\; (24.1 \%) \\
+    COLLECT\_PIT\_DATA\_GENERALIZED & 270 & 10\; (\phantom{0}0.9 \%) \\
+    \cmidrule(lr){1-3}
+    Successfully processed & - & 10\; (\phantom{0}0.9 \%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \caption{Causes of processing failures per processing stage.}
+  \label{tab:processing-failure-causes}
+  \begin{tabularx}{\textwidth}{l X}
+    \toprule
+    Processing Stage & Causes of Processing Failures \\
+    \midrule
+    SETUP\_PROJECT & dependency resolution error (329), sources / tests not found (26) \\
+    BUILD\_PROJECT\_ORIGINAL & compilation error (171), compilation outputs not found (18) \\
+    BUILD\_SPOON\_MODEL & Spoon execution error (8) \\
+    EXECUTE\_TESTS\_ORIGINAL & JUnit execution error (13), timeout exceeded (48) \\
+    COLLECT\_JUNIT\_REPORTS\_ORIGINAL & JUnit outputs not found (31) \\
+    BUILD\_PROJECT\_INSTRUMENTED & compilation error (1) \\
+    EXECUTE\_TESTS\_INITIAL & all tests excluded (129), timeout exceeded (1) \\
+    COLLECT\_JACOCO\_DATA\_INITIAL & JaCoCo execution error (1), JaCoCo outputs not found (40) \\
+    COLLECT\_PIT\_DATA\_INITIAL & PIT execution error (16), PIT outputs not found (4), all classes excluded (3), failed to map PIT data to a test (1), timeout exceeded (40) \\
+    COLLECT\_PIT\_DATA\_GENERALIZED & all generalizations excluded (269), failed to map PIT data to a generalization (1) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Broadly speaking, there are three main ways to increase the number of projects
+that can be successfully processed: (i)~reducing exclusions caused by filtering
+(129 + 3 + 269 = 401 projects), (ii)~adding support for more varied project structures
+(26 + 18 + 31 + 40 + 4 = 119 projects), and (iii)~increasing timeouts (48 + 1 + 40 = 89 projects).
+Depedency resolution and compilation errors in the original project code (329 + 171 = 500 projects)
+as well as external tool errors (8 + 13 + 1 + 16 = 38 projects) are less actionable.
+Furthermore, Teralizer errors only occur in a small number of cases (1 + 1 + 1 = 3 projects),
+so also offer comparatively little opportunity for improvements.
+
+\begin{table}[H]
+  \caption{Filtering results of the extended dataset for tests, assertions, and generalizations.}
+  \label{tab:exclusions-filtering-extended}
+  \begin{tabular}{lllrrr}
+    \toprule
+    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Reject} \\
+    \midrule
+    SHARED & Test & NonPassingTest & 74332 & 65579\; (88.2\%) & 8753.0\; (11.8\%) \\
+    SHARED & Test & TestType & 74332 & 65052\; (87.5\%) & 9280.0\; (12.5\%) \\
+    SHARED & Test & NoAssertions & 56853 & 33390\; (58.7\%) & 23463.0\; (41.3\%) \\
+    \midrule
+    SHARED & Assertion & ExcludedTest & 122166 & 101519\; (83.1\%) & 20647.0\; (16.9\%) \\
+    SHARED & Assertion & MissingValue & 122166 & 51430\; (42.1\%) & 70736.0\; (57.9\%) \\
+    SHARED & Assertion & ParameterType & 122166 & 5393\; (\phantom{0}4.4\%) & 116773.0\; (95.6\%) \\
+    SHARED & Assertion & ReturnType & 122166 & 11650\; (\phantom{0}9.5\%) & 110516.0\; (90.5\%) \\
+    SHARED & Assertion & UnsupportedAssertion & 122166 & 92996\; (76.1\%) & 29170.0\; (23.9\%) \\
+    \midrule
+    IMPROVED$_{200}$ & Generalization & NonPassingTest & 229 & 206\; (90.0\%) & 23.0\; (10.0\%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The most common filtering reasons are unsupported parameter and return types.
+
+@TODO: Better explain these filtering results by prooviding information about:
+(i) which types are identified in the tested method signatures, and
+(ii) which assertions are used in the tests.
+
+Successful generalizations did not improve mutation scores in any of the successfully
+processed projects. However, some generalizations indicate that there weak
+preconditions are used in the source / test code of the original implementation.
+
+@TODO: Check which generalizations fail the "NonPassingTest" filter due to (i) bugs in
+our generalization implemenation vs. (ii) weak preconditions.
+
+% Performance improvements of Teralizer itself can NOT be used as a substitute for
+% (i) because the timeouts occur for tasks that are performed by external tools.

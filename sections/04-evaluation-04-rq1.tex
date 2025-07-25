@@ -1,0 +1,510 @@
+\subsection{RQ1: Effects on Mutation Score}
+\label{sec:primary-effects-eval}
+
+In the following, we first describe
+how many tests, implementation classes, and corresponding mutants
+from the evaluation dataset
+are included in the evaluation
+in Section~\ref{sec:included-mutants}.
+Section~\ref{sec:overall-detection-rates}
+focuses on the overall detection rates
+achieved by the implemented generalization variants.
+In Section~\ref{sec:detection-rates-per-mutator},
+we provide the detection rate results for each individual mutator.
+Section~\ref{sec:boundary-detection-effectiveness}
+concludes the results for RQ1
+by investigating the effectiveness of the partition boundary detection
+used by \VariantImproved{} variants to guide input value selection.
+
+\subsubsection{Included Mutants}
+\label{sec:included-mutants}
+To evaluate the effects that generalization via \ToolTeralizer{} has on mutation scores,
+we compare the mutation scores reported by \ToolPit{}
+for the \VariantInitial{} variants of the the target projects
+to the mutation scores reported for
+the \VariantNaive{} and \VariantImproved{} variants
+using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
+
+The first three columns of Table~\ref{tab:mutants-per-project} show
+how many of the test methods and implementation classes
+of the \VariantOriginal{} projects are included in the \VariantInitial{} project variants.
+Tests are counted as included
+if they successfully pass test analysis (see Section~\ref{sec:test-analysis}) 
+and specification extraction (see Section~\ref{sec:specification-extraction}).
+Implementation classes are counted as included
+if at least one line of the corresponding class
+is covered by an included test
+according to the \ToolJacoco{} coverage reports
+of the \VariantInitial{} project variant.
+For the projects with \ToolEvoSuite{} generated test suites
+(i.e., \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}), 
+83--85 \% of test methods from \VariantOriginal{} are included in \VariantInitial{}.
+For \DatasetCommonsDev{}, 63.6 \% are included.
+Exclusions are primarily caused by 
+(i) tests without assertions (... \%),
+(ii) tests for which no tested method can be identified by \ToolTeralizer{},
+and (iii) tests that exercise a tested method that has no generalizable input parameters.
+Further details about the causes of test exclusions
+are provided when discussing RQ4 in Section~\ref{sec:filtering-eval}.
+
+The last three columns for Table~\ref{tab:mutants-per-project} show the number of total, covered, and uncovered mutants per project.
+Total mutants are all mutants that are created by \ToolPit{} in the included classes.
+Covered mutants are the subset of total mutants that are executed by at least one included test.
+Uncovered mutants are the subset of total mutants that are not executed by any included tests.
+@TODO: Describe actual values in the table.
+@TODO: Reference the table with the per-mutant prevalence data.
+%Around 8000 mutants for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
+%Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
+
+\begin{table}[H]
+  \caption{Number of total, covered, and uncovered mutants in included classes per project.}
+  \label{tab:mutants-per-project}
+  \begin{tabular}{lrrrrr}
+    \toprule
+            & Included     & Included      & \multicolumn{3}{r}{Mutants} \\
+                                             \cmidrule(lr){4-6}
+    Project & Test Methods & Impl. Classes & Total & Covered & Uncovered \\
+    \midrule
+    \DatasetEqBenchA{} & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
+    \DatasetEqBenchB{} & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
+    \DatasetEqBenchC{} & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
+    \midrule
+    \DatasetCommonsA{} & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
+    \DatasetCommonsB{} & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
+    \DatasetCommonsC{} & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
+    \midrule
+    \DatasetCommonsDev{} & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_mutation_detection_comparison}
+  \caption{Percentage of detected mutants and improvement over INITIAL per project and generalization variant.}
+  %\Description{@TODO}
+  \label{fig:mutation-detection-results}
+\end{figure}
+
+% Overall observations:
+\subsubsection{Overall Mutation Detection Rates}
+\label{sec:overall-detection-rates}
+Figure~\ref{fig:mutation-detection-results} shows
+the percentage of detected mutants
+and improvement over \VariantInitial{}
+per project and generalization variant.
+Detected mutants includes
+killed (X\% of overall detections), timed-out (A\%), memory error (B\%), and run error (C\%),
+which matches the classification used by \ToolPit{}.
+Since test generalization via \ToolTeralizer{} does not affect coverage
+(as described in Sections~\ref{sec:naive-generalization} and \ref{sec:improved-generalization}),
+all results are relative to covered mutants
+i.e., uncovered mutants are not considered in the comparison
+because \ToolTeralizer{} --- by design --- cannot achieve any coverage improvements
+but also does not decrease coverage.
+
+We are using \VariantInitial{} as the baseline for mutation score comparisons
+with generalized project variants,
+which ensures that the only difference
+across compared projects is the absence or presence of generalized test cases.
+\VariantOriginal{} is not used for comparison
+because it contains additional non-generalized tests
+that are excluded in \VariantInitial{} as well as generalized project variants.
+\VariantBaseline{} is not included in the comparison
+because it always uses the same test inputs as \VariantInitial{}
+(as described in Section~\ref{sec:baseline-generalization}).
+Therefore, \VariantInitial{} and \VariantBaseline{} always achieve the same detection rates.
+
+\paragraph{\VariantNaive{} Detection Rates}
+
+\VariantNaive{} generalization improves detection rates
+for \emph{all} projects included in the evaluation dataset.
+Improvements are largest for the \DatasetsEqBenchEs{} projects.
+Here, detection rates increase from 48.10--51.64 \% to 50.67--54.98 \%
+across the different project and generalization variants.
+Thus, \VariantNaive{} detects 2.33--3.93 \% more of the total mutants
+than the corresponding \VariantInitial{} test suite,
+which is a relative increase of 4.51--8.17 \%.
+As a result, generating test suites with \ToolEvoSuite{}
+and then generalizing them with \ToolTeralizer{}
+often achieves higher detection rates than
+increasing \ToolEvoSuite{}'s test generation timeout
+from 1 second per class to 10 s or even 60 s
+(for total runtime costs of test generation and generalization,
+see Section~\ref{sec:runtime-eval}).
+Furthermore, higher \tries{} settings generally achieve
+better detection rates than lower \tries{} settings.
+However, there seem to be diminishing returns:
+increasing \tries{} from 10 to 50
+achieves a larger improvement in detection rates
+than increasing \tries{} from 50 to 200.
+
+Results for \DatasetsCommonsEs{} projects follow similar trends,
+albeit with overall smaller improvements
+of 0.82--1.23 percentage points
+(i.e., a relative increases of 1.43--2.17 \%)
+compared to the \VariantInitial{} test suites.
+For the \DatasetCommonsDev{} project,
+improvements are even smaller,
+increasing detection rates
+by only 0.05--0.07 percentage points.
+However, overall detection rates for \DatasetCommonsDev{}
+are much higher than for the other projects
+with an \VariantInitial{} detection rate of 80.35 \%.
+Therefore, it is expected
+that achievable improvements will be correspondingly smaller.
+Deviations from the described trends
+are primarily due to random variance
+in \ToolEvoSuite{}'s test generation
+and, to a lesser degree,
+due to occasional random errors
+(e.g., \texttt{OutOfMemoryError})
+during test execution
+which cause corresponding tests to be excluded from further processing
+(see Sections~\ref{sec:filtering-eval} and \ref{sec:filtering-eval-extended}).
+
+\paragraph{\VariantImproved{} Detection Rates}
+
+The \VariantImprovedC{} generalization variant
+achieves similar results as \VariantNaiveC{}
+for all seven evaluated projects.
+More specifically, it reaches relative improvements
+of 6.04--7.82 \% for the \DatasetsEqBenchEs{} projects,
+2.02--2.29 \% for \DatasetsCommonsEs{},
+and 0.06 \% for \DatasetCommonsDev{}.
+\VariantImprovedA{} and \VariantImprovedB{}
+consistently achieve larger improvements
+than the corresponding \VariantNaive{} variants
+for the \DatasetsCommonsEs{} projects
+(1.80--2.19 \% vs.\ 1.43--1.83 \%),
+but smaller improvements
+for the \DatasetsEqBenchEs{} projects
+(2.36--6.88 \% vs. 4.51--8.17 \%).
+However, these differences are not uniformly distributed
+across different mutation operators.
+As shown in Table~\ref{tab:detections-per-mutator}
+and discussed in more detail in Section~\ref{sec:detection-rates-per-mutator},
+\VariantNaive{} variants only outperform \VariantImproved{} ones
+for the detection of \texttt{Math} mutants,
+whereas all other mutants are either tied in terms of detection rates
+or favor \VariantImproved{} variants.
+Furthermore, \VariantImprovedA{} performs noticeably worse
+than all other project-variant combinations
+on the \DatasetsEqBenchEs{} projects.
+This is likely because \VariantImproved{} variants
+very effectively identify input partition boundaries
+in the \DatasetsEqBenchEs{} projects.
+As a result, most or even all \tries{} of the \VariantImprovedA{} variant
+are spent on boundary testing, leaving little opportunity to detect mutants
+introduced via non-boundary mutations.
+For a more in-depth discussion of this, see Section~\ref{sec:boundary-detection-effectiveness}.
+
+\subsubsection{Mutation Detection Rates per Mutator}
+\label{sec:detection-rates-per-mutator}
+To evaluate how capable generalized tests are
+at detecting mutants created by different mutation operators,
+we compare the detection rates
+of \VariantNaiveC{} and \VariantImprovedC{}
+to the detection rates achieved by the \VariantInitial{} test suite.
+Table \ref{tab:detections-per-mutator}
+shows the results of this evaluation,
+listing for each mutant:
+the total number of occurrences
+across the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects;
+the mean, minimum, and maximum prevalence per project
+relative to the total number of mutants;
+the detection rates of the \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} test suites,
+as well as how much the two generalized variants improve detection rates relative to \VariantInitial{}.
+Results for \VariantNaive{} and \VariantImproved{} generalizations with lower \tries{}
+follow the same trends as for \VariantNaiveC{} and \VariantImprovedC{} but are omitted for brevity.
+The full results for all variants are available in our replication package~\cite{replicationpackage}.
+
+\paragraph{Prevalence of Mutants}
+The three most common mutants,
+which represent~81.08 \% of total mutants, are
+\texttt{Math}~(59.10~\% of mutants),
+\texttt{Remove\-Conditional\-OrderElse}~(10.99~\%),
+and \texttt{Conditionals\-Boundary}~(10.99~\%) mutants
+(prevalence of \texttt{Remove\-Conditional\-Order\-Else}
+and \texttt{Conditionals\-Boundary}
+is the same because both mutators modify inequality checks).
+On the other hand, the three least common mutants are
+\texttt{Increments}~(0.52~\%),
+\texttt{Boolean\-False\-Return\-Vals}~(0.24~\%),
+and \texttt{Empty\-Object\-Return\-Vals}~(0.13~\%) mutants.
+Due to these large differences in mutant prevalences,
+overall mutation scores are much more strongly affected
+by changes in, e.g., \texttt{Math} detection rates
+than by changes in, e.g., \texttt{Increments} detection rates.
+This holds not only on an overall, aggregate level
+(i.e., across all evaluated projects),
+but also for each individual project.
+After all, prevalence of individual mutants
+shows only comparatively small differences across projects,
+as highlighted by the minimum and maximum prevalence results.
+In other words,
+mutants that are common in one project
+are also common in the others,
+whereas mutants that are uncommon in one project
+are also uncommon in the others.
+For example, \texttt{Math} mutants represent 52.34~\% of mutants
+in the project where they are least common,
+but \texttt{Increments} mutants
+represent only 0.54~\% of mutants
+in the project where they are most common.
+
+\begin{table}[H]
+  \caption{Number of mutants and percentage of detections per mutator.}
+  \label{tab:detections-per-mutator}
+  \begin{tabular}{lrrrrcrrrr}
+    \toprule
+    & & & & & \multicolumn{5}{c}{Detected \%} \\
+    \cmidrule{6-10}
+    Mutator & Total & Total \% & Min \% & Max \% & INITIAL & \multicolumn{2}{c}{NAIVE$_{200}$} & \multicolumn{2}{c}{IMPROVED$_{200}$} \\
+    \midrule
+    Math & 61841 & 59.10 & 52.34 & 62.16 & 50.99 & 54.98 & (+3.99) & 54.36 & (+3.37) \\
+    RemoveConditionalOrderElse & 11501 & 10.99 & 8.50 & 11.94 & 61.08 & 62.29 & (+1.21) & 62.47 & (+1.39) \\
+    ConditionalsBoundary & 11501 & 10.99 & 8.50 & 11.94 & 27.68 & 28.89 & (+1.21) & 30.23 & (+2.55) \\
+    PrimitiveReturns & 7731 & 7.39 & 6.15 & 10.09 & 89.42 & 89.63 & (+0.20) & 89.90 & (+0.47) \\
+    RemoveConditionalEqualElse & 5536 & 5.29 & 3.21 & 10.40 & 58.80 & 60.87 & (+2.07) & 61.00 & (+2.20) \\
+    InvertNegs & 3122 & 2.98 & 2.94 & 3.12 & 58.91 & 60.61 & (+1.70) & 60.99 & (+2.08) \\
+    VoidMethodCall & 973 & 0.93 & 0.58 & 1.35 & 24.96 & 24.96 & -- & 25.49 & (+0.53) \\
+    NullReturnVals & 933 & 0.89 & 2.13 & 3.38 & 98.77 & 98.77 & -- & 98.77 & -- \\
+    BooleanTrueReturnVals & 569 & 0.54 & 0.17 & 1.44 & 98.55 & 98.55 & -- & 98.55 & -- \\
+    Increments & 546 & 0.52 & 0.50 & 0.54 & 72.81 & 73.38 & (+0.57) & 73.50 & (+0.69) \\
+    BooleanFalseReturnVals & 250 & 0.24 & 0.09 & 0.63 & 87.87 & 87.87 & -- & 87.87 & -- \\
+    EmptyObjectReturnVals & 141 & 0.13 & 0.41 & 0.43 & 90.30 & 90.30 & -- & 90.30 & -- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Detection Rate Results}
+Detection rates for \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} as well as
+detection rate improvements compared to \VariantInitial{}
+are shown in the last three columns of the table.
+Detection rates exhibit large differences across different mutators.
+The highest detection rates of 90\%--99\% are achieved
+for mutators that directly modify return values.
+The lowest detection rates are observed
+for the \texttt{VoidMethodCall} mutator (... \% detection rate), 
+which removes calls to methods that do not produce a return value,
+and the \texttt{ConditionalsBoundary} mutator (... \% detection rate),
+which modifies the boundaries of conditionals by replacing
+\texttt{<} with \texttt{<=} and \texttt{>} with \texttt{>=} (or vice-versa).
+
+\VariantNaive{} achieves the largest improvements over \VariantInitial{}
+for the ... (...), ... (...), and ... (...) mutations.
+However, \VariantNaive{} does not improve detection rates
+for mutants created by the ... mutators.
+(@TODO: Possible explanations: (i) high initial detection rates, (ii) new assertions needed.)
+\VariantImproved{} achieves the largest improvements
+for the ... (...), ... (...), and ... (...) mutations.
+It does not achieve any improvements
+for mutants created by the ... mutators.
+
+Results for the 10 / 50 \tries{} variants of \VariantNaive{} and \VariantImproved{}
+generally follow the same trends as those for the listed variants with 200 \tries{},
+albeit with correspondingly smaller detection rate improvements over \VariantInitial{}.
+(@TODO: Check the results for \VariantImprovedA{}. Those might be much worse for mutants that don't relate to conditionals.)
+Full results for all variants are available in our replication package~\cite{replicationpackage}.
+
+\paragraph{Comparison of \VariantNaiveC{} and \VariantImprovedC{}}
+\VariantImprovedC{} outperforms \VariantNaiveC{} in terms of detection rate
+for 7 of 12 mutators,
+is on par for 4 of 12 mutators (all of which achieve no improvement for either variant),
+and underperforms for 1 of 12 mutators.
+The largest benefit of \VariantImprovedC{} over \VariantNaiveC{} is observed
+for the detection of mutants created by the \texttt{ConditionalsBound} mutator.
+Here, \VariantImprovedC{} achieves an increase of ... percentage points over \VariantInitial{},
+whereas \VariantNaiveC{} only increases detection rates by ... percentage points.
+This suggests that the improvements implemented in \VariantImproved{} variants
+to favor boundary values during input generation achieve their intended benefits.
+
+However, \VariantImprovedC{}'s benefits for the detection rate of \texttt{ConditionalsBoundary} mutants
+appear to come at the cost of decreased detection rates for \texttt{Math} mutants.
+Since the only difference between the two variants is the way in which test inputs are selected
+--- \VariantNaive{} variants select inputs randomly from the given input partition; 
+\VariantImproved{} variants start with inputs at the edges of the partition  ---
+this suggests that focusing too much on boundary values
+can have detrimental effects for the detection of mutants
+that are not related to input boundaries.
+Due to the high prevalence of \texttt{Math} mutants,
+this can also result in an \emph{overall} decrease in detection rates.
+
+To counteract the detrimental effects on
+detection rates of \texttt{Math} mutants
+incurred by the input selection procedure used by \VariantImproved{} variants,
+the number of \tries{} could, for example,
+be increased for the \VariantImproved{} variants
+to adjust for the additional \tries{} spent on boundary testing
+while keeping non-boundary testing at \VariantNaive{} levels.
+More sophisticated input selection approaches
+that aim to better balance boundary and non-boundary testing
+without large increases to the number of executed \tries{}
+could perhaps further increase detection rates
+while keeping the runtime impact
+resulting from a higher number of \tries{} to a minimum.
+For a more in-depth evaluation of runtime requirements
+across different variants and numbers of \tries{}
+see Section~\ref{sec:runtime-eval}.
+
+\subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
+\label{sec:boundary-detection-effectiveness}
+
+@TODO: Add intro. Basically: Offer more thorough explanations
+why \VariantImproved{} (sometimes?) performs better than \VariantNaive{}
+on the \DatasetsEqBenchEs{} projects, but not on the \DatasetsCommonsEs{} ones.
+
+\paragraph{Evaluation Metrics}
+Table~\ref{tab:mutation-detection-comparison} shows 
+the model properties of mutants that are (not) detected
+by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
+The term \emph{model}, in this case, refers to an 
+input specification extracted by \ToolTeralizer{}.
+Therefore, the (input) model(s) of a mutant
+are all input specifications
+that describe an input partition
+which contains at least one set of inputs
+that cause the mutant to be exercised during test execution.
+In other words, the model(s) of a mutant
+are all input specifications
+that were extracted by \ToolTeralizer{}'s
+specification extraction step (see Section~\ref{sec:specification-extraction})
+during execution of a test that covers the corresponding mutant.
+
+Included model properties are
+the median number of model operations
+and the median number of model constraints.
+%The number of (nested) operations is given by
+%the total number of operators in the model.
+%The number of constraints is determined
+%by counting the number of boolean conditions or variables
+%connected by \texttt{\&\&} operators.
+%There can never be \texttt{||} operators in a model
+%because the two operands on both sides of the \texttt{||}
+%represent different input partitions and, therefore,
+%describe different models.
+%
+In addition to the model properties,
+the last column of Table~\ref{tab:mutation-detection-comparison}
+lists the mean and median percentage of constraints
+that are used by the created property-based tests
+when generating inputs for test execution.
+As described in more detail in Section~\ref{sec:improved-generalization}, 
+the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
+only considers simple in-/equalities on numeric and boolean variables or constants.
+More complex constraints are not encoded
+in the initial input value generation of the \VariantImproved{} property-based tests
+but are still enforced during \ToolPit{}'s default value filtering step.
+
+For example, take the following (Java represented) model:
+\texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
+This model contains 5 operators
+(i.e., \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and \texttt{\&\&}),
+so has a total of 5 (nested) operations.
+Furthermore, the model's contains 3 constraints:
+(i) \texttt{a < 0}, (ii) \texttt{a == (b + 1)}, and (iii) \texttt{c}.
+Constraints (i) and (iii) are used by the \VariantImproved{} variants.
+Constraint (ii) is not used
+because it contains the compound term \texttt{b + 1}.
+
+\begin{table}[H]
+  \caption{Model properties of mutants that are (not) detected by the \VariantImprovedC{} variant.}
+  \label{tab:mutation-detection-comparison}
+  \begin{tabular}{lcrrrrrrr}
+    \toprule
+            &          &         & \multicolumn{2}{c}{Operations} & \multicolumn{2}{c}{Constraints} & \multicolumn{2}{r}{Constraints Used} \\
+    \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+    Project & Detected & Mutants & Mean & Median & Mean & Median & Mean & Median \\
+    \midrule
+    \DatasetEqBenchA{} & yes & 11145 & 147 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}47 \% & \phantom{0}80 \% \\
+    \DatasetEqBenchA{} & no & 10347 & 224 & 16 & 11 & 5 & \phantom{0}23 \% & \phantom{0}50 \% \\
+    \midrule
+    \DatasetEqBenchB{} & yes & 11658 & 139 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}62 \% & 100 \% \\
+    \DatasetEqBenchB{} & no & 9999 & 231 & 15 & \phantom{0}8 & 2 & \phantom{0}57 \% & 100 \% \\
+    \midrule
+    \DatasetEqBenchC{} & yes & 12052 & 137 & \phantom{0}9 & \phantom{0}5 & 2 & \phantom{0}69 \% & 100 \% \\
+    \DatasetEqBenchC{} & no & 9958 & 218 & 11 & \phantom{0}6 & 2 & \phantom{0}67 \% & 100 \% \\
+    \midrule
+    \DatasetCommonsA{} & yes & 4390 & 290 & 15 & \phantom{0}7 & 5 & \phantom{0}43 \% & \phantom{0}84 \% \\
+    \DatasetCommonsA{} & no & 3183 & 389 & 45 & 12 & 6 & \phantom{0}11 \% & \phantom{0}50 \% \\
+    \midrule
+    \DatasetCommonsB{} & yes & 4660 & 467 & 23 & \phantom{0}6 & 5 & \phantom{0}46 \% & \phantom{0}85 \% \\
+    \DatasetCommonsB{} & no & 3309 & 507 & 46 & \phantom{0}8 & 6 & \phantom{0}10 \% & \phantom{0}56 \% \\
+    \midrule
+    \DatasetCommonsC{} & yes & 4821 & 374 & 20 & \phantom{0}6 & 5 & \phantom{0}47 \% & \phantom{0}85 \% \\
+    \DatasetCommonsC{} & no & 3288 & 423 & 41 & 10 & 6 & \phantom{0}11 \% & \phantom{0}54 \% \\
+    \midrule
+    \DatasetCommonsDev{} & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
+    \DatasetCommonsDev{} & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Model Properties of Detected vs.\ Undetected Mutants}
+As shown in Table~\ref{tab:mutation-detection-comparison},
+undetected mutants often have more complex models
+%(i.e., are easier to reach during testing)
+than detected ones.
+For example, in the \DatasetsEqBenchEs{} projects,
+mean and median operation counts
+are around 1.2--1.7 times larger
+for undetected mutants than for detected ones
+(e.g., mean of 231 vs.\ 139 and median of 15 vs.\ 9 for \DatasetEqBenchB{}).
+Operation counts in the \DatasetsCommonsEs{} projects
+show even more pronounced differences,
+with values of undetected mutants being 1.3--3 times larger
+than those of detected ones
+(e.g., mean of 45 vs.\ 15 and median of 12 vs.\ 7 for \DatasetCommonsB{}).
+The only project where models of undetected mutants
+have lower median operation counts than detected ones (10 vs.\ 11)
+is \DatasetCommonsDev{} with its developer written test suite.
+However, mean operation counts are still larger for undetected mutants
+at 173 vs.\ 107 for detected ones.
+Constraint counts show a similar trend to operation counts,
+with mean values being 1.0--1.7 times as large
+and median values being 1.0--2.5 times as large
+for undetected mutants as for detected ones.
+Values for \DatasetCommonsDev{} are very different from
+the other \DatasetsCommonsEs{} projects because it 
+covers a much smaller subset of mutants,
+as previously discussed in \ref{sec:included-mutants}.
+
+\paragraph{Constraints Used by \VariantImproved{} Generalization}
+The mean (median) number of used constraints across all projects
+ranges from 25--69 \% (75--100 \%) for detected mutants
+and 10--67 \% (50--100 \%) for undetected ones,
+with usage rates being consistently higher
+for detected mutants than for undetected ones.
+Because the current implementation of \ToolTeralizer{} focuses on simple constraints,
+this provides further evidence
+that models of undetected mutants are not only larger than those of detected ones
+(i.e., contain more operations and constraints)
+but also more complex
+(e.g., contain more compound terms,
+show more common use of non-numeric data types,
+and use more math functions that are not fully modeled by SPF).
+This suggests that improving \ToolTeralizer{}'s support
+for more complex constraints
+holds further potential for additional increases in mutation detection rates.
+
+Furthermore, the high constraint usage rates
+as well as the comparatively small operation and constraint counts
+of the \DatasetsEqBenchEs{} projects suggest that it is relatively easy
+to find input values that match the models.
+This could explain, at least in part,
+why \VariantImproved{} generalization variants are more effective
+relative to the corresponding \VariantNaive{} variants
+when used in the \DatasetsCommons{} projects
+than in the \DatasetsEqBenchEs{} projects
+(as seen in Figure~\ref{fig:mutation-detection-results}).
+After all, if mutated input partition boundaries are easy to identify,
+there is a higher likelihood that they will be covered
+even without the more sophisticated value selection
+employed by \VariantImproved{} variants.
+Thus, taking into account the complexity of the underlying models
+during generalization might offer further opportunities
+to improve the effectiveness and/or efficiency
+of test generalization approaches such as \ToolTeralizer{}.
+
+@TODO: Add answer for RQ1.

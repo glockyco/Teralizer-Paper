@@ -1,0 +1,192 @@
+\subsection{Target Programs}
+\label{sec:target-programs}
+
+Evaluation of the test generalization approach requires a dataset consisting of projects for which
+(i) the source code of the implementation and corresponding tests is available.
+Additionally, as discussed throughout Section~\ref{sec:approach}, included projects
+(ii) need to be processable by SPF (which does not support newer Java versions than Java 8),
+(iii) need to use JUnit 4 or JUnit 5 as a testing framework,
+(iv) need to use Maven or Gradle as a build tool,
+(v) should use (partially) numeric inputs and numeric outputs for methods targeted by the generalization
+(because Teralizer currently only supports generalization of numeric inputs and outputs,
+as discussed in Section~\ref{sec:specification-extraction}).
+
+While various publicly available benchmarks exist that fulfill requirements i--iv,
+these benchmarks are often based on code from popular libraries such as Apache Commons and Google Gson.
+For example, ... (list + describe some benchmarks that support this claim).
+Because these libraries need to be useable in different application scenarios
+and maintainable by a large number of simultaneous contributors,
+they tend to make heavy use of encapsulation, inheritance, polymorphism, reflection, etc.
+As a result, such projects are largely incompatible
+with the basic specification extraction approach used by Teralizer,
+as most implementation code does not fulfill requirement (v).
+Furthermore, due to their widespread use, active development communities, and long-running nature,
+these libraries are often more thoroughly tested than other projects are.
+Consequently, evaluating any test generalization approach on them
+would provide limited opportunity to improve the effectiveness of the test suite.
+
+To achieve a thorough evaluation of our approach
+that provides generalizable results for both its strengths and weaknesses
+in the presence of the requirements and considerations discussed above,
+we built our own evaluation dataset.
+This dataset uses projects from three different sources:
+the \DatasetEqBench{} Benchmark \cite{badihi_2021_eqbench},
+utility classes of {TODO: number} Apache Commons projects, and
+{TODO: number} open source projects from the RepoReapers dataset \cite{munaiah_2017_reporeapers}.
+Further details about the included projects
+are provided in the following Sections~\ref{sec:eqbench}--\ref{sec:additional-oss-projects}.
+Descriptive statistics are available in Section~\ref{sec:dataset-statistics}.
+
+\subsubsection{EqBench}
+\label{sec:eqbench}
+
+To represent projects that are well-suited for processing by \ToolTeralizer{},
+we include the \DatasetEqBench{} benchmark as the first part of our evaluation dataset.
+The \DatasetEqBench{} benchmark is a dataset built by \citeauthor{badihi_2021_eqbench}
+to evaluate the effectiveness of equivalence checking tools \cite{badihi_2021_eqbench}.
+The dataset contains Java (and C) implementations of non-equivalent program pairs.
+Since \DatasetEqBench{} targets automated reasoning tools
+such as ARDiff~\cite{badihi_2020_ardiff}, PASDA~\cite{glock_2024_pasda}, and CBMC~\cite{kroening_2023_cbmc},
+it focuses primarily on programs that process numeric inputs
+while avoiding language features such as recursion and reflection
+that pose challenges for automated reasoning approaches.
+This makes \DatasetEqBench{} well suited for processing with \ToolSPFLong{}-based tools such as \ToolTeralizer{}.
+Because the dataset only contains implementation code, but does not contain test code,
+we used \ToolEvoSuite{} to generate test suites
+that can be used as input for the generalization.
+We chose \ToolEvoSuite{} for test generation
+because it consistently achieved top placements in recent test generation tool competitions \cite{TODO}.
+For the test generation, we used three different timeout settings
+for \ToolEvoSuite{} to approximate different strengths of test suites:
+60 seconds per class (\ToolEvoSuite{}'s default), 10 seconds per class, and 1 second per class.
+All other configuration settings were left at \ToolEvoSuite{}'s default values. We refer to
+the corresponding projects consisting of \DatasetEqBench{} implementation code and
+\ToolEvoSuite{} generated test code as \textit{\DatasetEqBenchA{}}, \textit{\DatasetEqBenchB{}}, and \textit{\DatasetEqBenchC{}}.
+Descriptive statistics for these projects are provided in Section~\ref{sec:dataset-statistics}.
+
+% tests generated with EvoSuite;
+% came "third" in SBFT Tool Competition 2025 - Java Test Case Generation Track (https://arxiv.org/pdf/2504.09168), but differences between top 3 not statistically significant per the paper;
+% can't find a summary paper for SBFT 2024;
+% performed best on the SBFT Tool Competition 2023 - Java Test Case Generation Track for line and branch coverage metrics, and second-best for understandability metric;
+% also the overall winner for SBST Tool Competition 2022 and SBST Tool Competition 2021 which use line + branch (via JaCoCo) and mutation coverage (via PIT) as metrics;
+
+% 3 different test suites with search budgets: 1s, 10s, 60s (= EvoSuite default);
+% no other changes to default EvoSuite configuration
+
+\subsubsection{Apache Commons Utils}
+\label{sec:apache-commons-utils}
+
+To have some representation of large open source libraries in our evaluation dataset,
+we extracted source code and corresponding test code of utility methods from \{number\} Apache Commons projects.
+We identified appropriate utility methods via Sourcegraph's RegEx-based repository search\footnote{\url{https://sourcegraph.com/search}}.
+More specifically, we searched for public static methods
+with at least one numeric or boolean input parameter
+and a numeric or boolean output value.
+The exact search query we used is available in our replication package~\cite{replicationpackage}.
+To construct the dataset from the Sourcegraph search results,
+we manually created a new project and added to it:
+(i) all matching utility methods,
+(ii) all methods that are (transitively) called by the utility methods,
+(iii) all tests that cover the utility methods, and
+(iv) all dependencies that are needed to compile the included code.
+Beyond the original test suite consisting of test classes extracted from Apache Commons projects,
+we also generated three additional test suites via \ToolEvoSuite{}
+using the same settings that we used for the \DatasetEqBench{} test generation.
+Thus, four variants of the created project are included in the evaluation dataset:
+\textit{\DatasetCommonsDev{}} (which uses the original developer written test suite)
+as well as \textit{\DatasetCommonsA{}}, \textit{\DatasetCommonsB{}}, and \textit{\DatasetCommonsC{}}
+(which use \ToolEvoSuite{} generated test suites).
+
+\subsubsection{RepoReapers}
+\label{sec:additional-oss-projects}
+
+To get a more representative view
+of current limitations of the approach in a real-world setting,
+we additionally applied Teralizer to <number> projects
+from the RepoReapers dataset\cite{munaiah_2017_reporeapers}.
+@TODO: Write 1-2 sentences about the RepoReapers dataset.
+To select these projects from the full RepoReapers dataset,
+we applied the following selection criteria: projects
+(i)~have to be implemented in Java 1.5 to 1.8
+(ii)~have to use JUnit 4 or 5 for testing,
+(iii)~have to use Maven as a build tool,
+(iv)~have to follow the expected folder structure (i.e., have implementation in src/main/java and tests in src/test/java) 
+(v)~have to contain 5000-50000 LOC,
+(vi)~have to contain 20\%-80\% of the total source code in test classes
+(vii)~have to have a total repository size less than 100MB.
+Selection criteria (i) is imposed by the \ToolSPF{} dependency of \ToolTeralizer{}.
+Criteria (ii) to (iv) are current limitations of the implemented prototype
+(as discussed in Section~\ref{sec:approach}),
+but could be lifted with additional engineering effort.
+The remaining selection criteria (v) to (vii) were applied
+to keep the overall size of the dataset to a manageable amount
+while focusing on a subset that has
+a good balance between implementation code and test code.
+We refer to this dataset as \textit{\DatasetRepoReapers{}} throughout the rest of this paper.
+Note, however, that \DatasetRepoReapers{} is only discussed in detail in RQ4,
+which covers current limitations of the prototype
+(see Section~\ref{sec:filtering-eval-extended}),
+but not throughout RQ1--RQ3.
+This is because the current implementation of \ToolTeralizer{}
+is largely unsuccessful at generalizing tests from these projects.
+
+\subsubsection{Dataset Statistics}
+\label{sec:dataset-statistics}
+
+Table~\ref{tab:dataset-statistics} provides descriptive statistics
+of the projects that are included in the dataset.
+We separately list the number of files, classes, and source lines of code (SLOC)
+for both the implementation code as well as the test code of the projects.
+For the \DatasetRepoReapers{} projects,
+we list the total, mean, and median values
+across all 1160 included (sub-)projects.
+
+@TODO: Describe the \DatasetsEqBenchEs{} numbers.
+
+@TODO: Describe the \DatasetsCommons{} numbers.
+
+The developer-written tests in \DatasetCommonsDev{}
+often have several times as many lines of code
+as the automatically generated \ToolEvoSuite{} tests
+in \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}.
+This is because the developer-written tests often
+test multiple sets of input values
+and / or multiple target methods
+in a single test method.
+The \ToolEvoSuite{} generated test suites, on the other hand,
+use very isolated / focused test methods
+that generally cover only a single target method
+using a single set of input values.
+For practical examples of these differences, see Figure~\ref{fig:@TODO}.
+
+@TODO: add a figure showing test cases in \DatasetCommonsDev{} vs. \DatasetCommonsA{} / \DatasetCommonsB{} / \DatasetCommonsC{}.
+
+@TODO: Describe the \DatasetRepoReapers{} numbers.
+
+descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
+
+\begin{table}[H]
+  \caption{Number of files, classes, source lines of code (SLOC), and test methods per project.}
+  \label{tab:dataset-statistics}
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    & \multicolumn{3}{c}{Implementation} & \multicolumn{4}{c}{Test} \\
+    \cmidrule(lr){2-4} \cmidrule(lr){5-8}
+    Project & Files & Classes & SLOC & Files & Classes & SLOC & Methods \\
+    \midrule
+    \DatasetEqBenchA{} & 544 & 652 & 27,871 & 544 & 544 & 35,666 & 4,718 \\
+    \DatasetEqBenchB{} & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
+    \DatasetEqBenchC{} & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
+    \midrule
+    \DatasetCommonsA{} & 106 & 247 & 19,709 & 103 & 103 & 17,524 & 2,481 \\
+    \DatasetCommonsB{} & 106 & 247 & 19,709 & 103 & 103 & 19,082 & 2,738 \\
+    \DatasetCommonsC{} & 106 & 247 & 19,709 & 102 & 102 & 18,839 & 2,735 \\
+    \midrule
+    \DatasetCommonsDev{} & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
+    \midrule
+    \DatasetRepoReapers{} (total) & 79,789 & 96,589 & 5,203,516 & 40,872 & 55,038 & 3,905,071 & 167,046 \\
+    \DatasetRepoReapers{} (mean) & 68 & 83 & 4,478 & 35 & 47 & 3,360 & 143 \\
+    \DatasetRepoReapers{} (median) & 51 & 57 & 3,241 & 22 & 26 & 2,053 & 69 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

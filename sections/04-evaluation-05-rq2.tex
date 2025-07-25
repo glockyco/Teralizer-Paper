@@ -1,0 +1,408 @@
+\subsection{RQ2: Effects on Test Suite Size and Runtime}
+\label{sec:ancillary-effects-eval}
+
+In this section, we describe the secondary effects caused by the generalization
+in terms of changes in test suite size and test suite runtime.
+To describe these changes, we employ the following four metrics: 
+\begin{enumerate}
+  \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
+  \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
+  \item the execution time of the test suite (Section~\ref{sec:test-suite-execution-time}).
+\end{enumerate}
+
+We focus primarily on the results
+of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
+The results for the remaining variants follow similar trends
+but are omitted for brevity.
+The full results for all generalization variants
+are available in our replication package~\cite{replicationpackage}.
+
+\subsubsection{Number of Tests in the Test Suite}
+\label{sec:test-suite-test-count}
+
+Table~\ref{tab:tests-per-project} shows how many tests are added
+by the \VariantNaiveC{} and \VariantImprovedC{} generalization variants,
+how many can be removed after generalization,
+and how this changes the total number of tests
+relative to the \VariantOriginal{} test suites
+across the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects.
+The number of added tests is between 174--211
+(3.5--4.3~\% of \VariantOriginal{} test suite size)
+for the \DatasetsEqBenchEs{} projects,
+between 60--75 (2.2--2.9\%)
+for the \DatasetsCommonsEs{} projects,
+and 3 (0.4~\%) for the \DatasetCommonsDev{} project.
+\VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
+because more of the tests that are created  by \VariantNaiveC{}
+are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
+(as described in Section~\ref{sec:naive-generalization}
+and evaluated in Section~\ref{sec:filtering-eval}).
+Furthermore, the number of added tests is much smaller
+than the total number of generalization that are created and evaluated by \ToolTeralizer{}
+because only tests that measurably increase the mutation score of the test suite are retained.
+
+Added tests are largely compensated by removed tests
+in the \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
+which use \ToolEvoSuite{} generated test suites.
+As a result, total test suite size only increases by 0--1 test cases
+(0--0.04\% of \VariantOriginal{} test suite size)
+for these projects.
+For the \DatasetCommonsDev{} project,
+none of the tests for which generalizations are added can be removed.
+This is because an \VariantOriginal{} test can only be removed
+if generalized tests are successfully created for all assertions in the test
+(as described in Section~\ref{sec:baseline-generalization}).
+In the projects with \ToolEvoSuite{} generated tests,
+this requirement is generally satisfied because most tests only contain a single assertion.
+However, this requirement is much more difficult to satisfy for \DatasetCommonsDev{} 
+because the developer written tests often contain multiple assertions.
+More generally, increases in the number of tests are
+expected to be smaller for projects with more focused tests
+that each contain only a small number of assertions
+than for less focused ones with a large number of assertions per test.
+
+In future work, we also plan to explore opportunities
+for generalization to decrease overall test suite size.
+This can be achieved
+by replacing multiple \VariantOriginal{} tests
+that all cover the same input partition
+with a single property-based test that covers the same partition instead.
+For further discussion and related work about this, see Section~\ref{sec:test-suite-reduction}.
+
+\begin{table}[H]
+\caption{Number of tests before and after generalization, with changes, per project.}
+\label{tab:tests-per-project}
+\begin{tabular}{llrrrrrr}
+\toprule
+ & & \multicolumn{6}{c}{Tests} \\
+\cmidrule(lr){3-8}
+Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
+\midrule
+\DatasetEqBenchA{} & \VariantNaiveC{} & 4718 & 177 & 177 & 4718 & -- & -- \\
+\DatasetEqBenchB{} & \VariantNaiveC{} & 4875 & 174 & 173 & 4876 & +1 & +0.02 \% \\
+\DatasetEqBenchC{} & \VariantNaiveC{} & 4974 & 174 & 174 & 4974 & -- & -- \\
+\midrule
+\DatasetEqBenchA{} & \VariantImprovedC{} & 4718 & 206 & 206 & 4718 & -- & -- \\
+\DatasetEqBenchB{} & \VariantImprovedC{} & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
+\DatasetEqBenchC{} & \VariantImprovedC{} & 4974 & 210 & 210 & 4974 & -- & -- \\
+\midrule
+\DatasetCommonsA{} & \VariantNaiveC{} & 2481 & 60 & 59 & 2482 & +1 & +0.04 \% \\
+\DatasetCommonsB{} & \VariantNaiveC{} & 2738 & 63 & 62 & 2739 & +1 & +0.04 \% \\
+\DatasetCommonsC{} & \VariantNaiveC{} & 2735 & 60 & 59 & 2736 & +1 & +0.04 \% \\
+\midrule
+\DatasetCommonsA{} & \VariantImprovedC{} & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
+\DatasetCommonsB{} & \VariantImprovedC{} & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
+\DatasetCommonsC{} & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
+\midrule
+\DatasetCommonsDev{} & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+\midrule
+\DatasetCommonsDev{} & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Lines of Code in the Test Suite}
+\label{sec:test-suite-line-count}
+
+While generalization has only minor effects
+on the number of tests in the evaluated test suites,
+the lines of code in the test suites are more strongly affected.
+As shown in Table~\ref{tab:lines-per-project},
+overall lines of code (LOC) in the test suites increase
+by 31.5--58.7~\% for the \DatasetsEqBenchEs{} projects,
+by 18.8--29.9~\% for the \DatasetsEqBenchEs{} projects,
+and by 4.9--5.3~\% for the \DatasetCommonsDev{} project.
+
+Increases in test suite size are strongly correlated with
+the number of tests added to the test suite (see Table~\ref{tab:tests-per-project}),
+even if added tests are compensated for by test removals.
+For example, \VariantNaive{} adds 177 tests to \DatasetEqBenchA{}
+and allows the same number of \VariantOriginal{} tests to be removed.
+Despite this, 11780 LOC are added
+but only 1127 LOC are removed
+(as shown in Table~\ref{tab:lines-per-project}).
+This is expected for two reasons:
+(i) generalized test classes
+contain all of the code that is needed
+to set valid input ranges for \ToolPit{}'s input value generators
+(as described in Section~\ref{sec:test-generalization}), and
+(ii) when creating the classes
+that contain the generalized test methods,
+\ToolTeralizer{} copies all shared code
+(i.e., setup/teardown methods, non-test methods, class fields, ...)
+from the \VariantOriginal{} test classes
+into each generalized test class
+(as described in Section~\ref{sec:test-generalization})
+which results in additional LOC increases due to duplicated code.
+
+The effects of (i) are more pronounced
+for \VariantImproved{} generalization variants
+than for \VariantNaive{} ones
+because of the more precise (but also more complex)
+identification of input ranges used by \VariantImproved{} variants.
+For example, the generalized test suite created by 
+\VariantImprovedC{} for \DatasetCommonsDev{}
+has 36 additional LOC compared to \VariantNaiveC{}
+(9018 vs.\ 8982~LOC, see Table~\ref{tab:lines-per-project})
+even though the same three tests are added as a result of generalization
+(as shown in Table~\ref{tab:tests-per-project}).
+This difference in LOC of individual tests generalized
+via \VariantImproved{} vs.\ \VariantNaive{} variants
+is generally larger for tested methods
+with a larger number of input parameters.
+The reason for this is that each input parameter
+needs to be separately restricted
+to match the constraints that involve that parameter
+in the input specification.
+
+Both of the causes mentioned above
+could be resolved with additional engineering effort.
+For example, generalized test methods created by \ToolTeralizer{}
+could be added to the \VariantOriginal{} test classes
+instead of creating a new classes for each one, thus resolving cause (ii).
+The primary reason we avoid this in the current implementation
+is to keep \ToolTeralizer{}'s changes as unintrusive and isolated
+from the \VariantOriginal{} test suite (and other generalized tests) as possible
+to avoid unintended adverse side-effects on developer written code
+as well as unintended interactions between generalized tests.
+However, there is no technical reason
+that strictly requires generalized test methods
+to be added to newly created classes.
+Similarly, the code to set input value ranges
+that satisfy the extracted input specifications
+could be extracted to a library
+that abstracts away the corresponding implementation details.
+In the test code of the target projects,
+only minor changes would remain then
+(i.e., modified test annotations, inputs, and expected outputs),
+thus resolving cause (i).
+
+\begin{table}[H]
+\caption{Number of test lines before and after generalization, with changes, per project.}
+\label{tab:lines-per-project}
+\begin{tabular}{llrrrrrr}
+\toprule
+ & & \multicolumn{6}{c}{Lines} \\
+\cmidrule(lr){3-8}
+Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
+\midrule
+\DatasetEqBenchA{} & \VariantNaiveC{} & 30989 & 11780 & 1127 & 41642 & +10653 & +34.4 \% \\
+\DatasetEqBenchB{} & \VariantNaiveC{} & 32503 & 11520 & 1061 & 42962 & +10459 & +32.2 \% \\
+\DatasetEqBenchC{} & \VariantNaiveC{} & 33510 & 11623 & 1069 & 44064 & +10554 & +31.5 \% \\
+\midrule
+\DatasetEqBenchA{} & \VariantImprovedC{} & 30989 & 19019 & 1302 & 48706 & +17717 & +57.2 \% \\
+\DatasetEqBenchB{} & \VariantImprovedC{} & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
+\DatasetEqBenchC{} & \VariantImprovedC{} & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
+\midrule
+\DatasetCommonsA{} & \VariantNaiveC{} & 16563 & 3733 & 359 & 19937 & +3374 & +20.4 \% \\
+\DatasetCommonsB{} & \VariantNaiveC{} & 18124 & 3942 & 379 & 21687 & +3563 & +19.7 \% \\
+\DatasetCommonsC{} & \VariantNaiveC{} & 17886 & 3723 & 361 & 21248 & +3362 & +18.8 \% \\
+\midrule
+\DatasetCommonsA{} & \VariantImprovedC{} & 16563 & 5261 & 413 & 21411 & +4848 & +29.3 \% \\
+\DatasetCommonsB{} & \VariantImprovedC{} & 18124 & 5423 & 421 & 23126 & +5002 & +27.6 \% \\
+\DatasetCommonsC{} & \VariantImprovedC{} & 17886 & 5801 & 452 & 23235 & +5349 & +29.9 \% \\
+\midrule
+\DatasetCommonsDev{} & \VariantNaiveC{} & 8561 & 421 & 0 & 8982 & +421 & +4.9 \% \\
+\midrule
+\DatasetCommonsDev{} & \VariantImprovedC{} & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Execution Time of the Test Suite}
+\label{sec:test-suite-execution-time}
+
+As shown in Table~\ref{tab:runtime-per-project},
+generalization with \VariantNaiveC{} and \VariantImprovedC{}
+increases overall test suite runtimes
+for all \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
+More specifically, test suite runtimes
+show increases of 574.5--1210.0~\% for the \DatasetsEqBenchEs{} projects,
+444.1--2651.5~\% for the \DatasetsCommonsEs{} projects,
+and 9.4--57.1~\% for the \DatasetCommonsDev{} project.
+Runtime increases are primarily affected by the following factors:
+
+\begin{enumerate}
+  \item the number of tests added by the generalization, even if they are compensated for by removed tests,
+  \item the number of \tries{} used during property-based testing,
+  \item the used generalization approach, i.e., \VariantNaive{} vs. \VariantImproved{} generalization,
+  \item the complexity of input partition constraints.
+\end{enumerate}
+
+In the following paragraphs,
+we discuss how each of the above factors
+influences overall test suite execution times
+and how these factors interact with each other.
+
+\paragraph{Added Tests}
+
+Execution of conventional JUnit tests has a lower runtime cost
+than execution of corresponding property-based jqwik tests.
+More specifically, individual property-based tests
+created with the \VariantBaseline{} generalization variant 
+take, on average, 149.56 milliseconds (ms) longer to execute
+than the corresponding \VariantOriginal{} tests
+(as shown in the left plot of Figure~\ref{fig:test-runtime-differences})
+which have a mean execution time of only 3.6~ms. % 0.0035570506476290337
+% Exact number = 0.0035570506476290337 via:
+% SELECT AVG(runtime)
+% FROM junit_test_report jtr
+% JOIN generalization g ON g.test_id = jtr.test_id
+% WHERE stage = 'COLLECT_JUNIT_REPORTS_ORIGINAL'
+% AND g.is_included;
+Therefore, overall test suite execution time increases,
+on average, by at least 149.56~ms per jqwik test
+that is added during the generalization process,
+even if no new test inputs are exercised
+and the added tests are compensated for by removed JUnit tests.
+Since these runtime increases are inherent to the use of jqwik,
+they are orthogonal to our specific generalization approach.
+That is, any manual or automated transformation of JUnit tests
+to jqwik tests incurs the same runtime overhead,
+and this overhead can only be reduced
+if fewer jqwik tests are created
+(e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
+or if the runtime performance of jqwik is improved.
+
+\paragraph{Number of \tries{}}
+
+Increasing the number of \tries{}
+directly increases the number test inputs
+that need to be generated and exercised
+during the execution of the property-based tests.
+For example, as shown in Figure~\ref{fig:test-runtime-differences},
+ execution time of \VariantNaive{} tests
+is, on average, 286.13 milliseconds (ms) longer per test
+than for \VariantOriginal{} tests when using 10 \tries{}
+(a +91.3~\% increase compared to the \VariantBaseline{} overhead of 149.56~ms),
+348.56~ms (+118.5~\%) longer with 50 \tries{},
+and 1136.21~ms (+659.7~\%) longer with 200 \tries{}.
+Similarly, execution time of \VariantImproved{} tests
+is 189.17~ms (+26.5~\%) longer with 10 \tries{},
+246.85~ms (+65.1~\%) longer with 50 \tries{},
+and 395.26~ms (+164.3~\%) longer with 200 \tries{}.
+While overall runtime increases
+get larger as \texttt{tries} increase,
+runtime increases per \texttt{try}
+get smaller as \texttt{tries} increase.
+More specifically, \VariantNaive{} variants
+show per-\texttt{try} increases
+of 28.61~ms, 6.97~ms, and 5.68~ms.
+\VariantImproved{} variants show
+per-\texttt{try} increases 
+of 18.92~ms, 4.94~ms, and 1.98~ms.
+However, to attribute these observed
+improvements in per-\texttt{try} efficiency to any specific causes
+would require a more thorough microbenchmarking setup
+that properly accounts for confounding factors such JVM warmup,
+which is beyond the scope of this evaluation.
+
+\paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
+
+Runtime increases are generally larger
+for \VariantNaive{} than for \VariantImproved{}
+when comparing the same tests.
+For example, \VariantNaiveC{} and \VariantImprovedC{}
+both generalize the same three tests of \DatasetCommonsDev{}
+(see Table~\ref{tab:tests-per-project}).
+Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
+generalization with \VariantNaiveC{}
+increases overall test suite runtime by 4.54 seconds
+(+57.1~\% compared to \VariantOriginal{}).
+\VariantImprovedC{}, on the other hand,
+only increases runtime by 0.74 seconds (+9.4\%).
+The more pronounced runtime impact of \VariantNaive{} variants is caused by 
+the input value generation approach used by these variants.
+As described in Section~\ref{sec:naive-generalization},
+\VariantNaive{} generalization selects inputs for test execution
+by first randomly generating inputs
+that match the parameter types of the tested method,
+and then discarding any inputs that do not satisfy the input specification.
+Especially for cases with restrictive input specifications (e.g., \texttt{a~==~b~\&\&~b~==~c}),
+this causes a large runtime overhead
+because many discard-and-regenerate cycles are required
+until a valid set of inputs is identified
+(or \ToolJqwik{} aborts the process due to \texttt{TooManyFilterMisses}).
+\VariantImproved{} variants are less affected by this
+because they already consider (some) input constraints
+during initial input value generation
+(as described in Section~\ref{sec:improved-generalization}).
+As a result, fewer inputs need to be discarded and regenerated,
+which lessens the overall runtime impact of \VariantImproved{} generalization
+despite the more involved input value generation process.
+
+\paragraph{Complexity of Constraints}
+
+As complexity of input specifications increases,
+required runtime also increases.
+This is because more complex constraints
+cause more filter-and-regenerate cycles to occur
+during execution of property-based tests.
+While \VariantNaive{} generalization
+is more strongly affected by this than \VariantImproved{}
+because it does not consider any constraints during value generation
+(as discussed in the previous paragraph),
+the issue also affects \VariantImproved{} generalization
+in cases where less than 100~\% of constraints can be used
+(for further details on constraint use,
+see Sections~\ref{sec:improved-generalization} and \ref{sec:boundary-detection-effectiveness}).
+For example, as shown in Table~\ref{tab:tests-per-project},
+\VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
+as it adds to \DatasetCommonsA{}.
+Nevertheless, the difference in runtime increases
+is much less pronounced at +578.7~\% vs.\ +680.5~\%.
+This is because input specifications in \DatasetEqBenchA{}
+have fewer operations (mean: 159.1 vs.\ 208.0, median: 10 vs.\ 15)
+and constraints (mean: 6.5 vs.\ 7.5, median: 2 vs.\ 5)
+than in \DatasetCommonsA{}, 
+and fewer of these constraints
+can be used during input value generation
+(mean: 42.9~\% vs.61.5~\%, median: 80~\% vs.\ 100~\%).
+This indicates that better support for more complex input constraints
+not only holds the potential to increase detection rates
+(as suggested in Section~\ref{sec:boundary-detection-effectiveness})
+but could also reduce the runtime cost of generalized tests at the same time.
+
+@TODO: Add answer for RQ2.
+
+\begin{table}[H]
+\caption{Test suite runtime before and after generalization, with changes, per project.}
+\label{tab:runtime-per-project}
+\begin{tabular}{llrrrrrr}
+\toprule
+ & & \multicolumn{6}{c}{Runtime (in seconds)} \\
+\cmidrule(lr){3-8}
+Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
+\midrule
+\DatasetEqBenchA{} & \VariantNaiveC{} & 17.44 & 100.94 & 0.74 & 117.65 & +100.20 & +574.5 \% \\
+\DatasetEqBenchB{} & \VariantNaiveC{} & 16.70 & 106.19 & 0.66 & 122.23 & +105.53 & +632.0 \% \\
+\DatasetEqBenchC{} & \VariantNaiveC{} & 18.21 & 221.07 & 0.76 & 238.52 & +220.31 & +1210.0 \% \\
+\midrule
+\DatasetEqBenchA{} & \VariantImprovedC{} & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.7 \% \\
+\DatasetEqBenchB{} & \VariantImprovedC{} & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
+\DatasetEqBenchC{} & \VariantImprovedC{} & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
+\midrule
+\DatasetCommonsA{} & \VariantNaiveC{} & 4.31 & 114.42 & 0.09 & 118.64 & +114.33 & +2651.5 \% \\
+\DatasetCommonsB{} & \VariantNaiveC{} & 7.40 & 148.54 & 0.14 & 155.80 & +148.40 & +2005.2 \% \\
+\DatasetCommonsC{} & \VariantNaiveC{} & 6.30 & 122.11 & 0.07 & 128.34 & +122.04 & +1936.2 \% \\
+\midrule
+\DatasetCommonsA{} & \VariantImprovedC{} & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.5 \% \\
+\DatasetCommonsB{} & \VariantImprovedC{} & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.3 \% \\
+\DatasetCommonsC{} & \VariantImprovedC{} & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.1 \% \\
+\midrule
+\DatasetCommonsDev{} & \VariantNaiveC{} & 7.95 & 4.54 & 0.00 & 12.48 & +4.54 & +57.1 \% \\
+\midrule
+\DatasetCommonsDev{} & \VariantImprovedC{} & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
+  \caption{Runtime Comparison: Test vs. Generalization.}
+  %\Description{@TODO}
+  \label{fig:test-runtime-differences}
+\end{figure}
+
+@TODO: Split Figure~\ref{fig:test-runtime-differences} into two (sub-)figures to make each one individually referenceable.

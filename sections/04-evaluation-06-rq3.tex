@@ -1,0 +1,217 @@
+\subsection{RQ3: Runtime Requirements}
+\label{sec:runtime-eval}
+
+As previously described in Section~\ref{sec:evaluation-setup},
+we measure the runtime requirements of \ToolTeralizer{}
+by executing the tool once for each of the seven \DatasetsEqBenchEs{} and \DatasetsCommons{} projects
+using a MacBook Air with M2 processor and 24~GB of memory.
+Since all generalization variants require the same input data
+(i.e., source code of target projects as well as extracted input/output specifications),
+\ToolTeralizer{} executes the corresponding processing steps
+(i.e., project instrumentation, test analysis, and specification extraction)
+only once and then reuses the collected specifications
+across all generalizations of the project.
+Because no other tools exist
+that transform conventional unit tests to property-based tests,
+we measure the efficiency of \ToolTeralizer{}
+by comparing the mutation score increase that \ToolTeralizer{} achieves 
+when increasing the used \tries{} (thus increasing its runtime)
+to the corresponding increase that \ToolEvoSuite{} achieves
+when increasing the test generation timeout.
+
+\subsubsection{Execution Time of \ToolTeralizer{}}
+\label{sec:execution-time}
+
+\subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
+\label{sec:execution-efficience}
+
+\begin{table}[H]
+  \caption{Total runtimes of Teralizer for all evaluated projects.}
+  \label{tab:teralizer-runtimes}
+  \begin{tabular}{lr}
+    \toprule
+    Project & Runtime \\ 
+    \midrule
+    \DatasetEqBenchA{} & 24h 46min 27s \\ 
+    \DatasetEqBenchB{} & 28h 16min 32s \\ 
+    \DatasetEqBenchC{} & 30h 53min 22s \\ 
+    \midrule
+    \DatasetCommonsA{} & 8h 13min 55s \\ 
+    \DatasetCommonsB{} & 9h 46min 48s \\ 
+    \DatasetCommonsC{} & 9h 04min 32s \\ 
+    \midrule
+    \DatasetCommonsDev{} & 3h 23min 22s \\ 
+    \bottomrule 
+  \end{tabular} 
+\end{table}
+
+@TODO: Show \DatasetsEqBenchEs{} results before \DatasetsCommons{} results in Figure~\ref{fig:teralizer-runtimes}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig_teralizer_runtimes}
+  \caption{Teralizer runtimes per project, processing stage, and generalization variant.}
+  %\Description{@TODO}
+  \label{fig:teralizer-runtimes}
+\end{figure}
+
+@TODO: Show \DatasetsEqBenchEs{} results before \DatasetsCommons{} results in Figure~\ref{fig:teralizer-efficiency}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{fig_teralizer_efficiency.pdf}
+  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
+  \label{fig:teralizer-efficiency}
+  \begin{minipage}[t]{0.48\textwidth}
+      \centering
+      \captionof{table}{Pareto points for project commons-utils.}
+      \setlength{\tabcolsep}{4pt}
+      \begin{tabular}{rrlrr}
+          \toprule
+          Pt. & \ToolEvoSuite{} & \ToolTeralizer{} & Det. \% & Runtime (s) \\
+          \midrule
+          1 & 1s & - & 56.8 & 4648.7 \\
+          2 & 10s & - & 57.3 & 5597.3 \\
+          3 & 1s & IMPROVED$_{10}$ & 57.9 & 7294.5 \\
+          4 & 60s & - & 58.1 & 10239.8 \\
+          5 & 10s & NAIVE$_{10}$ & 58.1 & 10445.1 \\
+          6 & 10s & IMPROVED$_{50}$ & 58.4 & 10603.4 \\
+          7 & 10s & IMPROVED$_{10}$ & 58.4 & 11081.5 \\
+          8 & 10s & IMPROVED$_{200}$ & 58.5 & 13270.4 \\
+          9 & 60s & IMPROVED$_{10}$ & 59.3 & 13938.7 \\
+          10 & 60s & IMPROVED$_{50}$ & 59.4 & 14727.5 \\
+          11 & 60s & IMPROVED$_{200}$ & 59.5 & 15735.7 \\
+          \bottomrule
+      \end{tabular}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+      \centering
+      \captionof{table}{Pareto points for project \DatasetEqBench{}.}
+      \setlength{\tabcolsep}{4pt}
+      \begin{tabular}{rrlrr}
+          \toprule
+          Pt. & \ToolEvoSuite{} & \ToolTeralizer{} & Det. \% & Runtime (s) \\
+          \midrule
+          1 & 1s & - & 48.1 & 26479.3 \\
+          2 & 10s & - & 50.6 & 29861.1 \\
+          3 & 1s & NAIVE$_{10}$ & 50.7 & 36727.9 \\
+          4 & 1s & IMPROVED$_{50}$ & 51.4 & 37457.4 \\
+          5 & 1s & NAIVE$_{50}$ & 51.7 & 37531.9 \\
+          6 & 10s & IMPROVED$_{10}$ & 51.9 & 41525.3 \\
+          7 & 10s & IMPROVED$_{50}$ & 53.6 & 42256.2 \\
+          8 & 10s & NAIVE$_{50}$ & 53.8 & 45398.0 \\
+          9 & 10s & IMPROVED$_{200}$ & 53.8 & 48268.6 \\
+          10 & 10s & NAIVE$_{200}$ & 54.1 & 62938.2 \\
+          11 & 60s & IMPROVED$_{50}$ & 54.5 & 68092.9 \\
+          12 & 60s & NAIVE$_{50}$ & 54.7 & 68782.2 \\
+          13 & 60s & IMPROVED$_{200}$ & 54.8 & 75081.4 \\
+          14 & 60s & NAIVE$_{200}$ & 55.0 & 93017.1 \\
+          \bottomrule
+      \end{tabular}
+  \end{minipage}
+\end{figure}
+
+large potential for runtime improvements, see examples in the discussion
+
+\subsection{RQ4 (Part 1 of 2): Causes of Unsuccessful Generalizations in the Evaluation Dataset}
+\label{sec:filtering-eval}
+
+In this section, we describe causes of unsuccessful generalizations in the main
+evaluation dataset (commons-utils + evosuite-variants, eqbench + evosuite variants).
+To get more generalizable results that enable better informed decisions about future
+research directions, we also evaluated generalization success vs. failure in <number>
+additional open source projects beyond the main evaluation dataset. Results of the
+extended evaluation are discussed in Section~\ref{sec:filtering-eval-extended}.
+
+overall test / assertion / generalization exclusions
+
+\begin{table}[H]
+  \caption{Included and excluded counts by variant and level.}
+  \label{tab:exclusions-summary}
+  \begin{tabular}{llrrr}
+    \toprule
+    Variant & Type & Total & \multicolumn{1}{c}{Included} & \multicolumn{1}{c}{Excluded} \\
+    \midrule
+    SHARED & Test & 23246 & 19306\; (83.1\%) & 3940\; (16.9\%) \\
+    SHARED & Assertion & 28923 & 13836\; (47.8\%) & 15087\; (52.2\%) \\
+    BASELINE & Generalization & 13836 & 13814\; (99.8\%) & 22\; (\phantom{0}0.2\%) \\
+    NAIVE$_{10}$ & Generalization & 13836 & 10743\; (77.6\%) & 3093\; (22.4\%) \\
+    NAIVE$_{50}$ & Generalization & 13836 & 9964\; (72.0\%) & 3872\; (28.0\%) \\
+    NAIVE$_{200}$ & Generalization & 13836 & 9881\; (71.4\%) & 3955\; (28.6\%) \\
+    IMPROVED$_{10}$ & Generalization & 13836 & 11788\; (85.2\%) & 2048\; (14.8\%) \\
+    IMPROVED$_{50}$ & Generalization & 13836 & 11660\; (84.3\%) & 2176\; (15.7\%) \\
+    IMPROVED$_{200}$ & Generalization & 13836 & 11597\; (83.8\%) & 2239\; (16.2\%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+filtering-based test / assertion / generalization exclusions
+
+\begin{table}[H]
+  \caption{Filtering results for tests, assertions, and generalizations by filter and (generalization) variant.}
+  \label{tab:exclusions-filtering}
+  \begin{tabular}{lllrrr}
+    \toprule
+    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Reject} \\
+    \midrule
+    SHARED & Test & NonPassingTest & 23246 & 21719\; (93.4\%) & 1527.0\; (\phantom{0}6.6\%) \\
+    SHARED & Test & TestType & 23246 & 23066\; (99.2\%) & 180.0\; (\phantom{0}0.8\%) \\
+    SHARED & Test & NoAssertions & 21532 & 19306\; (89.7\%) & 2226.0\; (10.3\%) \\
+    \midrule
+    SHARED & Assertion & ExcludedTest & 28923 & 27326\; (94.5\%) & 1597.0\; (\phantom{0}5.5\%) \\
+    SHARED & Assertion & MissingValue & 28923 & 21766\; (75.3\%) & 7157.0\; (24.7\%) \\
+    SHARED & Assertion & ParameterType & 28923 & 17835\; (61.7\%) & 11088.0\; (38.3\%) \\
+    SHARED & Assertion & UnsupportedAssertion & 28923 & 28180\; (97.4\%) & 743.0\; (\phantom{0}2.6\%) \\
+    SHARED & Assertion & VoidReturnType & 28923 & 21763\; (75.2\%) & 7160.0\; (24.8\%) \\
+    \midrule
+    BASELINE & Generalization & NonPassingTest & 13836 & 13814\; (99.8\%) & 22.0\; (\phantom{0}0.2\%) \\
+    NAIVE$_{10}$ & Generalization & NonPassingTest & 13804 & 10743\; (77.8\%) & 3061.0\; (22.2\%) \\
+    NAIVE$_{50}$ & Generalization & NonPassingTest & 13804 & 9964\; (72.2\%) & 3840.0\; (27.8\%) \\
+    NAIVE$_{200}$ & Generalization & NonPassingTest & 13804 & 9881\; (71.6\%) & 3923.0\; (28.4\%) \\
+    IMPROVED$_{10}$ & Generalization & NonPassingTest & 13804 & 11788\; (85.4\%) & 2016.0\; (14.6\%) \\
+    IMPROVED$_{50}$ & Generalization & NonPassingTest & 13804 & 11660\; (84.5\%) & 2144.0\; (15.5\%) \\
+    IMPROVED$_{200}$ & Generalization & NonPassingTest & 13804 & 11597\; (84.0\%) & 2207.0\; (16.0\%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+failing tests
+
+\begin{table}[H]
+  \caption{Number of test execution failures by exception type and (generalization) variant.}
+  \label{tab:exclusions-test-fails}
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+    Variant & ORIGINAL & BASELINE & \multicolumn{3}{c}{NAIVE} & \multicolumn{3}{c}{IMPROVED} \\
+    \cmidrule(lr){4-6}
+    \cmidrule(lr){7-9}
+    Tries & - & - & 10 & 50 & 200 & 10 & 50 & 200 \\
+    \midrule
+    ArithmeticException & 0 & 0 & 99 & 99 & 99 & 57 & 58 & 58 \\
+    AssertionFailedError & 132 & 22 & 729 & 803 & 819 & 752 & 845 & 866 \\
+    NumberFormatException & 0 & 0 & 0 & 0 & 0 & 18 & 18 & 18 \\
+    TooManyFilterMissesException & 0 & 0 & 2233 & 2938 & 3005 & 1189 & 1223 & 1265 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+@TODO: Remove Table~\ref{tab:exclusions-spf}. Describe SPF execution failures in text only.
+
+\begin{table}[H]
+  \centering
+  \caption{Number of SPF execution failures by error type.}
+  \label{tab:exclusions-spf}
+  \begin{tabular}{lrr}
+    \toprule
+    Error Type & Total & Percent \\
+    \midrule
+    SPF exception & 1540 & 51.42 \\
+    PC size limit exceeded & 790 & 26.38 \\
+    Depth limit exceeded & 524 & 17.50 \\
+    Teralizer exception & 97 & 3.24 \\
+    Execution timeout & 28 & 0.93 \\
+    OutOfMemoryError & 16 & 0.53 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
