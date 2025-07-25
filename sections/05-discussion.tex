@@ -1,0 +1,57 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Benefits of the Approach}
+\label{sec:benefits-of-the-approach}
+
+\subsection{Potential for Future Improvements}
+\label{sec:potential-for-improvements}
+
+\subsubsection{Improving the Mutation Score of Generalized Tests}
+\label{sec:improving-the-mutation-score}
+
+\subsubsection{Improving the Size of Generalized Tests}
+\label{sec:improving-the-test-size}
+
+\subsubsection{Improving the Runtime of Test Generalization}
+\label{sec:improving-the-runtime}
+
+primary runtime costs are from external tools (i.e., jqwik + PIT)
+
+mutation testing runtimes could likely be improved
+through the use of the pitest accelerator plugin (\url{https://docs.arcmutate.com/docs/accelerator.html}),
+thus, further improving results of Teralizer relative to EvoSuite
+(website claims "analysis time for Commons Lang is reduced from over 55 minutes to under 18");
+however, the plugin is not available without a license
+
+also, parallelization would be possible rather easily for many Teralizer tasks
+(and also for PIT, which only runs single-threaded by default)
+(supposedly, jqwik will get parallelization support in major version 2, source (2024-05-14): \url{https://github.com/jqwik-team/jqwik/issues/45#issuecomment-2109949764})
+
+for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
+
+\subsubsection{Reducing the Number of Unsuccessful Generalizations}
+\label{sec:reducing-unsuccessful-generalizations}
+
+\subsubsection{Using Test Generalization for Test Suite Reduction}
+\label{sec:test-suite-reduction}
+
+\subsubsection{Dealing with Overfitting}
+\label{sec:overfitting}
+
+We do not generate assertions, so overfitting is less pronounced than if we did.
+However, we still rely on the current implementation as the source of truth,
+encoding the exact behavior of it in the generalized tests (at least as far as
+the behavior is tested by assertions in the original, non-generalized test suite).
+
+\subsection{Threats to Validity}
+\label{sec:threats-to-validity}
+
+\subsubsection{Construct Validity}
+\label{sec:construct-validity}
+
+\subsubsection{Internal Validity}
+\label{sec:internal-validity}
+
+\subsubsection{External Validity}
+\label{sec:external-validity}
