@@ -1,77 +1,49 @@
 \subsection{Evaluation Setup}
 \label{sec:evaluation-setup}
 
-To collect the necessary data to answer RQ1-RQ4,
-we executed \ToolTeralizer{} once for every project in the evaluation dataset
-on a MacBook Air with M2 processor and 24~GB of memory
-(for threats to validity resulting from this setup, see Section~\ref{sec:threats-to-validity}).
-The JVM settings for \texttt{InitialHeapSize} and \texttt{MaxHeapSize}
-were kept at their default values, i.e., 384~MB (${1/64}$th of memory) for \texttt{InitialialHeapSize} and 6~GB (${1/4}$th of memory) for \texttt{MaxHeapSize}.
-Further details about the used execution environments and settings are provided
-in the \textit{Setup} sections of the the individual research questions.
-Since there are no existing approaches
-that automatically create property-based tests from existing (unit) tests,
-no other tools are included in the evaluation.
-Instead, we compare the original,
-human written and \ToolEvoSuite{} generated test suites in the evaluation dataset
-to the augmented / generalized test suites created by \ToolTeralizer{}.
-As described in Section~\ref{sec:approach},
-\ToolTeralizer{} creates a total of nine variants
-of each target project / test suite
-throughout its execution
-to analyze how different settings or combinations thereof
-affect the generalization results.
-We refer to these variants as:
+We systematically evaluated test generalization effectiveness, runtime cost, and practical boundaries
+using eight test suite variants per project.
+All experiments were run on a MacBook Air with M2 processor and 24~GB of memory,
+maintaining default JVM settings (384~MB initial heap, ${1/64}$th of memory; 6~GB maximum heap, ${1/4}$th of memory).
+For threats to validity resulting from this setup, see Section~\ref{sec:threats-to-validity}.
+The eight project / test suite variants created by \ToolTeralizer{} serve the following purposes:
 
 \begin{itemize}
-  \item \VariantOriginal{}:
-    The original project without any modifications applied by \ToolTeralizer{}.
-  \item \VariantInitial{}:
-    The state of the project
-    after project instrumentation, test analysis, and specification extraction have concluded 
-    (see Sections~\ref{sec:project-instrumentation}--\ref{sec:specification-extraction})
-    but before any tests have been generalized.
-    Tests for which these steps were not successful
-    are excluded from this project variant and,
-    therefore, are not included in any further generalization steps.
-    An overview of excluded tests is provided in Section~\ref{sec:filtering-eval}
-    when discussing the results of RQ4.
-  \item \VariantBaseline{}:
-    The state of the project
-    after \VariantBaseline{} generalization has been applied
-    (see Section~\ref{sec:baseline-generalization}).
-  \item \VariantNaiveA{}, \VariantNaiveB{}, \VariantNaiveC{}:
-    The state of the project
-    after \VariantNaive{} generalization has been applied.
-    As described in Section~\ref{sec:naive-generalization},
-    the subscript values indicate the values used for \ToolJqwik{}'s \tries{} setting.
-  \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}:
-    The state of the project
-    after \VariantImproved{} generalization has been applied
-    (see Section~\ref{sec:improved-generalization}).
-    The subscript values indicate the values used for \ToolJqwik{}'s \tries{} setting.
+  \item \VariantInitial{}: The project after instrumentation, test analysis, and specification extraction
+    (Sections~\ref{sec:project-instrumentation}--\ref{sec:specification-extraction}),
+    excluding tests unsuitable for generalization.
+    This project variant is the starting point for all of the following generalizations and serves as a baseline comparison point for most evaluations.
+    
+  \item \VariantBaseline{}: Tests converted to property-based format while retaining only original inputs
+    (Section~\ref{sec:baseline-generalization}).
+    This isolates the runtime overhead of the property-based testing framework
+    from actual input generalization effects.
+    
+  \item \VariantNaiveA{}, \VariantNaiveB{}, \VariantNaiveC{}: Basic generalization strategy
+    using random input generation filtered by extracted constraints
+    (Section~\ref{sec:naive-generalization}).
+    The subscripts indicate 10/50/200 test executions (\ToolJqwik{} \tries{}) respectively.
+    
+  \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}: Refined generalization strategy
+    incorporating constraint-aware input generation to reduce filtering failures
+    (Section~\ref{sec:improved-generalization}).
+    The subscripts indicate 10/50/200 test executions.
 \end{itemize}
 
-In addition to the source code of the two pre-generalization variants
-(\VariantOriginal{} and \VariantInitial)
-as well as the seven post-generalization variants
-(\VariantBaseline{},
-\VariantNaive{} with 10 / 50 / 200 \tries{},
-and \VariantImproved{} with 10 / 50 / 200 \tries{}),
-\ToolTeralizer{} also creates and stores (meta) data and (intermediate) processing results
-at various stages throughout its execution
-in a PostgreSQL database and in log files.
-This data includes, for example,
-(i) descriptions of identified tests and assertions
-(e.g., names, involved data types, lines of code),
-(ii) information about executed processing tasks
-(e.g., processing status, causes of failures, execution time),
-and (iii) raw tool outputs
-(e.g., console output logs, JUnit / \ToolJacoco{} / \ToolPit{} reports , extracted input-/output-specifications).
-For a more detailed overview of the collected data, see Section~\ref{sec:collected-data}.
-The evaluation results presented in the following sections
-are generated from the collected data via Jupyter notebooks.
-To aid independent validation and replication of our results,
-all of the collected data, the full Java implementation of \ToolTeralizer{},
-and the Jupyter notebooks used for the evaluation
-are publicly available in our replication package~\cite{replicationpackage}.
+These variants enable systematic analysis across our research questions.
+The progression from \VariantNaive{} to \VariantImproved{} demonstrates effectiveness trade-offs
+resulting from different constraint handling strategies (RQ1).
+\VariantBaseline{} quantifies the inherent runtime overhead of property-based tests compared to unit tests (RQ2).
+Furthermore, the scaling behavior across 10/50/200 test executions reveals computational trade-offs
+and plateau effects (RQ3).
+Failure patterns across all variants highlight the current boundaries
+of the proposed generalization strategies (RQ4).
+
+Beyond the project variant codebases, \ToolTeralizer{} captures comprehensive data and metadata
+at various stages throughout its execution in a PostgreSQL database and in log files.
+This data includes, for example, test and assertion descriptions,
+processing task outcomes with detailed failure causes,
+and complete tool outputs from JUnit, \ToolJacoco{}, and \ToolPit{}.
+The full dataset, together with the \ToolTeralizer{} implementation
+and data analysis notebooks, forms our replication package~\cite{replicationpackage},
+supporting reproducibility and extension of our work.
