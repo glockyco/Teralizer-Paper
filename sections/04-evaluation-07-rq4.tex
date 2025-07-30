@@ -1,3 +1,105 @@
+\subsection{RQ4 (Part 1 of 2): Causes of Unsuccessful Generalizations in the Evaluation Dataset}
+\label{sec:filtering-eval}
+
+In this section, we describe causes of unsuccessful generalizations in the main
+evaluation dataset (commons-utils + evosuite-variants, eqbench + evosuite variants).
+To get more generalizable results that enable better informed decisions about future
+research directions, we also evaluated generalization success vs. failure in <number>
+additional open source projects beyond the main evaluation dataset. Results of the
+extended evaluation are discussed in Section~\ref{sec:filtering-eval-extended}.
+
+overall test / assertion / generalization exclusions
+
+\begin{table}[H]
+  \caption{Included and excluded counts by variant and level.}
+  \label{tab:exclusions-summary}
+  \begin{tabular}{llrrr}
+    \toprule
+    Variant & Type & Total & \multicolumn{1}{c}{Included} & \multicolumn{1}{c}{Excluded} \\
+    \midrule
+    SHARED & Test & 23246 & 19306\; (83.1\%) & 3940\; (16.9\%) \\
+    SHARED & Assertion & 28923 & 13836\; (47.8\%) & 15087\; (52.2\%) \\
+    BASELINE & Generalization & 13836 & 13814\; (99.8\%) & 22\; (\phantom{0}0.2\%) \\
+    NAIVE$_{10}$ & Generalization & 13836 & 10743\; (77.6\%) & 3093\; (22.4\%) \\
+    NAIVE$_{50}$ & Generalization & 13836 & 9964\; (72.0\%) & 3872\; (28.0\%) \\
+    NAIVE$_{200}$ & Generalization & 13836 & 9881\; (71.4\%) & 3955\; (28.6\%) \\
+    IMPROVED$_{10}$ & Generalization & 13836 & 11788\; (85.2\%) & 2048\; (14.8\%) \\
+    IMPROVED$_{50}$ & Generalization & 13836 & 11660\; (84.3\%) & 2176\; (15.7\%) \\
+    IMPROVED$_{200}$ & Generalization & 13836 & 11597\; (83.8\%) & 2239\; (16.2\%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+filtering-based test / assertion / generalization exclusions
+
+\begin{table}[H]
+  \caption{Filtering results for tests, assertions, and generalizations by filter and (generalization) variant.}
+  \label{tab:exclusions-filtering}
+  \begin{tabular}{lllrrr}
+    \toprule
+    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Reject} \\
+    \midrule
+    SHARED & Test & NonPassingTest & 23246 & 21719\; (93.4\%) & 1527.0\; (\phantom{0}6.6\%) \\
+    SHARED & Test & TestType & 23246 & 23066\; (99.2\%) & 180.0\; (\phantom{0}0.8\%) \\
+    SHARED & Test & NoAssertions & 21532 & 19306\; (89.7\%) & 2226.0\; (10.3\%) \\
+    \midrule
+    SHARED & Assertion & ExcludedTest & 28923 & 27326\; (94.5\%) & 1597.0\; (\phantom{0}5.5\%) \\
+    SHARED & Assertion & MissingValue & 28923 & 21766\; (75.3\%) & 7157.0\; (24.7\%) \\
+    SHARED & Assertion & ParameterType & 28923 & 17835\; (61.7\%) & 11088.0\; (38.3\%) \\
+    SHARED & Assertion & UnsupportedAssertion & 28923 & 28180\; (97.4\%) & 743.0\; (\phantom{0}2.6\%) \\
+    SHARED & Assertion & VoidReturnType & 28923 & 21763\; (75.2\%) & 7160.0\; (24.8\%) \\
+    \midrule
+    BASELINE & Generalization & NonPassingTest & 13836 & 13814\; (99.8\%) & 22.0\; (\phantom{0}0.2\%) \\
+    NAIVE$_{10}$ & Generalization & NonPassingTest & 13804 & 10743\; (77.8\%) & 3061.0\; (22.2\%) \\
+    NAIVE$_{50}$ & Generalization & NonPassingTest & 13804 & 9964\; (72.2\%) & 3840.0\; (27.8\%) \\
+    NAIVE$_{200}$ & Generalization & NonPassingTest & 13804 & 9881\; (71.6\%) & 3923.0\; (28.4\%) \\
+    IMPROVED$_{10}$ & Generalization & NonPassingTest & 13804 & 11788\; (85.4\%) & 2016.0\; (14.6\%) \\
+    IMPROVED$_{50}$ & Generalization & NonPassingTest & 13804 & 11660\; (84.5\%) & 2144.0\; (15.5\%) \\
+    IMPROVED$_{200}$ & Generalization & NonPassingTest & 13804 & 11597\; (84.0\%) & 2207.0\; (16.0\%) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+failing tests
+
+\begin{table}[H]
+  \caption{Number of test execution failures by exception type and (generalization) variant.}
+  \label{tab:exclusions-test-fails}
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+    Variant & ORIGINAL & BASELINE & \multicolumn{3}{c}{NAIVE} & \multicolumn{3}{c}{IMPROVED} \\
+    \cmidrule(lr){4-6}
+    \cmidrule(lr){7-9}
+    Tries & - & - & 10 & 50 & 200 & 10 & 50 & 200 \\
+    \midrule
+    ArithmeticException & 0 & 0 & 99 & 99 & 99 & 57 & 58 & 58 \\
+    AssertionFailedError & 132 & 22 & 729 & 803 & 819 & 752 & 845 & 866 \\
+    NumberFormatException & 0 & 0 & 0 & 0 & 0 & 18 & 18 & 18 \\
+    TooManyFilterMissesException & 0 & 0 & 2233 & 2938 & 3005 & 1189 & 1223 & 1265 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+@TODO: Remove Table~\ref{tab:exclusions-spf}. Describe SPF execution failures in text only.
+
+\begin{table}[H]
+  \centering
+  \caption{Number of SPF execution failures by error type.}
+  \label{tab:exclusions-spf}
+  \begin{tabular}{lrr}
+    \toprule
+    Error Type & Total & Percent \\
+    \midrule
+    SPF exception & 1540 & 51.42 \\
+    PC size limit exceeded & 790 & 26.38 \\
+    Depth limit exceeded & 524 & 17.50 \\
+    Teralizer exception & 97 & 3.24 \\
+    Execution timeout & 28 & 0.93 \\
+    OutOfMemoryError & 16 & 0.53 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 \subsection{RQ4 (Part 2 of 2): Causes of Unsuccessful Generalizations in Other Open Source Projects}
 \label{sec:filtering-eval-extended}
 
