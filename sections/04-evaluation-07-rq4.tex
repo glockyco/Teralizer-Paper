@@ -10,95 +10,19 @@ extended evaluation are discussed in Section~\ref{sec:filtering-eval-extended}.
 
 overall test / assertion / generalization exclusions
 
-\begin{table}[H]
-  \caption{Included and excluded counts by variant and level.}
-  \label{tab:exclusions-summary}
-  \begin{tabular}{llrrr}
-    \toprule
-    Variant & Type & Total & \multicolumn{1}{c}{Included} & \multicolumn{1}{c}{Excluded} \\
-    \midrule
-    SHARED & Test & 23246 & 19306\; (83.1\%) & 3940\; (16.9\%) \\
-    SHARED & Assertion & 28923 & 13836\; (47.8\%) & 15087\; (52.2\%) \\
-    BASELINE & Generalization & 13836 & 13814\; (99.8\%) & 22\; (\phantom{0}0.2\%) \\
-    NAIVE$_{10}$ & Generalization & 13836 & 10743\; (77.6\%) & 3093\; (22.4\%) \\
-    NAIVE$_{50}$ & Generalization & 13836 & 9964\; (72.0\%) & 3872\; (28.0\%) \\
-    NAIVE$_{200}$ & Generalization & 13836 & 9881\; (71.4\%) & 3955\; (28.6\%) \\
-    IMPROVED$_{10}$ & Generalization & 13836 & 11788\; (85.2\%) & 2048\; (14.8\%) \\
-    IMPROVED$_{50}$ & Generalization & 13836 & 11660\; (84.3\%) & 2176\; (15.7\%) \\
-    IMPROVED$_{200}$ & Generalization & 13836 & 11597\; (83.8\%) & 2239\; (16.2\%) \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-exclusions-summary}
 
 filtering-based test / assertion / generalization exclusions
 
-\begin{table}[H]
-  \caption{Filtering results for tests, assertions, and generalizations by filter and (generalization) variant.}
-  \label{tab:exclusions-filtering}
-  \begin{tabular}{lllrrr}
-    \toprule
-    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Reject} \\
-    \midrule
-    SHARED & Test & NonPassingTest & 23246 & 21719\; (93.4\%) & 1527.0\; (\phantom{0}6.6\%) \\
-    SHARED & Test & TestType & 23246 & 23066\; (99.2\%) & 180.0\; (\phantom{0}0.8\%) \\
-    SHARED & Test & NoAssertions & 21532 & 19306\; (89.7\%) & 2226.0\; (10.3\%) \\
-    \midrule
-    SHARED & Assertion & ExcludedTest & 28923 & 27326\; (94.5\%) & 1597.0\; (\phantom{0}5.5\%) \\
-    SHARED & Assertion & MissingValue & 28923 & 21766\; (75.3\%) & 7157.0\; (24.7\%) \\
-    SHARED & Assertion & ParameterType & 28923 & 17835\; (61.7\%) & 11088.0\; (38.3\%) \\
-    SHARED & Assertion & UnsupportedAssertion & 28923 & 28180\; (97.4\%) & 743.0\; (\phantom{0}2.6\%) \\
-    SHARED & Assertion & VoidReturnType & 28923 & 21763\; (75.2\%) & 7160.0\; (24.8\%) \\
-    \midrule
-    BASELINE & Generalization & NonPassingTest & 13836 & 13814\; (99.8\%) & 22.0\; (\phantom{0}0.2\%) \\
-    NAIVE$_{10}$ & Generalization & NonPassingTest & 13804 & 10743\; (77.8\%) & 3061.0\; (22.2\%) \\
-    NAIVE$_{50}$ & Generalization & NonPassingTest & 13804 & 9964\; (72.2\%) & 3840.0\; (27.8\%) \\
-    NAIVE$_{200}$ & Generalization & NonPassingTest & 13804 & 9881\; (71.6\%) & 3923.0\; (28.4\%) \\
-    IMPROVED$_{10}$ & Generalization & NonPassingTest & 13804 & 11788\; (85.4\%) & 2016.0\; (14.6\%) \\
-    IMPROVED$_{50}$ & Generalization & NonPassingTest & 13804 & 11660\; (84.5\%) & 2144.0\; (15.5\%) \\
-    IMPROVED$_{200}$ & Generalization & NonPassingTest & 13804 & 11597\; (84.0\%) & 2207.0\; (16.0\%) \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-exclusions-filtering}
 
 failing tests
 
-\begin{table}[H]
-  \caption{Number of test execution failures by exception type and (generalization) variant.}
-  \label{tab:exclusions-test-fails}
-  \begin{tabular}{lrrrrrrrr}
-    \toprule
-    Variant & ORIGINAL & BASELINE & \multicolumn{3}{c}{NAIVE} & \multicolumn{3}{c}{IMPROVED} \\
-    \cmidrule(lr){4-6}
-    \cmidrule(lr){7-9}
-    Tries & - & - & 10 & 50 & 200 & 10 & 50 & 200 \\
-    \midrule
-    ArithmeticException & 0 & 0 & 99 & 99 & 99 & 57 & 58 & 58 \\
-    AssertionFailedError & 132 & 22 & 729 & 803 & 819 & 752 & 845 & 866 \\
-    NumberFormatException & 0 & 0 & 0 & 0 & 0 & 18 & 18 & 18 \\
-    TooManyFilterMissesException & 0 & 0 & 2233 & 2938 & 3005 & 1189 & 1223 & 1265 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-exclusions-test-fails}
 
 @TODO: Remove Table~\ref{tab:exclusions-spf}. Describe SPF execution failures in text only.
 
-\begin{table}[H]
-  \centering
-  \caption{Number of SPF execution failures by error type.}
-  \label{tab:exclusions-spf}
-  \begin{tabular}{lrr}
-    \toprule
-    Error Type & Total & Percent \\
-    \midrule
-    SPF exception & 1540 & 51.42 \\
-    PC size limit exceeded & 790 & 26.38 \\
-    Depth limit exceeded & 524 & 17.50 \\
-    Teralizer exception & 97 & 3.24 \\
-    Execution timeout & 28 & 0.93 \\
-    OutOfMemoryError & 16 & 0.53 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-exclusions-spf}
 
 \subsection{RQ4 (Part 2 of 2): Causes of Unsuccessful Generalizations in Other Open Source Projects}
 \label{sec:filtering-eval-extended}
@@ -106,51 +30,9 @@ failing tests
 This evaluation only uses the IMPROVED$_{200}$
 generalization variant, but results also apply to all other variants.
 
-\begin{table}[H]
-  \caption{Number of processing failures and remaining projects per processing stage.}
-  \label{tab:processing-failures-per-stage}
-  \begin{tabular}{l r r}
-    \toprule
-    Processing Stage & Failures & Remaining Projects \\
-    \midrule
-    Total projects & - & 1160\; (\phantom{.}100 \%) \\
-    \cmidrule(lr){1-3}
-    SETUP\_PROJECT & 355 & 805\; (69.4 \%) \\
-    BUILD\_PROJECT\_ORIGINAL & 189 & 616\; (53.1 \%) \\
-    BUILD\_SPOON\_MODEL & 8 & 608\; (52.4 \%) \\
-    EXECUTE\_TESTS\_ORIGINAL & 61 & 547\; (47.2 \%) \\
-    COLLECT\_JUNIT\_REPORTS\_ORIGINAL & 31 & 516\; (44.5 \%) \\
-    BUILD\_PROJECT\_INSTRUMENTED & 1 & 515\; (44.4 \%) \\
-    EXECUTE\_TESTS\_INITIAL & 130 & 385\; (33.2 \%) \\
-    COLLECT\_JACOCO\_DATA\_INITIAL & 41 & 344\; (29.7 \%) \\
-    COLLECT\_PIT\_DATA\_INITIAL & 64 & 280\; (24.1 \%) \\
-    COLLECT\_PIT\_DATA\_GENERALIZED & 270 & 10\; (\phantom{0}0.9 \%) \\
-    \cmidrule(lr){1-3}
-    Successfully processed & - & 10\; (\phantom{0}0.9 \%) \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-processing-failures-per-stage}
 
-\begin{table}[H]
-  \caption{Causes of processing failures per processing stage.}
-  \label{tab:processing-failure-causes}
-  \begin{tabularx}{\textwidth}{l X}
-    \toprule
-    Processing Stage & Causes of Processing Failures \\
-    \midrule
-    SETUP\_PROJECT & dependency resolution error (329), sources / tests not found (26) \\
-    BUILD\_PROJECT\_ORIGINAL & compilation error (171), compilation outputs not found (18) \\
-    BUILD\_SPOON\_MODEL & Spoon execution error (8) \\
-    EXECUTE\_TESTS\_ORIGINAL & JUnit execution error (13), timeout exceeded (48) \\
-    COLLECT\_JUNIT\_REPORTS\_ORIGINAL & JUnit outputs not found (31) \\
-    BUILD\_PROJECT\_INSTRUMENTED & compilation error (1) \\
-    EXECUTE\_TESTS\_INITIAL & all tests excluded (129), timeout exceeded (1) \\
-    COLLECT\_JACOCO\_DATA\_INITIAL & JaCoCo execution error (1), JaCoCo outputs not found (40) \\
-    COLLECT\_PIT\_DATA\_INITIAL & PIT execution error (16), PIT outputs not found (4), all classes excluded (3), failed to map PIT data to a test (1), timeout exceeded (40) \\
-    COLLECT\_PIT\_DATA\_GENERALIZED & all generalizations excluded (269), failed to map PIT data to a generalization (1) \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
+\input{tables/tab-processing-failure-causes}
 
 Broadly speaking, there are three main ways to increase the number of projects
 that can be successfully processed: (i)~reducing exclusions caused by filtering
@@ -161,27 +43,7 @@ as well as external tool errors (8 + 13 + 1 + 16 = 38 projects) are less actiona
 Furthermore, Teralizer errors only occur in a small number of cases (1 + 1 + 1 = 3 projects),
 so also offer comparatively little opportunity for improvements.
 
-\begin{table}[H]
-  \caption{Filtering results of the extended dataset for tests, assertions, and generalizations.}
-  \label{tab:exclusions-filtering-extended}
-  \begin{tabular}{lllrrr}
-    \toprule
-    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Reject} \\
-    \midrule
-    SHARED & Test & NonPassingTest & 74332 & 65579\; (88.2\%) & 8753.0\; (11.8\%) \\
-    SHARED & Test & TestType & 74332 & 65052\; (87.5\%) & 9280.0\; (12.5\%) \\
-    SHARED & Test & NoAssertions & 56853 & 33390\; (58.7\%) & 23463.0\; (41.3\%) \\
-    \midrule
-    SHARED & Assertion & ExcludedTest & 122166 & 101519\; (83.1\%) & 20647.0\; (16.9\%) \\
-    SHARED & Assertion & MissingValue & 122166 & 51430\; (42.1\%) & 70736.0\; (57.9\%) \\
-    SHARED & Assertion & ParameterType & 122166 & 5393\; (\phantom{0}4.4\%) & 116773.0\; (95.6\%) \\
-    SHARED & Assertion & ReturnType & 122166 & 11650\; (\phantom{0}9.5\%) & 110516.0\; (90.5\%) \\
-    SHARED & Assertion & UnsupportedAssertion & 122166 & 92996\; (76.1\%) & 29170.0\; (23.9\%) \\
-    \midrule
-    IMPROVED$_{200}$ & Generalization & NonPassingTest & 229 & 206\; (90.0\%) & 23.0\; (10.0\%) \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-exclusions-filtering-extended}
 
 The most common filtering reasons are unsupported parameter and return types.
 

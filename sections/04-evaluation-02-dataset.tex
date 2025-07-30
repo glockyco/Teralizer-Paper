@@ -165,28 +165,4 @@ For practical examples of these differences, see Figure~\ref{fig:@TODO}.
 
 descriptive statistics (evosuite runtime, number of classes, number of tests, LOC, ...)
 
-\begin{table}[H]
-  \caption{Number of files, classes, source lines of code (SLOC), and test methods per project.}
-  \label{tab:dataset-statistics}
-  \begin{tabular}{lrrrrrrr}
-    \toprule
-    & \multicolumn{3}{c}{Implementation} & \multicolumn{4}{c}{Test} \\
-    \cmidrule(lr){2-4} \cmidrule(lr){5-8}
-    Project & Files & Classes & SLOC & Files & Classes & SLOC & Methods \\
-    \midrule
-    \DatasetEqBenchA{} & 544 & 652 & 27,871 & 544 & 544 & 35,666 & 4,718 \\
-    \DatasetEqBenchB{} & 544 & 652 & 27,871 & 543 & 543 & 36,937 & 4,875 \\
-    \DatasetEqBenchC{} & 544 & 652 & 27,871 & 544 & 544 & 37,836 & 4,974 \\
-    \midrule
-    \DatasetCommonsA{} & 106 & 247 & 19,709 & 103 & 103 & 17,524 & 2,481 \\
-    \DatasetCommonsB{} & 106 & 247 & 19,709 & 103 & 103 & 19,082 & 2,738 \\
-    \DatasetCommonsC{} & 106 & 247 & 19,709 & 102 & 102 & 18,839 & 2,735 \\
-    \midrule
-    \DatasetCommonsDev{} & 106 & 247 & 19,709 & 80 & 119 & 14,389 & 725 \\
-    \midrule
-    \DatasetRepoReapers{} (total) & 79,789 & 96,589 & 5,203,516 & 40,872 & 55,038 & 3,905,071 & 167,046 \\
-    \DatasetRepoReapers{} (mean) & 68 & 83 & 4,478 & 35 & 47 & 3,360 & 143 \\
-    \DatasetRepoReapers{} (median) & 51 & 57 & 3,241 & 22 & 26 & 2,053 & 69 \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-dataset-statistics}

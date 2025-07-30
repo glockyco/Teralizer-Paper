@@ -69,37 +69,7 @@ that all cover the same input partition
 with a single property-based test that covers the same partition instead.
 For further discussion and related work about this, see Section~\ref{sec:test-suite-reduction}.
 
-\begin{table}[H]
-\caption{Number of tests before and after generalization, with changes, per project.}
-\label{tab:tests-per-project}
-\begin{tabular}{llrrrrrr}
-\toprule
- & & \multicolumn{6}{c}{Tests} \\
-\cmidrule(lr){3-8}
-Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
-\midrule
-\DatasetEqBenchA{} & \VariantNaiveC{} & 4718 & 177 & 177 & 4718 & -- & -- \\
-\DatasetEqBenchB{} & \VariantNaiveC{} & 4875 & 174 & 173 & 4876 & +1 & +0.02 \% \\
-\DatasetEqBenchC{} & \VariantNaiveC{} & 4974 & 174 & 174 & 4974 & -- & -- \\
-\midrule
-\DatasetEqBenchA{} & \VariantImprovedC{} & 4718 & 206 & 206 & 4718 & -- & -- \\
-\DatasetEqBenchB{} & \VariantImprovedC{} & 4875 & 211 & 210 & 4876 & +1 & +0.02 \% \\
-\DatasetEqBenchC{} & \VariantImprovedC{} & 4974 & 210 & 210 & 4974 & -- & -- \\
-\midrule
-\DatasetCommonsA{} & \VariantNaiveC{} & 2481 & 60 & 59 & 2482 & +1 & +0.04 \% \\
-\DatasetCommonsB{} & \VariantNaiveC{} & 2738 & 63 & 62 & 2739 & +1 & +0.04 \% \\
-\DatasetCommonsC{} & \VariantNaiveC{} & 2735 & 60 & 59 & 2736 & +1 & +0.04 \% \\
-\midrule
-\DatasetCommonsA{} & \VariantImprovedC{} & 2481 & 69 & 68 & 2482 & +1 & +0.04 \% \\
-\DatasetCommonsB{} & \VariantImprovedC{} & 2738 & 70 & 69 & 2739 & +1 & +0.04 \% \\
-\DatasetCommonsC{} & \VariantImprovedC{} & 2735 & 75 & 74 & 2736 & +1 & +0.04 \% \\
-\midrule
-\DatasetCommonsDev{} & \VariantNaiveC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
-\midrule
-\DatasetCommonsDev{} & \VariantImprovedC{} & 725 & 3 & 0 & 728 & +3 & +0.41 \% \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{tables/tab-tests-per-project}
 
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
@@ -177,37 +147,7 @@ only minor changes would remain then
 (i.e., modified test annotations, inputs, and expected outputs),
 thus resolving cause (i).
 
-\begin{table}[H]
-\caption{Number of test lines before and after generalization, with changes, per project.}
-\label{tab:lines-per-project}
-\begin{tabular}{llrrrrrr}
-\toprule
- & & \multicolumn{6}{c}{Lines} \\
-\cmidrule(lr){3-8}
-Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
-\midrule
-\DatasetEqBenchA{} & \VariantNaiveC{} & 30989 & 11780 & 1127 & 41642 & +10653 & +34.4 \% \\
-\DatasetEqBenchB{} & \VariantNaiveC{} & 32503 & 11520 & 1061 & 42962 & +10459 & +32.2 \% \\
-\DatasetEqBenchC{} & \VariantNaiveC{} & 33510 & 11623 & 1069 & 44064 & +10554 & +31.5 \% \\
-\midrule
-\DatasetEqBenchA{} & \VariantImprovedC{} & 30989 & 19019 & 1302 & 48706 & +17717 & +57.2 \% \\
-\DatasetEqBenchB{} & \VariantImprovedC{} & 32503 & 20353 & 1284 & 51572 & +19069 & +58.7 \% \\
-\DatasetEqBenchC{} & \VariantImprovedC{} & 33510 & 20288 & 1285 & 52513 & +19003 & +56.7 \% \\
-\midrule
-\DatasetCommonsA{} & \VariantNaiveC{} & 16563 & 3733 & 359 & 19937 & +3374 & +20.4 \% \\
-\DatasetCommonsB{} & \VariantNaiveC{} & 18124 & 3942 & 379 & 21687 & +3563 & +19.7 \% \\
-\DatasetCommonsC{} & \VariantNaiveC{} & 17886 & 3723 & 361 & 21248 & +3362 & +18.8 \% \\
-\midrule
-\DatasetCommonsA{} & \VariantImprovedC{} & 16563 & 5261 & 413 & 21411 & +4848 & +29.3 \% \\
-\DatasetCommonsB{} & \VariantImprovedC{} & 18124 & 5423 & 421 & 23126 & +5002 & +27.6 \% \\
-\DatasetCommonsC{} & \VariantImprovedC{} & 17886 & 5801 & 452 & 23235 & +5349 & +29.9 \% \\
-\midrule
-\DatasetCommonsDev{} & \VariantNaiveC{} & 8561 & 421 & 0 & 8982 & +421 & +4.9 \% \\
-\midrule
-\DatasetCommonsDev{} & \VariantImprovedC{} & 8561 & 457 & 0 & 9018 & +457 & +5.3 \% \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{tables/tab-lines-per-project}
 
 \subsubsection{Execution Time of the Test Suite}
 \label{sec:test-suite-execution-time}
@@ -365,41 +305,11 @@ but could also reduce the runtime cost of generalized tests at the same time.
 
 @TODO: Add answer for RQ2.
 
-\begin{table}[H]
-\caption{Test suite runtime before and after generalization, with changes, per project.}
-\label{tab:runtime-per-project}
-\begin{tabular}{llrrrrrr}
-\toprule
- & & \multicolumn{6}{c}{Runtime (in seconds)} \\
-\cmidrule(lr){3-8}
-Project & Variant & Before & Added & Removed & After & Delta & Delta \% \\
-\midrule
-\DatasetEqBenchA{} & \VariantNaiveC{} & 17.44 & 100.94 & 0.74 & 117.65 & +100.20 & +574.5 \% \\
-\DatasetEqBenchB{} & \VariantNaiveC{} & 16.70 & 106.19 & 0.66 & 122.23 & +105.53 & +632.0 \% \\
-\DatasetEqBenchC{} & \VariantNaiveC{} & 18.21 & 221.07 & 0.76 & 238.52 & +220.31 & +1210.0 \% \\
-\midrule
-\DatasetEqBenchA{} & \VariantImprovedC{} & 17.44 & 101.62 & 0.68 & 118.38 & +100.94 & +578.7 \% \\
-\DatasetEqBenchB{} & \VariantImprovedC{} & 16.70 & 139.64 & 0.56 & 155.77 & +139.08 & +832.9 \% \\
-\DatasetEqBenchC{} & \VariantImprovedC{} & 18.21 & 124.68 & 0.69 & 142.20 & +123.99 & +681.0 \% \\
-\midrule
-\DatasetCommonsA{} & \VariantNaiveC{} & 4.31 & 114.42 & 0.09 & 118.64 & +114.33 & +2651.5 \% \\
-\DatasetCommonsB{} & \VariantNaiveC{} & 7.40 & 148.54 & 0.14 & 155.80 & +148.40 & +2005.2 \% \\
-\DatasetCommonsC{} & \VariantNaiveC{} & 6.30 & 122.11 & 0.07 & 128.34 & +122.04 & +1936.2 \% \\
-\midrule
-\DatasetCommonsA{} & \VariantImprovedC{} & 4.31 & 29.49 & 0.14 & 33.66 & +29.35 & +680.5 \% \\
-\DatasetCommonsB{} & \VariantImprovedC{} & 7.40 & 71.50 & 0.21 & 78.70 & +71.30 & +963.3 \% \\
-\DatasetCommonsC{} & \VariantImprovedC{} & 6.30 & 28.07 & 0.08 & 34.29 & +27.99 & +444.1 \% \\
-\midrule
-\DatasetCommonsDev{} & \VariantNaiveC{} & 7.95 & 4.54 & 0.00 & 12.48 & +4.54 & +57.1 \% \\
-\midrule
-\DatasetCommonsDev{} & \VariantImprovedC{} & 7.95 & 0.74 & 0.00 & 8.69 & +0.74 & +9.4 \% \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{tables/tab-runtime-per-project}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{fig_test_runtime_differences}
+  \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
   \caption{Runtime Comparison: Test vs. Generalization.}
   %\Description{@TODO}
   \label{fig:test-runtime-differences}

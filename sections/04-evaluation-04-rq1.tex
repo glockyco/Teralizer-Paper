@@ -56,31 +56,11 @@ Uncovered mutants are the subset of total mutants that are not executed by any i
 %Around 8000 mutants for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
 %Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
 
-\begin{table}[H]
-  \caption{Number of total, covered, and uncovered mutants in included classes per project.}
-  \label{tab:mutants-per-project}
-  \begin{tabular}{lrrrrr}
-    \toprule
-            & Included     & Included      & \multicolumn{3}{r}{Mutants} \\
-                                             \cmidrule(lr){4-6}
-    Project & Test Methods & Impl. Classes & Total & Covered & Uncovered \\
-    \midrule
-    \DatasetEqBenchA{} & 3937\; (83.4 \%) & 607\; (93.1 \%) & 23905 & 21492\; (89.9 \%) & 2413\; (10.1 \%) \\
-    \DatasetEqBenchB{} & 4049\; (83.1 \%) & 600\; (92.0 \%) & 23654 & 21657\; (91.6 \%) & 1997\; (\phantom{0}8.4 \%) \\
-    \DatasetEqBenchC{} & 4124\; (82.9 \%) & 603\; (92.5 \%) & 23663 & 22010\; (93.0 \%) & 1653\; (\phantom{0}7.0 \%) \\
-    \midrule
-    \DatasetCommonsA{} & 2079\; (83.8 \%) & 111\; (44.9 \%) & 8581 & 7536\; (87.8 \%) & 1045\; (12.2 \%) \\
-    \DatasetCommonsB{} & 2330\; (85.1 \%) & 112\; (45.3 \%) & 8391 & 7939\; (94.6 \%) & 452\; (\phantom{0}5.4 \%) \\
-    \DatasetCommonsC{} & 2326\; (85.0 \%) & 112\; (45.3 \%) & 8354 & 8109\; (97.1 \%) & 245\; (\phantom{0}2.9 \%) \\
-    \midrule
-    \DatasetCommonsDev{} & 461\; (63.6 \%) & 90\; (36.4 \%) & 8096 & 5215\; (64.4 \%) & 2881\; (35.6 \%) \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-mutants-per-project}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{fig_mutation_detection_comparison}
+  \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
   \caption{Percentage of detected mutants and improvement over INITIAL per project and generalization variant.}
   %\Description{@TODO}
   \label{fig:mutation-detection-results}
@@ -253,30 +233,7 @@ but \texttt{Increments} mutants
 represent only 0.54~\% of mutants
 in the project where they are most common.
 
-\begin{table}[H]
-  \caption{Number of mutants and percentage of detections per mutator.}
-  \label{tab:detections-per-mutator}
-  \begin{tabular}{lrrrrcrrrr}
-    \toprule
-    & & & & & \multicolumn{5}{c}{Detected \%} \\
-    \cmidrule{6-10}
-    Mutator & Total & Total \% & Min \% & Max \% & INITIAL & \multicolumn{2}{c}{NAIVE$_{200}$} & \multicolumn{2}{c}{IMPROVED$_{200}$} \\
-    \midrule
-    Math & 61841 & 59.10 & 52.34 & 62.16 & 50.99 & 54.98 & (+3.99) & 54.36 & (+3.37) \\
-    RemoveConditionalOrderElse & 11501 & 10.99 & 8.50 & 11.94 & 61.08 & 62.29 & (+1.21) & 62.47 & (+1.39) \\
-    ConditionalsBoundary & 11501 & 10.99 & 8.50 & 11.94 & 27.68 & 28.89 & (+1.21) & 30.23 & (+2.55) \\
-    PrimitiveReturns & 7731 & 7.39 & 6.15 & 10.09 & 89.42 & 89.63 & (+0.20) & 89.90 & (+0.47) \\
-    RemoveConditionalEqualElse & 5536 & 5.29 & 3.21 & 10.40 & 58.80 & 60.87 & (+2.07) & 61.00 & (+2.20) \\
-    InvertNegs & 3122 & 2.98 & 2.94 & 3.12 & 58.91 & 60.61 & (+1.70) & 60.99 & (+2.08) \\
-    VoidMethodCall & 973 & 0.93 & 0.58 & 1.35 & 24.96 & 24.96 & -- & 25.49 & (+0.53) \\
-    NullReturnVals & 933 & 0.89 & 2.13 & 3.38 & 98.77 & 98.77 & -- & 98.77 & -- \\
-    BooleanTrueReturnVals & 569 & 0.54 & 0.17 & 1.44 & 98.55 & 98.55 & -- & 98.55 & -- \\
-    Increments & 546 & 0.52 & 0.50 & 0.54 & 72.81 & 73.38 & (+0.57) & 73.50 & (+0.69) \\
-    BooleanFalseReturnVals & 250 & 0.24 & 0.09 & 0.63 & 87.87 & 87.87 & -- & 87.87 & -- \\
-    EmptyObjectReturnVals & 141 & 0.13 & 0.41 & 0.43 & 90.30 & 90.30 & -- & 90.30 & -- \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-detections-per-mutator}
 
 \paragraph{Detection Rate Results}
 Detection rates for \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} as well as
@@ -408,38 +365,7 @@ Constraints (i) and (iii) are used by the \VariantImproved{} variants.
 Constraint (ii) is not used
 because it contains the compound term \texttt{b + 1}.
 
-\begin{table}[H]
-  \caption{Model properties of mutants that are (not) detected by the \VariantImprovedC{} variant.}
-  \label{tab:mutation-detection-comparison}
-  \begin{tabular}{lcrrrrrrr}
-    \toprule
-            &          &         & \multicolumn{2}{c}{Operations} & \multicolumn{2}{c}{Constraints} & \multicolumn{2}{r}{Constraints Used} \\
-    \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
-    Project & Detected & Mutants & Mean & Median & Mean & Median & Mean & Median \\
-    \midrule
-    \DatasetEqBenchA{} & yes & 11145 & 147 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}47 \% & \phantom{0}80 \% \\
-    \DatasetEqBenchA{} & no & 10347 & 224 & 16 & 11 & 5 & \phantom{0}23 \% & \phantom{0}50 \% \\
-    \midrule
-    \DatasetEqBenchB{} & yes & 11658 & 139 & \phantom{0}9 & \phantom{0}6 & 2 & \phantom{0}62 \% & 100 \% \\
-    \DatasetEqBenchB{} & no & 9999 & 231 & 15 & \phantom{0}8 & 2 & \phantom{0}57 \% & 100 \% \\
-    \midrule
-    \DatasetEqBenchC{} & yes & 12052 & 137 & \phantom{0}9 & \phantom{0}5 & 2 & \phantom{0}69 \% & 100 \% \\
-    \DatasetEqBenchC{} & no & 9958 & 218 & 11 & \phantom{0}6 & 2 & \phantom{0}67 \% & 100 \% \\
-    \midrule
-    \DatasetCommonsA{} & yes & 4390 & 290 & 15 & \phantom{0}7 & 5 & \phantom{0}43 \% & \phantom{0}84 \% \\
-    \DatasetCommonsA{} & no & 3183 & 389 & 45 & 12 & 6 & \phantom{0}11 \% & \phantom{0}50 \% \\
-    \midrule
-    \DatasetCommonsB{} & yes & 4660 & 467 & 23 & \phantom{0}6 & 5 & \phantom{0}46 \% & \phantom{0}85 \% \\
-    \DatasetCommonsB{} & no & 3309 & 507 & 46 & \phantom{0}8 & 6 & \phantom{0}10 \% & \phantom{0}56 \% \\
-    \midrule
-    \DatasetCommonsC{} & yes & 4821 & 374 & 20 & \phantom{0}6 & 5 & \phantom{0}47 \% & \phantom{0}85 \% \\
-    \DatasetCommonsC{} & no & 3288 & 423 & 41 & 10 & 6 & \phantom{0}11 \% & \phantom{0}54 \% \\
-    \midrule
-    \DatasetCommonsDev{} & yes & 4193 & 107 & 11 & \phantom{0}4 & 4 & \phantom{0}25 \% & \phantom{0}75 \% \\
-    \DatasetCommonsDev{} & no & 1022 & 173 & 10 & \phantom{0}4 & 4 & \phantom{0}19 \% & \phantom{0}75 \% \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\input{tables/tab-mutation-detection-comparison}
 
 \paragraph{Model Properties of Detected vs.\ Undetected Mutants}
 As shown in Table~\ref{tab:mutation-detection-comparison},
