@@ -1,20 +1,23 @@
 \subsection{RQ1: Effects on Mutation Score}
 \label{sec:primary-effects-eval}
 
-In the following, we first describe
-how many tests, implementation classes, and corresponding mutants
-from the evaluation dataset
-are included in the evaluation
-in Section~\ref{sec:included-mutants}.
-Section~\ref{sec:overall-detection-rates}
-focuses on the overall detection rates
-achieved by the implemented generalization variants.
-In Section~\ref{sec:detection-rates-per-mutator},
-we provide the detection rate results for each individual mutator.
-Section~\ref{sec:boundary-detection-effectiveness}
-concludes the results for RQ1
-by investigating the effectiveness of the partition boundary detection
-used by \VariantImproved{} variants to guide input value selection.
+Mutation testing provides a rigorous measure of test effectiveness
+by evaluating a test suite's ability to detect deliberately introduced faults.
+For \ToolTeralizer{}, mutation scores reveal whether testing additional inputs
+within existing execution paths achieves the intended improvement in fault detection capabilities.
+Section~\ref{sec:included-mutants} first establishes which tests and mutants are included in the evaluation,
+revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
+Section~\ref{sec:overall-detection-rates} then quantifies detection improvements
+across projects and variants,
+demonstrating that generalization consistently improves mutation scores,
+though with varying improvement magnitudes.
+Section~\ref{sec:detection-rates-per-mutator} dissects these improvements by mutation operator,
+uncovering how much detection of different mutants benefits from generalization.
+Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
+detailed analysis of the \VariantImproved{} generalization variant,
+demonstrating that its effectiveness correlates with constraint complexity,
+i.e., projects with more complex input constraints show greater improvements
+from constraint-aware input generation.
 
 \subsubsection{Included Mutants}
 \label{sec:included-mutants}
