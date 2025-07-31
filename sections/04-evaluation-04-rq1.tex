@@ -156,129 +156,104 @@ in further detail through Pareto front analysis.
 
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
-To evaluate how capable generalized tests are
-at detecting mutants created by different mutation operators,
-we compare the detection rates
-of \VariantNaiveC{} and \VariantImprovedC{}
-to the detection rates achieved by the \VariantInitial{} test suite.
-Table \ref{tab:detections-per-mutator}
-shows the results of this evaluation,
-listing for each mutant:
-the total number of occurrences
-across the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects;
-the mean, minimum, and maximum prevalence per project
-relative to the total number of mutants;
-the detection rates of the \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} test suites,
-as well as how much the two generalized variants improve detection rates relative to \VariantInitial{}.
-Results for \VariantNaive{} and \VariantImproved{} generalizations with lower \tries{}
-follow the same trends as for \VariantNaiveC{} and \VariantImprovedC{} but are omitted for brevity.
-The full results for all variants are available in our replication package~\cite{replicationpackage}.
 
-\paragraph{Prevalence of Mutants}
-The three most common mutants,
-which represent~81.08 \% of total mutants, are
-\texttt{Math}~(59.10~\% of mutants),
-\texttt{Remove\-Conditional\-OrderElse}~(10.99~\%),
-and \texttt{Conditionals\-Boundary}~(10.99~\%) mutants
-(prevalence of \texttt{Remove\-Conditional\-Order\-Else}
-and \texttt{Conditionals\-Boundary}
-is the same because both mutators modify inequality checks).
-On the other hand, the three least common mutants are
-\texttt{Increments}~(0.52~\%),
-\texttt{Boolean\-False\-Return\-Vals}~(0.24~\%),
-and \texttt{Empty\-Object\-Return\-Vals}~(0.13~\%) mutants.
-Due to these large differences in mutant prevalences,
-overall mutation scores are much more strongly affected
-by changes in, e.g., \texttt{Math} detection rates
-than by changes in, e.g., \texttt{Increments} detection rates.
-This holds not only on an overall, aggregate level
-(i.e., across all evaluated projects),
-but also for each individual project.
-After all, prevalence of individual mutants
-shows only comparatively small differences across projects,
-as highlighted by the minimum and maximum prevalence results.
-In other words,
-mutants that are common in one project
-are also common in the others,
-whereas mutants that are uncommon in one project
-are also uncommon in the others.
-For example, \texttt{Math} mutants represent 52.34~\% of mutants
-in the project where they are least common,
-but \texttt{Increments} mutants
-represent only 0.54~\% of mutants
-in the project where they are most common.
+Generalization effectiveness varies significantly across mutation operators,
+revealing which fault types benefit most from additional test inputs
+(Table~\ref{tab:detections-per-mutator}).
+Three operators dominate the mutation landscape:
+\texttt{Math} (59.1\% of all mutants),
+\texttt{Conditionals\-Boundary} (11.0\%),
+and \texttt{Remove\-Conditional\-Order\-Else} (11.0\%).
+In contrast, the least common operators, i.e., \texttt{Increments} (0.52\%),
+\texttt{Boolean\-False\-ReturnVals} (0.24\%),
+and \texttt{Empty\-Object\-Return\-Vals} (0.13\%), together
+account for less than 1\% of all mutants.
+This large difference in mutant prevalence means that
+improvements to \texttt{Math} detection rates
+have proportionally larger impact on overall mutation scores
+than improvements to less commonly occurring mutation types.
 
 \input{tables/tab-detections-per-mutator}
 
-\paragraph{Detection Rate Results}
-Detection rates for \VariantInitial{}, \VariantNaiveC{}, and \VariantImprovedC{} as well as
-detection rate improvements compared to \VariantInitial{}
-are shown in the last three columns of the table.
-Detection rates exhibit large differences across different mutators.
-The highest detection rates of 90\%--99\% are achieved
-for mutators that directly modify return values.
-The lowest detection rates are observed
-for the \texttt{VoidMethodCall} mutator (... \% detection rate), 
-which removes calls to methods that do not produce a return value,
-and the \texttt{ConditionalsBoundary} mutator (... \% detection rate),
-which modifies the boundaries of conditionals by replacing
-\texttt{<} with \texttt{<=} and \texttt{>} with \texttt{>=} (or vice-versa).
+Initial detection rates reveal a clear pattern:
+return value mutations are caught
+in the large majority of cases (87.9--98.8\% detection),
+while behavioral mutations prove more elusive.
+For example, \texttt{VoidMethodCall} mutations achieve a detection rate of only 25.0\%
+because removing void method calls typically affects only internal state
+or produces side effects that are not directly verified by test assertions.
+\texttt{ConditionalsBoundary} mutations fare only slightly better at 27.7\% total detection rate,
+highlighting an opportunity for automated improvement.
+After all, the \texttt{Conditionals\-Boundary} mutations
+change comparison operators at partition boundaries,
+which is exactly where \VariantImproved{} generalization
+aims to generate additional test inputs.
 
-\VariantNaive{} achieves the largest improvements over \VariantInitial{}
-for the ... (...), ... (...), and ... (...) mutations.
-However, \VariantNaive{} does not improve detection rates
-for mutants created by the ... mutators.
-(@TODO: Possible explanations: (i) high initial detection rates, (ii) new assertions needed.)
-\VariantImproved{} achieves the largest improvements
-for the ... (...), ... (...), and ... (...) mutations.
-It does not achieve any improvements
-for mutants created by the ... mutators.
+\VariantNaiveC{} achieves its largest improvements on
+\texttt{Math} (4.0~percentage points),
+\texttt{RemoveConditionalEqualElse} (2.1~percentage points),
+and \texttt{InvertNegs} (1.7~percentage points).
+The success with \texttt{RemoveConditionalEqualElse} stems from
+testing diverse inputs that trigger both branches of equality checks,
+exposing mutations that force false branches.
+\texttt{Math} mutation detection similarly benefits from a more diverse
+range of tested input values because arithmetic operations often produce
+different results across input ranges, exposing mutations that might
+coincidentally produce correct results for any individual value.
+In contrast, 4 of 5 return value mutators show zero improvement:
+\texttt{Null\-Return\-Vals}, \texttt{Boolean\-True\-Return\-Vals},
+\texttt{Boolean\-False\-ReturnVals}, and \texttt{EmptyObjectReturnVals}.
+These already achieve high detection rates in the \VariantInitial{} variant (87.9--98.8\%)
+because return value mutations often directly violate test assertions,
+leaving little room for improvement through input variation.
+
+\VariantImprovedC{} demonstrates different strengths through boundary-aware generation.
+Comparing the two variants across all 12 mutation operators:
+\VariantImprovedC{} outperforms \VariantNaiveC{} for 7 operators,
+achieves the same detection rate for 4 operators (the zero-improvement return value mutations),
+and underperforms for only 1 operator (\texttt{Math}).
+The largest advantage is observed for \texttt{Conditionals\-Boundary} detection,
+where \VariantImprovedC{} achieves 2.5 percentage points improvement
+compared to \VariantNaiveC{}'s 1.2 percentage points.
+These results confirm that the boundary-focused input generation strategy
+followed by \VariantImproved{} variants achieves its intended purpose,
+and suggests that testing at partition boundaries may also provide slight benefits
+for some mutators that don't directly modify partition boundaries.
+
+The \texttt{Math} mutation results highlight the inherent trade-off
+in boundary versus non-boundary testing:
+\VariantImprovedC{} achieves 3.4 percentage points improvement
+compared to \VariantNaiveC{}'s 4.0 percentage points.
+The \VariantImprovedC{} variant achieves smaller improvements here
+because boundary-focused input generation produces less diverse arithmetic inputs,
+concentrating on boundary values rather than exploring the full numeric range
+where arithmetic mutations might create more varied outputs.
+Given that \texttt{Math} mutations comprise 59.1\% of all mutants,
+this difference significantly impacts overall mutation scores.
+To counteract these detrimental effects,
+\VariantImproved{} variants could use higher \tries{} settings
+to maintain non-boundary input coverage of \VariantNaive{}
+while adding additional boundary coverage.
+Alternatively, more sophisticated input selection strategies
+could be used to achieve a better balance between
+boundary and non-boundary testing even at lower \tries{} settings,
+thus avoiding the runtime cost of higher \tries{}.
 
 Results for the 10 / 50 \tries{} variants of \VariantNaive{} and \VariantImproved{}
 generally follow the same trends as those for the listed variants with 200 \tries{},
 albeit with correspondingly smaller detection rate improvements over \VariantInitial{}.
-(@TODO: Check the results for \VariantImprovedA{}. Those might be much worse for mutants that don't relate to conditionals.)
+For example, \VariantImprovedA{} achieves expected results for most mutation operators,
+including its characteristic advantage for \texttt{ConditionalsBoundary} mutations (2.0\% vs 0.9\% for \VariantNaiveA{}).
+The exception is \texttt{Math} mutation detection,
+where \VariantImprovedA{} achieves only 1.1\% improvement compared to 2.8\% for \VariantNaiveA{}.
+Given that \texttt{Math} mutations comprise 59.1\% of all mutants,
+this explains the low overall detection rate of \VariantImprovedA{} on \DatasetsEqBenchEs{} projects
+observed in Section~\ref{sec:overall-detection-rates}.
+With 50 \tries{}, the \texttt{Math} detection gap is noticeably smaller
+(\VariantImprovedB{} achieves 3.1\% versus \VariantNaiveB{}'s 3.6\%),
+confirming that limited \tries{} severely constrain arithmetic diversity
+only when boundary testing consumes most attempts.
 Full results for all variants are available in our replication package~\cite{replicationpackage}.
-
-\paragraph{Comparison of \VariantNaiveC{} and \VariantImprovedC{}}
-\VariantImprovedC{} outperforms \VariantNaiveC{} in terms of detection rate
-for 7 of 12 mutators,
-is on par for 4 of 12 mutators (all of which achieve no improvement for either variant),
-and underperforms for 1 of 12 mutators.
-The largest benefit of \VariantImprovedC{} over \VariantNaiveC{} is observed
-for the detection of mutants created by the \texttt{ConditionalsBound} mutator.
-Here, \VariantImprovedC{} achieves an increase of ... percentage points over \VariantInitial{},
-whereas \VariantNaiveC{} only increases detection rates by ... percentage points.
-This suggests that the improvements implemented in \VariantImproved{} variants
-to favor boundary values during input generation achieve their intended benefits.
-
-However, \VariantImprovedC{}'s benefits for the detection rate of \texttt{ConditionalsBoundary} mutants
-appear to come at the cost of decreased detection rates for \texttt{Math} mutants.
-Since the only difference between the two variants is the way in which test inputs are selected
---- \VariantNaive{} variants select inputs randomly from the given input partition; 
-\VariantImproved{} variants start with inputs at the edges of the partition  ---
-this suggests that focusing too much on boundary values
-can have detrimental effects for the detection of mutants
-that are not related to input boundaries.
-Due to the high prevalence of \texttt{Math} mutants,
-this can also result in an \emph{overall} decrease in detection rates.
-
-To counteract the detrimental effects on
-detection rates of \texttt{Math} mutants
-incurred by the input selection procedure used by \VariantImproved{} variants,
-the number of \tries{} could, for example,
-be increased for the \VariantImproved{} variants
-to adjust for the additional \tries{} spent on boundary testing
-while keeping non-boundary testing at \VariantNaive{} levels.
-More sophisticated input selection approaches
-that aim to better balance boundary and non-boundary testing
-without large increases to the number of executed \tries{}
-could perhaps further increase detection rates
-while keeping the runtime impact
-resulting from a higher number of \tries{} to a minimum.
-For a more in-depth evaluation of runtime requirements
-across different variants and numbers of \tries{}
-see Section~\ref{sec:runtime-eval}.
 
 \subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
 \label{sec:boundary-detection-effectiveness}
