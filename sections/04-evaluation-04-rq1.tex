@@ -87,118 +87,72 @@ the generalized tests detect mutations within the included subset.
   \label{fig:mutation-detection-results}
 \end{figure}
 
-% Overall observations:
 \subsubsection{Overall Mutation Detection Rates}
 \label{sec:overall-detection-rates}
-Figure~\ref{fig:mutation-detection-results} shows
-the percentage of detected mutants
-and improvement over \VariantInitial{}
-per project and generalization variant.
-Detected mutants includes
-killed (X\% of overall detections), timed-out (A\%), memory error (B\%), and run error (C\%),
-which matches the classification used by \ToolPit{}.
-Since test generalization via \ToolTeralizer{} does not affect coverage
-(as described in Sections~\ref{sec:naive-generalization} and \ref{sec:improved-generalization}),
-all results are relative to covered mutants
-i.e., uncovered mutants are not considered in the comparison
-because \ToolTeralizer{} --- by design --- cannot achieve any coverage improvements
-but also does not decrease coverage.
 
-We are using \VariantInitial{} as the baseline for mutation score comparisons
-with generalized project variants,
-which ensures that the only difference
-across compared projects is the absence or presence of generalized test cases.
-\VariantOriginal{} is not used for comparison
-because it contains additional non-generalized tests
-that are excluded in \VariantInitial{} as well as generalized project variants.
-\VariantBaseline{} is not included in the comparison
-because it always uses the same test inputs as \VariantInitial{}
-(as described in Section~\ref{sec:baseline-generalization}).
-Therefore, \VariantInitial{} and \VariantBaseline{} always achieve the same detection rates.
+Generalization improves mutation detection across all evaluated projects,
+though the magnitude varies by project type
+(Figure~\ref{fig:mutation-detection-results}).
+\DatasetsEqBenchEs{} projects show the largest improvements:
+detection rates increase from 48.1--51.6\% to 49.5--55.0\%
+across different \tries{} and generalization settings,
+representing absolute improvements of 1.2--3.9 percentage points
+(2.4--8.2\% relative increase).
+\DatasetsCommonsEs{} projects improve by 0.82--1.33 percentage points
+(1.4--2.3\% relative increase),
+while \DatasetCommonsDev{} improves by only 0.05--0.07 percentage points
+from its 80.4\% baseline.
 
-\paragraph{\VariantNaive{} Detection Rates}
+Two factors strongly affect achievable generalization improvements:
+initial test suite strength and input constraint complexity.
+\DatasetsEqBenchEs{} projects offer the most favorable conditions.
+Their EvoSuite-generated tests leave more room for enhancement
+(starting from 48.1--51.6\% detection rates)
+than the thorough \DatasetCommonsDev{} test suite,
+and the \DatasetEqBench{} benchmark's input constraints
+are simpler than the input constraints of \DatasetsCommons{},
+thus making valid input generation easier
+(as discussed in more detail in Section~\ref{sec:boundary-detection-effectiveness}).
+\DatasetsCommonsEs{} projects face one additional challenge:
+while they also start from EvoSuite-generated tests,
+the \DatasetsCommons{} methods involve more complex input specifications,
+making it harder to generate inputs that satisfy input constraints.
+\DatasetCommonsDev{} faces both challenges:
+the mature developer-written test suite already achieves 80.4\% detection
+through decades of refinement in these widely-used libraries,
+and it shares the same complex constraint characteristics as other \DatasetsCommons{} variants.
+This leaves minimal opportunity for automated improvement.
 
-\VariantNaive{} generalization improves detection rates
-for \emph{all} projects included in the evaluation dataset.
-Improvements are largest for the \DatasetsEqBenchEs{} projects.
-Here, detection rates increase from 48.10--51.64 \% to 50.67--54.98 \%
-across the different project and generalization variants.
-Thus, \VariantNaive{} detects 2.33--3.93 \% more of the total mutants
-than the corresponding \VariantInitial{} test suite,
-which is a relative increase of 4.51--8.17 \%.
-As a result, generating test suites with \ToolEvoSuite{}
-and then generalizing them with \ToolTeralizer{}
-often achieves higher detection rates than
-increasing \ToolEvoSuite{}'s test generation timeout
-from 1 second per class to 10 s or even 60 s
-(for total runtime costs of test generation and generalization,
-see Section~\ref{sec:runtime-eval}).
-Furthermore, higher \tries{} settings generally achieve
-better detection rates than lower \tries{} settings.
-However, there seem to be diminishing returns:
-increasing \tries{} from 10 to 50
-achieves a larger improvement in detection rates
-than increasing \tries{} from 50 to 200.
+Higher \tries{} settings improve detection rates but with diminishing returns.
+The jump from 10 to 50 \tries{} typically produces larger gains
+than increasing from 50 to 200 \tries{}.
+One notable exception to this pattern appears in \VariantImproved{} variants with only 10 \tries{}:
+on \DatasetsEqBenchEs{} projects,
+\VariantImprovedA{} achieves only 2.4--2.8\% relative improvement
+versus 5.6--6.9\% for \VariantImprovedB{} and 6.0--7.8\% for \VariantImprovedC{}.
+This comparatively low increase in detection rates likely stems from boundary-focused generation
+consuming most of the limited \tries{} of this variant,
+leaving insufficient attempts for testing intermediate values.
+With more \tries{}, \VariantImproved{} variants perform comparably to or better than \VariantNaive{} variants
+as enough attempts remain for both boundary and non-boundary testing.
+\DatasetsCommonsEs{} projects likely show less pronounced degradation,
+because their more complex constraints (Section~\ref{sec:boundary-detection-effectiveness})
+cause more boundary inputs to fail filtering,
+forcing the algorithm to explore non-boundary values sooner.
 
-Results for \DatasetsCommonsEs{} projects follow similar trends,
-albeit with overall smaller improvements
-of 0.82--1.23 percentage points
-(i.e., a relative increases of 1.43--2.17 \%)
-compared to the \VariantInitial{} test suites.
-For the \DatasetCommonsDev{} project,
-improvements are even smaller,
-increasing detection rates
-by only 0.05--0.07 percentage points.
-However, overall detection rates for \DatasetCommonsDev{}
-are much higher than for the other projects
-with an \VariantInitial{} detection rate of 80.35 \%.
-Therefore, it is expected
-that achievable improvements will be correspondingly smaller.
-Deviations from the described trends
-are primarily due to random variance
-in \ToolEvoSuite{}'s test generation
-and, to a lesser degree,
-due to occasional random errors
-(e.g., \texttt{OutOfMemoryError})
-during test execution
-which cause corresponding tests to be excluded from further processing
-(see Sections~\ref{sec:filtering-eval} and \ref{sec:filtering-eval-extended}).
-
-\paragraph{\VariantImproved{} Detection Rates}
-
-The \VariantImprovedC{} generalization variant
-achieves similar results as \VariantNaiveC{}
-for all seven evaluated projects.
-More specifically, it reaches relative improvements
-of 6.04--7.82 \% for the \DatasetsEqBenchEs{} projects,
-2.02--2.29 \% for \DatasetsCommonsEs{},
-and 0.06 \% for \DatasetCommonsDev{}.
-\VariantImprovedA{} and \VariantImprovedB{}
-consistently achieve larger improvements
-than the corresponding \VariantNaive{} variants
-for the \DatasetsCommonsEs{} projects
-(1.80--2.19 \% vs.\ 1.43--1.83 \%),
-but smaller improvements
-for the \DatasetsEqBenchEs{} projects
-(2.36--6.88 \% vs. 4.51--8.17 \%).
-However, these differences are not uniformly distributed
-across different mutation operators.
-As shown in Table~\ref{tab:detections-per-mutator}
-and discussed in more detail in Section~\ref{sec:detection-rates-per-mutator},
-\VariantNaive{} variants only outperform \VariantImproved{} ones
-for the detection of \texttt{Math} mutants,
-whereas all other mutants are either tied in terms of detection rates
-or favor \VariantImproved{} variants.
-Furthermore, \VariantImprovedA{} performs noticeably worse
-than all other project-variant combinations
-on the \DatasetsEqBenchEs{} projects.
-This is likely because \VariantImproved{} variants
-very effectively identify input partition boundaries
-in the \DatasetsEqBenchEs{} projects.
-As a result, most or even all \tries{} of the \VariantImprovedA{} variant
-are spent on boundary testing, leaving little opportunity to detect mutants
-introduced via non-boundary mutations.
-For a more in-depth discussion of this, see Section~\ref{sec:boundary-detection-effectiveness}.
+Combining short test generation with subsequent generalization
+can outperform longer generation alone.
+On \DatasetsEqBenchEs{} projects,
+1-second \ToolEvoSuite{} generation followed by \VariantNaiveC{} generalization
+achieves 52.0\% detection,
+surpassing 60-second generation alone (51.6\%).
+Similarly on \DatasetsCommonsEs{},
+10-second generation plus \VariantNaiveC{} reaches 58.5\%
+versus 58.1\% for 60-second generation.
+These comparisons demonstrate that generalization can effectively compensate for reduced generation time.
+Section~\ref{sec:execution-efficiency} analyzes the efficiency trade-offs
+between different combinations of \ToolEvoSuite{} timeouts and \ToolTeralizer{} \tries{}
+in further detail through Pareto front analysis.
 
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
