@@ -21,43 +21,61 @@ from constraint-aware input generation.
 
 \subsubsection{Included Mutants}
 \label{sec:included-mutants}
-To evaluate the effects that generalization via \ToolTeralizer{} has on mutation scores,
-we compare the mutation scores reported by \ToolPit{}
-for the \VariantInitial{} variants of the the target projects
-to the mutation scores reported for
-the \VariantNaive{} and \VariantImproved{} variants
+
+To evaluate mutation score effects,
+we compare \ToolPit{} results for \VariantInitial{} variants
+against \VariantNaive{} and \VariantImproved{} variants
 using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
+This comparison isolates generalization effects by using \VariantInitial{} as the baseline,
+ensuring that differences stem solely from the presence or absence of generalized test cases.
+Comparison to \VariantOriginal{} would not isolate generalization effects
+because the original test suite contains tests excluded during
+test analysis and specification extraction (Section~\ref{sec:all-filtering})—before
+any transformation to property-based tests occurs.
 
-The first three columns of Table~\ref{tab:mutants-per-project} show
-how many of the test methods and implementation classes
-of the \VariantOriginal{} projects are included in the \VariantInitial{} project variants.
-Tests are counted as included
-if they successfully pass test analysis (see Section~\ref{sec:test-analysis}) 
-and specification extraction (see Section~\ref{sec:specification-extraction}).
-Implementation classes are counted as included
-if at least one line of the corresponding class
-is covered by an included test
-according to the \ToolJacoco{} coverage reports
-of the \VariantInitial{} project variant.
-For the projects with \ToolEvoSuite{} generated test suites
-(i.e., \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}), 
-83--85 \% of test methods from \VariantOriginal{} are included in \VariantInitial{}.
-For \DatasetCommonsDev{}, 63.6 \% are included.
-Exclusions are primarily caused by 
-(i) tests without assertions (... \%),
-(ii) tests for which no tested method can be identified by \ToolTeralizer{},
-and (iii) tests that exercise a tested method that has no generalizable input parameters.
-Further details about the causes of test exclusions
-are provided when discussing RQ4 in Section~\ref{sec:filtering-eval}.
+Test inclusion rates reveal fundamental differences between generated and developer-written test suites
+that shape generalization outcomes.
+EvoSuite-generated projects achieve 83.4--85.1\% inclusion rates across variants,
+while \DatasetCommonsDev{} includes only 63.6\% of original test methods
+(Table~\ref{tab:mutants-per-project}).
+This 20-percentage-point gap reflects how different test creation approaches
+align with \ToolTeralizer{}'s current processing capabilities.
 
-The last three columns for Table~\ref{tab:mutants-per-project} show the number of total, covered, and uncovered mutants per project.
-Total mutants are all mutants that are created by \ToolPit{} in the included classes.
-Covered mutants are the subset of total mutants that are executed by at least one included test.
-Uncovered mutants are the subset of total mutants that are not executed by any included tests.
-@TODO: Describe actual values in the table.
-@TODO: Reference the table with the per-mutant prevalence data.
-%Around 8000 mutants for the apache-commons-utils projects. Around 24000 mutants for the eqbench projects.
-%Total mutants for the ORIGINAL variant (i.e., before SPF execution) are around 5\% higher (not shown in this table). For filtering reasons, see Section~\ref{sec:filtering-eval}.
+EvoSuite generates tests with characteristics that facilitate automated analysis:
+simple assertion patterns that compare single values,
+explicit parameter passing without complex setup logic,
+and method-level focus that isolates individual behaviors.
+Developer-written tests, conversely, combine multiple scenarios within single methods,
+employ elaborate fixture setup spanning multiple classes,
+and validate system state changes through sequences of operations.
+While these patterns enable comprehensive integration testing,
+they create barriers for specification extraction, explaining
+why over one-third of developer tests cannot be generalized.
+
+The three primary exclusion causes reflect \ToolTeralizer{}'s current limitations:
+(i)~tests without assertions provide no specification to generalize,
+(ii)~tests where no tested method can be identified typically involve
+program constructs that \ToolTeralizer{}'s simple static analysis cannot resolve,
+such as loops in test code or modifications of object state rather than direct return values,
+and (iii)~tests exercising methods without generalizable parameters have no numeric
+or boolean inputs to vary.
+Section~\ref{sec:filtering-eval} quantifies how frequently all exclusion causes occur,
+providing guidance for extending generalization capabilities.
+
+Mutation coverage patterns highlight further differences across the project environments.
+\ToolPit{} generates approximately 8,000 total mutants for Apache Commons projects
+and 23,000--24,000 for EqBench projects (Table~\ref{tab:mutants-per-project}).
+Covered mutants, i.e., those mutants that are executed by at least one included test, range
+from 64.4\% for \DatasetCommonsDev{} to 97.1\% for \DatasetCommonsC{}.
+This coverage disparity primarily reflects dataset construction rather than test quality:
+\DatasetCommonsDev{} includes only tests directly covering the extracted utility methods
+(but no tests for transitively called methods),
+while EvoSuite variants generate comprehensive suites for all included code.
+This focused scope reflects our intent to evaluate code amenable to generalization in this part of the dataset,
+as discussed in Section~\ref{sec:apache-commons-utils}.
+
+With the evaluation scope established, we now analyze how effectively
+the generalized tests detect mutations within the included subset.
 
 \input{tables/tab-mutants-per-project}
 
