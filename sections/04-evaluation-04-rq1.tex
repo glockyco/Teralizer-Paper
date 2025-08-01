@@ -284,129 +284,95 @@ Full results for all variants are available in our replication package~\cite{rep
 \subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
 \label{sec:boundary-detection-effectiveness}
 
-@TODO: Add intro. Basically: Offer more thorough explanations
-why \VariantImproved{} (sometimes?) performs better than \VariantNaive{}
-on the \DatasetsEqBenchEs{} projects, but not on the \DatasetsCommonsEs{} ones.
+As discussed in Section~\ref{sec:overall-detection-rates},
+\VariantNaive{} variants consistently
+outperform \VariantImproved{}
+on \DatasetsEqBenchEs{} projects.
+However, \DatasetsCommonsEs{} projects show \VariantImproved{}
+outperforming \VariantNaive{} in 7 of 9 cases.
+To provide a more thorough understanding of these contrasting results, we examine
+how constraint complexity differs between project types and
+what the underlying mechanisms are that explain how complexity affects mutation detection differences.
+Table~\ref{tab:mutation-detection-comparison} shows the constraint characteristics
+of mutants that are (not) detected by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
+Models represent the constraints that inputs must satisfy
+to reach each mutant along a specific execution path.
+We measure model complexity through operation count (total operators)
+and constraint count (individual boolean conditions),
+while tracking what percentage of constraints \VariantImproved{} can encode
+for use during input generation versus enforce through post-generation filtering.
 
-\paragraph{Evaluation Metrics}
-Table~\ref{tab:mutation-detection-comparison} shows 
-the model properties of mutants that are (not) detected
-by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
-The term \emph{model}, in this case, refers to an 
-input specification extracted by \ToolTeralizer{}.
-Therefore, the (input) model(s) of a mutant
-are all input specifications
-that describe an input partition
-which contains at least one set of inputs
-that cause the mutant to be exercised during test execution.
-In other words, the model(s) of a mutant
-are all input specifications
-that were extracted by \ToolTeralizer{}'s
-specification extraction step (see Section~\ref{sec:specification-extraction})
-during execution of a test that covers the corresponding mutant.
-
-Included model properties are
-the median number of model operations
-and the median number of model constraints.
-%The number of (nested) operations is given by
-%the total number of operators in the model.
-%The number of constraints is determined
-%by counting the number of boolean conditions or variables
-%connected by \texttt{\&\&} operators.
-%There can never be \texttt{||} operators in a model
-%because the two operands on both sides of the \texttt{||}
-%represent different input partitions and, therefore,
-%describe different models.
-%
-In addition to the model properties,
-the last column of Table~\ref{tab:mutation-detection-comparison}
-lists the mean and median percentage of constraints
-that are used by the created property-based tests
-when generating inputs for test execution.
-As described in more detail in Section~\ref{sec:improved-generalization}, 
+As described in more detail in Section~\ref{sec:improved-generalization},
 the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
 only considers simple in-/equalities on numeric and boolean variables or constants.
 More complex constraints are not encoded
 in the initial input value generation of the \VariantImproved{} property-based tests
 but are still enforced during \ToolPit{}'s default value filtering step.
-
-For example, take the following (Java represented) model:
-\texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
-This model contains 5 operators
-(i.e., \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and \texttt{\&\&}),
-so has a total of 5 (nested) operations.
-Furthermore, the model's contains 3 constraints:
-(i) \texttt{a < 0}, (ii) \texttt{a == (b + 1)}, and (iii) \texttt{c}.
-Constraints (i) and (iii) are used by the \VariantImproved{} variants.
-Constraint (ii) is not used
-because it contains the compound term \texttt{b + 1}.
+For instance, consider the model \texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
+This model contains three constraints:
+\texttt{a < 0}, \texttt{a == (b + 1)}, and \texttt{c}.
+\VariantImproved{} can encode the simple comparison \texttt{a < 0} and the boolean variable \texttt{c},
+but cannot encode \texttt{a == (b + 1)} because it contains the compound term \texttt{b + 1}.
+Thus, \VariantImproved{} uses 2 of 3 total constraints (66.7\% utilization),
+and the model contains 5 operators:
+\texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
+With these metrics established, we are ready to examine the observed results.
 
 \input{tables/tab-mutation-detection-comparison}
 
-\paragraph{Model Properties of Detected vs.\ Undetected Mutants}
-As shown in Table~\ref{tab:mutation-detection-comparison},
-undetected mutants often have more complex models
-%(i.e., are easier to reach during testing)
-than detected ones.
-For example, in the \DatasetsEqBenchEs{} projects,
-mean and median operation counts
-are around 1.2--1.7 times larger
-for undetected mutants than for detected ones
-(e.g., mean of 231 vs.\ 139 and median of 15 vs.\ 9 for \DatasetEqBenchB{}).
-Operation counts in the \DatasetsCommonsEs{} projects
-show even more pronounced differences,
-with values of undetected mutants being 1.3--3 times larger
-than those of detected ones
-(e.g., mean of 45 vs.\ 15 and median of 12 vs.\ 7 for \DatasetCommonsB{}).
-The only project where models of undetected mutants
-have lower median operation counts than detected ones (10 vs.\ 11)
-is \DatasetCommonsDev{} with its developer written test suite.
-However, mean operation counts are still larger for undetected mutants
-at 173 vs.\ 107 for detected ones.
-Constraint counts show a similar trend to operation counts,
-with mean values being 1.0--1.7 times as large
-and median values being 1.0--2.5 times as large
-for undetected mutants as for detected ones.
-Values for \DatasetCommonsDev{} are very different from
-the other \DatasetsCommonsEs{} projects because it 
-covers a much smaller subset of mutants,
-as previously discussed in \ref{sec:included-mutants}.
+Undetected mutants consistently have more complex models than detected ones
+across all projects.
+Operation counts for undetected mutants are 1.2--3$\times$ higher:
+\DatasetsEqBenchEs{} projects show mean counts of 218--231 versus 138--147 for detected mutants,
+while \DatasetsCommonsEs{} exhibit even larger gaps with 389--507 versus 290--468 operations.
+Constraint counts follow similar patterns,
+with undetected mutants having 1.0--2.5$\times$ more constraints.
+Even though both \VariantNaive{} and \VariantImproved{}
+achieve better generalization outcomes for simpler constraints,
+more complex constraints have a stronger detrimental effect on \VariantNaive{},
+which produces 2-2.5$\times$ as many \texttt{TooManyFilterMissesExceptions} as \VariantImproved{},
+as discussed in more detail in Section~\ref{sec:filtering-eval}.
 
-\paragraph{Constraints Used by \VariantImproved{} Generalization}
-The mean (median) number of used constraints across all projects
-ranges from 25--69 \% (75--100 \%) for detected mutants
-and 10--67 \% (50--100 \%) for undetected ones,
-with usage rates being consistently higher
-for detected mutants than for undetected ones.
-Because the current implementation of \ToolTeralizer{} focuses on simple constraints,
-this provides further evidence
-that models of undetected mutants are not only larger than those of detected ones
-(i.e., contain more operations and constraints)
-but also more complex
-(e.g., contain more compound terms,
-show more common use of non-numeric data types,
-and use more math functions that are not fully modeled by SPF).
-This suggests that improving \ToolTeralizer{}'s support
-for more complex constraints
-holds further potential for additional increases in mutation detection rates.
+Constraint utilization rates show large differences across project types.
+\DatasetsEqBenchEs{} achieve 47--70\% mean constraint utilization for detected mutants,
+while \DatasetsCommonsEs{} achieve only 25--47\% mean utilization.
+The higher utilization in \DatasetsEqBenchEs{} reflects their simpler constraint structures:
+these projects primarily use basic numeric comparisons
+that match \VariantImproved{}'s encoding capabilities.
+\DatasetsCommonsEs{} projects contain more compound terms
+and mathematical functions that are not modeled by \ToolSPF{},
+reducing the percentage of constraints that can guide input generation.
 
-Furthermore, the high constraint usage rates
-as well as the comparatively small operation and constraint counts
-of the \DatasetsEqBenchEs{} projects suggest that it is relatively easy
-to find input values that match the models.
-This could explain, at least in part,
-why \VariantImproved{} generalization variants are more effective
-relative to the corresponding \VariantNaive{} variants
-when used in the \DatasetsCommons{} projects
-than in the \DatasetsEqBenchEs{} projects
-(as seen in Figure~\ref{fig:mutation-detection-results}).
-After all, if mutated input partition boundaries are easy to identify,
-there is a higher likelihood that they will be covered
-even without the more sophisticated value selection
-employed by \VariantImproved{} variants.
-Thus, taking into account the complexity of the underlying models
-during generalization might offer further opportunities
-to improve the effectiveness and/or efficiency
-of test generalization approaches such as \ToolTeralizer{}.
+These utilization differences explain the contrasting performance between project types.
+In the \DatasetsEqBenchEs{} projects, simple constraints enable effective boundary targeting for \VariantImproved{} variants,
+yet these same simple constraints make random generation followed by \VariantNaive{} variants viable.
+In fact, the higher constraint utilization even has detrimental effects
+on the overall detection rates of \VariantImproved{} variants for these projects
+because the focus on boundary testing detracts from testing of intermediate values.
+As a result, detection rates for the very common \texttt{Math} mutations decrease,
+causing overall detection rates to go down despite detection rates for most other mutants increasing.
+
+\DatasetsCommonsEs{} present a different scenario.
+Complex constraints reduce utilization to 25--47\%,
+causing \VariantImproved{} variants to generate inputs from broader ranges
+that overapproximate the actual partition boundaries.
+As a result, fewer partition boundaries are accurately identified,
+and the number of generated inputs that need to be excluded during filtering increases.
+Nevertheless, constraint utilization still reduces \texttt{TooManyFilterMissesException} failures
+relative to \VariantNaive{} (Section~\ref{sec:filtering-eval}), which
+enables \VariantImproved{} variants to achieve overall higher mutation detection rates
+than \VariantNaive{} in 7 of 9 cases
+despite its current \texttt{Math} mutation detection disadvantage.
+
+Three paths emerge to further enhance \VariantImproved{}'s effectiveness.
+First, the \texttt{Math} mutation trade-off can be addressed through
+higher \tries{} settings or balanced generation strategies
+that maintain boundary detection advantages while improving arithmetic coverage.
+Second, extending constraint support to handle more complex constraints
+would further increase utilization rates,
+thus enabling more effective guided input generation.
+Third, adaptive strategies could select generation approaches based on
+measured constraint complexity and mutation distribution,
+applying boundary-focused generation where it provides the largest benefit.
 
 @TODO: Add answer for RQ1.
