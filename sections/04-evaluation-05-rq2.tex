@@ -93,78 +93,70 @@ For further discussion and related work covering this idea, see Section~\ref{sec
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
 
-While generalization has only minor effects
-on the number of tests in the evaluated test suites,
-the lines of code in the test suites are more strongly affected.
-As shown in Table~\ref{tab:lines-per-project},
-overall lines of code (LOC) in the test suites increase
-by 31.5--58.7~\% for the \DatasetsEqBenchEs{} projects,
-by 18.8--29.9~\% for the \DatasetsEqBenchEs{} projects,
-and by 4.9--5.3~\% for the \DatasetCommonsDev{} project.
+While test counts remain relatively stable through the test replacement mechanism,
+lines of code (LOC) increase across all projects and generalization variants.
+Table~\ref{tab:lines-per-project} shows increases of
+31.5--58.7~\% for \DatasetsEqBenchEs{} projects,
+18.8--29.9~\% for \DatasetsCommonsEs{} projects,
+and 4.9--5.3~\% for \DatasetCommonsDev{}.
+These increases correlate with the number of added tests
+rather than net test count changes.
+For example, for the \DatasetEqBenchA{} project,
+\VariantNaiveC{} adds 177 generalized tests and removes all 177 corresponding original tests.
+However, the added tests increase test suite size by 11,780 LOC while the removed tests reduce LOC by only 1,127.
+This asymmetry between added and removed LOC stems from
+two characteristics inherent to \ToolTeralizer{}'s current implementation.
 
-Increases in test suite size are strongly correlated with
-the number of tests added to the test suite (see Table~\ref{tab:tests-per-project}),
-even if added tests are compensated for by test removals.
-For example, \VariantNaive{} adds 177 tests to \DatasetEqBenchA{}
-and allows the same number of \VariantOriginal{} tests to be removed.
-Despite this, 11780 LOC are added
-but only 1127 LOC are removed
-(as shown in Table~\ref{tab:lines-per-project}).
-This is expected for two reasons:
-(i) generalized test classes
-contain all of the code that is needed
-to set valid input ranges for \ToolPit{}'s input value generators
-(as described in Section~\ref{sec:test-generalization}), and
-(ii) when creating the classes
-that contain the generalized test methods,
-\ToolTeralizer{} copies all shared code
-(i.e., setup/teardown methods, non-test methods, class fields, ...)
-from the \VariantOriginal{} test classes
-into each generalized test class
-(as described in Section~\ref{sec:test-generalization})
-which results in additional LOC increases due to duplicated code.
+First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests.
+More specifically, each generalized test defines input ranges matching extracted constraints by
+translating input specifications into Java code for a custom \ToolJqwik{} \texttt{Arbitrary}
+(Section~\ref{sec:test-transformation}).
+As a result, the LOC impact scales with both parameter count and constraint complexity.
+\VariantImproved{} variants also show higher per-test LOC as a consequence of this mechanism 
+because of their more sophisticated input generation logic.
+For example, \DatasetCommonsDev{}'s three generalized tests require
+36 additional LOC with \VariantImprovedC{} compared to \VariantNaiveC{}
+(9,018 vs.\ 8,982 total LOC).
+Methods with multiple parameters amplify this effect,
+as each parameter requires its own constraint encoding logic in \VariantImproved{} tests.
 
-The effects of (i) are more pronounced
-for \VariantImproved{} generalization variants
-than for \VariantNaive{} ones
-because of the more precise (but also more complex)
-identification of input ranges used by \VariantImproved{} variants.
-For example, the generalized test suite created by 
-\VariantImprovedC{} for \DatasetCommonsDev{}
-has 36 additional LOC compared to \VariantNaiveC{}
-(9018 vs.\ 8982~LOC, see Table~\ref{tab:lines-per-project})
-even though the same three tests are added as a result of generalization
-(as shown in Table~\ref{tab:tests-per-project}).
-This difference in LOC of individual tests generalized
-via \VariantImproved{} vs.\ \VariantNaive{} variants
-is generally larger for tested methods
-with a larger number of input parameters.
-The reason for this is that each input parameter
-needs to be separately restricted
-to match the constraints that involve that parameter
-in the input specification.
+Second, test isolation creates structural duplication.
+\ToolTeralizer{} creates new test classes for each generalized method,
+copying setup/teardown methods, helper functions, and class fields
+from original test classes.
+This architectural choice prioritizes safety over LOC efficiency,
+preventing unintended interactions between generalized and original tests
+while avoiding potential side effects on developer-written code.
 
-Both of the causes mentioned above
-could be resolved with additional engineering effort.
-For example, generalized test methods created by \ToolTeralizer{}
-could be added to the \VariantOriginal{} test classes
-instead of creating a new classes for each one, thus resolving cause (ii).
-The primary reason we avoid this in the current implementation
-is to keep \ToolTeralizer{}'s changes as unintrusive and isolated
-from the \VariantOriginal{} test suite (and other generalized tests) as possible
-to avoid unintended adverse side-effects on developer written code
-as well as unintended interactions between generalized tests.
-However, there is no technical reason
-that strictly requires generalized test methods
-to be added to newly created classes.
-Similarly, the code to set input value ranges
-that satisfy the extracted input specifications
-could be extracted to a library
-that abstracts away the corresponding implementation details.
-In the test code of the target projects,
-only minor changes would remain then
-(i.e., modified test annotations, inputs, and expected outputs),
-thus resolving cause (i).
+The duplication overhead varies significantly between \ToolEvoSuite{}-generated and developer-written tests.
+\DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects show similar LOC overhead per generalization
+(66-67 vs 62-63 LOC per added test, respectively),
+reflecting the structural uniformity of \ToolEvoSuite{}-generated tests.
+In contrast, \DatasetCommonsDev{} shows substantially higher duplication overhead
+(140 LOC per added test).
+This is because developer-written tests contain more shared setup code
+as well as multi-assertion architectures that hinder compensation through test removals.
+The higher percentage increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
+stem primarily from the retained generalized tests representing a larger fraction of the original test suite
+in \DatasetsEqBenchEs{} (~3.5-3.8\%) compared to \DatasetsCommonsEs{} (~2.2-2.4\%).
+The smaller difference between \VariantNaive{} and \VariantImproved{}
+LOC increases in \DatasetsCommonsEs{} projects compared to \DatasetsEqBenchEs{} projects
+likely reflects \VariantImproved{}'s lower constraint utilization on more complex specifications
+(28.5\% for \DatasetsCommonsEs{} vs.\ 54.7\% for \DatasetsEqBenchEs{}).
+
+Both overhead sources represent implementation choices rather than inherent limitations.
+Integration of generalized methods into original test classes would eliminate duplication,
+while constraint specification libraries could abstract input value generator details.
+The primary reason \ToolTeralizer{} avoids in-place transformation of tests
+is to keep changes unintrusive and isolated from original test suites,
+preventing unintended adverse side-effects on developer-written code.
+However, no technical limitation strictly requires separate test classes.
+Similarly, constraint encoding logic could be extracted to a library
+that abstracts implementation details.
+In the test code of the target projects, only minor changes would remain then:
+modified test annotations, parameterized inputs, and generalized assertions.
+As a result, such optimizations could reduce the current LOC increases
+while preserving generalization's mutation detection benefits.
 
 \input{tables/tab-lines-per-project}
 
