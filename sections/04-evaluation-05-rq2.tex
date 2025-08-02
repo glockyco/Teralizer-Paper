@@ -37,12 +37,13 @@ are available in our replication package~\cite{replicationpackage}.
 \subsubsection{Number of Tests in the Test Suite}
 \label{sec:test-suite-test-count}
 
-Table~\ref{tab:tests-per-project} shows how many tests are added
-by the \VariantNaiveC{} and \VariantImprovedC{} generalization variants,
-how many can be removed after generalization,
-and how this changes the total number of tests
-relative to the \VariantOriginal{} test suites
-across the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects.
+Generalization creates new property-based tests
+for each successfully transformed unit test,
+yet the net effect on test counts can vary considerably
+depending on test architecture and mutation detection capabilities
+of the \VariantOriginal{} test suite.
+Table~\ref{tab:tests-per-project} quantifies the observed changes
+for the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
 The number of added tests is between 174--211
 (3.5--4.3~\% of \VariantOriginal{} test suite size)
 for the \DatasetsEqBenchEs{} projects,
@@ -50,21 +51,23 @@ between 60--75 (2.2--2.9\%)
 for the \DatasetsCommonsEs{} projects,
 and 3 (0.4~\%) for the \DatasetCommonsDev{} project.
 \VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
-because more of the tests that are created  by \VariantNaiveC{}
+because more of the tests that are created by \VariantNaiveC{}
 are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
 (as described in Section~\ref{sec:naive-generalization}
 and evaluated in Section~\ref{sec:filtering-eval}).
 Furthermore, the number of added tests is much smaller
-than the total number of generalization that are created and evaluated by \ToolTeralizer{}
+than the total number of generalizations that are created and evaluated by \ToolTeralizer{}
 because only tests that measurably increase the mutation score of the test suite are retained.
 
+Even though \ToolTeralizer{} adds hundreds of tests to the generalized test suites,
+net test count changes remain minimal.
 Added tests are largely compensated by removed tests
 in the \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
 which use \ToolEvoSuite{} generated test suites.
 As a result, total test suite size only increases by 0--1 test cases
 (0--0.04\% of \VariantOriginal{} test suite size)
 for these projects.
-For the \DatasetCommonsDev{} project,
+The \DatasetCommonsDev{} project sees less compensation success:
 none of the tests for which generalizations are added can be removed.
 This is because an \VariantOriginal{} test can only be removed
 if generalized tests are successfully created for all assertions in the test
@@ -73,18 +76,17 @@ In the projects with \ToolEvoSuite{} generated tests,
 this requirement is generally satisfied because most tests only contain a single assertion.
 However, this requirement is much more difficult to satisfy for \DatasetCommonsDev{} 
 because the developer written tests often contain multiple assertions.
-More generally, increases in the number of tests are
-expected to be smaller for projects with more focused tests
-that each contain only a small number of assertions
-than for less focused ones with a large number of assertions per test.
 
-In future work, we also plan to explore opportunities
+The observed compensation patterns reveal how test architecture shapes generalization outcomes.
+Projects containing mostly focused, single-assertion tests enable near-complete compensation,
+while multi-assertion test suites resist such consolidation.
+In future work, we plan to explore opportunities
 for generalization to decrease overall test suite size.
 This can be achieved
 by replacing multiple \VariantOriginal{} tests
 that all cover the same input partition
 with a single property-based test that covers the same partition instead.
-For further discussion and related work about this, see Section~\ref{sec:test-suite-reduction}.
+For further discussion and related work covering this idea, see Section~\ref{sec:test-suite-reduction}.
 
 \input{tables/tab-tests-per-project}
 
