@@ -1,20 +1,37 @@
 \subsection{RQ2: Effects on Test Suite Size and Runtime}
 \label{sec:ancillary-effects-eval}
 
-In this section, we describe the secondary effects caused by the generalization
-in terms of changes in test suite size and test suite runtime.
-To describe these changes, we employ the following four metrics: 
+Test generalization transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
+While this transformation improves mutation detection (Section~\ref{sec:primary-effects-eval}),
+it also affects test suite characteristics in three measurable ways:
+
 \begin{enumerate}
   \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
   \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
   \item the execution time of the test suite (Section~\ref{sec:test-suite-execution-time}).
 \end{enumerate}
 
-We focus primarily on the results
-of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
-The results for the remaining variants follow similar trends
-but are omitted for brevity.
-The full results for all generalization variants
+Section~\ref{sec:test-suite-test-count} reveals how test architecture determines
+whether added tests can be compensated by test removals,
+explaining why \ToolEvoSuite{} generated test suites achieve near-complete compensation
+while the developer written test suite in \DatasetCommonsDev{} sees no test removals.
+Section~\ref{sec:test-suite-line-count} documents
+how current constraint encoding and test isolation implementations affect lines of code,
+suggesting that the introduction of constraint abstraction libraries
+as well as tighter integration of generalized tests into the original test suite
+could reduce this overhead.
+Section~\ref{sec:test-suite-execution-time} analyzes runtime patterns,
+showing that costs stem primarily from property-based testing overhead and \tries{} repetition,
+but could be at least partially alleviated
+through test suite reduction and improved support for more complex input constraints.
+
+Throughout the result presentation, we focus primarily on the results
+of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants
+as they best represent the current capabilities of \ToolTeralizer{}.
+The results for variants with fewer \tries{} follow similar trends
+albeit with correspondingly smaller effects
+on the measured test suite characteristics.
+Full results for all generalization variants
 are available in our replication package~\cite{replicationpackage}.
 
 \subsubsection{Number of Tests in the Test Suite}
