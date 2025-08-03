@@ -1,23 +1,26 @@
 \subsection{RQ3: Runtime Requirements}
 \label{sec:runtime-eval}
 
-As previously described in Section~\ref{sec:evaluation-setup},
-we measure the runtime requirements of \ToolTeralizer{}
-by executing the tool once for each of the seven \DatasetsEqBenchEs{} and \DatasetsCommons{} projects
-using a MacBook Air with M2 processor and 24~GB of memory.
-Since all generalization variants require the same input data
-(i.e., source code of target projects as well as extracted input/output specifications),
-\ToolTeralizer{} executes the corresponding processing steps
-(i.e., project instrumentation, test analysis, and specification extraction)
-only once and then reuses the collected specifications
-across all generalizations of the project.
-Because no other tools exist
-that transform conventional unit tests to property-based tests,
-we measure the efficiency of \ToolTeralizer{}
-by comparing the mutation score increase that \ToolTeralizer{} achieves 
-when increasing the used \tries{} (thus increasing its runtime)
-to the corresponding increase that \ToolEvoSuite{} achieves
-when increasing the test generation timeout.
+We measured \ToolTeralizer{}'s runtime across seven project variants
+to assess viability compared to existing automated testing tools.
+Since no existing tools perform automated test generalization from unit tests to property-based tests,
+we compared efficiency against \ToolEvoSuite{}, the established test generation tool.
+Runtime results were collected on a MacBook Air with M2 processor and 24~GB of memory.
+Shared processing stages were executed only once per project by \ToolTeralizer{}
+and collected specifications were then reused across all seven generalization variants.
+Processing required a total time of 3.4 hours for \DatasetCommonsDev{},
+8.2--9.8 hours for \DatasetsCommonsEs{} projects,
+and 24.8--30.9 hours for \DatasetsEqBenchEs{} projects.
+Despite the relatively high runtime cost,
+Pareto analysis (Section~\ref{sec:evosuite-efficiency}) confirms
+that combining low search budget \ToolEvoSuite{} generation and \ToolTeralizer{} generalization
+often achieves better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets.
+Within the overall processing pipeline,
+validation through mutation testing consumes 40.5--81.1\% of total processing time.
+This concentration of computational cost in validation
+indicates that future optimizations should target
+the mutation testing phase rather than transformation algorithms.
+
 
 \subsubsection{Execution Time of \ToolTeralizer{}}
 \label{sec:execution-time}
