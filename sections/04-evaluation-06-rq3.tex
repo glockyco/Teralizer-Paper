@@ -25,6 +25,89 @@ the mutation testing phase rather than transformation algorithms.
 \subsubsection{Execution Time of \ToolTeralizer{}}
 \label{sec:execution-time}
 
+Runtime distribution across processing stages reveals
+that validation dominates computational cost.
+Figure~\ref{fig:teralizer-runtimes} shows
+generalization validation consuming 1,110--35,538 seconds (40.5--78.5\% of total processing time)
+while specification extraction requires 65--2,793 seconds (0.7--8.2\%)
+and test transformation takes 5--173 seconds (0.1--0.5\%).
+This resembles \ToolEvoSuite{}'s distribution,
+where the JUnit checking phase,
+which is most comparable to \ToolTeralizer{}'s
+generalization validation stage,
+consumes 86\%, 72\%, and 34\% of median runtime
+for 1s, 10s, and 60s search budgets respectively.
+
+\paragraph{Non-Validation Runtimes}
+
+Non-validation stages complete efficiently
+despite containing the core generalization logic.
+Specification extraction (65--2,793 seconds) uses \ToolSPF{}
+to concretely execute tests in constraint collection mode,
+extracting path conditions and symbolic outputs
+without requiring any constraint solving calls
+(Section~\ref{sec:specification-extraction}).
+While this introduces some overhead
+because the JVM implementation of \ToolJPF / \ToolSPF{}
+is less optimized than production-ready JVM implementations
+(\ToolJPF{} itself runs inside of a host JVM process \cite{TODO}),
+the cost is comparatively small, representing a one-time cost
+of ca.\ 100$\times$ the runtime of an original test suite execution.
+Test transformation cost is almost negligible at a one-time runtime cost
+of only 5--173 seconds per generalization variant across all projects.
+The reason for this low cost is that test transformation
+only performs syntactic replacements, e.g.,
+converting JUnit annotations to \ToolJqwik{} ones,
+wrapping input constraint encodings in \texttt{TestParameters} classes,
+and replacing expected values in assertions 
+(Section~\ref{sec:test-transformation}).
+Consequently, neither specification extraction nor test transformation
+offer much opportunity for further runtime improvements.
+
+\paragraph{Validation Runtimes}
+
+Validation costs are substantially larger than non-validation costs
+due to the high runtime cost of mutation testing,
+which is by far the largest contributing factor in all validation stages.
+For example, even on the \VariantOriginal{} test suite
+without any added generalized tests,
+execution of \VariantOriginal{} validation (701--3,898 seconds)
+generally requires 1.5--10$\times$ as much runtime as specification extraction,
+with mutation testing representing 88\% of the total runtime cost of this stage on average.
+Execution times for \VariantInitial{} validation (652--4,131 seconds)
+are generally slightly lower than for \VariantOriginal{} validation
+because of the filtering that takes place
+between the two stages (Section~\ref{sec:all-filtering}).
+Validation of generalized test suites has higher runtime requirements (1,110--35,538 seconds)
+than for the \VariantOriginal{} and \VariantInitial{} ones
+for largely the same reasons that individual property-based \ToolJqwik{} tests
+take longer to execute than conventional JUnit tests, i.e.,
+\ToolJqwik{} overhead, larger number of tested inputs,
+as well as filter-and-regenerate cycles
+which occur more often for \VariantNaive{} variants
+and in the presence of more complex input constraints (Section~\ref{sec:test-suite-execution-time}).
+
+While it might seem tempting to forgo any validation,
+this would result in considerable increases to the execution times of generalized test suites.
+After all, one of the primary purpose of validation stages is
+(i)~to provide a baseline for mutation detection comparisons
+(\VariantOriginal{} / \VariantInitial{} validation),
+and (ii)~to identify which generalized tests do not
+measurably increase mutation detection rates (generalization validation),
+thereby enabling \ToolTeralizer{} to remove non-contributing tests from the final generalized test suite.
+In our evaluation, this filtering reduces the number of retained generalized tests
+from a total of 65,633 to 4,240 across all projects and variants
+(Section~\ref{sec:test-suite-test-count}),
+thus demonstrating the impact
+that validation-based filtering has on generalization outcomes.
+Even though there is a non-negligible one-time cost associated with this,
+that cost amortizes over time compared a longer-running test suite
+that incurs further cost with every repeated execution.
+Future optimization efforts could focus on validation efficiency
+through faster mutation testing approaches
+or lightweight pre-filtering heuristics
+that identify likely-beneficial candidates before full validation.
+
 \subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
 \label{sec:execution-efficiency}
 
