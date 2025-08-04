@@ -4,15 +4,15 @@
 We measured \ToolTeralizer{}'s runtime across seven project variants
 to assess viability compared to existing automated testing tools.
 Since no existing tools perform automated test generalization from unit tests to property-based tests,
-we compared efficiency against \ToolEvoSuite{}, the established test generation tool.
+we compared efficiency against \ToolEvoSuite{}~\cite{TODO}, the established test generation tool.
 Runtime results were collected on a MacBook Air with M2 processor and 24~GB of memory.
 Shared processing stages were executed only once per project by \ToolTeralizer{}
 and collected specifications were then reused across all seven generalization variants.
 Processing required a total time of 3.4 hours for \DatasetCommonsDev{},
-8.2--9.8 hours for \DatasetsCommonsEs{} projects,
-and 24.8--30.9 hours for \DatasetsEqBenchEs{} projects.
+8.2--9.8 hours for \DatasetsCommonsEs{},
+and 24.8--30.9 hours for \DatasetsEqBenchEs{} (Section~\ref{sec:execution-time}).
 Despite the relatively high runtime cost,
-Pareto analysis (Section~\ref{sec:evosuite-efficiency}) confirms
+Pareto analysis (Section~\ref{sec:execution-efficiency}) confirms
 that combining low search budget \ToolEvoSuite{} generation and \ToolTeralizer{} generalization
 often achieves better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets.
 
@@ -20,7 +20,7 @@ often achieves better detection-to-runtime ratios than simply running \ToolEvoSu
 \label{sec:execution-time}
 
 Runtime distribution across processing stages reveals
-that validation dominates computational cost.
+that validation stages dominate overall computational cost of \ToolTeralizer{}'s processing pipeline.
 Figure~\ref{fig:teralizer-runtimes} shows
 generalization validation consuming 1,110--35,538 seconds (40.5--78.5\% of total processing time)
 while specification extraction requires 65--2,793 seconds (0.7--8.2\%)
@@ -47,16 +47,16 @@ is less optimized than production-ready JVM implementations
 (\ToolJPF{} itself runs inside of a host JVM process \cite{TODO}),
 the cost is comparatively small, representing a one-time cost
 of ca.\ 100$\times$ the runtime of an original test suite execution.
-Test transformation cost is almost negligible at a one-time runtime cost
-of only 5--173 seconds per generalization variant across all projects.
+Test transformation cost is even smaller at a one-time runtime cost
+of only 5--173 seconds per project.
 The reason for this low cost is that test transformation
 only performs syntactic replacements, e.g.,
 converting JUnit annotations to \ToolJqwik{} ones,
 wrapping input constraint encodings in \texttt{TestParameters} classes,
 and replacing expected values in assertions 
 (Section~\ref{sec:test-transformation}).
-Consequently, neither specification extraction nor test transformation
-offer much opportunity for further runtime improvements.
+Consequently, both specification extraction as well as test transformation
+offer comparatively little opportunity for runtime improvements.
 
 \paragraph{Validation Runtimes}
 
@@ -85,9 +85,9 @@ While it might seem tempting to forgo any validation,
 this would result in considerable increases to the execution times of generalized test suites.
 After all, one of the primary purpose of validation stages is
 (i)~to provide a baseline for mutation detection comparisons
-(\VariantOriginal{} / \VariantInitial{} validation),
+(\VariantOriginal{} / \VariantInitial{} Validation),
 and (ii)~to identify which generalized tests do not
-measurably increase mutation detection rates (generalization validation),
+measurably increase mutation detection rates (Generalization Validation),
 thereby enabling \ToolTeralizer{} to remove non-contributing tests from the final generalized test suite.
 In our evaluation, this filtering reduces the number of retained generalized tests
 from a total of 65,633 to 4,240 across all projects and variants
@@ -100,12 +100,11 @@ that incurs further cost with every repeated execution.
 Future optimization efforts could focus on validation efficiency
 through faster mutation testing approaches
 or lightweight pre-filtering heuristics
-that identify likely-beneficial candidates before full validation.
+that identify likely-beneficial candidates without full validation.
 
 \subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
 \label{sec:execution-efficiency}
 
-\input{tables/tab-teralizer-runtimes}
 
 \begin{figure}[H]
   \centering
@@ -114,7 +113,6 @@ that identify likely-beneficial candidates before full validation.
   %\Description{@TODO}
   \label{fig:teralizer-runtimes}
 \end{figure}
-
 
 \begin{samepage}
   \begin{figure}[H]
@@ -135,6 +133,3 @@ that identify likely-beneficial candidates before full validation.
     \end{minipage}
   \end{table}
 \end{samepage}
-
-
-

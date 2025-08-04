@@ -27,7 +27,7 @@ its current boundaries are.
 \label{sec:eqbench}
 
 The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} represents
-an ideal evaluation target for automated generalization.
+an ideal evaluation target for automated test generalization.
 Originally designed to evaluate equivalence checking tools,
 the benchmark contains 652 Java classes implementing (non-)equivalent program pairs.
 These programs focus on numeric computations while deliberately avoiding
@@ -98,7 +98,8 @@ ensuring meaningful evaluation targets.
 Our selection criteria balanced technical constraints with evaluation goals.
 Projects needed to use Java 1.5--1.8 (for \ToolSPF{} compatibility),
 employ JUnit 4/5 with Maven builds (for compatibility with our generalization prototype),
-and follow standard directory structures (to enable large-scale automated processing without special-casing).
+and follow standard directory structures
+(to enable large-scale automated processing without manual special-casing).
 We focused on mid-sized projects (5,000--50,000 lines of code)
 with substantial test suites (20--80\% of total code)
 to ensure sufficient complexity while maintaining tractable analysis.

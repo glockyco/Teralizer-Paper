@@ -3,7 +3,7 @@
 
 Test generalization transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
 While this transformation improves mutation detection (Section~\ref{sec:primary-effects-eval}),
-it also affects test suite characteristics in three measurable ways:
+it also affects test suite characteristics in several ways:
 
 \begin{enumerate}
   \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
@@ -12,11 +12,11 @@ it also affects test suite characteristics in three measurable ways:
 \end{enumerate}
 
 Section~\ref{sec:test-suite-test-count} reveals how test architecture determines
-whether added tests can be compensated by test removals,
-explaining why \ToolEvoSuite{} generated test suites achieve near-complete compensation
-while the developer written test suite in \DatasetCommonsDev{} sees no test removals.
+whether added generalized tests can be compensated by original test removals,
+explaining why \ToolEvoSuite{}-generated test suites achieve near-complete compensation
+while the developer-written test suite in \DatasetCommonsDev{} does not allow for any test removals at all.
 Section~\ref{sec:test-suite-line-count} documents
-how current constraint encoding and test isolation implementations affect lines of code,
+how current constraint encoding and test isolation implementations increase lines of code in the test suite,
 suggesting that the introduction of constraint abstraction libraries
 as well as tighter integration of generalized tests into the original test suite
 could reduce this overhead.
@@ -50,6 +50,7 @@ for the \DatasetsEqBenchEs{} projects,
 between 60--75 (2.2--2.9\%)
 for the \DatasetsCommonsEs{} projects,
 and 3 (0.4~\%) for the \DatasetCommonsDev{} project.
+
 \VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
 because more of the tests that are created by \VariantNaiveC{}
 are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
@@ -124,8 +125,8 @@ as each parameter requires its own constraint encoding logic in \VariantImproved
 
 Second, test isolation creates structural duplication.
 \ToolTeralizer{} creates new test classes for each generalized method,
-copying setup/teardown methods, helper functions, and class fields
-from original test classes.
+copying imports, setup/teardown methods, helper functions, class fields, etc.
+from original test classes (Section~\ref{sec:test-transformation}).
 This architectural choice prioritizes safety over LOC efficiency,
 preventing unintended interactions between generalized and original tests
 while avoiding potential side effects on developer-written code.
