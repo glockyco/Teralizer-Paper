@@ -232,6 +232,9 @@ In contrast, 4 of 5 return value mutators show zero improvement:
 These already achieve high detection rates in the \VariantInitial{} variant (87.9--98.8\%)
 because return value mutations often directly violate test assertions,
 leaving little room for improvement through input variation.
+Increasing detection rates beyond this high starting point
+would likely require additional assertions to be introduced,
+rather than test inputs to be varied.
 
 \VariantImprovedC{} demonstrates different strengths through boundary-aware generation.
 Comparing the two variants across all 12 mutation operators:
