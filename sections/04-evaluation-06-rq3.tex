@@ -105,6 +105,82 @@ that identify likely-beneficial candidates without full validation.
 \subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
 \label{sec:execution-efficiency}
 
+Combining \ToolEvoSuite{}'s test generation with \ToolTeralizer{}'s test generalization
+can achieve better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets.
+This efficiency gain stems from their complementary optimization targets:
+\ToolEvoSuite{} optimizes primarily for breadth (increasing coverage)~\cite{fraser2011evosuite},
+while \ToolTeralizer{} optimizes exclusively for depth (testing discovered paths thoroughly).
+Figure~\ref{fig:teralizer-efficiency} identifies which tool configurations
+provide the best detection-to-runtime trade-offs through Pareto analysis.
+Configurations on the frontier represent optimal choices:
+for any given runtime budget, they achieve the highest possible detection rate.
+Configurations outside the frontier are suboptimal,
+i.e., dominated by the Pareto-optimal points,
+because the Pareto points achieve higher mutation detection rates in less time.
+
+The results show that combining \ToolEvoSuite{}'s generation with \ToolTeralizer{}'s generalization
+not only increases detection rates (Section~\ref{sec:primary-effects-eval})
+but also yields several configurations with lower runtime costs
+than executing \ToolEvoSuite{} with higher search budgets.
+For example, for the \DatasetsEqBenchEs{} projects,
+only 2 of 3 \ToolEvoSuite{} search budget settings are Pareto optimal.
+\ToolEvoSuite{} generation with a 60-second per-class search budget
+achieves 51.6\% detection in 55,075 seconds yet falls outside the Pareto frontier.
+In the runtime dimension,
+this result is most strongly dominated by 1-second \ToolEvoSuite{} generation
+combined with \VariantNaiveB{} generalization
+(Pareto point \#5 in Table~\ref{tab:pareto-eqbench}),
+which achieves 51.7\% detection in 37,532 seconds,
+i.e., 0.1 percentage points higher detection with 31.9\% lower runtime cost.
+In the mutation detection dimension,
+the result is most strongly dominated by 10-second \ToolEvoSuite{} generation
+combined with \VariantImprovedC{} generalization (Pareto point \#9),
+which produces a 53.8\% detection result in 48,269 seconds, i.e.,
+a detection improvement of 2.2 percentage points achieved in 12.4\% less runtime.
+Increasing the runtime beyond this comparison point achieves even higher
+detection rates that further extend the Pareto frontier (Pareto points \#10--\#14).
+
+Efficiency improvements of \ToolEvoSuite{} + \ToolTeralizer{} combinations
+over \ToolEvoSuite{} search budget increases
+are less pronounced for the \DatasetsCommonsEs{} projects.
+Here, all three \ToolEvoSuite{} search budget settings are Pareto optimal
+(Pareto points \#1, \#2, and \#4 in Table~\ref{tab:pareto-commons}).
+Nevertheless, generalization via \ToolTeralizer{} contributes
+8 additional points to the Pareto frontier.
+Specifically, the combination of 1-second \ToolEvoSuite{} generation
+and \VariantImprovedA{} generalization (Pareto point \#3)
+produces a Pareto optimal result
+that has higher detection rate and runtime cost than \#2
+but lower detection rate and runtime cost than \#4.
+The 7 remaining Pareto points \#5--\#11 again extend the Pareto frontier
+toward higher detection rates at higher runtime cost,
+reflecting the increased detection rates achievable via generalization
+before reaching a plateau at around
+1.0--1.3 percentage points above the corresponding \ToolEvoSuite{} results
+(Section~\ref{sec:primary-effects-eval}.)
+
+Comparing \VariantNaive{} to \VariantImproved{},
+we find that both variants produce
+6 Pareto optimal results from their 9 evaluated configurations
+for the \DatasetsEqBenchEs{} project
+(3 \ToolEvoSuite{} search budgets, each combined with 3 \tries{} settings).
+For the \DatasetsCommonsEs{} projects,
+\VariantImproved{} has 7 of 9 of results on the Pareto frontier,
+compared to only 1 of 9 results produced by \VariantNaive{}.
+The underlying causes were previously discussed in RQ1 and RQ2
+(Section~\ref{sec:primary-effects-eval} and Section~\ref{sec:ancillary-effects-eval}):
+less complex constraints in the \DatasetsEqBenchEs{} project
+favor \VariantNaive{}, thus enabling it to be competitive with
+\VariantImproved{} despite its less sophisticated input generation approach.
+In contrast, constraints are more complex for the \DatasetsCommonsEs{} projects.
+This increases the mutation detection rate and runtime advantage that
+\VariantImproved{} has over \VariantNaive{}
+because the more sophisticated input value generation avoids
+\texttt{TooManyFilterMissesException}s.
+
+@TODO: Add answer for RQ3.
+
+%\input{tables/tab-teralizer-runtimes}
 
 \begin{figure}[H]
   \centering
