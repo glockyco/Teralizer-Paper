@@ -135,8 +135,6 @@ In contrast, \DatasetsCommonsEs{} projects show \VariantImproved{}
 outperforming \VariantNaive{} in 7 of 9 comparisons,
 with \VariantImprovedC{} detecting 57.97--59.45\% of mutants
 compared to \VariantNaiveC{}'s 58.00--59.35\%.
-\DatasetCommonsDev{} shows no meaningful differences between approaches,
-with all variants achieving approximately 80.4\% detection.
 These opposite results reflect the following patterns:
 \VariantNaive{}'s better performance on \texttt{Math} mutations (59.1\% of all mutants)
 versus \VariantImproved{}'s better detection of most other mutation types
@@ -148,6 +146,8 @@ advantages on other mutations and constraint handling overcome
 its \texttt{Math} mutant detection disadvantage.
 We investigate the mechanisms behind these results in further detail in
 Sections~\ref{sec:detection-rates-per-mutator} and \ref{sec:boundary-detection-effectiveness}.
+\DatasetCommonsDev{} shows no meaningful differences between approaches,
+with all variants achieving approximately 80.4\% detection.
 
 Higher \tries{} settings improve detection rates but with diminishing returns.
 The increase from 10 to 50 \tries{} typically produces larger gains
