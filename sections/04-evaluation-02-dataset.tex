@@ -17,8 +17,8 @@ More specifically, these libraries employ sophisticated implementation patterns 
 reflection that complicate specification extraction. Moreover, their mature test suites already achieve high coverage, limiting
 opportunities to demonstrate improvement through generalization.
 
-We therefore constructed a new evaluation dataset that combines projects from three complementary sources: the EqBench benchmark~\cite{TODO}
-representing ideal conditions for specification extraction, utility methods extracted from 106 Apache Commons files to bridge
+We therefore constructed a new evaluation dataset that combines projects from three complementary sources: the \DatasetEqBench{} benchmark~\cite{TODO}
+representing ideal conditions for specification extraction, utility methods extracted from TODO Apache Commons projects to bridge
 toward real-world complexity, and 1,160 projects from the RepoReapers dataset~\cite{TODO} that reveal current limitations in
 practical settings. This design enables us to evaluate both where the approach succeeds and, equally importantly, where
 it encounters fundamental boundaries.
@@ -105,10 +105,10 @@ to ensure sufficient complexity while maintaining tractable analysis.
 The 1,160 selected projects collectively comprise 95,404 implementation classes
 and 53,039 test classes, representing diverse domains and coding styles.
 
-The \DatasetRepoReapers{} results are insightful precisely through the generalization failures they reveal.
+The RepoReapers results are insightful precisely through the generalization failures they reveal.
 While \ToolTeralizer{} succeeds on \DatasetEqBench{} and partially on Apache Commons utilities,
 it encounters fundamental obstacles in these real-world projects.
-We therefore reserve detailed analysis of \DatasetRepoReapers{} for RQ4,
+We therefore reserve detailed analysis of RepoReapers for RQ4 (Section~\ref{sec:filtering-eval-extended}),
 where we highlight the causes of observed failures to provide guidance towards
 promising directions for future research and engineering work.
 
