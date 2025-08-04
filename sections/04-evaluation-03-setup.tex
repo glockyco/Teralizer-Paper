@@ -2,13 +2,17 @@
 \label{sec:evaluation-setup}
 
 We systematically evaluated test generalization effectiveness, runtime cost, and practical boundaries
-using eight test suite variants per project.
+using nine test suite variants per project.
 All experiments were run on a MacBook Air with M2 processor and 24~GB of memory,
 maintaining default JVM settings (384~MB initial heap, ${1/64}$th of memory; 6~GB maximum heap, ${1/4}$th of memory).
 For threats to validity resulting from this setup, see Section~\ref{sec:threats-to-validity}.
-The eight project / test suite variants created by \ToolTeralizer{} serve the following purposes:
+The nine project / test suite variants used / created by \ToolTeralizer{} serve the following purposes:
 
 \begin{itemize}
+  \item \VariantOriginal{}: The project before any filtering is applied by \ToolTeralizer{}.
+    For \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}, this project variant already contains a test suite consisting of \ToolEvoSuite{}-generated tests.
+    For \DatasetCommonsDev{} and \DatasetRepoReapers{}, the test suite consists of developer-written tests.
+
   \item \VariantInitial{}: The project after instrumentation, test analysis, and specification extraction
     (Sections~\ref{sec:project-instrumentation}--\ref{sec:specification-extraction}),
     excluding tests unsuitable for generalization.
