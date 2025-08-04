@@ -22,7 +22,7 @@ from constraint-aware input generation.
 \subsubsection{Included Mutants}
 \label{sec:included-mutants}
 
-To evaluate mutation score effects,
+To evaluate mutation detection effects,
 we compare \ToolPit{} results for \VariantInitial{} variants
 against \VariantNaive{} and \VariantImproved{} variants
 using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
@@ -376,9 +376,9 @@ higher \tries{} settings or balanced generation strategies
 that maintain boundary detection advantages while improving arithmetic coverage.
 Second, extending constraint support to handle more complex constraints
 would further increase utilization rates,
-thus enabling more effective guided input generation.
+thus enabling more effective boundary-aware input generation.
 Third, adaptive strategies could select generation approaches based on
 measured constraint complexity and mutation distribution,
-applying boundary-focused generation where it provides the largest benefit.
+applying boundary-aware generation where it provides the largest benefit.
 
 @TODO: Add answer for RQ1.

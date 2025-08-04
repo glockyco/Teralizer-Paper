@@ -65,19 +65,19 @@ Even though \ToolTeralizer{} adds hundreds of tests to the generalized test suit
 net test count changes remain minimal.
 Added tests are largely compensated by removed tests
 in the \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
-which use \ToolEvoSuite{} generated test suites.
+which use \ToolEvoSuite{}-generated test suites.
 As a result, total test suite size only increases by 0--1 test cases
 (0--0.04\% of \VariantOriginal{} test suite size)
 for these projects.
 The \DatasetCommonsDev{} project sees less compensation success:
 none of the tests for which generalizations are added can be removed.
 This is because an \VariantOriginal{} test can only be removed
-if generalized tests are successfully created for all assertions in the test
-(as described in Section~\ref{sec:baseline-generalization}).
-In the projects with \ToolEvoSuite{} generated tests,
+if generalized tests are created for all assertions in the test
+(Section~\ref{sec:baseline-generalization}).
+In projects with \ToolEvoSuite{}-generated tests,
 this requirement is generally satisfied because most tests only contain a single assertion.
-However, this requirement is much more difficult to satisfy for \DatasetCommonsDev{} 
-because the developer written tests often contain multiple assertions.
+However, this requirement is more difficult to satisfy for \DatasetCommonsDev{} 
+because the developer-written tests often contain multiple assertions.
 
 The observed compensation patterns reveal how test architecture shapes generalization outcomes.
 Projects containing mostly focused, single-assertion tests enable near-complete compensation,
@@ -98,9 +98,9 @@ For further discussion and related work covering this idea, see Section~\ref{sec
 While test counts remain relatively stable through the test replacement mechanism,
 lines of code (LOC) increase across all projects and generalization variants.
 Table~\ref{tab:lines-per-project} shows increases of
-31.5--58.7~\% for \DatasetsEqBenchEs{} projects,
-18.8--29.9~\% for \DatasetsCommonsEs{} projects,
-and 4.9--5.3~\% for \DatasetCommonsDev{}.
+31.5--58.7\% for \DatasetsEqBenchEs{} projects,
+18.8--29.9\% for \DatasetsCommonsEs{} projects,
+and 4.9--5.3\% for \DatasetCommonsDev{}.
 These increases correlate with the number of added tests
 rather than net test count changes.
 For example, for the \DatasetEqBenchA{} project,
