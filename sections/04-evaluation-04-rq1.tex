@@ -304,16 +304,19 @@ for use during input generation versus enforce through post-generation filtering
 
 As described in more detail in Section~\ref{sec:improved-generalization},
 the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
-only considers simple in-/equalities on numeric and boolean variables or constants.
+only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
 More complex constraints are not encoded
 in the initial input value generation of the \VariantImproved{} property-based tests
-but are still enforced during \ToolPit{}'s default value filtering step.
+but are still enforced during input value filtering,
+which takes place after initial input value generation.
 For instance, consider the model \texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
 This model contains three constraints:
-\texttt{a < 0}, \texttt{a == (b + 1)}, and \texttt{c}.
-\VariantImproved{} can encode the simple comparison \texttt{a < 0} and the boolean variable \texttt{c},
-but cannot encode \texttt{a == (b + 1)} because it contains the compound term \texttt{b + 1}.
-Thus, \VariantImproved{} uses 2 of 3 total constraints (66.7\% utilization),
+\texttt{a < 0}, \texttt{a == (b + 1)}, and~\texttt{c}.
+\VariantImproved{} encodes the simple comparison \texttt{a < 0} and the boolean variable \texttt{c}
+in the created input value generation code,
+but encodes \texttt{a~==~(b~+~1)} only in the input value filtering code
+because it contains the compound term \texttt{b + 1}.
+Thus, \VariantImproved{} uses 2 of 3 total constraints for input value generation (66.7\% utilization),
 and the model contains 5 operators:
 \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
 With these metrics established, we are ready to examine the observed results.
