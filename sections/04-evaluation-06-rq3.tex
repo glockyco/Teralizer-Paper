@@ -15,12 +15,6 @@ Despite the relatively high runtime cost,
 Pareto analysis (Section~\ref{sec:evosuite-efficiency}) confirms
 that combining low search budget \ToolEvoSuite{} generation and \ToolTeralizer{} generalization
 often achieves better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets.
-Within the overall processing pipeline,
-validation through mutation testing consumes 40.5--81.1\% of total processing time.
-This concentration of computational cost in validation
-indicates that future optimizations should target
-the mutation testing phase rather than transformation algorithms.
-
 
 \subsubsection{Execution Time of \ToolTeralizer{}}
 \label{sec:execution-time}
