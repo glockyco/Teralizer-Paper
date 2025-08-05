@@ -10,12 +10,12 @@ The nine project / test suite variants used / created by \ToolTeralizer{} serve 
 
 \begin{itemize}
   \item \VariantOriginal{}: The project before any filtering is applied by \ToolTeralizer{}.
-    For \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}, this project variant already contains a test suite consisting of \ToolEvoSuite{}-generated tests.
+    For \DatasetsEqBenchEs{} and \DatasetsCommonsEs{}, this project variant uses a test suite consisting of \ToolEvoSuite{}-generated tests.
     For \DatasetCommonsDev{} and \DatasetRepoReapers{}, the test suite consists of developer-written tests.
 
   \item \VariantInitial{}: The project after instrumentation, test analysis, and specification extraction
     (Sections~\ref{sec:project-instrumentation}--\ref{sec:specification-extraction}),
-    excluding tests unsuitable for generalization.
+    i.e., excluding tests unsuitable for generalization.
     This project variant is the starting point for all of the following generalizations and serves as a baseline comparison point for most evaluations.
     
   \item \VariantBaseline{}: Tests converted to property-based format while retaining only original inputs
