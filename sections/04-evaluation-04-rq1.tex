@@ -41,6 +41,8 @@ while \DatasetCommonsDev{} includes only 63.6\% of original test methods
 This 20-percentage-point gap reflects how different test creation approaches
 align with \ToolTeralizer{}'s current processing capabilities.
 
+\input{tables/tab-mutants-per-project}
+
 EvoSuite generates tests with characteristics that facilitate automated analysis:
 simple assertion patterns that compare single values,
 explicit parameter passing without complex setup logic,
@@ -74,18 +76,8 @@ while EvoSuite variants generate comprehensive suites for all included code.
 This focused scope reflects our intent to evaluate code amenable to generalization in this part of the dataset,
 as discussed in Section~\ref{sec:apache-commons-utils}.
 
-With the evaluation scope established, we now analyze how effectively
-the generalized tests detect mutations within the included subset.
-
-\input{tables/tab-mutants-per-project}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
-  \caption{Percentage of detected mutants and improvement over INITIAL per project and generalization variant.}
-  %\Description{@TODO}
-  \label{fig:mutation-detection-results}
-\end{figure}
+% With the evaluation scope established, we now analyze how effectively
+% the generalized tests detect mutations within the included subset.
 
 \subsubsection{Overall Mutation Detection Rates}
 \label{sec:overall-detection-rates}
@@ -102,6 +94,14 @@ representing absolute improvements of 1.2--3.9 percentage points
 (1.4--2.3\% relative increase),
 while \DatasetCommonsDev{} improves by only 0.05--0.07 percentage points
 from its 80.4\% baseline.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
+  \caption{Percentage of detected mutants and improvement over INITIAL per project and generalization variant.}
+  %\Description{@TODO}
+  \label{fig:mutation-detection-results}
+\end{figure}
 
 In general, two factors strongly affect achievable generalization improvements:
 initial test suite strength and input constraint complexity.
@@ -307,6 +307,8 @@ and constraint count (individual boolean conditions),
 while tracking which percentage of constraints \VariantImproved{} can encode
 for use during input generation versus enforce through post-generation filtering.
 
+\input{tables/tab-mutation-detection-comparison}
+
 As described in more detail in Section~\ref{sec:improved-generalization},
 the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
 only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
@@ -325,8 +327,6 @@ Thus, \VariantImproved{} uses 2 of 3 total constraints for input value generatio
 and the model contains 5 operators:
 \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
 With these metrics established, we are ready to examine the observed results.
-
-\input{tables/tab-mutation-detection-comparison}
 
 Undetected mutants consistently have more complex models than detected ones
 across all projects.

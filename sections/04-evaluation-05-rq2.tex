@@ -51,6 +51,8 @@ between 60--75 (2.2--2.9\%)
 for the \DatasetsCommonsEs{} projects,
 and 3 (0.4~\%) for the \DatasetCommonsDev{} project.
 
+\input{tables/tab-tests-per-project}
+
 \VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
 because more of the tests that are created by \VariantNaiveC{}
 are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
@@ -91,8 +93,6 @@ that all cover the same input partition
 with a single property-based test that covers the same partition instead.
 For further discussion and related work covering this idea, see Section~\ref{sec:test-suite-reduction}.
 
-\input{tables/tab-tests-per-project}
-
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
 
@@ -109,6 +109,8 @@ For example, for the \DatasetEqBenchA{} project,
 However, the added tests increase test suite size by 11,780 LOC while the removed tests reduce LOC by only 1,127.
 This asymmetry between added and removed LOC stems from
 two characteristics inherent to \ToolTeralizer{}'s current implementation.
+
+\input{tables/tab-lines-per-project}
 
 First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests.
 More specifically, each generalized test defines input ranges matching extracted constraints by
@@ -161,8 +163,6 @@ modified test annotations, parameterized inputs, and generalized assertions.
 As a result, such optimizations could reduce the current LOC increases
 while preserving generalization's mutation detection benefits.
 
-\input{tables/tab-lines-per-project}
-
 \subsubsection{Execution Time of the Test Suite}
 \label{sec:test-suite-execution-time}
 
@@ -187,6 +187,8 @@ In the following paragraphs,
 we discuss how each of the above factors
 influences overall test suite execution times
 and how these factors interact with each other.
+
+\input{tables/tab-runtime-per-project}
 
 \paragraph{Added Tests}
 
@@ -250,6 +252,14 @@ improvements in per-\texttt{try} efficiency to any specific causes
 would require a more thorough microbenchmarking setup
 that properly accounts for confounding factors such as JVM warmup,
 which is beyond the scope of this evaluation.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
+  \caption{Runtime Comparison: Test vs. Generalization.}
+  %\Description{@TODO}
+  \label{fig:test-runtime-differences}
+\end{figure}
 
 \paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
 
@@ -317,15 +327,3 @@ not only holds the potential to increase detection rates
 but could also reduce the runtime cost of generalized tests at the same time.
 
 @TODO: Add answer for RQ2.
-
-\input{tables/tab-runtime-per-project}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
-  \caption{Runtime Comparison: Test vs. Generalization.}
-  %\Description{@TODO}
-  \label{fig:test-runtime-differences}
-\end{figure}
-
-@TODO: Split Figure~\ref{fig:test-runtime-differences} into two (sub-)figures to make each one individually referenceable.

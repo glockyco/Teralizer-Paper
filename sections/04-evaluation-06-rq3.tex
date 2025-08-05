@@ -32,6 +32,14 @@ generalization validation stage,
 consumes 86\%, 72\%, and 34\% of median runtime
 for 1s, 10s, and 60s search budgets respectively.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
+  \caption{Teralizer runtimes per project, processing stage, and generalization variant.}
+  %\Description{@TODO}
+  \label{fig:teralizer-runtimes}
+\end{figure}
+
 \paragraph{Non-Validation Runtimes}
 
 Non-validation stages complete efficiently
@@ -159,6 +167,25 @@ before reaching a plateau at around
 1.0--1.3 percentage points above the corresponding \ToolEvoSuite{} results
 (Section~\ref{sec:primary-effects-eval}.)
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
+  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
+  \label{fig:teralizer-efficiency}
+\end{figure}
+
+\begin{table}[H]
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-eqbench}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-commons}
+  \end{minipage}
+\end{table}
+
 Comparing \VariantNaive{} to \VariantImproved{},
 we find that both variants produce
 6 Pareto optimal results from their 9 evaluated configurations
@@ -181,31 +208,3 @@ because the more sophisticated input value generation avoids
 @TODO: Add answer for RQ3.
 
 %\input{tables/tab-teralizer-runtimes}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
-  \caption{Teralizer runtimes per project, processing stage, and generalization variant.}
-  %\Description{@TODO}
-  \label{fig:teralizer-runtimes}
-\end{figure}
-
-\begin{samepage}
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
-    \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
-    \label{fig:teralizer-efficiency}
-  \end{figure}
-  \begin{table}[H]
-    \begin{minipage}[t]{0.48\textwidth}
-      \centering
-      \input{tables/tab-pareto-eqbench}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
-      \centering
-      \input{tables/tab-pareto-commons}
-    \end{minipage}
-  \end{table}
-\end{samepage}
