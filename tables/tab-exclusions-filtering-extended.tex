@@ -1,21 +1,21 @@
 \begin{table}[H]
   \caption{Filtering results of the extended dataset for tests, assertions, and generalizations.}
   \label{tab:exclusions-filtering-extended}
-  \begin{tabular}{lllrrr}
+  \begin{tabular}{lllrrrr}
     \toprule
-    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Reject} \\
+    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Defer} & \multicolumn{1}{c}{Reject} \\
     \midrule
-    \VariantShared{} & Test & NonPassingTest & 74332 & 65579\; (88.2\%) & 8753.0\; (11.8\%) \\
-    \VariantShared{} & Test & TestType & 74332 & 65052\; (87.5\%) & 9280.0\; (12.5\%) \\
-    \VariantShared{} & Test & NoAssertions & 56853 & 33390\; (58.7\%) & 23463.0\; (41.3\%) \\
+    \VariantShared{} & Test & NonPassingTest & 74332 & 65579\; (88.2\%) & 0\; (\phantom{0}0.0\%) & 8753\; (11.8\%) \\
+    \VariantShared{} & Test & TestType & 74332 & 65052\; (87.5\%) & 0\; (\phantom{0}0.0\%) & 9280\; (12.5\%) \\
+    \VariantShared{} & Test & NoAssertions & 56853 & 33390\; (58.7\%) & 0\; (\phantom{0}0.0\%) & 23463\; (41.3\%) \\
     \midrule
-    \VariantShared{} & Assertion & ExcludedTest & 122166 & 101519\; (83.1\%) & 20647.0\; (16.9\%) \\
-    \VariantShared{} & Assertion & MissingValue & 122166 & 51430\; (42.1\%) & 70736.0\; (57.9\%) \\
-    \VariantShared{} & Assertion & ParameterType & 122166 & 5393\; (\phantom{0}4.4\%) & 116773.0\; (95.6\%) \\
-    \VariantShared{} & Assertion & ReturnType & 122166 & 11650\; (\phantom{0}9.5\%) & 110516.0\; (90.5\%) \\
-    \VariantShared{} & Assertion & UnsupportedAssertion & 122166 & 92996\; (76.1\%) & 29170.0\; (23.9\%) \\
+    \VariantShared{} & Assertion & ExcludedTest & 122166 & 101519\; (83.1\%) & 0\; (\phantom{0}0.0\%) & 20647\; (16.9\%) \\
+    \VariantShared{} & Assertion & MissingValue & 122166 & 51430\; (42.1\%) & 0\; (\phantom{0}0.0\%) & 70736\; (57.9\%) \\
+    \VariantShared{} & Assertion & ParameterType & 122166 & 5393\; (\phantom{0}4.4\%) & 56484\; (46.2\%) & 60289\; (49.4\%) \\
+    \VariantShared{} & Assertion & ReturnType & 122166 & 11650\; (\phantom{0}9.5\%) & 70736\; (57.9\%) & 39780\; (32.6\%) \\
+    \VariantShared{} & Assertion & AssertionType & 122166 & 92996\; (76.1\%) & 0\; (\phantom{0}0.0\%) & 29170\; (23.9\%) \\
     \midrule
-    \VariantImprovedC{} & Generalization & NonPassingTest & 229 & 206\; (90.0\%) & 23.0\; (10.0\%) \\
+    \VariantImprovedC{} & Generalization & NonPassingTest & 229 & 206\; (90.0\%) & 0\; (\phantom{0}0.0\%) & 23\; (10.0\%) \\
     \bottomrule
   \end{tabular}
 \end{table}
