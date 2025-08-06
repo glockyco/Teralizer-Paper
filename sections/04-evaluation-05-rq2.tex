@@ -45,11 +45,11 @@ of the \VariantOriginal{} test suite.
 Table~\ref{tab:tests-per-project} quantifies the observed changes
 for the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
 The number of added tests is between 174--211
-(3.5--4.3~\% of \VariantOriginal{} test suite size)
+(3.5--4.3\% of \VariantOriginal{} test suite size)
 for the \DatasetsEqBenchEs{} projects,
 between 60--75 (2.2--2.9\%)
 for the \DatasetsCommonsEs{} projects,
-and 3 (0.4~\%) for the \DatasetCommonsDev{} project.
+and 3 (0.4\%) for the \DatasetCommonsDev{} project.
 
 \input{tables/tab-tests-per-project}
 
@@ -171,9 +171,9 @@ generalization with \VariantNaiveC{} and \VariantImprovedC{}
 increases overall test suite runtimes
 for all \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
 More specifically, test suite runtimes
-show increases of 574.5--1210.0~\% for the \DatasetsEqBenchEs{} projects,
-444.1--2651.5~\% for the \DatasetsCommonsEs{} projects,
-and 9.4--57.1~\% for the \DatasetCommonsDev{} project.
+show increases of 574.5--1210.0\% for the \DatasetsEqBenchEs{} projects,
+444.1--2651.5\% for the \DatasetsCommonsEs{} projects,
+and 9.4--57.1\% for the \DatasetCommonsDev{} project.
 Runtime increases are primarily affected by the following factors:
 
 \begin{enumerate}
@@ -230,13 +230,13 @@ For example, as shown in Figure~\ref{fig:test-runtime-differences},
 execution time of \VariantNaive{} tests
 is, on average, 286.13 milliseconds (ms) longer per test
 than for \VariantOriginal{} tests when using 10 \tries{}
-(a +91.3~\% increase compared to the \VariantBaseline{} overhead of 149.56~ms),
-348.56~ms (+133.0~\%) longer with 50 \tries{},
-and 1136.21~ms (+659.7~\%) longer with 200 \tries{}.
+(a +91.3\% increase compared to the \VariantBaseline{} overhead of 149.56~ms),
+348.56~ms (+133.0\%) longer with 50 \tries{},
+and 1136.21~ms (+659.7\%) longer with 200 \tries{}.
 Similarly, execution time of \VariantImproved{} tests
-is 189.17~ms (+26.5~\%) longer with 10 \tries{},
-246.85~ms (+65.1~\%) longer with 50 \tries{},
-and 395.26~ms (+164.3~\%) longer with 200 \tries{}.
+is 189.17~ms (+26.5\%) longer with 10 \tries{},
+246.85~ms (+65.1\%) longer with 50 \tries{},
+and 395.26~ms (+164.3\%) longer with 200 \tries{}.
 While overall runtime increases
 get larger as \texttt{tries} increase,
 runtime increases per \texttt{try}
@@ -272,7 +272,7 @@ both generalize the same three tests of \DatasetCommonsDev{}
 Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
 generalization with \VariantNaiveC{}
 increases overall test suite runtime by 4.54 seconds
-(+57.1~\% compared to \VariantOriginal{}).
+(+57.1\% compared to \VariantOriginal{}).
 \VariantImprovedC{}, on the other hand,
 only increases runtime by 0.74 seconds (+9.4\%).
 The more pronounced runtime impact of \VariantNaive{} variants is caused by 
@@ -307,20 +307,20 @@ is more strongly affected by this than \VariantImproved{}
 because it does not consider any constraints during value generation
 (as discussed in the previous paragraph),
 the issue also affects \VariantImproved{} generalization
-in cases where less than 100~\% of constraints can be used
+in cases where less than 100\% of constraints can be used
 (for further details on constraint use,
 see Sections~\ref{sec:improved-generalization} and \ref{sec:boundary-detection-effectiveness}).
 For example, as shown in Table~\ref{tab:tests-per-project},
 \VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
 as it adds to \DatasetCommonsA{},
-yet runtime increases are similar: +578.7~\% vs.\ +680.5~\%.
+yet runtime increases are similar: +578.7\% vs.\ +680.5\%.
 This is because input specifications in \DatasetEqBenchA{}
 have fewer operations (mean: 159.1 vs.\ 208.0, median: 10 vs.\ 15)
 and constraints (mean: 6.5 vs.\ 7.5, median: 2 vs.\ 5)
 than in \DatasetCommonsA{}, 
 and fewer of these constraints
 can be used during input value generation
-(mean: 42.9~\% vs.\ 61.5~\%, median: 80~\% vs.\ 100~\%).
+(mean: 42.9\% vs.\ 61.5\%, median: 80\% vs.\ 100\%).
 This indicates that better support for more complex input constraints
 not only holds the potential to increase detection rates
 (as suggested in Section~\ref{sec:boundary-detection-effectiveness})
