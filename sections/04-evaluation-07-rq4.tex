@@ -202,18 +202,16 @@ and tested methods invoked within loops where iteration counts depend on inputs.
 These patterns produce incorrect expected values or
 invalid test configurations when different inputs are tested.
 
-Project-specific patterns reveal how test characteristics affect generalization.
-%Table~\ref{tab:exclusions-test-fails-by-project} shows failure distributions:
+Project-specific patterns show how test characteristics affect generalization.
 \DatasetsCommons{} projects exhibit 4.99--6.00\% TooManyFilterMissesException rates
 and 4.00--4.31\% from inaccurate specifications,
 while \DatasetsEqBenchEs{} projects show 3.34--3.78\% and 0.41--0.45\% respectively.
 The higher TooManyFilterMissesException rates in \DatasetsCommons{} projects
-stem from more complex constraints (Section~\ref{sec:boundary-detection-effectiveness}).
+result from their more complex constraints (Section~\ref{sec:boundary-detection-effectiveness}).
 The 10$\times$ higher rate of inaccurate specification failures
-in \DatasetsCommons{} projects likely reflects implicit preconditions,
-as \ToolEvoSuite{}-generated tests avoid loops and
-do not invoke assertions through transitive method calls—
-two common sources of specification inaccuracy.
+in \DatasetsCommons{} projects reflects fundamental differences in test construction:
+\ToolEvoSuite{}-generated tests avoid loops and never invoke assertions through helper methods,
+while developer-written tests commonly use both patterns.
 
 \paragraph{Summary}
 
