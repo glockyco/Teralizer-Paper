@@ -14,10 +14,8 @@
 %\input{tables/tab-exclusions-test-fails-by-variant} % TODO: Cover in text only (?).
 %\input{tables/tab-exclusions-spf} % TODO: Cover in text only (?).
 
-% TODO: Why are we highlighting assertions in the first sentence? That seems quite a narrow focus.
-\ToolTeralizer{} successfully processes approximately half of all test assertions.
-The other half encounters exclusions at three distinct stages,
-each revealing different aspects of the generalization challenge.
+\ToolTeralizer{} determines generalization feasibility
+through a three-level filtering cascade.
 Table~\ref{tab:exclusions-filtering} quantifies this filtering cascade:
 test-level filtering excludes 16.9\% of tests,
 assertion-level filtering excludes 52.2\% of assertions within remaining tests,
