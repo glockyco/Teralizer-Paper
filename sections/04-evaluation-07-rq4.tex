@@ -217,23 +217,23 @@ two common sources of specification inaccuracy.
 
 \paragraph{Summary}
 
-The filtering analysis reveals that current test generalization capabilities
-successfully process approximately half of assertions in typical test suites.
-Test-level filtering excludes 16.9\% of tests,
-with assertion-free tests (10.3\%) and non-passing tests (6.6\%) as primary causes,
-though many "assertion-free" tests in developer-written suites
-actually contain assertions in helper methods.
-Assertion-level filtering excludes 52.2\% of assertions,
-dominated by missing value extraction (24.7\%) and parameter type limitations (15.4%),
-with \ToolSPF{} execution failures contributing another 10.4\%.
-Among generated tests, failure rates range from 0.2\% for baseline variants
-to 28.4\% for naive generation with high \tries{} values.
-Constraint-aware generation (\VariantImproved{}) reduces TooManyFilterMissesExceptions by approximately 50\%,
-though 14--16\% of tests still fail due to incomplete specifications and static analysis limitations.
-The variation in exclusion rates and failure patterns across project types
-indicates that generalization effectiveness depends significantly
-on test suite characteristics, coding patterns,
-and the complexity of constraints in the tested code.
+The three-level filtering cascade reveals that even under favorable conditions,
+i.e., primarily \ToolEvoSuite{}-generated test suites
+that avoid complex patterns like helper methods and loops,
+\ToolTeralizer{} excludes significant portions at each stage:
+16.9\% at test level,
+52.2\% at assertion level,
+and 14.6--28.4\% at generalization level
+for \VariantNaive{} and \VariantImproved{} generalization variants.
+Each level presents distinct challenges:
+support for non-@Test test and no-assertion tests at test level,
+specification extraction and type support at assertion level,
+and input generation at generalization level.
+Constraint-aware generation (\VariantImproved{}) reduces generalization-level failures by approximately 50\%
+compared to naive approaches (14.6--16.0\% vs. 22.2--28.4\%),
+while project-specific patterns show developer-written tests pose greater challenges than synthetic tests.
+Detailed insights and implications are discussed following the extended dataset analysis
+in Section~\ref{sec:filtering-eval-extended}.
 
 % --
 
