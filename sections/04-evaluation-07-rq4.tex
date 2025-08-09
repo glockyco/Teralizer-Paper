@@ -1,42 +1,73 @@
 \subsection{RQ4: Causes of Unsuccessful Generalizations}
 \label{sec:limitations-eval}
 
-[TODO: Intro]
+% TODO: Use larger paragraphs to have less whitespace?
+% TODO: Remove generalization results from tab:exclusions-filtering, since they are all NonPassingTest?
+% TODO: Remove "Accept"/"Reject" vs. "Defer" distinction from tab:exclusions-filtering?
+% TODO: Merge tab:exclusions-filtering and tab:exclusions-summary?
+% TODO: Merge tab:processing-failures-per-stage and tab:processing-failure-causes?
+
+Understanding why test generalization fails is as important as measuring when it succeeds.
+While RQ1--3 demonstrated that \ToolTeralizer{} can improve mutation detection rates
+and operate within practical time constraints,
+our evaluations also revealed that many generalization attempts do not succeed.
+This research question systematically investigates
+the causes of unsuccessful generalizations
+to identify which barriers to generalization stem from 
+limitations that are internal versus external to \ToolTeralizer{},
+and which ones require engineering effort
+versus research advances to resolve.
+
+We examine unsuccessful generalizations across two complementary datasets.
+First, we analyze the primary evaluation dataset (\DatasetsEqBenchEs{} and \DatasetsCommons{})
+which represents favorable conditions:
+predominantly \ToolEvoSuite{}-generated tests 
+with simple control flow and numeric computations.
+This establishes baseline expectations for test generalization 
+when project characteristics align with current tool capabilities.
+Second, we apply \ToolTeralizer{} to 1,160 real-world Java projects from the RepoReapers dataset,
+revealing the additional challenges that emerge in practical application scenarios.
+The contrast between these datasets
+(from approximately 50\% success in favorable conditions
+to 0.9\% in real-world projects)
+identifies clear priorities 
+for future test generalization advances.
 
 % --
 
 \subsubsection{Unsuccessful Generalizations in the Primary Evaluation Dataset}
 \label{sec:filtering-eval}
 
-\input{tables/tab-exclusions-summary}
-\input{tables/tab-exclusions-filtering}
-%\input{tables/tab-exclusions-test-fails-by-project} % TODO: Cover in text only (?).
-%\input{tables/tab-exclusions-test-fails-by-variant} % TODO: Cover in text only (?).
-%\input{tables/tab-exclusions-spf} % TODO: Cover in text only (?).
-
-\ToolTeralizer{} determines generalization feasibility
-through a three-level filtering cascade.
-Table~\ref{tab:exclusions-filtering} quantifies this filtering cascade:
-test-level filtering excludes 16.9\% of tests,
-assertion-level filtering excludes 52.2\% of assertions within remaining tests,
-and generalization-level filtering excludes 0.2--28.4\% of generated tests depending on the variant
-(Table~\ref{tab:exclusions-summary}).
+We first present exclusion results for the primary evaluation dataset
+to establish a baseline of exclusion patterns under favorable conditions.
 The vast majority of exclusions stem from systematic filtering that identifies
 cases the current \ToolTeralizer{} implementation cannot handle,
 rather than unexpected failures during processing.
+\ToolTeralizer{} determines generalization feasibility
+through a three-level filtering cascade
+(Section~\ref{sec:all-filtering}):
+test-level filtering excludes 16.9\% of tests,
+assertion-level filtering excludes 52.2\% of assertions within remaining tests,
+and generalization-level filtering excludes 0.2--28.4\% of generated tests
+across the seven generalization variants
+(Table~\ref{tab:exclusions-summary}).
 Throughout the remainder of this section,
 we provide detailed descriptions of the different failure causes
-responsible for these exclusions.
+responsible for these exclusions (Table~\ref{tab:exclusions-filtering}).
+
+\input{tables/tab-exclusions-summary}
 
 \paragraph{Test-Level Filtering}
 
 Test-level filtering excludes 3,940 tests (16.9\%),
-with 3,933 excluded through filtering and 7 from \ToolTeralizer{} exceptions
-during test analysis and filtering phases.
+with 3,933 excluded through filtering
+(Table~\ref{tab:exclusions-filtering})
+and 7 from \ToolTeralizer{} exceptions
+during test analysis and filtering phases
+(Sections~\ref{sec:test-analysis} and \ref{sec:all-filtering}).
 
 NonPassingTest rejections account for 1,527 exclusions (6.6\% of total tests).
-The mechanism behind these failures reveals an interesting cascade effect.
-132 of the 1,527 exclusions are caused by test that fail
+132 of the 1,527 exclusions are tests that fail
 after disabling \ToolEvoSuite{}'s isolation and reproducibility features.
 These features had to be disabled to prevent \ToolPit{} crashes during mutation testing with \ToolJqwik{}.
 However, their removal causes tests relying on system time or specific environmental conditions to fail.
@@ -45,27 +76,35 @@ Because \ToolPit{} only supports class-level exclusion,
 amplifying the impact of individual test failures by over 10$\times$.
 
 Another 180 tests (0.8\% of total tests) are excluded due to TestType rejections.
-All of these exclusions are caused by ParameterizedTests in the \DatasetCommonsDev{} project.
+All of these exclusions are caused by
+@Parameterized\-Test annotations in the \DatasetCommonsDev{} project.
 \ToolTeralizer{} currently supports only standard @Test annotations,
-excluding parameterized, repeated, and other specialized test types (Section~\ref{sec:test-analysis}).
+excluding parameterized, repeated, and other specialized test types
+(Section~\ref{sec:test-analysis}).
 
 The NoAssertions filter applies after the two preceding filters,
 operating on 21,532 remaining tests from the initial 23,246.
-From this subset of tests, 10.3\% (2,226 tests) are excluded by the filter
+From this subset, 10.3\% (2,226 tests) are excluded by the filter
 because they do not contain any assertions in the main test method.
 In \ToolEvoSuite{}-generated test suites, all NoAssertions exclusions
-are genuinely assertion-free tests the simply pass if no exception occurs.
+are genuinely assertion-free tests that simply pass if no exception occurs.
 In contrast, 69 of 80 NoAssertions exclusions (86.3\%) in the developer-written
-\DatasetCommonsDev{} test suite are false positves: these tests
+\DatasetCommonsDev{} test suite are false positives: these tests
 contain assertions in helper methods called from the main test method.
 However, \ToolTeralizer{}'s current static analysis
 only examines the top-level test method,
 which causes it to miss these delegated assertion calls.
 
+\input{tables/tab-exclusions-filtering}
+%\input{tables/tab-exclusions-test-fails-by-project} % TODO: Cover in text only (?).
+%\input{tables/tab-exclusions-test-fails-by-variant} % TODO: Cover in text only (?).
+%\input{tables/tab-exclusions-spf} % TODO: Cover in text only (?).
+
 \paragraph{Assertion-Level Filtering}
 
 Assertion-level filtering examines 28,923 assertions within passing tests,
-excluding 15,087 (52.2\%) that cannot be generalized.
+excluding 15,087 (52.2\%) that cannot be generalized
+(Table~\ref{tab:exclusions-filtering}).
 Of these exclusions, 12,092 stem from filtering decisions
 while 2,995 result from unsuccessful specification extraction
 during \ToolSPF{} execution.
@@ -83,34 +122,34 @@ The ParameterType filter rejects 15.4\% of assertions
 when none of the tested method's parameters
 have generalizable types (numeric or boolean).
 Deferral numbers are lower than rejections of MissingValue filters
-because we can sometimes infer parameter types from the call site
+because \ToolTeralizer{} can sometimes infer parameter types from the call site
 of the tested method if the full method declaration cannot be resolved.
 
 The VoidReturnType filter rejects 3 assertions
 for tested methods with void return types.
-The currently implementation of \ToolTeralizer{}
+The current implementation of \ToolTeralizer{}
 does not support such methods because \ToolSPF{}
-does not report any symbolic outputs for them.
+does not report any symbolic outputs
+(i.e., symbolic representations of return values)
+for them.
 
 Another 5.5\% of assertions (1,597) are rejected by the ExcludedTest filter
 because they belong to tests already excluded at the test level.
 This cascading effect ensures consistency between filtering stages.
 
 Finally, 2.6\% of assertions (743) are rejected by the AssertionType filter
-because they are assertions for which \ToolTeralizer{}
-does not currently offer generalization support.
-Specifically, excluded assertions in the dataset are
-assertArrayEquals (207 instances),
-assertSame (142),
-assertNull (124),
-assertNotNull (86),
-assertNotSame (79),
-assertNotEquals (54),
-fail (33),
-and assertInstanceOf (18).
-These assertions primarily consist of checks for reference equality,
-null values, or array comparisons, i.e., involve data types
-that are not supported by \ToolTeralizer{}'s current specification extraction.
+because the current \ToolTeralizer{} version
+does not offer generalization support for them.
+Specifically, excluded assertions in the dataset comprise
+reference equality checks (assertSame: 142, assertNotSame: 79),
+null checks (assertNull: 124, assertNotNull: 86),
+array comparisons (assertArrayEquals: 207),
+inequality assertions (assertNotEquals: 54),
+type checks (assertInstanceOf: 18),
+and explicit failures (fail: 33).
+These assertions largely involve data types
+that are not supported by \ToolTeralizer{}'s
+current specification extraction.
 
 \paragraph{Specification Extraction Failures}
 
@@ -120,40 +159,43 @@ Causes for this include \ToolSPF{} errors, \ToolTeralizer{} errors,
 and exceeded analysis limits (timeout, specification size limit, depth limit, etc.).
 
 SPF exceptions constitute 51.4\% of extraction failures (1,540 cases).
-They occur primarily because of missing models for native methods in the current implementation \ToolSPF{}
-and to a lesser extent due to implementation bugs in \ToolSPF{}/\ToolJPF{}.
+They occur primarily because of missing models for native methods
+in the current implementation of \ToolSPF{}
+and, to a lesser extent,
+because of implementation bugs in \ToolSPF{}/\ToolJPF{}.
 
-Exceeded analysis limits account for another 45.3\% of failed extractions (1358 cases).
-For example, 790 (26.4\%) are interrupted
+Exceeded analysis limits account for another 45.3\%
+of failed specification extractions (1,358 cases).
+For example, 790 (26.4\%) \ToolSPF{} runs are interrupted
 after exceeding the configured maximum specification size,
-and 524 (17.5\%) additional cases exceed the configured maximum depth limit.
+and 524 (17.5\%) additional cases exceed the configured maximum depth limit
+(Section~\ref{sec:specification-extraction}).
 Both of these aim to avoid timeouts and memory exhaustion
 in the presence of complex control flows or complex constraints.
-The remaining failures are due to timeouts (0.9\%, 28 cases) and out-of-memory errors (0.5\%, 16 cases)
+The remaining failures are due to timeouts (0.9\%, 28 cases)
+and out-of-memory errors (0.5\%, 16 cases)
 which evade preemptive detection via the two preceding measures.
 
-Exceptions due to known bugs
+Exceptions due to null pointer dereferences
 in \ToolTeralizer{}'s current specification extraction implementation
 represent the remaining 3.2\% of failures (97 cases).
 
 \paragraph{Generalization-Level Filtering}
 
 After generating property-based tests, generalization validation
-identifies generalized tests that fail execution (Table~\ref{tab:exclusions-filtering}).
-Low failure rates for \VariantBaseline{} confirm that
-transformation from JUnit tests to jqwik tests is reliable.
-However, failure rates of up to 28.4\% for \VariantNaiveC{}
-suggest that actual generalization of inputs and outputs presents more challenges.
+identifies generalized tests that fail execution
+(Table~\ref{tab:exclusions-filtering}).
 
 \VariantBaseline{} generalized tests fail in 0.2\% of cases (22 out of 13,836 tests).
 This low failure rate indicates
 that the transformation to property-based \ToolJqwik{} tests
-is largely successful in producing compilable code that matches the behavior of the original JUnit tests.
+is largely successful in producing compilable code
+that matches the behavior of the original JUnit tests.
 The few failures stem from inaccurate specifications caused by
 implicit preconditions, assertions in loops,
 assertions in transitively called methods,
 or tested methods called within loops.
-Neither of these patterns is properly accounted for
+None of these patterns is properly accounted for
 by \ToolTeralizer{}'s current specification extraction.
 
 \VariantNaive{} and \VariantImproved{} variants
@@ -166,7 +208,7 @@ can approach this limit when specifications contain
 numerous complex constraints,
 necessitating preemptive exclusion of the largest specifications.
 
-\VariantNaive{} variants show substantially higher failure rates:
+\VariantNaive{} variants show the highest failure rates:
 22.2\% for \VariantNaiveA{},
 27.8\% for \VariantNaiveB{},
 and 28.4\% for \VariantNaiveC{}.
@@ -176,31 +218,22 @@ with specific counts of 2,233 for \VariantNaiveA{},
 and 3,005 for \VariantNaiveC{}.
 These exceptions occur when \ToolJqwik{} cannot generate
 inputs satisfying path constraints within its retry limit.
-The increasing failure count with higher \tries{} values
-demonstrates the challenge of generating more diverse valid inputs
-when using naive random generation with complex constraints.
+Failure counts increase with higher \tries{} values
+as \VariantNaive{} input generation struggles to produce valid inputs,
+especially for more complex path constraints
+(Section~\ref{sec:boundary-detection-effectiveness}).
 
 \VariantImproved{} variants reduce overall failure rates to 14.6--16.0\%
-through constraint-aware input value generation (Section~\ref{sec:boundary-detection-effectiveness}).
+through constraint-aware input value generation
+(Section~\ref{sec:boundary-detection-effectiveness}).
 Specifically, TooManyFilterMissesExceptions decrease to
 1,189 for \VariantImprovedA{},
 1,223 for \VariantImprovedB{},
-and 1,265 for \VariantImprovedC{}, i.e.,
-approximately half the counts seen in naive variants.
+and 1,265 for \VariantImprovedC{},
+i.e., approximately half the counts seen in naive variants.
 However, failures from inaccurate specifications remain consistent
-across both variant types at approximately 2.5--2.8\% of tests.
-
-The persistence of specification-related failures stems from
-limitations in \ToolTeralizer{}'s current specification extraction approach:
-implicit preconditions not visible in the code
-(e.g., "inputs do not cause overflows",
-"inputs do not cause division by zero",
-"array indices remain within bounds"),
-assertions within loops that execute varying numbers of times,
-assertions in methods called transitively from the test,
-and tested methods invoked within loops where iteration counts depend on inputs.
-These patterns produce incorrect expected values or
-invalid test configurations when different inputs are tested.
+across both variant types at approximately 2.5--2.8\% of tests
+because specification extraction logic is shared across generalization variants.
 
 Project-specific patterns show how test characteristics affect generalization.
 \DatasetsCommons{} projects exhibit 4.99--6.00\% TooManyFilterMissesException rates
@@ -224,18 +257,180 @@ that avoid complex patterns like helper methods and loops,
 and 14.6--28.4\% at generalization level
 for \VariantNaive{} and \VariantImproved{} generalization variants.
 Each level presents distinct challenges:
-support for non-@Test test and no-assertion tests at test level,
+support for non-@Test and no-assertion tests at test level,
 specification extraction and type support at assertion level,
 and input generation at generalization level.
-Constraint-aware generation (\VariantImproved{}) reduces generalization-level failures by approximately 50\%
+Constraint-aware generation (\VariantImproved{})
+reduces generalization-level failures by approximately 50\%
 compared to naive approaches (14.6--16.0\% vs. 22.2--28.4\%),
-while project-specific patterns show developer-written tests pose greater challenges than synthetic tests.
-Detailed insights and implications are discussed following the extended dataset analysis
+while project-specific patterns show developer-written tests
+pose greater challenges than synthetic, \ToolEvoSuite{}-generated tests.
+These findings establish that even under favorable conditions,
+significant engineering and research challenges remain for test generalization.
+Further insights and implications are discussed following the extended dataset analysis
 in Section~\ref{sec:filtering-eval-extended}.
 
 \subsubsection{Unsuccessful Generalizations in the Extended Evaluation Dataset}
 \label{sec:filtering-eval-extended}
 
-% --
+The extended evaluation applies \ToolTeralizer{} to 1,160 real-world Java projects
+from the RepoReapers dataset (Section~\ref{sec:additional-oss-projects}),
+thereby moving beyond the favorable conditions of the primary dataset
+to examine more challenging, practical application scenarios.
+Table~\ref{tab:processing-failures-per-stage}
+reveals progressive attrition throughout the processing pipeline:
+only 10 projects (0.9\%) successfully complete all processing stages.
+While many exclusions are still caused by filtering,
+real-world projects face additional barriers throughout the different processing stages,
+from dependency resolution through final mutation testing.
+This evaluation identifies which barriers are internal versus external to \ToolTeralizer{},
+and which ones require engineering effort versus research advances to resolve.
 
-[TODO: Answer to RQ4]
+\input{tables/tab-processing-failures-per-stage}
+\input{tables/tab-processing-failure-causes}
+
+\paragraph{Processing Pipeline Failures}
+
+While filter rejections only cause
+individual tests, assertions, or generalizations
+to be excluded from further processing,
+processing failures immediately stop
+the full processing pipeline
+because no further progress can be made
+(Tables~\ref{tab:processing-failures-per-stage} and \ref{tab:processing-failure-causes}).
+The observed failures reveal three actionable improvement categories.
+First, reducing exclusions caused by filtering
+would recover 401 projects
+(129 from all tests excluded,
+3 from all classes excluded from mutation testing,
+269 from all generalizations excluded).
+Second, adding support for more varied project structures
+would recover 119 projects
+(26 missing source/test directories,
+18 missing compilation outputs,
+31 missing JUnit reports,
+40 missing \ToolJacoco{} data,
+4 missing \ToolPit{} data).
+Third, increasing timeouts or reducing processing times
+would recover 89 projects
+(48 during \VariantOriginal{} test execution,
+1 during \VariantInitial{} test execution,
+40 during \ToolPit{} analysis).
+In contrast, dependency resolution and compilation errors
+in the original project code (500 projects total)
+as well as external tool errors (38 projects) are less actionable,
+as they reflect issues outside \ToolTeralizer{}'s control.
+\ToolTeralizer{} implementation errors affect only 3 projects,
+offering minimal improvement opportunity.
+
+\paragraph{Filter-based Exclusions}
+
+For projects reaching the filtering stages,
+Table~\ref{tab:exclusions-filtering-extended}
+reveals substantially higher exclusion rates
+compared to the primary dataset.
+NoAssertions filtering rejects 41.3\% of tests versus 10.3\% in the primary dataset,
+reflecting real-world testing practices where assertions often reside in helper methods
+or tests only check whether execution completes without crashing.
+At the assertion level, MissingValue rejections increase to 57.9\% from 24.7\%,
+indicating greater difficulty in resolving tested methods.
+ParameterType rejections rise to 49.4\% from 15.4\%,
+while ReturnType introduces a new category at 32.6\%
+that accounts for void return types as well as unsupported non-void return types.
+The primary dataset showed no (non-void) ReturnType exclusions because
+target methods were pre-selected to have numeric or boolean return types,
+whereas the extended dataset includes all methods regardless of return type.
+AssertionType exclusions reach 23.9\% compared to 2.6\%,
+demonstrating the larger diversity of assertions used in real-world tests.
+
+\input{tables/tab-exclusions-filtering-extended}
+
+These filtering patterns suggest targeted improvement strategies.
+Enhanced static analysis could reduce the 57.9\% MissingValue exclusions
+by better resolving method calls in the presence of complex control flow,
+while also reducing the 41.3\% NoAssertions rate by detecting assertions in helper methods.
+Improvements to specification extraction could reduce the 32.6\% ReturnType exclusions
+by modeling side effects as symbolic outputs,
+enabling generalization of void methods that only modify object state.
+Methods with non-numeric/non-boolean return types,
+as well as the 49.4\% ParameterType and 23.9\% AssertionType exclusions
+would all benefit from improved support
+for non-numeric/non-boolean types in \ToolSPF{}.
+While there already is some support
+for strings, arrays, and objects in \ToolSPF{},
+the provided information is insufficient
+for accurate extraction of input/output specifications
+as required for \ToolTeralizer{}'s automated test generalization.
+For the 119 projects failing due to project structure detection,
+improved heuristics for locating source directories, test directories,
+and build outputs across diverse project layouts could improve achievable results.
+
+% [PLACEHOLDER: Analysis of specific parameter types, return types, and assertion patterns
+% observed in the extended dataset. Include distribution of non-generalizable types
+% (e.g., String: X%, List: Y%, custom objects: Z%) and assertion methods
+% (e.g., assertThat: X%, Mockito.verify: Y%, custom assertions: Z%).]
+
+Within the 10 successfully processed projects,
+\ToolTeralizer{} creates 229 property-based tests using the \VariantImprovedC{} variant.
+The generalization-level filtering rate of 10.0\%
+is comparable to the 16.0\% observed in the primary dataset.
+This indicates similar failure patterns
+from complex and implicit constraints
+as in the primary dataset.
+However, even though generalization-level filtering
+leaves 206 successfully generalized tests,
+none of these tests improve mutation detection rates
+beyond the results achieved by the original test suites.
+
+% [PLACEHOLDER: Test quality metrics for the 10 successful projects.
+% Include original mutation scores, statement coverage, and mutation coverage.
+% Likely finding: These projects already have strong test suites (>80\% mutation score),
+% leaving limited room for improvement through generalization.
+% Alternative explanation: The small number of successful generalizations (229)
+% may be insufficient to detect marginal improvements.]
+
+\paragraph{Summary}
+
+The extended evaluation reveals that real-world deployment faces challenges
+at every stage of the processing pipeline,
+with only 0.9\% of projects successfully completing all stages.
+Failures stem from three categories of barriers:
+(i) internal engineering challenges that \ToolTeralizer{} could address
+(filtering exclusions, project structure detection, and static analysis limitations),
+(ii) external research challenges requiring advances in \ToolSPF{}
+(extended type support beyond numeric and boolean),
+and (iii) external issues beyond our control
+(dependency resolution and compilation errors in original projects).
+The consistent generalization-level failure rate (10\%)
+and systematic filtering patterns across both evaluations
+indicate that the core generalization approach remains sound.
+Addressing the internal engineering barriers could potentially
+enable processing for 520 additional projects (45\% of the dataset),
+while the external research challenge of expanding type support
+remains crucial for broader applicability.
+The dramatic difference between favorable (50\%) and real-world (0.9\%) success rates
+underscores that practical deployment requires addressing both
+the actionable engineering improvements and the fundamental type support limitations.
+
+% Data sources for RQ4 answer:
+% - Static analysis failures: 24.7% MissingValue (line 99), 41.3% NoAssertions in extended (line 328)
+% - Type support: 15.4% ParameterType primary (line 108), 49.4% extended (line 333)
+% - Constraint handling: 14.6-28.4% from Improved vs Naive variants (lines 209-210)
+% - Success rates: ~50% from "approx half of assertions" (line 244), 0.9% from extended (line 271)
+% - 45% recovery: 520 projects = 401 (filtering) + 119 (structure) out of 1,160 total (lines 291-304, 400)
+
+\begin{center}
+\fbox{\begin{minipage}{\textwidth}
+\paragraph{Answer to RQ4:}
+Unsuccessful generalizations primarily result from three root causes:
+inadequate static analysis (24.7\% missing value extractions, plus undetected assertions in helper methods),
+limited type support (15.4\% non-generalizable parameters in favorable conditions, rising to 49.4\% in real-world),
+and complex constraint handling (14.6--28.4\% failures during input generation depending on variant sophistication).
+Real-world projects face additional infrastructure barriers, with only 0.9\% successfully processing
+compared to approximately 50\% assertion success under favorable conditions.
+Most failures stem from internal engineering limitations that \ToolTeralizer{} could address:
+enhanced static analysis and project structure detection could recover 45\% of failed projects.
+Expanding type support remains the key external research and engineering challenge,
+requiring advances in \ToolSPF{}'s constraint encoding.
+\end{minipage}}
+\end{center}
