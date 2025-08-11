@@ -1,9 +1,10 @@
+\newpage{}
 \section{Approach}
 \label{sec:approach}
 
 \ToolTeralizer{} automates the transformation
 of traditional unit tests into property-based tests (PBTs)
-through a systematic three-phase pipeline.
+through a three-phase pipeline (Figure~\ref{fig:approach-overview}).
 The approach combines static analysis,
 extraction of input and output specifications from existing tests,
 and automated test rewriting
@@ -42,6 +43,14 @@ using Maven or Gradle as a build system, and using JUnit 4 or JUnit 5 for testin
 Generalization supports numeric and boolean parameters,
 inherited from \ToolSPF{}'s constraint tracking capabilities,
 though the approach could extend to other types given appropriate symbolic representations.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
+  \caption{Overview of Teralizer's test generalization process.}
+  %\Description{@TODO}
+  \label{fig:approach-overview}
+\end{figure}
 
 \subsection{Test Analysis}
 \label{sec:test-analysis}
