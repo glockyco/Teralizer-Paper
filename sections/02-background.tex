@@ -1,3 +1,4 @@
+\newpage{}
 \section{Background}
 \label{sec:background}
 
@@ -6,3 +7,51 @@
 
 \subsection{Test Generalization}
 \label{sec:test-generalization}
+
+\subsection{Mutation Testing}
+\label{sec:mutation-testing}
+
+Mutation testing measures test suite effectiveness by introducing artificial faults (mutants) into the code and checking whether tests detect these faults~\cite{TODO}.
+A test suite that detects more mutants is considered more effective at finding real bugs.
+The approach works by systematically applying mutation operators—small syntactic changes that mimic common programming errors—to the source code.
+If a test fails when executed against a mutant, the mutant is considered ``killed''; otherwise, it ``survives,'' indicating a potential weakness in the test suite.
+
+For \ToolTeralizer{}, mutation testing serves a crucial role beyond evaluation: it filters generalized tests to retain only those that improve fault detection.
+Without this quality control, property-based test generation could produce thousands of tests that execute different inputs but detect no additional faults.
+Section~\ref{sec:all-filtering} describes how mutation testing enables \ToolTeralizer{} to reduce 65,633 generated tests to 4,240 effective ones.
+
+We use \ToolPit{}~\cite{TODO} for mutation testing due to several practical advantages:
+(i)~class-level exclusion compatibility with our per-assertion test generation,
+(ii)~structured XML output suitable for automated analysis,
+(iii)~support for Java 8 projects in our evaluation dataset, and
+(iv)~active maintenance with regular updates.
+Table~\ref{tab:pit-mutators} shows the mutation operators from \ToolPit{}'s DEFAULTS group used in our evaluation.
+These operators cover common fault patterns including arithmetic mistakes, boundary errors, and incorrect boolean logic, providing a standard benchmark for measuring test effectiveness improvements.
+
+\begin{table}[t]
+  \caption{Mutators in \ToolPit{}'s DEFAULTS group used for evaluation.}
+  \label{tab:pit-mutators}
+  \begin{tabular}{l l l l}
+    \toprule
+    &&\multicolumn{2}{l}{Example} \\
+    \cmidrule{3-4}
+    Mutator & Description  & Before & After\\
+    \midrule
+    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
+    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
+    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
+    \midrule
+    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
+    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
+    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
+    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
+    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
+    \midrule
+    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
+    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
+    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
+    \midrule
+    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

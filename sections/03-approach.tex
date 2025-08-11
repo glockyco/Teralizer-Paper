@@ -476,31 +476,3 @@ and / or (iii) are not actively maintained anymore
 \url{https://pitest.org/java_mutation_testing_systems/#summary-of-mutation-testing-systems})
 using DEFAULTS set of mutators (see Table~\ref{tab:pit-mutators})
 for further details about mutators, see the PIT website \footnote{\url{https://pitest.org/quickstart/mutators/}}
-
-\begin{table}[H]
-  \caption{Mutators in \ToolPit{}'s DEFAULTS group of mutators.}
-  \label{tab:pit-mutators}
-  \begin{tabular}{l l l l}
-    \toprule
-    &&\multicolumn{2}{l}{Example} \\
-    \cmidrule{3-4}
-    Mutator & Description  & Before & After\\
-    \midrule
-    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
-    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
-    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
-    \midrule
-    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
-    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
-    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
-    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
-    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
-    \midrule
-    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
-    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
-    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
-    \midrule
-    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
