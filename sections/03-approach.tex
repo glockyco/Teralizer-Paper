@@ -1,6 +1,51 @@
 \section{Approach}
 \label{sec:approach}
 
+\ToolTeralizer{} automates the transformation
+of traditional unit tests into property-based tests (PBTs)
+through a systematic three-phase pipeline.
+The approach combines static analysis,
+extraction of input and output specifications from existing tests,
+and automated test rewriting
+to produce generalized PBTs that 
+more thoroughly test covered input partitions
+while preserving the intent of the original tests.
+The three main phases of \ToolTeralizer{}'s generalization pipeline are:
+
+\begin{itemize}
+    \item \textbf{Test Analysis} (Section~\ref{sec:test-analysis}) --
+    identifies executable test methods via JUnit reports,
+    and detects assertions as well as corresponding methods under test via static analysis.
+    \item \textbf{Specification Extraction} (Section~\ref{sec:specification-extraction}) --
+    uses \ToolSPF{} in constraint collection mode
+    to infer input/output specifications of the methods under test
+    along the execution paths exercised by identified tests.
+    \item \textbf{Test Transformation} (Section~\ref{sec:test-transformation}) --
+    uses the extracted input/output specifications to rewrite original JUnit tests
+    into property-based \ToolJqwik{} tests,
+    generating three variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{})
+    to systematically study the mutation detection effectiveness and runtime efficiency
+    of different input generation strategies.
+\end{itemize}
+
+Filtering (Section~\ref{sec:all-filtering}) is applied throughout the processing pipeline
+to exclude tests that cannot be meaningfully generalized.
+Test-level filtering removes non-standard tests and tests without assertions.
+Assertion-level filtering excludes cases
+for which \ToolTeralizer{} is unable to resolve a method under test
+or for which the method under test only contains parameters with non-generalizable types.
+Generalization-level filtering excludes generalized tests
+that fail execution or do not improve fault detection.
+
+Our current prototype implementation of \ToolTeralizer{} handles projects targeting Java 5--8 (due to the \ToolSPF{} dependency),
+using Maven or Gradle as a build system, and using JUnit 4 or JUnit 5 for testing.
+Generalization supports numeric and boolean parameters,
+inherited from \ToolSPF{}'s constraint tracking capabilities,
+though the approach could extend to other types given appropriate symbolic representations.
+
+\section{Approach}
+\label{sec:approach}
+
 \subsection{Overview}
 \label{sec:approach-overview}
 
