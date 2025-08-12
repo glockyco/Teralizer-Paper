@@ -38,11 +38,16 @@ or for which the method under test only contains parameters with non-generalizab
 Generalization-level filtering excludes generalized tests
 that fail execution or do not improve fault detection.
 
-Our current prototype implementation of \ToolTeralizer{} handles projects targeting Java 5--8 (due to the \ToolSPF{} dependency),
+Our current prototype implementation of \ToolTeralizer{}
+handles projects targeting Java 5--8
+(a limitation caused by our \ToolSPF{} dependency),
 using Maven or Gradle as a build system, and using JUnit 4 or JUnit 5 for testing.
 Generalization supports numeric and boolean parameters,
 inherited from \ToolSPF{}'s constraint tracking capabilities,
 though the approach could extend to other types given appropriate symbolic representations.
+Dependencies that are required for the test generalization process
+(i.e., JaCoCo, PIT, and jqwik)
+are automatically added to the target project by \ToolTeralizer{}.
 
 \begin{figure}[H]
   \centering
