@@ -103,6 +103,61 @@ for future research and engineering work,
 we include a detailed analysis of overall filtering results and causes
 in Section~\ref{sec:limitations-eval}.
 
+\subsection{Specification Extraction}
+\label{sec:specification-extraction}
+
+The underlying idea of \ToolTeralizer{}'s specification extraction phase
+is to use \ToolSPF{} to extract one pair of input/output specifications
+for each assertion in the original test suite.
+The extracted specifications serve
+as a formal description of expected program behavior
+when following the execution path exercised by the test
+and validated by the assertion.
+The specifications can then be used
+in the test transformation phase (Section~\ref{sec:test-transformation})
+to create input value generators and generalized test oracles for property-based testing.
+
+To extract input/otput specifications,
+\ToolTeralizer{} uses \ToolSPF{}'s constraint collection mode.
+In this mode, \ToolSPF{}'s path exploration and constraint solving components are disabled
+(note that this was not consistently enforced throughout \ToolSPF{}'s implementation ---
+the required fixes for this are available in our replication package~\cite{replicationpackage}).
+Instead, \ToolSPF{} follows the concrete execution path of each test
+while still keeping track of the symbolic program state
+as well as the path condition that needs to be statisfied to reach the execution path.
+Because only a single execution path is excercised
+and no constraint solving is required,
+runtime overhead is much lower in constraint collection mode
+than would be expected from full symbolic execution.
+For an in-depth evaluation of runtime requirements, see Section~\ref{sec:runtime-eval}.
+
+On an implementation level,
+the extraction of input/output specifications works
+by registering a custom \ToolSPF{} listener
+that automatically starts symbolic state tracking
+when \ToolSPF{} enters the targeted method under test
+during test execution.
+When \ToolSPF{} exits the method again,
+the listener reads the current path condition (which represents the input specification)
+and the returned symbolic output value (which represents the output specification)
+from \ToolSPF{}'s execution state.
+The path condition is a conjunction of all branch conditions encountered along the execution path,
+whereas the symbolic output value represents
+the outputs of the method as a function of the method's (symbolic) input values
+(Listing~\ref{lst:generated-test}).
+
+Both specifications are transformed to a JSON representation and written to disk
+for later use during the test transformation phase
+(Section~\ref{sec:test-transformation}).
+For methods that exit via exception,
+the listener records the exception type as a constant output for that input partition,
+as the type of the thrown exception is guranteed to be identical
+for all inputs of the corresponding input partition.
+To further reduce the runtime costs of the specification extraction,
+the listener terminates \ToolSPF{} execution
+immediately after writing the input/output specifications to disk
+because no further information is needed from the executed test.
+
 \section{Approach}
 \label{sec:approach}
 
