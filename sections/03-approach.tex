@@ -158,6 +158,117 @@ the listener terminates \ToolSPF{} execution
 immediately after writing the input/output specifications to disk
 because no further information is needed from the executed test.
 
+\subsection{Test Transformation}
+\label{sec:test-transformation}
+
+{
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[language=Java, caption={Implementation of the \texttt{calculate} method.}, label=lst:bonus-method]
+class BonusCalculator {
+  int calculate(int sales, int target) {
+    if (sales / 2 >= target) {
+      // exceptional performance
+      return sales / 10; 
+    } else if (sales >= target) {
+      // good performance
+      return sales / 20; 
+    }
+    // bad performance
+    return 0; 
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, caption={Original test for the \texttt{calculate} method.}, label=lst:original-test]
+@Test
+void testCalculate() {
+  BonusCalculator c = new BonusCalculator();
+  // exceptional performance
+  assertEquals(250, c.calculate(2500, 1000));
+  // good performance
+  assertEquals(75, c.calculate(1500, 1000));
+  // bad performance
+  assertEquals(0, c.calculate(500, 1000));
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Input/output specifications of \texttt{calculate}.}, label=lst:input-output-specs]
+exceptional performance:
+- input:  sales / 2 >= target
+- output: sales / 10 
+good performance:
+- input:  sales / 2 < target && sales >= target
+- output: sales / 20
+bad performance:
+- input:  sales / 2 < target && sales < target
+- output: 0
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, caption={Generalized test for the \textit{good performance} assertion.}, label=lst:generalized-test]
+@Property(supplier = ..., tries = ...)
+void testCalculate(TestParams _p_) {
+  BonusCalculator c = new BonusCalculator();
+  assertEquals(
+    calculateExpected(_p_),
+    c.calculate(_p_.sales, _p_.target)
+  );
+}
+\end{lstlisting}
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[language=Java, caption={\VariantBaseline{} supplier for \texttt{testCalculate(...)} inputs. The supplier uses the same inputs as the original test.}, label=lst:baseline-supplier]
+class BaselineSupplier {
+  Arbitrary get() {
+    return Arbitraries.just(
+      new TestParams(1500, 1000));
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, caption={\VariantNaive{} supplier for \texttt{testCalculate(...)} inputs. The supplier generates random inputs and then filters them to only test cases that match the input specification.}, label=lst:naive-supplier]
+class NaiveSupplier {
+  Arbitrary get() {
+    return Arbitraries.integers().flatMap(
+      sales -> Arbitraries.integers().map(
+        target -> new TestParams(sales, target)))
+    .filter(this::satisfiesInputSpec);
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, caption={\VariantImproved{} supplier for \texttt{testCalculate(...)} inputs. The supplier (partially) encodes the input specification, thus reducing \texttt{TooManyFilterMissesExceptions} compared to \VariantNaive{}.}, label=lst:improved-supplier]
+class ImprovedSupplier {
+  Arbitrary get() {
+    return Arbitraries.integers().flatMap(
+      target -> Arbitraries.integers()
+        // sales >= target is encoded
+        // sales / 2 < target is not encoded
+        .between(target, Integer.MAX_VALUE)
+        .map(sales -> 
+          new TestParams(sales, target)))
+    .filter(this::satisfiesInputSpec);
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=Java, caption={Java encodings of input/oputput specifications.}, label=lst:java-spec-encodings]
+boolean satisfiesInputSpec(TestParams _p_) {
+  return _p_.sales / 2 <= _p_.target
+    && _p_.sales >= _p_.target;
+}
+
+boolean calculateExpected(TestParams _p_) {
+  return _p_.sales / 20;
+}
+\end{lstlisting}
+\end{minipage}
+}
+
 \section{Approach}
 \label{sec:approach}
 
