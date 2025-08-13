@@ -75,7 +75,7 @@ ensures that any tests that are marked as ignored by developers
 or identified as failing during test execution can be properly excluded from generalization
 without having to reimplement any of JUnit's test handling logic.
 For each identified, potentially generalizable test,
-\ToolTeralizer{} uses custom static analysis based on Spoon to locate assertions,
+\ToolTeralizer{} uses custom static analysis based on Spoon~\cite{pawlak_2016_spoon} to locate assertions,
 i.e., calls to methods residing inside the \texttt{org.junit.Assert} (JUnit~4)
 or \texttt{org.junit.jupiter.api.Assertions} (JUnit~5) package.
 Furthermore, for each assertion, \ToolTeralizer{} identifies
