@@ -22,8 +22,8 @@ The three main phases of \ToolTeralizer{}'s generalization pipeline are:
     to infer input/output specifications of the methods under test
     along the execution paths exercised by identified tests.
     \item \textbf{Test Transformation} (Section~\ref{sec:test-transformation}) --
-    uses the extracted input/output specifications to rewrite original JUnit tests
-    into property-based \ToolJqwik{} tests,
+    uses the extracted input/output specifications
+    to create property-based \ToolJqwik{} tests from original JUnit tests,
     generating three variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{})
     to systematically study the mutation detection effectiveness and runtime efficiency
     of different input generation strategies.
