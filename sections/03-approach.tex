@@ -109,13 +109,15 @@ in Section~\ref{sec:limitations-eval}.
 The underlying idea of \ToolTeralizer{}'s specification extraction phase
 is to use \ToolSPF{} to extract one pair of input/output specifications
 for each assertion in the original test suite.
-The extracted specifications serve
+These specifications serve
 as a formal description of expected program behavior
 when following the execution path exercised by the test
 and validated by the assertion.
-The specifications can then be used
+An example of extracted input/output specifications
+is shown in Listings~\ref{lst:bonus-method}--\ref{lst:input-output-specs}.
+Specifications are used
 in the test transformation phase (Section~\ref{sec:test-transformation})
-to create input value generators and generalized test oracles for property-based testing.
+to create input value generators and generalized test oracles for property-based tests.
 
 To extract input/output specifications,
 \ToolTeralizer{} uses \ToolSPF{}'s constraint collection mode.
