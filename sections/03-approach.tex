@@ -126,8 +126,8 @@ In this mode, \ToolSPF{}'s path exploration and constraint solving components ar
 the required fixes for this are available in our replication package~\cite{replicationpackage}).
 Instead, \ToolSPF{} follows the concrete execution path of each test
 while still keeping track of the symbolic program state
-as well as the path condition that needs to be statisfied to reach the execution path.
-Because only a single execution path is excercised
+as well as the path condition that needs to be satisfied to reach the execution path.
+Because only a single execution path is exercised
 and no constraint solving is required,
 runtime overhead is much lower in constraint collection mode
 than would be expected from full symbolic execution.
@@ -153,7 +153,7 @@ for later use during the test transformation phase
 (Section~\ref{sec:test-transformation}).
 For methods that exit via exception,
 the listener records the exception type as a constant output for that input partition,
-as the type of the thrown exception is guranteed to be identical
+as the type of the thrown exception is guaranteed to be identical
 for all inputs of the corresponding input partition.
 To further reduce the runtime costs of the specification extraction,
 the listener terminates \ToolSPF{} execution
