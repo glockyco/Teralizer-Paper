@@ -9,8 +9,8 @@ Section~\ref{sec:included-mutants} first establishes which tests and mutants are
 revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
 Section~\ref{sec:overall-detection-rates} quantifies detection improvements
 across projects and variants,
-demonstrating that generalization consistently improves mutation scores,
-though with varying improvement magnitudes.
+demonstrating that generalization improves mutation scores
+for \DatasetsEqBenchEs{} and \DatasetsCommons{} projects, albeit with varying improvement magnitudes.
 Section~\ref{sec:detection-rates-per-mutator} dissects these improvements by mutation operator,
 uncovering how much detection of different mutants benefits from generalization.
 Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
@@ -125,7 +125,7 @@ This leaves little opportunity for automated improvement.
 
 Comparing the relative effectiveness of \VariantNaive{} and \VariantImproved{}
 shows opposite results across \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
-On \DatasetsEqBenchEs{} projects, \VariantNaive{} variants consistently
+On \DatasetsEqBenchEs{} projects, \VariantNaive{} variants
 outperform \VariantImproved{} for all \tries{} settings,
 with gaps ranging from 0.17--1.21 percentage points.
 This advantage is most pronounced with limited \tries{}:
@@ -149,7 +149,7 @@ Sections~\ref{sec:detection-rates-per-mutator} and \ref{sec:boundary-detection-e
 \DatasetCommonsDev{} shows no meaningful differences between approaches,
 with all variants achieving approximately 80.4\% detection.
 
-Higher \tries{} settings improve detection rates but with diminishing returns.
+Higher \tries{} settings showed improved detection rates with diminishing returns.
 The increase from 10 to 50 \tries{} typically produces larger gains
 than increasing from 50 to 200 \tries{}.
 One notable exception to this pattern appears in \VariantImproved{} variants with only 10 \tries{}:
@@ -290,8 +290,8 @@ Full results for all variants are available in our replication package~\cite{rep
 \label{sec:boundary-detection-effectiveness}
 
 As discussed in Section~\ref{sec:overall-detection-rates},
-\VariantNaive{} variants consistently
-outperform \VariantImproved{}
+\VariantNaive{} variants
+outperformed \VariantImproved{}
 on \DatasetsEqBenchEs{} projects.
 However, \DatasetsCommonsEs{} projects show \VariantImproved{}
 outperforming \VariantNaive{} in 7 of 9 cases.
@@ -328,8 +328,8 @@ and the model contains 5 operators:
 \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
 With these metrics established, we are ready to examine the observed results.
 
-Undetected mutants consistently have more complex models than detected ones
-across all projects.
+Undetected mutants have more complex models than detected ones
+across all evaluated projects.
 Operation counts for undetected mutants are 1.2--3$\times$ higher:
 \DatasetsEqBenchEs{} projects show mean counts of 218--231 versus 138--147 for detected mutants,
 while \DatasetsCommonsEs{} exhibit even larger gaps with 389--507 versus 290--468 operations.
