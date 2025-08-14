@@ -2,56 +2,78 @@
 \section{Background}
 \label{sec:background}
 
-\subsection{Property-based Testing}
+\subsection{Property-Based Testing}
 \label{sec:property-based-testing}
 
-\subsection{Test Generalization}
-\label{sec:test-generalization}
+Property-based testing generalizes from testing specific examples to testing properties that should hold for entire classes of inputs~\cite{claessen2000quickcheck}.
+While a conventional unit test might verify that \texttt{Math.max(3, 5)} returns \texttt{5},
+a property-based test would verify that \texttt{Math.max(a, b)} returns the larger value
+for hundreds of automatically generated pairs $(a, b)$.
+The property-based testing framework generates random inputs,
+executes the test with each input,
+and reports any inputs that violate the specified property.
+This approach can reveal edge cases and unexpected behaviors
+that developers might not think to test explicitly.
 
-\subsection{Mutation Testing}
-\label{sec:mutation-testing}
+Despite its effectiveness at finding bugs,
+property-based testing sees limited adoption in practice.
+Creating property-based tests requires developers to
+(i)~identify properties that should hold across input classes,
+(ii)~define appropriate input generators that produce valid test data,
+and (iii)~translate existing test assertions into property specifications.
+This manual effort, combined with the conceptual shift from examples to properties,
+creates a significant barrier to adoption~\cite{barr2015oracle}.
+Automating the transformation from conventional unit tests to property-based tests
+could lower this barrier while preserving the domain knowledge
+encoded in existing test suites.
 
-Mutation testing measures test suite effectiveness by introducing artificial faults (mutants) into the code and checking whether tests detect these faults~\cite{TODO}.
-A test suite that detects more mutants is considered more effective at finding real bugs.
-The approach works by systematically applying mutation operators—small syntactic changes that mimic common programming errors—to the source code.
-If a test fails when executed against a mutant, the mutant is considered ``killed''; otherwise, it ``survives,'' indicating a potential weakness in the test suite.
+\subsection{Test Amplification}
+\label{sec:test-amplification}
 
-For \ToolTeralizer{}, mutation testing serves a crucial role beyond evaluation: it filters generalized tests to retain only those that improve fault detection.
-Without this quality control, property-based test generation could produce thousands of tests that execute different inputs but detect no additional faults.
-Section~\ref{sec:all-filtering} describes how mutation testing enables \ToolTeralizer{} to reduce 65,633 generated tests to 4,240 effective ones.
+Test amplification encompasses techniques that automatically enhance existing test suites
+to improve their effectiveness at achieving engineering goals~\cite{danglot2019snowballing}.
+These techniques exploit the knowledge already encoded in tests---such as
+valid input ranges, expected behaviors, and important scenarios---to
+generate additional tests that explore new behaviors or
+strengthen existing test oracles.
+Amplification approaches include generating new test inputs~\cite{baudry2015dspot},
+adding assertions to capture additional behaviors~\cite{xie2006augmenting},
+and transforming test structure to improve coverage or fault detection.
 
-We use \ToolPit{}~\cite{TODO} for mutation testing due to several practical advantages:
-(i)~class-level exclusion compatibility with our per-assertion test generation,
-(ii)~structured XML output suitable for automated analysis,
-(iii)~support for Java 8 projects in our evaluation dataset, and
-(iv)~active maintenance with regular updates.
-Table~\ref{tab:pit-mutators} shows the mutation operators from \ToolPit{}'s DEFAULTS group used in our evaluation.
-These operators cover common fault patterns including arithmetic mistakes, boundary errors, and incorrect boolean logic, providing a standard benchmark for measuring test effectiveness improvements.
+Test generalization represents a specific form of amplification
+that transforms tests from validating individual input-output pairs
+to validating properties across input classes.
+Prior work on test generalization includes JARVIS~\cite{peleg_2018_jarvis},
+which infers properties from test inputs and outputs.
+However, JARVIS requires developers to manually define constraint templates
+and produces overapproximations that may not accurately reflect
+the actual program behavior.
+Fully automating test generalization requires extracting exact specifications
+from the implementation itself,
+ensuring that generated tests accurately reflect the program's actual behavior
+rather than approximations.
 
-\begin{table}[t]
-  \caption{Mutators in \ToolPit{}'s DEFAULTS group used for evaluation.}
-  \label{tab:pit-mutators}
-  \begin{tabular}{l l l l}
-    \toprule
-    &&\multicolumn{2}{l}{Example} \\
-    \cmidrule{3-4}
-    Mutator & Description  & Before & After\\
-    \midrule
-    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
-    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
-    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
-    \midrule
-    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
-    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
-    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
-    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
-    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
-    \midrule
-    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
-    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
-    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
-    \midrule
-    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+\subsection{Symbolic Analysis for Testing}
+\label{sec:symbolic-analysis}
+
+Symbolic execution explores program paths by treating inputs as symbolic variables
+rather than concrete values~\cite{king1976symbolic}.
+As execution proceeds, the analysis builds path conditions---conjunctions
+of constraints that inputs must satisfy to follow each path.
+While powerful for discovering new paths and generating test inputs,
+full symbolic execution faces scalability challenges due to path explosion
+and constraint solving complexity~\cite{pasareanu2013symbolic}.
+
+For test generalization, we need specifications for paths that existing tests already cover,
+not discovery of new paths.
+This insight enables a more efficient approach: constraint collection.
+Instead of exploring all possible paths,
+constraint collection follows the concrete execution path of an existing test
+while maintaining symbolic representations of variables~\cite{pasareanu2013symbolic}.
+At each branch, the analysis records the condition that was satisfied
+to follow the test's path, building up the complete path condition
+without exploring alternatives.
+This linear traversal avoids the exponential complexity of full symbolic execution
+while still extracting the exact constraints that characterize the test's execution path.
+The resulting path conditions serve as input specifications for property-based tests,
+defining precisely which inputs will follow the same execution path as the original test.
