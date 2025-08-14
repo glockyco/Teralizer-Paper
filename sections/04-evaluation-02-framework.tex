@@ -1,0 +1,126 @@
+\subsection{Experimental Framework}
+\label{sec:experimental-framework}
+
+\subsubsection{Mutation Testing Methodology}
+\label{sec:mutation-testing-methodology}
+
+Mutation testing provides our primary measure of test effectiveness
+by systematically injecting faults into the code and measuring whether tests detect them~\cite{jia2011analysis}.
+A test suite that detects more mutants demonstrates stronger fault-finding capability.
+We use \ToolPit{}~\cite{coles2016pit} with its DEFAULTS mutation operator group,
+which covers common fault patterns including arithmetic mistakes,
+boundary errors, and incorrect boolean logic.
+Table~\ref{tab:pit-mutators} describes these operators,
+which range from simple arithmetic replacements to complex conditional modifications.
+Understanding these operators is essential for interpreting our results,
+particularly how different mutation types interact with our generalization strategies.
+
+\begin{table}[t]
+  \caption{Mutation operators from \ToolPit{}'s DEFAULTS group used in our evaluation.}
+  \label{tab:pit-mutators}
+  \begin{tabular}{l l l l}
+    \toprule
+    &&\multicolumn{2}{l}{Example} \\
+    \cmidrule{3-4}
+    Mutator & Description  & Before & After\\
+    \midrule
+    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
+    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
+    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
+    \midrule
+    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
+    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
+    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
+    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
+    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
+    \midrule
+    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
+    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
+    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
+    \midrule
+    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsubsection{Datasets}
+\label{sec:datasets}
+
+Our evaluation employs three complementary datasets that progressively
+reveal the gap between ideal and real-world conditions for test generalization.
+
+\paragraph{EqBench}
+The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides ideal conditions
+for automated test generalization.
+Originally designed for equivalence checking research,
+its 652 Java classes implement equivalent and non-equivalent program pairs
+focusing on numeric computations while deliberately avoiding
+features that complicate automated reasoning (recursion, reflection, complex object graphs).
+Since EqBench provides only implementation code without tests,
+we generated test suites using \ToolEvoSuite{}~\cite{fraser2011evosuite}
+with three search budgets (1s, 10s, 60s per class),
+creating datasets \DatasetEqBenchA{}, \DatasetEqBenchB{}, and \DatasetEqBenchC{}.
+This design explores the relationship between initial test suite characteristics
+and generalization effectiveness, allowing us to observe whether the diminishing
+returns from stronger baselines outweigh the benefits of better test diversity.
+
+\paragraph{Apache Commons}
+To bridge toward real-world complexity,
+we systematically extracted numeric utility methods from Apache Commons projects.
+Using Sourcegraph's code search,
+we identified public static methods with numeric or boolean parameters and return values,
+the types currently supported by \ToolTeralizer{}'s constraint extraction.
+This yielded 247 classes from 106 source files,
+including all transitively called methods and dependencies
+to ensure compilation (19,709 LOC total).
+We created four dataset variants:
+\DatasetCommonsDev{} preserves the 725 original developer-written tests (14,389 LOC),
+while \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}
+use \ToolEvoSuite{}-generated tests with 1s, 10s, and 60s search budgets respectively.
+This enables direct comparison of generalization effectiveness between
+mature developer tests that combine multiple scenarios per method
+and generated tests that follow a one-scenario-per-test approach.
+
+\paragraph{RepoReapers}
+To understand current limitations in practical settings,
+we selected 1,160 projects from RepoReapers~\cite{munaiah_2017_reporeapers},
+a curated collection of 2.9 million GitHub repositories
+specifically filtered for software engineering research quality.
+Our selection criteria balanced technical constraints with evaluation goals:
+projects needed Java 5--8 (for \ToolSPF{} compatibility),
+JUnit 4/5 with Maven builds (for our prototype),
+standard directory structures (for automated processing),
+mid-size codebases (5,000--50,000 LOC),
+and substantial test suites (20--80\% of total code).
+The selected projects collectively comprise 95,404 implementation classes 
+and 53,039 test classes across diverse domains and coding styles.
+While \ToolTeralizer{} succeeds on EqBench and partially on Apache Commons,
+the RepoReapers projects expose fundamental barriers to real-world deployment
+analyzed in RQ4 (Section~\ref{sec:filtering-eval-extended}).
+
+Table~\ref{tab:dataset-statistics} reveals important structural differences:
+EvoSuite plateaus quickly at ~4,900 tests regardless of budget,
+while developer tests achieve similar coverage with 3.5$\times$ fewer
+but more complex tests combining multiple scenarios per method.
+
+\input{tables/tab-dataset-statistics}
+
+\subsubsection{Test Variants and Environment}
+\label{sec:test-variants}
+
+We evaluate nine test suite variants per project to isolate different aspects
+of the generalization approach:
+
+\begin{itemize}
+  \item \VariantOriginal{}: Original project before any processing
+  \item \VariantInitial{}: After filtering unsuitable tests (baseline for comparisons)
+  \item \VariantBaseline{}: Property-based format with original inputs only (isolates framework overhead)
+  \item \VariantNaive{A/B/C}: Random generation with constraint filtering (10/50/200 \tries{}, where
+    \tries{} specifies how many random inputs jqwik generates per property test)
+  \item \VariantImproved{A/B/C}: Constraint-aware generation (10/50/200 \tries{})
+\end{itemize}
+
+All experiments ran on a MacBook Air with M2 processor and 24~GB memory
+using default JVM settings.
+\ToolTeralizer{} captures comprehensive metrics throughout execution,
+available in our replication package~\cite{replicationpackage}.

@@ -21,9 +21,9 @@ RQ2 quantifies associated side effects in terms of increased test suite size and
 RQ3 examines the runtime costs of the approach and compares its efficiency to test generation via \ToolEvoSuite.
 RQ4 analyzes failure cases to identify current limitations and guide future improvements.
 
-Our evaluation uses a three-part dataset (Section~\ref{sec:target-programs}) ranging from
-controlled benchmarks to real-world projects. The evaluation environment (Section~\ref{sec:evaluation-setup})
-compares original unit tests and multiple generalized test variants to isolate
-generalization effects. Results (Sections~\ref{sec:primary-effects-eval}--\ref{sec:filtering-eval-extended})
-demonstrate consistent mutation score improvements in two of the three parts of the dataset,
-quantify resource trade-offs, and reveal specific boundaries of the automated approach.
+Our experimental framework (Section~\ref{sec:experimental-framework}) establishes the methodology:
+mutation testing measures effectiveness, three complementary datasets progressively reveal
+capabilities and limitations, and nine test variants isolate different generalization effects.
+Results (Sections~\ref{sec:primary-effects-eval}--\ref{sec:filtering-eval-extended})
+demonstrate mutation score improvements under favorable conditions,
+quantify resource trade-offs, and systematically map barriers to broader applicability.
