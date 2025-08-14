@@ -1,2 +1,113 @@
 \section{Introduction}
 \label{sec:introduction}
+
+Unit tests validate software behavior by checking specific input-output pairs,
+testing only individual points within the vast space of possible program inputs~\cite{orso2014software}.
+For example, a test might verify that \texttt{Math.max(3, 5)} returns \texttt{5},
+checking only this single combination while leaving countless other inputs untested
+within the same execution path.
+While this approach effectively documents expected behavior and catches regressions~\cite{rothermel1996analyzing,yoo2012regression},
+each test explores only a single execution through its targeted code path.
+Property-based testing~\cite{claessen2000quickcheck,hughes2007quickcheck} addresses this limitation 
+by automatically generating multiple test inputs that satisfy specified properties,
+enabling more thorough exploration of program behavior within tested execution paths.
+However, creating property-based tests requires significant expertise
+in both the testing framework and the domain under test,
+along with manual effort to define appropriate input generators and property specifications~\cite{barr2015oracle}.
+
+This paper presents \ToolTeralizer{}, a test amplification approach~\cite{danglot2019snowballing}
+that automatically transforms conventional unit tests into property-based tests.
+Test amplification exploits knowledge embedded in existing tests to enhance them
+for engineering goals such as improved fault detection or better coverage~\cite{danglot2019snowballing,baudry2015dspot,xie2006augmenting}.
+\ToolTeralizer{} specifically amplifies tests by generalizing from single input-output pairs
+to properties that hold across entire input partitions.
+For instance, our approach automatically transforms the test \texttt{assertEquals(5, Math.max(3, 5))}
+into a property-based test that verifies \texttt{Math.max(a, b)} returns the larger value
+for hundreds of generated pairs where \texttt{a <= b}.
+Unlike prior work that requires manual constraint templates~\cite{peleg_2018_jarvis},
+\ToolTeralizer{} automatically extracts exact specifications from the implementation
+through symbolic analysis guided by existing tests.
+By leveraging \ToolSPFLong{}'s (\ToolSPF{}) constraint collection mode~\cite{pasareanu2013symbolic},
+our approach obtains precise path conditions for execution paths already covered by tests,
+then uses these specifications to generate property-based tests~\cite{link2022jqwik}
+that explore additional inputs within the same logical partitions.
+This automation eliminates the manual effort traditionally required
+for property-based test creation while preserving the domain knowledge
+and test intent encoded in existing test suites~\cite{barr2015oracle}.
+
+To understand both the potential and limitations of automated test generalization,
+we evaluate \ToolTeralizer{} across three complementary datasets that progressively
+reveal the gap between ideal and real-world conditions.
+The EqBench benchmark~\cite{badihi_2021_eqbench} provides controlled conditions
+with numeric-focused programs; since it lacks test suites, we generate tests using \ToolEvoSuite{}~\cite{fraser2011evosuite}.
+For Apache Commons utility methods, we extract production code and create two evaluation scenarios:
+one using the original developer-written tests and another using \ToolEvoSuite{}-generated tests,
+enabling direct comparison of generalization effectiveness across test creation approaches.
+Finally, 1,160 projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
+with their existing developer-written tests expose the full complexity of real-world deployment.
+Beyond measuring effectiveness, our implementation captures comprehensive metrics
+throughout the transformation pipeline, revealing which test characteristics
+predict successful generalization and which technical barriers require attention.
+Due to \ToolSPF{} limitations, our current implementation is restricted to Java 5--8 projects
+and can only generalize tests for pure methods with numeric and boolean parameters.
+
+Our results reveal both promise and challenges.
+We evaluate effectiveness through mutation testing~\cite{jia2011analysis,papadakis2019mutation}, which measures a test suite's ability
+to detect systematically injected faults that simulate potential regressions~\cite{coles2016pit}.
+\ToolTeralizer{} improves mutation scores from 48--52\% to 50--55\%
+on EqBench and from 57--58\% to 58--59\% on Apache Commons utilities
+when applied to \ToolEvoSuite{}-generated tests.
+These ranges reflect varying initial test quality from \ToolEvoSuite{} search budgets
+of 1s, 10s, and 60s, as well as three generalization strategies:
+baseline transformation overhead, naive random generation with filtering~\cite{pacheco2007randoop},
+and constraint-aware input generation.
+The mature Apache Commons developer-written test suite already achieves 80.4\% mutation score
+and shows minimal improvement of 0.05--0.07 percentage points despite successful generalization.
+In contrast, only 0.9\% of the 1,160 RepoReapers projects successfully complete
+the full processing pipeline.
+While over half fail due to external issues like build errors,
+the remainder expose actionable barriers including static analysis limitations
+for resolving tested methods and detecting assertions in helper methods,
+alongside our current restriction to pure methods with numeric parameters.
+
+This paper makes the following contributions:
+
+\begin{enumerate}
+\item \textbf{First fully automated test generalization approach:}
+We demonstrate that automated transformation from unit tests to property-based tests is feasible,
+achieving consistent mutation score improvements of 1--4 percentage points
+without requiring manual intervention when conditions align with current capabilities.
+Unlike prior work that requires manual constraint templates,
+\ToolTeralizer{} automatically extracts exact specifications through symbolic analysis.
+
+\item \textbf{Comprehensive empirical dataset:}
+Our analysis produces a dataset characterizing test structure
+and generalizability across diverse projects,
+providing detailed metrics on assertion patterns, specification complexity,
+and filtering outcomes that inform future testing research.
+This data enables the community to understand what makes tests amenable to generalization.
+
+\item \textbf{Empirical mapping of deployment challenges:}
+We systematically identify and quantify barriers to real-world deployment,
+distinguishing between engineering limitations addressable through implementation effort
+and fundamental challenges requiring research advances.
+This mapping guides future work by quantifying which improvements would have the greatest impact.
+
+\item \textbf{Open implementation and replication package:}
+We provide a complete implementation of the approach
+and comprehensive replication package including all experimental data,
+enabling reproduction and extension of our work.
+\end{enumerate}
+
+The remainder of this paper is organized as follows.
+Section~\ref{sec:background} introduces property-based testing and related test generalization work.
+Section~\ref{sec:approach} presents \ToolTeralizer{}'s three-phase pipeline
+for automated test transformation.
+Section~\ref{sec:evaluation} evaluates our approach through four research questions
+examining mutation score improvements, test suite size and execution time impacts,
+generalization runtime requirements, and causes of unsuccessful generalizations.
+Section~\ref{sec:discussion} interprets the results and their implications.
+Section~\ref{sec:related-work} positions our work within the broader testing literature.
+Section~\ref{sec:conclusions} summarizes contributions and outlines future research directions.
+Our implementation and complete replication package, including all experimental data
+and analysis scripts, are publicly available at \url{https://github.com/XXX}~\cite{replicationpackage}.
