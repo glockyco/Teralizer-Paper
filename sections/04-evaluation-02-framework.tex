@@ -115,9 +115,8 @@ of the generalization approach:
   \item \VariantOriginal{}: Original project before any processing
   \item \VariantInitial{}: After filtering unsuitable tests (baseline for comparisons)
   \item \VariantBaseline{}: Property-based format with original inputs only (isolates framework overhead)
-  \item \VariantNaive{A/B/C}: Random generation with constraint filtering (10/50/200 \tries{}, where
-    \tries{} specifies how many random inputs jqwik generates per property test)
-  \item \VariantImproved{A/B/C}: Constraint-aware generation (10/50/200 \tries{})
+  \item \VariantNaiveA{}, \VariantNaiveB{}, \VariantNaiveC{}: Random generation with constraint filtering (10/50/200 \tries{})
+  \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}: Constraint-aware generation (10/50/200 \tries{})
 \end{itemize}
 
 All experiments ran on a MacBook Air with M2 processor and 24~GB memory
