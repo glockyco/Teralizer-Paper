@@ -8,12 +8,10 @@ Mutation testing provides our primary measure of test effectiveness
 by systematically injecting faults into the code and measuring whether tests detect them~\cite{jia2011analysis}.
 A test suite that detects more mutants demonstrates stronger fault-finding capability.
 We use \ToolPit{}~\cite{coles2016pit} with its DEFAULTS mutation operator group,
-which covers common fault patterns including arithmetic mistakes,
-boundary errors, and incorrect boolean logic.
-Table~\ref{tab:pit-mutators} describes these operators,
-which range from simple arithmetic replacements to complex conditional modifications.
-Understanding these operators is essential for interpreting our results,
-particularly how different mutation types interact with our generalization strategies.
+the recommended set for Java projects.
+Understanding which mutations each generalization strategy detects is essential
+for interpreting our results, as different strategies show distinct strengths.
+Table~\ref{tab:pit-mutators} describes the specific operators we apply.
 
 \begin{table}[t]
   \caption{Mutation operators from \ToolPit{}'s DEFAULTS group used in our evaluation.}
