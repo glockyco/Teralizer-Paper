@@ -67,8 +67,19 @@ with their existing developer-written tests expose the full complexity of real-w
 Beyond measuring effectiveness, our implementation captures comprehensive metrics
 throughout the transformation pipeline, revealing which test characteristics
 predict successful generalization and which technical barriers require attention.
-Due to \ToolSPF{} limitations, our current implementation is restricted to Java 5--8 projects
-and can only generalize tests for pure methods with numeric and boolean parameters.
+Our current implementation leverages \ToolSPF{} for specification extraction,
+which limits us to Java 5--8 projects and methods with numeric and boolean parameters
+(where \ToolSPF{} produces accurate constraints).
+While the test generalization approach is conceptually independent of the specification extraction technique,
+\ToolSPF{} represents the current state of the art for extracting precise path conditions
+suitable for encoding as input generators.
+% Other symbolic execution tools (JBSE~\cite{braione2016jbse}, JDart~\cite{luckow2016jdart}, 
+% GDart~\cite{mues2022gdart}, SWAT~\cite{TODO_swat2024}) share similar limitations.
+% Alternative specification extraction approaches like dynamic invariant detection (Daikon~\cite{ernst2007daikon}),
+% abstract interpretation (Infer~\cite{calcagno2015infer}), or property discovery (QuickSpec~\cite{smallbone2017quickspec})
+% produce different types of specifications unsuitable for generating precise test inputs.
+Extending support to other types and newer Java versions remains an open research challenge
+in specification extraction.
 
 Our results reveal both promise and challenges.
 We evaluate effectiveness through mutation testing~\cite{jia2011analysis,papadakis2019mutation}, which measures a test suite's ability
