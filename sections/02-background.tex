@@ -85,3 +85,20 @@ This linear traversal avoids the exponential complexity of full symbolic executi
 while still extracting the exact constraints that characterize the test's execution path.
 The resulting path conditions serve as input specifications for property-based tests,
 defining precisely which inputs will follow the same execution path as the original test.
+
+For test generalization to property-based tests, we require specifications that
+precisely capture both the input constraints and output computations for each execution path.
+Consider a test for \texttt{Math.abs(-5)} that returns \texttt{5}.
+Symbolic execution with constraint collection extracts the exact path condition \texttt{x < 0} 
+and the symbolic output \texttt{-x}, guaranteed to be correct for that execution path.
+This enables generation of property-based tests that verify \texttt{Math.abs(x) == -x} for all \texttt{x < 0}.
+Alternative specification extraction approaches serve different purposes:
+dynamic invariant detection~\cite{ernst2007daikon} infers \emph{likely} invariants from observed executions
+but cannot guarantee correctness or completeness,
+abstract interpretation~\cite{calcagno2015infer} computes sound overapproximations
+focusing on properties like memory safety rather than precise numeric relationships,
+and property discovery~\cite{smallbone2017quickspec} finds universal equational properties
+rather than path-specific input-output specifications.
+While valuable for their intended applications, these approaches do not provide
+the guaranteed-correct, path-specific specifications with symbolic outputs
+required for automated test generalization.
