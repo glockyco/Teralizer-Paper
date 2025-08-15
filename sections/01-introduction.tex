@@ -3,7 +3,7 @@
 
 Unit tests validate software behavior by checking specific input-output pairs,
 testing only individual points within the vast space of possible program inputs~\cite{orso2014software}.
-For example, a test might verify that \texttt{Math.max(3, 5)} returns \texttt{5},
+For example, a test might verify that \texttt{Math.abs(0)} returns \texttt{0},
 checking only this single combination while leaving countless other inputs untested
 within the same execution path.
 While this approach effectively documents expected behavior and catches regressions~\cite{rothermel1996analyzing,yoo2012regression},
@@ -21,9 +21,9 @@ Test amplification exploits knowledge embedded in existing tests to enhance them
 for engineering goals such as improved fault detection or better coverage~\cite{danglot2019snowballing,baudry2015dspot,xie2006augmenting}.
 \ToolTeralizer{} specifically amplifies tests by generalizing from single input-output pairs
 to properties that hold across entire input partitions.
-For instance, our approach automatically transforms the test \texttt{assertEquals(5, Math.max(3, 5))}
-into a property-based test that verifies \texttt{Math.max(a, b)} returns the larger value
-for hundreds of generated pairs where \texttt{a <= b}.
+For instance, our approach automatically transforms the test \texttt{assertEquals(0, Math.abs(0))}
+into a property-based test that verifies \texttt{Math.abs(x)} returns the \texttt{x}
+for hundreds of generated inputs where \texttt{x >= 0} (Figures~\ref{fig:generalization} and \ref{fig:regression-detection}).
 Unlike prior work that requires manual constraint templates~\cite{peleg_2018_jarvis},
 \ToolTeralizer{} automatically extracts exact specifications from the implementation
 through symbolic analysis guided by existing tests.
@@ -34,6 +34,22 @@ that explore additional inputs within the same logical partitions.
 This automation eliminates the manual effort traditionally required
 for property-based test creation while preserving the domain knowledge
 and test intent encoded in existing test suites~\cite{barr2015oracle}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.95\linewidth]{figures/fig_generalization}
+  \caption{\ToolTeralizer{} takes implementation and test code as input, and produces property-based tests as output.}
+  %\Description{@TODO}
+  \label{fig:generalization}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.95\linewidth]{figures/fig_regression_detection}
+  \caption{The conventional unit test detects fewer regressions than the generalized property-based test.}
+  %\Description{@TODO}
+  \label{fig:regression-detection}
+\end{figure}
 
 To understand both the potential and limitations of automated test generalization,
 we evaluate \ToolTeralizer{} across three complementary datasets that progressively
