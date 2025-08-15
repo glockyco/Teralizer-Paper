@@ -25,7 +25,7 @@ for engineering goals such as improved fault detection or better coverage~\cite{
 transforming point-specific tests into property-based tests
 that validate behavior across input classes.
 For instance, our approach automatically transforms the test \texttt{assertEquals(0, Math.abs(0))}
-into a property-based test that verifies \texttt{Math.abs(x)} returns the \texttt{x}
+into a property-based test that verifies \texttt{Math.abs(x)} returns \texttt{x}
 for hundreds of generated inputs where \texttt{x >= 0} (Figures~\ref{fig:generalization} and \ref{fig:regression-detection}).
 Unlike prior work that requires manual constraint templates~\cite{peleg_2018_jarvis},
 \ToolTeralizer{} automatically extracts exact specifications from the implementation
