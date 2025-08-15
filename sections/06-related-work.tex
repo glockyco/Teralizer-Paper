@@ -1,2 +1,160 @@
 \section{Related Work}
 \label{sec:related-work}
+
+% - Why not fuzzing (expensive, focuses on current implementation rather than future regressions)
+% - Why not symbolic execution (expensive)
+% - Why not use better specification inference?
+% - Why not parameterized testing with fixed inputs?
+% - Why not integrate to EvoSuite?
+% - How to extend to uncovered partitions?
+
+Our work builds on and relates to several areas of software testing research:
+test amplification and generation,
+property-based testing,
+specification extraction,
+and regression testing.
+We position \ToolTeralizer{} within this landscape
+and distinguish our contributions from existing approaches.
+
+\subsection{Test Amplification and Generation}
+
+Test amplification techniques automatically enhance existing test suites
+to improve their effectiveness~\cite{danglot2019snowballing}.
+DSpot~\cite{baudry2015dspot} amplifies tests by generating variants
+with modified inputs and additional assertions,
+focusing on improving mutation score and coverage.
+Unlike \ToolTeralizer{}, which transforms tests into property-based specifications,
+DSpot generates additional concrete test cases.
+
+\ToolEvoSuite{}~\cite{fraser2011evosuite} generates entire test suites
+optimized for coverage and mutation score.
+While we use \ToolEvoSuite{} to create initial test suites for evaluation,
+\ToolTeralizer{} addresses a complementary problem:
+strengthening existing tests by generalizing them to properties
+rather than generating new concrete tests.
+Integration with test generation tools like \ToolEvoSuite{}
+could provide a powerful pipeline where generated tests
+are subsequently generalized to achieve even better fault detection.
+
+Randoop~\cite{pacheco2007randoop} generates tests through feedback-directed random testing,
+creating sequences of method calls and checking for violations of general contracts.
+While Randoop explores the input space randomly,
+\ToolTeralizer{} systematically explores inputs within specific execution paths
+identified by existing tests.
+
+\subsection{Property-Based Testing}
+
+QuickCheck~\cite{claessen2000quickcheck} pioneered property-based testing
+by automatically generating test inputs from specifications.
+Subsequent frameworks like ScalaCheck~\cite{nilsson2014scalacheck}
+and jqwik~\cite{link2022jqwik} brought these ideas to other languages.
+These tools require developers to manually write properties and generators,
+a barrier that \ToolTeralizer{} addresses through automation.
+
+JARVIS~\cite{peleg_2018_jarvis} represents the closest prior work,
+inferring properties from test inputs and outputs.
+However, JARVIS requires manual constraint templates
+and produces overapproximations that may not reflect actual program behavior.
+\ToolTeralizer{} extracts exact specifications through symbolic analysis,
+eliminating manual effort while ensuring generated properties
+accurately reflect the implementation.
+
+Parameterized unit testing~\cite{tillmann2005parameterized}
+allows developers to write tests with symbolic parameters,
+which tools like Pex~\cite{tillmann2008pex} instantiate with concrete values.
+While similar in spirit to property-based testing,
+parameterized tests still require manual specification of the parameterization.
+\ToolTeralizer{} automates this process by inferring parameterizations
+from existing concrete tests.
+
+\subsection{Specification Extraction Approaches}
+
+The ability to automatically extract specifications from programs
+is fundamental to our approach.
+Several techniques exist, each with different characteristics
+that affect their suitability for test generalization.
+
+\subsubsection{Symbolic Execution Tools}
+Beyond \ToolSPF{}~\cite{pasareanu2013symbolic}, which we use,
+several symbolic execution tools target Java programs.
+JBSE~\cite{braione2016jbse} handles complex heap structures
+but shares \ToolSPF{}'s limitation to older Java versions.
+JDart~\cite{luckow2016jdart} and its successor GDart~\cite{mues2022gdart}
+provide dynamic symbolic execution capabilities
+but are similarly constrained to Java 8 and numeric types.
+Recent work on SWAT~\cite{TODO_swat2024} uses dynamic instrumentation
+but does not overcome the fundamental limitations
+in supporting modern Java features or non-numeric types.
+These tools all face similar challenges in scaling beyond numeric constraints
+and supporting Java versions beyond 8,
+suggesting these are fundamental limitations of current symbolic execution technology
+rather than implementation choices.
+
+\subsubsection{Alternative Specification Mining Techniques}
+Dynamic invariant detection tools like Daikon~\cite{ernst2007daikon}
+infer likely invariants from program executions.
+While Daikon can discover complex relationships,
+it provides statistical confidence rather than guaranteed correctness,
+and requires multiple executions to infer patterns.
+For test generalization, we need specifications that are guaranteed correct
+for the specific execution path,
+which Daikon's probabilistic approach cannot provide.
+
+Abstract interpretation-based tools like Facebook's Infer~\cite{calcagno2015infer}
+compute sound overapproximations of program behavior.
+While excellent for finding bugs related to memory safety and resource usage,
+abstract interpretation operates at a level of abstraction
+unsuitable for generating concrete test inputs with specific numeric relationships.
+
+Property discovery tools like QuickSpec~\cite{smallbone2017quickspec}
+and Speculate~\cite{TODO_speculate} find equational laws through testing.
+These tools discover universal properties that hold across all inputs,
+rather than the path-specific specifications we need for test generalization.
+The properties they find (e.g., \texttt{reverse(reverse(xs)) == xs})
+are valuable for understanding program behavior
+but cannot specify which inputs should be generated for particular execution paths.
+
+\subsection{Regression Testing and Test Selection}
+
+Regression testing research focuses on efficiently detecting
+whether changes break existing functionality~\cite{yoo2012regression}.
+Test selection techniques~\cite{rothermel1996analyzing}
+identify which tests to re-run after changes.
+\ToolTeralizer{} complements these approaches
+by making individual tests more effective at detecting regressions
+within their covered execution paths.
+
+Mutation testing~\cite{jia2011analysis,papadakis2019mutation},
+which we use for evaluation,
+simulates potential regressions through systematic fault injection.
+Tools like PIT~\cite{coles2016pit} have made mutation testing practical
+for Java programs.
+Our results show that generalized tests detect more mutants,
+suggesting they would also detect more real regressions.
+
+\subsection{Why Not Alternative Approaches?}
+
+Several alternative approaches might seem applicable
+but have fundamental limitations for our use case:
+
+\textbf{Fuzzing} generates inputs to trigger crashes or violations
+but focuses on the current implementation rather than specifications.
+Fuzzing would need to be re-executed after each change,
+whereas our generalized tests encode specifications
+that remain valid across implementation changes.
+
+\textbf{Full symbolic execution} could explore additional paths
+but faces exponential path explosion.
+Our constraint collection approach scales linearly
+with the number of existing tests
+while still strengthening testing within covered paths.
+
+\textbf{Fixed parameterized tests} could encode some generalization
+but would require manual effort to identify parameters and constraints.
+Our approach automates this process entirely.
+
+The key insight of \ToolTeralizer{} is that existing tests
+already encode valuable domain knowledge about expected behavior.
+By automatically generalizing these tests to properties,
+we preserve this knowledge while dramatically expanding
+the number of inputs tested within each execution path.
