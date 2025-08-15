@@ -15,12 +15,15 @@ However, creating property-based tests requires significant expertise
 in both the testing framework and the domain under test,
 along with manual effort to define appropriate input generators and property specifications~\cite{barr2015oracle}.
 
-This paper presents \ToolTeralizer{}, a test amplification approach~\cite{danglot2019snowballing}
-that automatically transforms conventional unit tests into property-based tests.
+This paper presents \ToolTeralizer{}, an automated approach
+that transforms conventional unit tests into property-based tests.
+Our work represents a specific form of test amplification~\cite{danglot2019snowballing}
+that generalizes from single input-output pairs to properties holding across entire input partitions.
 Test amplification exploits knowledge embedded in existing tests to enhance them
 for engineering goals such as improved fault detection or better coverage~\cite{danglot2019snowballing,baudry2015dspot,xie2006augmenting}.
-\ToolTeralizer{} specifically amplifies tests by generalizing from single input-output pairs
-to properties that hold across entire input partitions.
+\ToolTeralizer{} achieves this enhancement through test generalization:
+transforming point-specific tests into property-based tests
+that validate behavior across input classes.
 For instance, our approach automatically transforms the test \texttt{assertEquals(0, Math.abs(0))}
 into a property-based test that verifies \texttt{Math.abs(x)} returns the \texttt{x}
 for hundreds of generated inputs where \texttt{x >= 0} (Figures~\ref{fig:generalization} and \ref{fig:regression-detection}).
