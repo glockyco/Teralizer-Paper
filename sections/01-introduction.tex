@@ -81,24 +81,23 @@ suitable for encoding as input generators.
 Extending support to other types and newer Java versions remains an open research challenge
 in specification extraction.
 
-Our results reveal both promise and challenges.
-We evaluate effectiveness through mutation testing~\cite{jia2011analysis,papadakis2019mutation}, which measures a test suite's ability
-to detect systematically injected faults that simulate potential regressions~\cite{coles2016pit}.
-\ToolTeralizer{} improves mutation scores from 48--52\% to 50--55\%
-on EqBench and from 57--58\% to 58--59\% on Apache Commons utilities
-when applied to \ToolEvoSuite{}-generated tests.
-These ranges reflect varying initial test quality from \ToolEvoSuite{} search budgets
-of 1s, 10s, and 60s, as well as three generalization strategies:
-baseline transformation overhead, naive random generation with filtering~\cite{pacheco2007randoop},
-and constraint-aware input generation.
-The mature Apache Commons developer-written test suite already achieves 80.4\% mutation score
-and shows minimal improvement of 0.05--0.07 percentage points despite successful generalization.
-In contrast, only 0.9\% of the 1,160 RepoReapers projects successfully complete
-the full processing pipeline.
-While over half fail due to external issues like build errors,
-the remainder expose actionable barriers including static analysis limitations
-for resolving tested methods and detecting assertions in helper methods,
-alongside our current restriction to pure methods with numeric parameters.
+Our evaluation reveals the current capabilities and boundaries of automated test generalization.
+We measure effectiveness through mutation testing~\cite{jia2011analysis,papadakis2019mutation},
+which systematically injects faults to assess test suite quality~\cite{coles2016pit}.
+On \ToolEvoSuite{}-generated tests, \ToolTeralizer{} achieves consistent improvements:
+mutation scores increase by 2--3 percentage points on EqBench (from 48--52\% to 50--55\%)
+and 1--2 percentage points on Apache Commons utilities (from 57--58\% to 58--59\%).
+These improvements persist across different \ToolEvoSuite{} search budgets (1s, 10s, 60s)
+and three generalization strategies that trade off between generation cost and effectiveness.
+Developer-written Apache Commons tests, already achieving 80.4\% mutation score,
+show minimal improvement (0.05--0.07 percentage points),
+suggesting diminishing returns for mature test suites.
+Real-world deployment faces significant challenges:
+only 0.9\% of 1,160 RepoReapers projects complete the full pipeline successfully.
+Build errors and dependency issues account for over half of failures,
+while the remainder reveal technical barriers in static analysis for method resolution,
+assertion detection in helper methods,
+and our current focus on pure methods with numeric parameters.
 
 This paper makes the following contributions:
 
