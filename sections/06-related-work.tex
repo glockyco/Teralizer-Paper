@@ -18,8 +18,24 @@ and distinguish our contributions from existing approaches.
 
 \subsection{Test Amplification and Generation}
 
-Test amplification techniques automatically enhance existing test suites
-to improve their effectiveness~\cite{danglot2019snowballing}.
+Test amplification encompasses techniques that automatically enhance existing test suites
+to improve their effectiveness at achieving engineering goals~\cite{danglot2019snowballing}.
+These techniques exploit the knowledge already encoded in tests---such as
+valid input ranges, expected behaviors, and important scenarios---to
+generate additional tests that explore new behaviors or
+strengthen existing test oracles.
+Amplification approaches include generating new test inputs~\cite{baudry2015dspot},
+adding assertions to capture additional behaviors~\cite{xie2006augmenting},
+and transforming test structure to improve coverage or fault detection.
+
+Test generalization represents a specific form of amplification
+that transforms tests from validating individual input-output pairs
+to validating properties across input classes.
+Prior work like JARVIS~\cite{peleg_2018_jarvis} attempted test generalization
+but required manual constraint templates and produced overapproximations
+that may not accurately reflect actual program behavior.
+\ToolTeralizer{} addresses these limitations through fully automated specification extraction.
+
 DSpot~\cite{baudry2015dspot} amplifies tests by generating variants
 with modified inputs and additional assertions,
 focusing on improving mutation score and coverage.
