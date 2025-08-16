@@ -180,6 +180,12 @@ Section~\ref{sec:execution-efficiency} analyzes the efficiency trade-offs
 between different combinations of \ToolEvoSuite{} timeouts and \ToolTeralizer{} \tries{}
 in further detail through Pareto front analysis.
 
+The reported improvements are based on single runs per project configuration.
+While property-based test generation includes randomness that could produce variation across runs,
+the consistent patterns across projects suggest the observed trends are robust.
+Multiple runs would strengthen confidence in the precise magnitude of improvements
+(a limitation we discuss in Section~\ref{sec:threats-to-validity}).
+
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
 
