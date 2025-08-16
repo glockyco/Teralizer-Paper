@@ -133,6 +133,27 @@ The properties they find (e.g., \texttt{reverse(reverse(xs)) == xs})
 are valuable for understanding program behavior
 but cannot specify which inputs should be generated for particular execution paths.
 
+\subsection{Metamorphic Testing}
+
+Metamorphic testing~\cite{chen1998metamorphic,segura2016survey} addresses the oracle problem
+by defining metamorphic relations that should hold between multiple executions.
+Rather than specifying expected outputs directly,
+metamorphic relations express how outputs should change when inputs are transformed.
+For example, testing a sine function might verify that \texttt{sin(x) = sin(x + 2$\pi$)}
+without knowing the exact value of \texttt{sin(x)}.
+
+While both metamorphic testing and \ToolTeralizer{} test multiple inputs beyond single examples,
+they address fundamentally different problems.
+Metamorphic testing requires developers to manually identify and encode metamorphic relations,
+which demands deep domain knowledge and testing expertise~\cite{chen2018metamorphic}.
+\ToolTeralizer{} automatically extracts specifications from existing tests,
+preserving the exact input-output relationships already validated by developers.
+Metamorphic relations explore relationships across different execution paths,
+while our approach thoroughly tests inputs within the same execution paths.
+The two techniques are complementary:
+metamorphic testing discovers new behaviors through relation-based exploration,
+while test generalization strengthens validation of already-tested behaviors.
+
 \subsection{Regression Testing and Test Selection}
 
 Regression testing research focuses on efficiently detecting
