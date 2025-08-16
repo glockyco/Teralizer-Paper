@@ -110,28 +110,44 @@ suggesting these are fundamental limitations of current symbolic execution techn
 rather than implementation choices.
 
 \subsubsection{Alternative Specification Mining Techniques}
+Several alternative approaches to specification extraction exist,
+each serving different purposes that make them unsuitable for automated test generalization.
+
 Dynamic invariant detection tools like Daikon~\cite{ernst2007daikon}
-infer likely invariants from program executions.
-While Daikon can discover complex relationships,
+infer likely invariants from observed program executions.
+While Daikon can discover complex relationships between variables,
 it provides statistical confidence rather than guaranteed correctness,
 and requires multiple executions to infer patterns.
 For test generalization, we need specifications that are guaranteed correct
-for the specific execution path,
+for specific execution paths,
 which Daikon's probabilistic approach cannot provide.
+Consider a test for \texttt{Math.abs(-5)} returning \texttt{5}:
+Daikon might infer \texttt{result >= 0} from multiple observations,
+but this loses the precise relationship \texttt{result == -input}
+needed to generate property-based tests.
 
 Abstract interpretation-based tools like Facebook's Infer~\cite{calcagno2015infer}
-compute sound overapproximations of program behavior.
-While excellent for finding bugs related to memory safety and resource usage,
+compute sound overapproximations of program behavior,
+focusing on properties like memory safety, null-pointer exceptions,
+and resource usage.
+While excellent for finding bugs in these domains,
 abstract interpretation operates at a level of abstraction
-unsuitable for generating concrete test inputs with specific numeric relationships.
+that abstracts away the precise numeric relationships
+required for generating concrete test inputs.
+Infer might determine that a variable is non-null or within bounds,
+but cannot extract the exact symbolic expressions
+needed for property-based test oracles.
 
 Property discovery tools like QuickSpec~\cite{smallbone2017quickspec}
-and Speculate~\cite{TODO_speculate} find equational laws through testing.
+and Speculate~\cite{braquehais2017speculate} automatically find equational laws
+through systematic testing.
 These tools discover universal properties that hold across all inputs,
-rather than the path-specific specifications we need for test generalization.
-The properties they find (e.g., \texttt{reverse(reverse(xs)) == xs})
-are valuable for understanding program behavior
-but cannot specify which inputs should be generated for particular execution paths.
+such as \texttt{reverse(reverse(xs)) == xs} or \texttt{abs(abs(x)) == abs(x)}.
+While valuable for understanding program behavior and finding algebraic properties,
+they focus on universal laws rather than the path-specific specifications
+needed for test generalization.
+Our approach requires knowing which inputs lead to specific execution paths,
+information that universal property discovery cannot provide.
 
 \subsection{Metamorphic Testing}
 
