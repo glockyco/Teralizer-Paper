@@ -383,4 +383,22 @@ Third, adaptive strategies could select generation approaches based on
 measured constraint complexity and mutation distribution,
 applying boundary-aware generation where it provides the largest benefit.
 
-@TODO: Add answer for RQ1.
+\begin{center}
+\fbox{\begin{minipage}{\textwidth}
+\paragraph{Answer to RQ1:}
+\ToolTeralizer{} improves mutation detection rates across all evaluated datasets,
+with effectiveness strongly influenced by initial test suite quality and constraint complexity.
+EvoSuite-generated test suites achieve the largest improvements:
+1.2--3.9 percentage points (2.4--8.2\% relative) on \DatasetsEqBenchEs{}
+and 0.82--1.33 percentage points (1.4--2.3\% relative) on \DatasetsCommonsEs{}.
+Developer-written Apache Commons tests, already achieving 80.4\% mutation score,
+show minimal improvement (0.05--0.07 percentage points),
+demonstrating diminishing returns for mature test suites.
+\VariantNaive{} and \VariantImproved{} variants show complementary strengths:
+\VariantNaive{} excels at detecting \texttt{Math} mutations through diverse numeric inputs,
+while \VariantImproved{} better detects \texttt{ConditionalsBoundary} mutations
+through boundary-focused generation.
+Higher \tries{} settings consistently improve detection with diminishing returns,
+though \VariantImproved{} requires sufficient attempts to balance boundary and non-boundary testing.
+\end{minipage}}
+\end{center}
