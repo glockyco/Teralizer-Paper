@@ -90,15 +90,18 @@ is fundamental to our approach.
 Several techniques exist, each with different characteristics
 that affect their suitability for test generalization.
 
-\subsubsection{Symbolic Execution Tools}
-Beyond \ToolSPF{}~\cite{pasareanu2013symbolic}, which we use,
-several symbolic execution tools target Java programs.
+\subsubsection{Symbolic and Concolic Execution Tools}
+Beyond \ToolSPF{}~\cite{pasareanu2013symbolic}, which we use in constraint collection mode,
+several symbolic and concolic execution tools target Java programs.
 JBSE~\cite{braione2016jbse} handles complex heap structures
 but shares \ToolSPF{}'s limitation to older Java versions.
 JDart~\cite{luckow2016jdart} and its successor GDart~\cite{mues2022gdart}
-provide dynamic symbolic execution capabilities
+provide concolic execution capabilities with systematic path exploration
 but are similarly constrained to Java 8 and numeric types.
-Recent work on SWAT~\cite{TODO_swat2024} uses dynamic instrumentation
+Unlike these tools that perform full concolic execution with path exploration,
+our single-path symbolic analysis uses only symbolic state tracking
+to extract specifications from existing test paths.
+Recent work on SWAT~\cite{mues2024swat} uses dynamic instrumentation
 but does not overcome the fundamental limitations
 in supporting modern Java features or non-numeric types.
 These tools all face similar challenges in scaling beyond numeric constraints
