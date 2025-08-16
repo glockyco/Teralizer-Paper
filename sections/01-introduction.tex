@@ -29,8 +29,8 @@ into a property-based test that verifies \texttt{Math.abs(x)} returns \texttt{x}
 for hundreds of generated inputs where \texttt{x >= 0} (Figures~\ref{fig:generalization} and \ref{fig:regression-detection}).
 Unlike prior work that requires manual constraint templates~\cite{peleg_2018_jarvis},
 \ToolTeralizer{} automatically extracts exact specifications from the implementation
-through symbolic analysis guided by existing tests.
-By leveraging \ToolSPFLong{}'s (\ToolSPF{}) constraint collection mode~\cite{pasareanu2013symbolic},
+through single-path symbolic analysis guided by existing tests.
+By using \ToolSPFLong{}'s (\ToolSPF{}) constraint collection mode~\cite{pasareanu2013symbolic},
 our approach obtains precise path conditions for execution paths already covered by tests,
 then uses these specifications to generate property-based tests~\cite{link2022jqwik}
 that explore additional inputs within the same logical partitions.
@@ -109,7 +109,7 @@ We demonstrate that automated transformation from unit tests to property-based t
 achieving mutation score improvements of 1--4 percentage points
 without requiring manual intervention when conditions align with current capabilities.
 Unlike prior work that requires manual constraint templates,
-\ToolTeralizer{} automatically extracts exact specifications through symbolic analysis.
+\ToolTeralizer{} automatically extracts exact specifications through single-path symbolic analysis.
 
 \item \textbf{Comprehensive empirical dataset:}
 Our analysis produces a dataset characterizing test structure

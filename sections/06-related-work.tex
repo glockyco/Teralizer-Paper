@@ -143,9 +143,9 @@ Fuzzing would need to be re-executed after each change,
 whereas our generalized tests encode specifications
 that remain valid across implementation changes.
 
-\textbf{Full symbolic execution} could explore additional paths
-but faces exponential path explosion.
-Our constraint collection approach scales linearly
+\textbf{Full concolic or symbolic execution} could explore additional paths
+but faces computational overhead from constraint solving and potential path explosion.
+Our single-path symbolic analysis approach scales linearly
 with the number of existing tests
 while still strengthening testing within covered paths.
 

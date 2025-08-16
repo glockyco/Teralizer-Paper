@@ -18,9 +18,9 @@ The three main phases of \ToolTeralizer{}'s generalization pipeline are:
     identifies executable test methods via JUnit reports,
     and detects assertions as well as corresponding methods under test via static analysis.
     \item \textbf{Specification Extraction} (Section~\ref{sec:specification-extraction}) --
-    uses \ToolSPF{} in constraint collection mode
-    to infer input/output specifications of the methods under test
-    along the execution paths exercised by identified tests.
+    uses \ToolSPFLong{} (\ToolSPF{}) in constraint collection mode
+    for single-path symbolic analysis to infer input/output specifications
+    of the methods under test along the execution paths exercised by identified tests.
     \item \textbf{Test Transformation} (Section~\ref{sec:test-transformation}) --
     uses the extracted input/output specifications
     to create property-based \ToolJqwik{} tests from original JUnit tests,
@@ -120,17 +120,14 @@ in the test transformation phase (Section~\ref{sec:test-transformation})
 to create input value generators and generalized test oracles for property-based tests.
 
 To extract input/output specifications,
-\ToolTeralizer{} uses \ToolSPF{}'s constraint collection mode.
-In this mode, \ToolSPF{}'s path exploration and constraint solving components are disabled
+\ToolTeralizer{} uses \ToolSPF{} in constraint collection mode for single-path symbolic analysis.
+This mode performs symbolic state tracking from concolic execution,
+following concrete test execution paths while maintaining symbolic representations,
+but with path exploration and constraint solving components disabled
 (note that this was not consistently enforced throughout \ToolSPF{}'s implementation ---
 the required fixes for this are available in our replication package~\cite{replicationpackage}).
-Instead, \ToolSPF{} follows the concrete execution path of each test
-while still keeping track of the symbolic program state
-as well as the path condition that needs to be satisfied to reach the execution path.
-Because only a single execution path is exercised
-and no constraint solving is required,
-runtime overhead is much lower in constraint collection mode
-than would be expected from full symbolic execution.
+By avoiding the computational overhead of constraint solving for path exploration,
+this approach enables efficient specification extraction with minimal runtime overhead.
 For an in-depth evaluation of runtime requirements, see Section~\ref{sec:runtime-eval}.
 
 On an implementation level,
