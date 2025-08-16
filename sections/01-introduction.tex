@@ -92,12 +92,14 @@ and three generalization strategies that trade off between generation cost and e
 Developer-written Apache Commons tests, already achieving 80.4\% mutation score,
 show minimal improvement (0.05--0.07 percentage points),
 suggesting diminishing returns for mature test suites.
-Real-world deployment faces significant challenges:
-only 0.9\% of 1,160 RepoReapers projects complete the full pipeline successfully.
-Build errors and dependency issues account for over half of failures,
-while the remainder reveal technical barriers in static analysis for method resolution,
-assertion detection in helper methods,
-and our current focus on pure methods with numeric parameters.
+Beyond controlled evaluation, we systematically analyze 1,160 RepoReapers projects
+to quantify the gap between current capabilities and broad applicability.
+Among the 42\% of projects that build successfully (a prerequisite for any testing approach),
+our pipeline completes for 2.1\% of projects.
+This systematic analysis identifies which technical advances would enable broader deployment:
+improved static analysis for method resolution (24.7\% of technical failures),
+support for non-numeric types (15.4--49.4\% of exclusions),
+and handling of methods with side effects beyond pure numeric computations.
 
 This paper makes the following contributions:
 
