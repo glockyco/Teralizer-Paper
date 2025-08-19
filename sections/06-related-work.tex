@@ -36,7 +36,8 @@ to validating properties across input classes.
 Prior work like JARVIS~\cite{peleg_2018_jarvis} attempted test generalization
 but required manual constraint templates and produced overapproximations
 that may not accurately reflect actual program behavior.
-\ToolTeralizer{} addresses these limitations through fully automated specification extraction.
+\ToolTeralizer{} addresses these limitations through fully automated specification extraction
+using test-method mapping (Algorithm~\ref{alg:test-method-mapping}).
 
 DSpot~\cite{baudry_2015_dspot} amplifies tests by generating variants
 with modified inputs and additional assertions,
@@ -58,7 +59,8 @@ Randoop~\cite{pacheco_2007_randoop} generates tests through feedback-directed ra
 creating sequences of method calls and checking for violations of general contracts.
 While Randoop explores the input space randomly,
 \ToolTeralizer{} systematically explores inputs within specific execution paths
-identified by existing tests.
+identified by existing tests using constraint-aware generation
+(Algorithm~\ref{alg:constraint-encoding}).
 
 \subsection{Property-Based Testing}
 
@@ -75,7 +77,8 @@ However, JARVIS requires manual constraint templates
 and produces overapproximations that may not reflect actual program behavior.
 \ToolTeralizer{} extracts exact specifications through symbolic analysis,
 eliminating manual effort while ensuring generated properties
-accurately reflect the implementation.
+accurately reflect the implementation through constraint-aware input generation
+(Algorithm~\ref{alg:constraint-encoding}).
 
 Parameterized unit testing~\cite{tillmann_2005_parameterized}
 allows developers to write tests with symbolic parameters,
