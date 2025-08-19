@@ -16,7 +16,7 @@ and how single-path symbolic analysis can extract those specifications from exis
 \label{sec:property-based-testing}
 
 Property-based testing generalizes from testing specific examples
-to testing properties that should hold for entire classes of inputs~\cite{claessen2000quickcheck}.
+to testing properties that should hold for entire classes of inputs~\cite{claessen_2000_quickcheck}.
 While a conventional unit test might verify that \texttt{Math.max(3, 5)} returns \texttt{5},
 a property-based test would verify that \texttt{Math.max(a, b)} returns the larger value
 for hundreds of automatically generated pairs $(a, b)$.
@@ -30,7 +30,7 @@ and \emph{properties} that express invariants that should hold for all generated
 When a property fails, frameworks employ \emph{shrinking} to automatically minimize
 the failing input to its simplest form, aiding debugging.
 
-For Java, jqwik~\cite{link2022jqwik} provides comprehensive property-based testing capabilities.
+For Java, jqwik~\cite{link_2022_jqwik} provides comprehensive property-based testing capabilities.
 Tests are written as methods annotated with \texttt{@Property} instead of \texttt{@Test},
 and input generation is controlled through \texttt{Arbitrary} objects that can encode
 complex constraints and distributions.
@@ -45,7 +45,7 @@ Creating property-based tests requires developers to
 (ii)~define appropriate input generators that produce valid test data,
 and (iii)~translate existing test assertions into property specifications.
 This manual effort, combined with the conceptual shift from examples to properties,
-creates a significant barrier to adoption~\cite{barr2015oracle}.
+creates a significant barrier to adoption~\cite{barr_2015_oracle}.
 
 \subsection{Requirements for Automated Generalization}
 \label{sec:requirements-for-test-generalization}
@@ -77,7 +77,7 @@ and symbolic output expressions meet these requirements.
 
 Single-path symbolic analysis provides the precise specification extraction
 required for automated test generalization.
-This approach leverages symbolic state tracking from concolic execution~\cite{sen2005cute,godefroid2005dart}
+This approach leverages symbolic state tracking from concolic execution~\cite{sen_2005_cute,godefroid_2005_dart}
 but deliberately avoids systematic path exploration.
 Concolic execution tools like CUTE and DART combine concrete execution
 with symbolic state tracking to systematically explore program paths,
@@ -96,7 +96,7 @@ the path condition (input specification) and the symbolic output expression
 that together characterize all inputs leading to the same program behavior.
 By focusing on paths already covered by existing tests,
 this approach avoids the exponential path explosion
-that challenges full symbolic execution~\cite{pasareanu2013symbolic}
+that challenges full symbolic execution~\cite{pasareanu_2013_symbolic}
 while still obtaining the precise specifications needed for test generalization.
 
 The resulting specifications enable automatic transformation

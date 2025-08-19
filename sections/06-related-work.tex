@@ -19,13 +19,15 @@ and distinguish our contributions from existing approaches.
 \subsection{Test Amplification and Generation}
 
 Test amplification encompasses techniques that automatically enhance existing test suites
-to improve their effectiveness at achieving engineering goals~\cite{danglot2019snowballing}.
+to improve their effectiveness at achieving engineering goals~\cite{danglot_2019_snowballing}.
 These techniques exploit the knowledge already encoded in tests---such as
 valid input ranges, expected behaviors, and important scenarios---to
 generate additional tests that explore new behaviors or
 strengthen existing test oracles.
-Amplification approaches include generating new test inputs~\cite{baudry2015dspot},
-adding assertions to capture additional behaviors~\cite{xie2006augmenting},
+Our approach uses data flow analysis (Algorithm~\ref{alg:test-method-mapping})
+to systematically extract this knowledge from existing test assertions.
+Amplification approaches include generating new test inputs~\cite{baudry_2015_dspot},
+adding assertions to capture additional behaviors~\cite{xie_2006_augmenting},
 and transforming test structure to improve coverage or fault detection.
 
 Test generalization represents a specific form of amplification
@@ -36,13 +38,13 @@ but required manual constraint templates and produced overapproximations
 that may not accurately reflect actual program behavior.
 \ToolTeralizer{} addresses these limitations through fully automated specification extraction.
 
-DSpot~\cite{baudry2015dspot} amplifies tests by generating variants
+DSpot~\cite{baudry_2015_dspot} amplifies tests by generating variants
 with modified inputs and additional assertions,
 focusing on improving mutation score and coverage.
 Unlike \ToolTeralizer{}, which transforms tests into property-based specifications,
 DSpot generates additional concrete test cases.
 
-\ToolEvoSuite{}~\cite{fraser2011evosuite} generates entire test suites
+\ToolEvoSuite{}~\cite{fraser_2011_evosuite} generates entire test suites
 optimized for coverage and mutation score.
 While we use \ToolEvoSuite{} to create initial test suites for evaluation,
 \ToolTeralizer{} addresses a complementary problem:
@@ -52,7 +54,7 @@ Integration with test generation tools like \ToolEvoSuite{}
 could provide a powerful pipeline where generated tests
 are subsequently generalized to achieve even better fault detection.
 
-Randoop~\cite{pacheco2007randoop} generates tests through feedback-directed random testing,
+Randoop~\cite{pacheco_2007_randoop} generates tests through feedback-directed random testing,
 creating sequences of method calls and checking for violations of general contracts.
 While Randoop explores the input space randomly,
 \ToolTeralizer{} systematically explores inputs within specific execution paths
@@ -60,10 +62,10 @@ identified by existing tests.
 
 \subsection{Property-Based Testing}
 
-QuickCheck~\cite{claessen2000quickcheck} pioneered property-based testing
+QuickCheck~\cite{claessen_2000_quickcheck} pioneered property-based testing
 by automatically generating test inputs from specifications.
-Subsequent frameworks like ScalaCheck~\cite{nilsson2014scalacheck}
-and jqwik~\cite{link2022jqwik} brought these ideas to other languages.
+Subsequent frameworks like ScalaCheck~\cite{nilsson_2014_scalacheck}
+and jqwik~\cite{link_2022_jqwik} brought these ideas to other languages.
 These tools require developers to manually write properties and generators,
 a barrier that \ToolTeralizer{} addresses through automation.
 
@@ -75,9 +77,9 @@ and produces overapproximations that may not reflect actual program behavior.
 eliminating manual effort while ensuring generated properties
 accurately reflect the implementation.
 
-Parameterized unit testing~\cite{tillmann2005parameterized}
+Parameterized unit testing~\cite{tillmann_2005_parameterized}
 allows developers to write tests with symbolic parameters,
-which tools like Pex~\cite{tillmann2008pex} instantiate with concrete values.
+which tools like Pex~\cite{tillmann_2008_pex} instantiate with concrete values.
 While similar in spirit to property-based testing,
 parameterized tests still require manual specification of the parameterization.
 \ToolTeralizer{} automates this process by inferring parameterizations
@@ -91,17 +93,17 @@ Several techniques exist, each with different characteristics
 that affect their suitability for test generalization.
 
 \subsubsection{Symbolic and Concolic Execution Tools}
-Beyond \ToolSPF{}~\cite{pasareanu2013symbolic}, which we use in constraint collection mode,
+Beyond \ToolSPF{}~\cite{pasareanu_2013_symbolic}, which we use in constraint collection mode,
 several symbolic and concolic execution tools target Java programs.
-JBSE~\cite{braione2016jbse} handles complex heap structures
+JBSE~\cite{braione_2016_jbse} handles complex heap structures
 but shares \ToolSPF{}'s limitation to older Java versions.
-JDart~\cite{luckow2016jdart} and its successor GDart~\cite{mues2022gdart}
+JDart~\cite{luckow_2016_jdart} and its successor GDart~\cite{mues_2022_gdart}
 provide concolic execution capabilities with systematic path exploration
 but are similarly constrained to Java 8 and numeric types.
 Unlike these tools that perform full concolic execution with path exploration,
 our single-path symbolic analysis uses only symbolic state tracking
 to extract specifications from existing test paths.
-Recent work on SWAT~\cite{mues2024swat} uses dynamic instrumentation
+Recent work on SWAT~\cite{mues_2024_swat} uses dynamic instrumentation
 but does not overcome the fundamental limitations
 in supporting modern Java features or non-numeric types.
 These tools all face similar challenges in scaling beyond numeric constraints
@@ -113,7 +115,7 @@ rather than implementation choices.
 Several alternative approaches to specification extraction exist,
 each serving different purposes that make them unsuitable for automated test generalization.
 
-Dynamic invariant detection tools like Daikon~\cite{ernst2007daikon}
+Dynamic invariant detection tools like Daikon~\cite{ernst_2007_daikon}
 infer likely invariants from observed program executions.
 While Daikon can discover complex relationships between variables,
 it provides statistical confidence rather than guaranteed correctness,
@@ -126,7 +128,7 @@ Daikon might infer \texttt{result >= 0} from multiple observations,
 but this loses the precise relationship \texttt{result == -input}
 needed to generate property-based tests.
 
-Abstract interpretation-based tools like Facebook's Infer~\cite{calcagno2015infer}
+Abstract interpretation-based tools like Facebook's Infer~\cite{calcagno_2015_infer}
 compute sound overapproximations of program behavior,
 focusing on properties like memory safety, null-pointer exceptions,
 and resource usage.
@@ -138,8 +140,8 @@ Infer might determine that a variable is non-null or within bounds,
 but cannot extract the exact symbolic expressions
 needed for property-based test oracles.
 
-Property discovery tools like QuickSpec~\cite{smallbone2017quickspec}
-and Speculate~\cite{braquehais2017speculate} automatically find equational laws
+Property discovery tools like QuickSpec~\cite{smallbone_2017_quickspec}
+and Speculate~\cite{braquehais_2017_speculate} automatically find equational laws
 through systematic testing.
 These tools discover universal properties that hold across all inputs,
 such as \texttt{reverse(reverse(xs)) == xs} or \texttt{abs(abs(x)) == abs(x)}.
@@ -151,7 +153,7 @@ information that universal property discovery cannot provide.
 
 \subsection{Metamorphic Testing}
 
-Metamorphic testing~\cite{chen1998metamorphic,segura2016survey} addresses the oracle problem
+Metamorphic testing~\cite{chen_1998_metamorphic,segura_2016_survey} addresses the oracle problem
 by defining metamorphic relations that should hold between multiple executions.
 Rather than specifying expected outputs directly,
 metamorphic relations express how outputs should change when inputs are transformed.
@@ -161,7 +163,7 @@ without knowing the exact value of \texttt{sin(x)}.
 While both metamorphic testing and \ToolTeralizer{} test multiple inputs beyond single examples,
 they address fundamentally different problems.
 Metamorphic testing requires developers to manually identify and encode metamorphic relations,
-which demands deep domain knowledge and testing expertise~\cite{chen2018metamorphic}.
+which demands deep domain knowledge and testing expertise~\cite{chen_2018_metamorphic}.
 \ToolTeralizer{} automatically extracts specifications from existing tests,
 preserving the exact input-output relationships already validated by developers.
 Metamorphic relations explore relationships across different execution paths,
@@ -173,17 +175,17 @@ while test generalization strengthens validation of already-tested behaviors.
 \subsection{Regression Testing and Test Selection}
 
 Regression testing research focuses on efficiently detecting
-whether changes break existing functionality~\cite{yoo2012regression}.
-Test selection techniques~\cite{rothermel1996analyzing}
+whether changes break existing functionality~\cite{yoo_2012_regression}.
+Test selection techniques~\cite{rothermel_1996_analyzing}
 identify which tests to re-run after changes.
 \ToolTeralizer{} complements these approaches
 by making individual tests more effective at detecting regressions
 within their covered execution paths.
 
-Mutation testing~\cite{jia2011analysis,papadakis2019mutation},
+Mutation testing~\cite{jia_2011_analysis,papadakis_2019_mutation},
 which we use for evaluation,
 simulates potential regressions through systematic fault injection.
-Tools like PIT~\cite{coles2016pit} have made mutation testing practical
+Tools like PIT~\cite{coles_2016_pit} have made mutation testing practical
 for Java programs.
 Our results show that generalized tests detect more mutants,
 suggesting they would also detect more real regressions.

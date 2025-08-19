@@ -5,9 +5,9 @@
 \label{sec:mutation-testing-methodology}
 
 Mutation testing provides our primary measure of test effectiveness
-by systematically injecting faults into the code and measuring whether tests detect them~\cite{jia2011analysis}.
+by systematically injecting faults into the code and measuring whether tests detect them~\cite{jia_2011_analysis}.
 A test suite that detects more mutants demonstrates stronger fault-finding capability.
-We use \ToolPit{}~\cite{coles2016pit} with its DEFAULTS mutation operator group,
+We use \ToolPit{}~\cite{coles_2016_pit} with its DEFAULTS mutation operator group,
 the recommended set for Java projects.
 Understanding which mutations each generalization strategy detects is essential
 for interpreting our results, as different strategies show distinct strengths.
@@ -55,7 +55,7 @@ its 652 Java classes implement equivalent and non-equivalent program pairs
 focusing on numeric computations while deliberately avoiding
 features that complicate automated reasoning (recursion, reflection, complex object graphs).
 Since EqBench provides only implementation code without tests,
-we generated test suites using \ToolEvoSuite{}~\cite{fraser2011evosuite}
+we generated test suites using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}
 with three search budgets (1s, 10s, 60s per class),
 creating datasets \DatasetEqBenchA{}, \DatasetEqBenchB{}, and \DatasetEqBenchC{}.
 This design explores the relationship between initial test suite characteristics
