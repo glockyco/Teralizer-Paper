@@ -26,7 +26,10 @@ transforming point-specific tests into property-based tests
 that validate behavior across input classes.
 For instance, our approach automatically transforms the test \texttt{assertEquals(0, Math.abs(0))}
 into a property-based test that verifies \texttt{Math.abs(x)} returns \texttt{x}
-for hundreds of generated inputs where \texttt{x >= 0} (Figures~\ref{fig:generalization} and \ref{fig:regression-detection}).
+for hundreds of generated inputs where \texttt{x >= 0}, as illustrated in Figure~\ref{fig:generalization}.
+This transformation enables detection of regressions missed by the original test.
+Figure~\ref{fig:regression-detection} shows how a bug introduced in the conditional logic
+(changing \texttt{x >= 0} to \texttt{x == 0}) is caught by the generalized test but not the original.
 Unlike prior work that requires manual constraint templates~\cite{peleg_2018_jarvis},
 \ToolTeralizer{} automatically extracts exact specifications from the implementation
 through single-path symbolic analysis guided by existing tests.
