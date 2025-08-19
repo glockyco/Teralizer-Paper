@@ -99,7 +99,17 @@ from its 80.4\% baseline.
   \centering
   \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
   \caption{Percentage of detected mutants and improvement over INITIAL per project and generalization variant.}
-  %\Description{@TODO}
+  \Description{Multi-panel bar chart showing mutation detection results.
+  Left column displays detected percentages for seven projects:
+  eqbench-es-default-1s, -10s, -60s, commons-utils-es-default-1s, -10s, -60s, and commons-utils.
+  Each panel shows bars for INITIAL (blue), NAIVE variants (orange), and IMPROVED variants (green).
+  Variants have subscripts (10, 50, 200) indicating tries parameter.
+  Y-axis ranges from approximately 48% to 81% detection rate.
+  Right column shows corresponding improvement percentages over INITIAL baseline,
+  with values in parentheses and +/- indicators.
+  Improvements range from minimal (0.05%) for commons-utils developer tests
+  to substantial (7.82%) for eqbench-es-default-1s.
+  Color legend at top: INITIAL (blue), NAIVE Variants (orange), IMPROVED Variants (green).}
   \label{fig:mutation-detection-results}
 \end{figure}
 

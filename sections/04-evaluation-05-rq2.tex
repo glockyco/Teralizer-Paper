@@ -257,7 +257,19 @@ which is beyond the scope of this evaluation.
   \centering
   \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
   \caption{Runtime Comparison: Test vs. Generalization.}
-  %\Description{@TODO}
+  \Description{Two bar charts comparing runtime overhead of generalized tests.
+  Left chart shows mean runtime difference in milliseconds between original and generalized tests.
+  BASELINE adds 149.56ms overhead.
+  NAIVE variants show increasing overhead with more tries:
+  286.13ms (10 tries), 348.56ms (50 tries), 1136.21ms (200 tries).
+  IMPROVED variants show lower overhead:
+  189.17ms (10 tries), 246.85ms (50 tries), 395.26ms (200 tries).
+  Right chart shows mean runtime difference per try in milliseconds.
+  BASELINE shows 149.56ms per try.
+  NAIVE variants show decreasing per-try cost:
+  28.61ms (10 tries), 6.97ms (50 tries), 5.68ms (200 tries).
+  IMPROVED variants show better per-try efficiency:
+  18.92ms (10 tries), 4.94ms (50 tries), 1.98ms (200 tries).}
   \label{fig:test-runtime-differences}
 \end{figure}
 
@@ -326,4 +338,14 @@ not only holds the potential to increase detection rates
 (as suggested in Section~\ref{sec:boundary-detection-effectiveness})
 but could also reduce the runtime cost of generalized tests at the same time.
 
-@TODO: Add answer for RQ2.
+\textbf{Answer to RQ2:}
+Test generalization adds 0--3 tests to final test suites after compensation,
+but increases lines of code by 5--59\% due to explicit constraint encoding and test isolation.
+Test suite runtime increases 1.5--3$\times$ for \ToolEvoSuite{}-generated tests
+and 9--57\% for developer tests,
+primarily from property-based testing overhead and the number of \tries{}.
+These impacts vary significantly based on test architecture:
+single-assertion tests enable near-complete compensation
+while multi-assertion tests resist consolidation.
+Implementation choices like constraint libraries and test integration
+could substantially reduce these overheads.

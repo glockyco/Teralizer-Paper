@@ -37,7 +37,18 @@ for 1s, 10s, and 60s search budgets respectively.
   \centering
   \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
   \caption{Teralizer runtimes per project, processing stage, and generalization variant.}
-  %\Description{@TODO}
+  \Description{Grouped bar chart showing runtime breakdown across processing stages for seven projects.
+  Y-axis shows runtime in seconds (up to 40000).
+  X-axis groups bars by processing stage:
+  Original Validation, Specification Extraction, Initial Validation,
+  Test Transformation, and Generalization Validation.
+  Each group contains bars for different variants (SHARED, BASELINE, NAIVE with 10/50/200 tries,
+  and IMPROVED with 10/50/200 tries) shown in different colors.
+  Bar heights show runtime with values labeled above each bar.
+  Generalization Validation stage shows the highest runtimes (up to 35.5k seconds),
+  while Test Transformation shows minimal runtime (5-173 seconds).
+  Pattern reveals validation stages dominate total runtime,
+  particularly for higher tries settings.}
   \label{fig:teralizer-runtimes}
 \end{figure}
 
@@ -172,6 +183,17 @@ before reaching a plateau at around
   \centering
   \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
   \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
+  \Description{Two scatter plots showing Pareto efficiency analysis.
+  Left panel shows eqbench project, right panel shows commons-utils project.
+  X-axis shows runtime in seconds, Y-axis shows mutation detection percentage.
+  Blue circles represent EvoSuite-only configurations,
+  red X marks show EvoSuite + NAIVE combinations,
+  green triangles show EvoSuite + IMPROVED combinations.
+  Dashed black line connects Pareto-optimal configurations numbered 1-14 (eqbench) and 1-11 (commons-utils).
+  For eqbench, points show detection rates from 48% to 56% with runtimes from 30000 to 90000 seconds.
+  For commons-utils, points show detection rates from 56.5% to 59.5% with runtimes from 5000 to 20000 seconds.
+  Pareto frontier demonstrates that combining EvoSuite with Teralizer
+  can achieve better detection-to-runtime ratios than increasing EvoSuite search budgets alone.}
   \label{fig:teralizer-efficiency}
 \end{figure}
 
@@ -206,6 +228,18 @@ This increases the mutation detection rate and runtime advantage that
 because the more sophisticated input value generation avoids
 \texttt{TooManyFilterMissesException}s.
 
-@TODO: Add answer for RQ3.
+\textbf{Answer to RQ3:}
+\ToolTeralizer{} requires 3.4--30.9 hours total runtime per project,
+with validation consuming 40--78\% of processing time
+while core generalization (specification extraction and transformation) takes less than 10\%.
+Despite high absolute costs,
+combining \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
+achieves better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets
+in several configurations.
+The efficiency gains stem from their complementary optimization targets:
+\ToolEvoSuite{} optimizes for breadth (coverage)
+while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
+Runtime optimization should focus on validation efficiency
+rather than core generalization logic.
 
 %\input{tables/tab-teralizer-runtimes}
