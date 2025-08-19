@@ -1,48 +1,203 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{Benefits of the Approach}
-\label{sec:benefits-of-the-approach}
+% \subsection{Benefits of the Approach}
+% \label{sec:benefits-of-the-approach}
 
-\subsection{Potential for Future Improvements}
-\label{sec:potential-for-improvements}
+% \subsection{Potential for Future Improvements}
+% \label{sec:potential-for-improvements}
 
-\subsubsection{Improving the Mutation Score of Generalized Tests}
-\label{sec:improving-the-mutation-score}
+% \subsubsection{Improving the Mutation Score of Generalized Tests}
+% \label{sec:improving-the-mutation-score}
 
-\subsubsection{Improving the Size of Generalized Tests}
-\label{sec:improving-the-test-size}
+% \subsubsection{Improving the Size of Generalized Tests}
+% \label{sec:improving-the-test-size}
 
-\subsubsection{Improving the Runtime of Test Generalization}
-\label{sec:improving-the-runtime}
+% \subsubsection{Improving the Runtime of Test Generalization}
+% \label{sec:improving-the-runtime}
 
-primary runtime costs are from external tools (i.e., jqwik + PIT)
+% \subsubsection{Reducing the Number of Unsuccessful Generalizations}
+% \label{sec:reducing-unsuccessful-generalizations}
 
-mutation testing runtimes could likely be improved
-through the use of the pitest accelerator plugin (\url{https://docs.arcmutate.com/docs/accelerator.html}),
-thus, further improving results of Teralizer relative to EvoSuite
-(website claims "analysis time for Commons Lang is reduced from over 55 minutes to under 18");
-however, the plugin is not available without a license
+% \subsubsection{Using Test Generalization for Test Suite Reduction}
+% \label{sec:test-suite-reduction}
 
-also, parallelization would be possible rather easily for many Teralizer tasks
-(and also for PIT, which only runs single-threaded by default)
-(supposedly, jqwik will get parallelization support in major version 2, source (2024-05-14): \url{https://github.com/jqwik-team/jqwik/issues/45#issuecomment-2109949764})
+% \subsubsection{Dealing with Overfitting}
+% \label{sec:overfitting}
 
-for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
 
-\subsubsection{Reducing the Number of Unsuccessful Generalizations}
-\label{sec:reducing-unsuccessful-generalizations}
+\subsection{Key Findings Across Research Questions}
+\label{sec:key-findings}
 
-\subsubsection{Using Test Generalization for Test Suite Reduction}
-\label{sec:test-suite-reduction}
+Our evaluation reveals several unexpected patterns that challenge
+conventional assumptions about test generalization and property-based testing.
 
-\subsubsection{Dealing with Overfitting}
-\label{sec:overfitting}
+\subsubsection{Mutation Type Determines Optimal Generation Strategy}
 
-We do not generate assertions, so overfitting is less pronounced than if we did.
-However, we still rely on the current implementation as the source of truth,
-encoding the exact behavior of it in the generalized tests (at least as far as
-the behavior is tested by assertions in the original, non-generalized test suite).
+The superiority of \VariantNaive{} over \VariantImproved{} on \DatasetsEqBenchEs{} projects,
+despite the opposite pattern on \DatasetsCommonsEs{},
+reveals that different fault types require different detection strategies.
+Math mutations, constituting 59\% of all mutants in our evaluation,
+show 3.99\% improvement with random generation versus 3.37\% with constraint-aware generation.
+% Data source: detections-per-mutator-data.csv
+Conversely, ConditionalsBoundary mutations (11\% of mutants)
+achieve 2.55\% improvement with constraint-aware generation versus only 1.21\% with random generation.
+
+This dichotomy reflects the spatial distribution of faults:
+Math mutations (e.g., changing \texttt{+} to \texttt{-}) typically create
+incorrect behavior across most of the input space,
+making them amenable to random sampling.
+Boundary mutations concentrate faults at partition edges,
+where constraint-aware generation focuses its testing effort.
+The implication: effective property-based testing requires
+a portfolio of generation strategies matched to expected fault distributions,
+not a single sophisticated approach.
+
+\subsubsection{Test Architecture Creates Trade-offs with Generalizability}
+
+The stark difference in test replaceability between \ToolEvoSuite{} and developer tests
+stems not from quality but from architectural choices.
+\ToolEvoSuite{}'s single-assertion-per-test structure enables complete replacement
+when generalization succeeds, achieving near-zero net test count increase (0--1 tests added).
+% Data source: tests-per-project-data.csv
+Developer tests, averaging multiple assertions per test method,
+prevent removal even when individual assertions generalize successfully.
+
+This pattern reveals a tension between test maintainability and analyzability.
+Developers consolidate related assertions to reduce duplication and improve readability---sound
+software engineering practice that inadvertently blocks automated enhancement.
+The finding suggests that test design guidelines should consider
+not just immediate quality attributes but also amenability to future automated analysis.
+
+\subsubsection{Validation Dominates Cost, Not Core Generalization}
+
+Runtime analysis reveals that the generalization approach itself is efficient,
+consuming less than 10\% of total processing time for specification extraction and transformation.
+% Data source: runtime-breakdown-data.csv
+The dominant cost (40--78\%) comes from validation through mutation testing,
+which is required to identify which generalizations actually improve fault detection.
+This distribution suggests that selective generalization of high-value tests
+could achieve most benefits at a fraction of the cost.
+
+Notably, combining 1-second \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
+can achieve better mutation scores than 60-second \ToolEvoSuite{} generation alone,
+suggesting that staged approaches (quick generation followed by selective generalization)
+may be more efficient than monolithic extended generation.
+
+\subsubsection{Clear Feasibility Boundaries Emerge from Filtering Analysis}
+
+The filtering cascade reveals that even under favorable conditions,
+only about 25\% of assertions successfully generalize
+(47.8\% pass assertion-level filters, of which roughly half succeed at generalization).
+% Data source: exclusions-summary-data.csv, exclusions-filtering-data.csv
+The jump from 1.6\% success in buildable real-world projects
+to approximately 50\% in favorable conditions
+identifies specific barriers: method resolution failures increase from 24.7\% to 57.9\%,
+and type support issues increase from 15.4\% to 49.4\%.
+
+These numbers establish realistic expectations:
+test generalization is not a universal solution but rather a targeted technique
+most effective for numeric computations with simple test structures.
+
+\subsection{Implications for Testing Research and Practice}
+\label{sec:implications}
+
+\subsubsection{Rethinking Property-Based Testing Strategies}
+
+The failure of sophisticated constraint-aware generation to universally outperform random generation
+challenges the property-based testing community's focus on "smart" generation.
+Our results suggest that generation strategy effectiveness depends on mutation characteristics:
+random generation for pervasive faults (Math mutations),
+constraint-aware for boundary faults (ConditionalsBoundary),
+and potentially other strategies for different fault patterns.
+
+Future property-based testing frameworks could adapt their generation strategies
+based on the code under test, using static analysis to predict likely mutation types
+and selecting appropriate generation strategies accordingly.
+
+\subsubsection{Test Design for Future Automation}
+
+While developer tests prioritize maintainability through consolidated assertions,
+our results suggest value in designing tests with future automation in mind.
+A preprocessing step that automatically refactors multi-assertion tests
+into single-assertion equivalents could enable generalization
+while preserving the original consolidated version for maintenance.
+This dual representation---consolidated for humans, decomposed for tools---could
+reconcile the competing demands of maintainability and analyzability.
+
+\subsubsection{Test Suite Reduction Through Partition Analysis}
+
+Our observation that multiple tests often cover the same execution partition,
+particularly in \ToolEvoSuite{}-generated suites,
+suggests an opportunity for test suite reduction.
+Rather than generalizing every test, we could identify partition equivalence classes,
+retain one representative test per partition, and generalize only these representatives.
+This approach could yield smaller, more efficient test suites
+with equivalent or better fault detection.
+
+\subsection{Opportunities for Practical Improvement}
+\label{sec:opportunities}
+
+Several engineering improvements could substantially enhance practical deployment:
+
+\paragraph{Runtime Optimization}
+The commercial PIT accelerator plugin claims 3$\times$ speedup for mutation testing,
+which would directly reduce our dominant cost.
+Additionally, parallelization of both \ToolTeralizer{} tasks and PIT execution
+(currently single-threaded by default) could provide further improvements.
+The upcoming jqwik 2.0's planned parallelization support would also reduce
+property-based test execution time.
+
+% primary runtime costs are from external tools (i.e., jqwik + PIT)
+%
+% mutation testing runtimes could likely be improved
+% through the use of the pitest accelerator plugin (\url{https://docs.arcmutate.com/docs/accelerator.html}),
+% thus, further improving results of Teralizer relative to EvoSuite
+% (website claims "analysis time for Commons Lang is reduced from over 55 minutes to under 18");
+% however, the plugin is not available without a license
+%
+% also, parallelization would be possible rather easily for many Teralizer tasks
+% (and also for PIT, which only runs single-threaded by default)
+% (supposedly, jqwik will get parallelization support in major version 2, source (2024-05-14): \url{https://github.com/jqwik-team/jqwik/issues/45#issuecomment-2109949764})
+%
+% for practical application scenarios, could add configuration to target only specific tests, rather than the full test suite
+
+\paragraph{Enhanced Method Resolution}
+The 24.7\% method resolution failure rate in favorable conditions
+represents low-hanging fruit for engineering improvement.
+More sophisticated static analysis handling inheritance hierarchies,
+lambda expressions, and method references could substantially reduce
+these failures without requiring fundamental advances.
+
+\paragraph{Selective Targeting}
+Given that validation dominates cost,
+selective application to high-value tests (e.g., those covering critical components
+or showing low initial mutation scores) could achieve
+most benefits at fraction of the computational cost.
+
+\subsection{Fundamental Limitations}
+\label{sec:limitations}
+
+\subsubsection{Type Support Remains a Research Challenge}
+
+The restriction to numeric and boolean types stems from fundamental limitations
+in symbolic execution, not implementation choices.
+All major symbolic execution engines face similar constraints,
+and alternative specification extraction approaches
+produce different specification types unsuitable for test input generation.
+Supporting strings would require string constraint solvers,
+while collections and objects need theories for data structure properties---active
+research areas without mature solutions.
+
+\subsubsection{Diminishing Returns with Test Maturity}
+
+The inverse relationship between initial test strength and improvement potential
+(3--4pp for 48\% baseline, 0.07pp for 80\% baseline)
+% Data source: mutation-detection-figure-data.csv
+reflects a fundamental characteristic:
+mature test suites have already caught the "easy" mutants that generalization typically detects.
+The remaining undetected mutants often involve subtle semantic issues
+or non-numeric computations outside our approach's scope.
 
 \subsection{Threats to Validity}
 \label{sec:threats-to-validity}
@@ -50,8 +205,36 @@ the behavior is tested by assertions in the original, non-generalized test suite
 \subsubsection{Construct Validity}
 \label{sec:construct-validity}
 
+We use mutation score as our primary effectiveness measure,
+which may not perfectly correlate with real fault detection.
+While the \ToolPit{} DEFAULTS operators are empirically validated,
+they may not represent all fault types in practice.
+Our filtering of parameterized tests and certain assertion types
+could bias results toward simpler test patterns.
+The decision to exclude tests that fail after removing \ToolEvoSuite{}'s isolation features
+may underestimate the challenges of real-world application.
+
 \subsubsection{Internal Validity}
 \label{sec:internal-validity}
 
+We control for randomness using fixed seeds and equal \tries{} parameters across variants.
+However, the effectiveness of different generation strategies
+inherently depends on program characteristics,
+introducing variability beyond our control.
+Runtime measurements were collected on a single machine configuration
+and may vary with different hardware or JVM settings.
+The comparison between \ToolEvoSuite{} and developer tests
+involves different projects (EqBench vs Commons),
+potentially confounding test quality analysis with project characteristics.
+
 \subsubsection{External Validity}
 \label{sec:external-validity}
+
+Our evaluation is limited to Java 5--8 projects using JUnit 4/5 and Maven/Gradle builds.
+The \DatasetEqBench{} benchmark's focus on mathematical programs
+may not represent typical software projects.
+The 0.9\% success rate on RepoReapers projects
+reflects current implementation limitations
+and may improve with engineering enhancements.
+Modern Java features, alternative testing frameworks,
+and non-numeric domains remain unexplored.
