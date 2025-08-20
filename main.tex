@@ -104,6 +104,7 @@
 %% the next command will enable that style.
 %%\citestyle{acmauthoryear}
 
+\usepackage{float}
 \usepackage{tabularx}
 \usepackage{listings}
 
@@ -152,6 +153,9 @@
 \newcommand{\VariantImprovedC}{\textsc{Improved\textsubscript{200}}}
 
 \newcommand{\tries}{\texttt{tries}}
+
+\floatstyle{plain}
+\newfloat{genericfloat}{tbph}{lop}
 
 \lstset{
   language=Java,
