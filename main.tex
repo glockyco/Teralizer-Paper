@@ -237,7 +237,32 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  Abstract
+Unit tests validate single input-output pairs, leaving vast input spaces unexplored within execution paths.
+Property-based testing addresses this by generating multiple inputs satisfying properties,
+but requires significant manual effort to create generators and specifications.
+We present \ToolTeralizer{}, the first fully automated approach for transforming conventional unit tests into property-based tests.
+Unlike prior work requiring manual constraint templates,
+\ToolTeralizer{} automatically extracts specifications through single-path symbolic analysis using \ToolSPF{}'s constraint collection mode.
+% TODO: Clarify "test-method mapping" (it's actually an "assertion-method mapping").
+Our approach comprises test-method mapping via data flow analysis,
+specification extraction along concrete test paths,
+and property-based test generation with \ToolJqwik{}.
+Evaluation on three datasets reveals both potential and limitations.
+On \ToolEvoSuite{}-generated tests, mutation scores improve 1--4 percentage points
+(\DatasetEqBench{}: 48--52\%$\rightarrow$52--55\%, Commons: 57--58\%$\rightarrow$58--59\%).
+% Data source: mutation-detection-figure-data.csv - worst to best case improvements across budgets
+Developer-written tests show minimal improvement (80.35\%$\rightarrow$80.42\%),
+suggesting diminishing returns for mature suites.
+Analysis of 1,160 real-world projects identifies deployment barriers:
+only 0.9\% process successfully,
+with test-method mapping failures (24.7\%),
+type limitations (15.4\%),
+and generation failures (14.6--16.2\%) as primary obstacles.
+We contribute:
+(1)~first fully automated test generalization,
+(2)~comprehensive empirical dataset characterizing test generalizability,
+(3)~systematic mapping distinguishing engineering from fundamental barriers,
+(4)~open implementation and replication package.
 \end{abstract}
 
 %%
