@@ -31,7 +31,7 @@ to validating properties across entire input partitions.
 A test verifying that \texttt{Math.abs(-5)} returns \texttt{5}
 suggests the general property that \texttt{Math.abs(x)} returns \texttt{-x} for negative inputs,
 but validates this relationship for only a single value.
-Automating such transformations requires extracting exact specifications
+Automating such transformations requires extracting path-exact specifications
 that accurately capture program behavior across input partitions.
 
 \subsection{Property-Based Testing}
@@ -80,7 +80,7 @@ the concrete execution path of an existing test
 while maintaining symbolic representations of variables~\cite{pasareanu_2013_symbolic}.
 Unlike full symbolic execution, which faces path explosion when exploring all possible paths~\cite{baldoni_2018_survey,cadar_2013_symbolic},
 single-path analysis records conditions only along the test's actual execution path.
-The analysis extracts exact specifications for the covered path
+The analysis extracts path-exact specifications for the covered path
 without the high runtime cost of exploring alternative branches.
 Each test requires only one traversal of its execution path,
 avoiding the scalability challenges of comprehensive path exploration.

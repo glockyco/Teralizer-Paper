@@ -56,7 +56,7 @@ followed by test generalization for thorough validation.
 Randoop~\cite{pacheco_2007_randoop} generates tests through feedback-directed random testing,
 creating method call sequences and checking for contract violations.
 Randoop explores the input space without path-specific constraints,
-while \ToolTeralizer{} extracts exact path conditions from existing tests
+while \ToolTeralizer{} extracts path-exact conditions from existing tests
 to generate inputs within specific execution partitions.
 
 Fuzzing~\cite{manes_2021_fuzzing} generates inputs to trigger crashes or violations.
@@ -96,7 +96,7 @@ JARVIS might infer \texttt{x > 0 → abs(x) = x},
 missing the boundary case where \texttt{x = 0}.
 \ToolTeralizer{} takes a fundamentally different approach:
 instead of generalizing from examples using templates,
-we extract exact path conditions (e.g., \texttt{x >= 0}) directly from the implementation
+we extract path-exact conditions (e.g., \texttt{x >= 0}) directly from the implementation
 through single-path symbolic analysis.
 This shift from example-driven template instantiation to semantics-based extraction
 ensures generated properties are path-exact for covered execution paths,

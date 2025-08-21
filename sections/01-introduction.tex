@@ -31,7 +31,7 @@ This transformation enables detection of regressions missed by the original test
 Figure~\ref{fig:regression-detection} shows how a bug introduced in the conditional logic
 (changing \texttt{x >= 0} to \texttt{x == 0}) is caught by the generalized test but not the original.
 Unlike prior work such as JARVIS that generalizes from examples using predefined abstraction templates~\cite{peleg_2018_jarvis},
-\ToolTeralizer{} extracts exact path specifications directly from the implementation
+\ToolTeralizer{} extracts path-exact specifications directly from the implementation
 through single-path symbolic analysis guided by existing tests.
 By using \ToolSPFLong{}'s (\ToolSPF{}) constraint collection mode~\cite{pasareanu_2013_symbolic},
 our approach obtains precise path conditions for execution paths already covered by tests,
@@ -129,7 +129,7 @@ achieving mutation score improvements of 1--4 percentage points
 when conditions align with current capabilities.
 Unlike JARVIS which generalizes from examples using predefined abstraction templates
 and produces over-approximations,
-\ToolTeralizer{} extracts exact path specifications directly from the implementation
+\ToolTeralizer{} extracts path-exact specifications directly from the implementation
 through single-path symbolic analysis.
 
 \item \textbf{Comprehensive empirical dataset:}
