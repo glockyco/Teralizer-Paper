@@ -181,7 +181,7 @@
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
 % \title[short title]{full title}
-\title{Teralizer: Automated Test Generalization from Conventional Unit Tests to Property-Based Tests}
+\title{Teralizer: Semantics-Based Test Generalization from Conventional Unit Tests to Property-Based Tests}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -241,10 +241,10 @@ Unit tests validate single input-output pairs, leaving vast input spaces unexplo
 Property-based testing addresses this by generating multiple inputs satisfying properties,
 but requires significant manual effort to create generators and specifications.
 We present \ToolTeralizer{},
-the first semantics-based approach that achieves fully automated transformation
+a semantics-based approach for automated transformation
 of conventional unit tests into property-based tests.
 Unlike prior work such as JARVIS,
-which generalizes from input-output examples via manually curated constraint templates,
+which generalizes from input-output examples using predefined abstraction templates,
 \ToolTeralizer{} extracts exact path specifications directly from the implementation
 through single-path symbolic analysis using \ToolSPF{}'s constraint collection mode.
 % TODO: Clarify "test-method mapping" (it's actually an "assertion-method mapping").
@@ -263,7 +263,7 @@ with test-method mapping failures (24.7\%),
 type limitations (15.4\%),
 and generation failures (14.6--16.2\%) as primary obstacles.
 We contribute:
-(1)~first fully automated semantics-based test generalization,
+(1)~semantics-based test generalization via single-path symbolic analysis,
 (2)~comprehensive empirical dataset characterizing test generalizability,
 (3)~systematic mapping distinguishing engineering from fundamental barriers,
 (4)~open implementation and replication package.

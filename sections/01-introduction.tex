@@ -30,7 +30,7 @@ for hundreds of generated inputs where \texttt{x >= 0}, as illustrated in Figure
 This transformation enables detection of regressions missed by the original test.
 Figure~\ref{fig:regression-detection} shows how a bug introduced in the conditional logic
 (changing \texttt{x >= 0} to \texttt{x == 0}) is caught by the generalized test but not the original.
-Unlike prior work such as JARVIS that requires manually curated constraint templates~\cite{peleg_2018_jarvis},
+Unlike prior work such as JARVIS that generalizes from examples using predefined abstraction templates~\cite{peleg_2018_jarvis},
 \ToolTeralizer{} extracts exact path specifications directly from the implementation
 through single-path symbolic analysis guided by existing tests.
 By using \ToolSPFLong{}'s (\ToolSPF{}) constraint collection mode~\cite{pasareanu_2013_symbolic},
@@ -122,13 +122,15 @@ and handling of methods with side effects beyond pure numeric computations.
 This paper makes the following contributions:
 
 \begin{enumerate}
-\item \textbf{First fully automated semantics-based test generalization:}
-We demonstrate that automated transformation from unit tests to property-based tests is feasible,
+\item \textbf{Semantics-based test generalization:}
+We demonstrate automated transformation from unit tests to property-based tests
+through semantics-based specification extraction,
 achieving mutation score improvements of 1--4 percentage points
-without requiring manual intervention when conditions align with current capabilities.
-Unlike prior work such as JARVIS that automates test transformation
-but relies on manually designed constraint templates and produces over-approximations,
-\ToolTeralizer{} extracts exact path specifications through single-path symbolic analysis.
+when conditions align with current capabilities.
+Unlike JARVIS which generalizes from examples using predefined abstraction templates
+and produces over-approximations,
+\ToolTeralizer{} extracts exact path specifications directly from the implementation
+through single-path symbolic analysis.
 
 \item \textbf{Comprehensive empirical dataset:}
 Our analysis produces a dataset characterizing test structure

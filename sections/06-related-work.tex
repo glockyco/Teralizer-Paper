@@ -5,8 +5,8 @@ Test generalization combines elements from multiple testing research areas:
 test amplification that enhances existing tests,
 property-based testing that explores input spaces,
 and specification extraction that enables automation.
-\ToolTeralizer{} demonstrates the feasibility of fully automated semantics-based test generalization,
-eliminating the manual template design that limits prior generalization approaches~\cite{peleg_2018_jarvis}.
+\ToolTeralizer{} demonstrates the feasibility of semantics-based test generalization,
+extracting specifications directly from program semantics rather than relying on predefined templates~\cite{peleg_2018_jarvis}.
 This section positions our work within the testing literature,
 identifying the specific gap we address
 and explaining our design choices relative to existing techniques.
@@ -97,7 +97,7 @@ missing the boundary case where \texttt{x = 0}.
 \ToolTeralizer{} takes a fundamentally different approach:
 instead of generalizing from examples using templates,
 we extract exact path conditions (e.g., \texttt{x >= 0}) directly from the implementation
-through symbolic execution.
+through single-path symbolic analysis.
 This shift from example-driven template instantiation to semantics-based extraction
 ensures generated properties are path-exact for covered execution paths,
 eliminating template dependence entirely.
