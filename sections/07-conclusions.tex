@@ -1,8 +1,9 @@
 \section{Conclusions}
 \label{sec:conclusions}
 
-We have presented \ToolTeralizer{}, the first fully automated approach
-for transforming conventional unit tests into property-based tests.
+We have presented \ToolTeralizer{},
+the first semantics-based approach that achieves fully automated transformation
+of conventional unit tests into property-based tests.
 Our work demonstrates the feasibility of automated test generalization
 while systematically mapping the boundaries between current capabilities
 and broader practical deployment.
@@ -11,10 +12,10 @@ and broader practical deployment.
 
 This research makes four key contributions to the testing community:
 
-\textbf{First fully automated test generalization.}
-Unlike prior approaches that require manual constraint templates,
-\ToolTeralizer{} achieves complete automation by extracting precise specifications
-through single-path symbolic analysis using \ToolSPF{}'s constraint collection mode.
+\textbf{First fully automated semantics-based test generalization.}
+Unlike prior approaches such as JARVIS that rely on manually curated constraint templates,
+\ToolTeralizer{} achieves complete automation by extracting exact path specifications
+directly from the implementation through single-path symbolic analysis.
 Our evaluation shows consistent mutation score improvements:
 3--4 percentage points on \DatasetsEqBenchEs{} projects
 and 1--2 percentage points on \DatasetsCommonsEs{} projects.
