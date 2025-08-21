@@ -140,8 +140,8 @@ Other Java symbolic execution tools face similar trade-offs.
 JBSE~\cite{braione_2016_jbse} handles complex heap structures,
 JDart~\cite{luckow_2016_jdart} and GDart~\cite{mues_2022_gdart} provide concolic execution,
 and SWAT~\cite{mues_2024_swat} uses dynamic instrumentation.
-All share the fundamental limitation to numeric and boolean types
-where constraint solvers can provide precise solutions.
+All face similar challenges representing constraints for non-numeric types
+in a form suitable for test generalization.
 Despite these limitations, single-path analysis provides
 a practical path to automated test generalization
 by focusing on the subset of tests amenable to symbolic analysis.
