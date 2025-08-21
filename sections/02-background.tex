@@ -49,7 +49,7 @@ and \emph{shrinking} algorithms that minimize failing inputs to aid debugging.
 
 Property-based testing can reveal edge cases and boundary conditions
 that developers might not explicitly consider~\cite{hughes_2016_experiences,maciver_2019_hypothesis}.
-However, adoption remains limited in practice~\cite{paiva_2022_pbt_survey}.
+However, adoption remains limited in practice~\cite{goldstein_2024_pbt_practice}.
 Creating effective property-based tests requires developers to identify appropriate properties,
 define input generators with suitable constraints,
 and translate example-based assertions into general specifications.
@@ -78,10 +78,10 @@ and precise enough to generate valid test inputs and oracles.
 Single-path symbolic analysis provides this capability by following
 the concrete execution path of an existing test
 while maintaining symbolic representations of variables~\cite{pasareanu_2013_symbolic}.
-Unlike full symbolic execution, which faces path explosion when exploring all possible paths,
+Unlike full symbolic execution, which faces path explosion when exploring all possible paths~\cite{baldoni_2018_survey,cadar_2013_symbolic},
 single-path analysis records conditions only along the test's actual execution path.
 The analysis extracts exact specifications for the covered path
-without the exponential complexity of exploring alternative branches.
+without the high runtime cost of exploring alternative branches.
 Each test requires only one traversal of its execution path,
 avoiding the scalability challenges of comprehensive path exploration.
 
