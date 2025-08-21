@@ -1,25 +1,43 @@
-\newpage{}
 \section{Approach}
 \label{sec:approach}
 
-\ToolTeralizer{} achieves fully automated transformation
-of unit tests into property-based tests (PBTs)
-by leveraging existing symbolic analysis capabilities
-in a three-phase pipeline (Figure~\ref{fig:approach-overview}).
+Consider the bonus calculation method in Listing~\ref{lst:bonus-method} that returns different rates based on sales performance.
+The unit test in Listing~\ref{lst:original-test} verifying \texttt{calculate(2500, 1000)} returns \texttt{250}
+passes for the current implementation but would miss regressions that alter behavior within the same partition.
+For instance, changing the condition from \texttt{sales/2 >= target} to \texttt{sales/2 > target}
+would still pass the original test (since \texttt{2500/2 > 1000}) but breaks the boundary case.
+\ToolTeralizer{} automatically transforms this into a property-based test
+that explores the partition boundary, catching such regressions
+that the single-input test would miss.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
+  \caption{Overview of Teralizer's test generalization process.}
+  \Description{System architecture diagram showing Teralizer's three-phase pipeline.
+  Input (left): Java Project box containing Implementation and Test Suite components.
+  Center: Teralizer system with three numbered phases:
+  (1) Test Analysis, (2) Specification Extraction, (3) Test Transformation.
+  Below phases: Intermediate Outputs listing Processing Logs, Test/Assertion/Generalization Data,
+  Input/Output Specifications, and External Tool Reports.
+  Bottom row shows integrated tools: JUnit, JaCoCo, PIT, jqwik, Spoon, and JPF/SPF.
+  Output (right): Generalized Tests box containing three variants: BASELINE, NAIVE, and IMPROVED.
+  Thick arrows connect input to Teralizer and Teralizer to output.}
+  \label{fig:approach-overview}
+\end{figure}
+
+\ToolTeralizer{} achieves this fully automated transformation
+through a three-phase pipeline (Figure~\ref{fig:approach-overview})
+that leverages existing symbolic analysis capabilities.
 Our key design insight is that existing tests already encode
 the necessary oracles for generalization:
 developer-written assertions validate specific behaviors
 that should hold for entire input partitions,
 not just the single tested input.
 By following the execution paths of existing tests,
-we extract specifications only for behaviors that developers
+we extract exact specifications only for behaviors that developers
 have explicitly validated, avoiding the risk of overfitting
 to implementation details of untested paths.
-This single-path approach ensures soundness:
-generated property-based tests validate the same behaviors
-as the original tests but across more inputs within
-the same execution partition,
-never introducing assertions for previously untested paths.
 The three main phases of \ToolTeralizer{}'s pipeline are:
 
 \begin{itemize}
@@ -42,7 +60,7 @@ Throughout the pipeline, we apply filtering to focus on tests
 amenable to automated generalization (detailed analysis in Section~\ref{sec:limitations-eval}).
 Current limitations stem from both fundamental challenges and engineering scope:
 we require pure functions with numeric parameters (where \ToolSPF{} produces accurate constraints),
-clear test-method relationships identifiable through static analysis,
+clear assertion-method relationships identifiable through static analysis,
 and developer-provided assertions that serve as oracles.
 These constraints reflect deliberate scope decisions
 to demonstrate feasibility with reasonable engineering effort.
@@ -58,90 +76,86 @@ provides the research community with insights into
 what makes tests amenable to generalization
 and which technical advances would enable broader applicability.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
-  \caption{Overview of Teralizer's test generalization process.}
-  \Description{System architecture diagram showing Teralizer's three-phase pipeline.
-  Input (left): Java Project box containing Implementation and Test Suite components.
-  Center: Teralizer system with three numbered phases:
-  (1) Test Analysis, (2) Specification Extraction, (3) Test Transformation.
-  Below phases: Intermediate Outputs listing Processing Logs, Test/Assertion/Generalization Data,
-  Input/Output Specifications, and External Tool Reports.
-  Bottom row shows integrated tools: JUnit, JaCoCo, PIT, jqwik, Spoon, and JPF/SPF.
-  Output (right): Generalized Tests box containing three variants: BASELINE, NAIVE, and IMPROVED.
-  Thick arrows connect input to Teralizer and Teralizer to output.}
-  \label{fig:approach-overview}
-\end{figure}
+Before processing begins, 
+\ToolTeralizer{} prepares the target project by detecting the build system (Maven or Gradle)
+and injecting necessary dependencies including \ToolJqwik{}, \ToolPit{}, and \ToolJacoco{}.
+This instrumentation creates modified build files while preserving originals,
+enabling the pipeline to execute tests and collect mutation testing results
+required for evaluating generalization effectiveness.
 
 \subsection{Test Analysis}
 \label{sec:test-analysis}
 
 The test analysis phase identifies generalizable tests
 by establishing clear mappings between test assertions and the methods they validate.
-This mapping is non-trivial: tests often invoke multiple methods
+This assertion-method mapping is challenging: tests often invoke multiple methods
 and use intermediate variables,
 requiring data flow analysis to determine which method an assertion actually tests.
-For example, a test might compute \texttt{int result = Math.abs(x) + Math.max(y, z)}
-and then assert \texttt{assertEquals(10, result)} --
-our analysis must determine whether this tests \texttt{abs}, \texttt{max},
-or the combined expression (which we currently cannot handle).
+For instance, our BonusCalculator test (Listing~\ref{lst:original-test}) contains multiple calculate invocations
+stored in separate variables, followed by multiple assertions on those variables.
+Our analysis must trace backwards from each assertion to identify
+which specific calculate call produced the asserted value.
+This precise mapping is essential because all input generators
+must first include the original concrete input values
+to guarantee we never miss inputs that developers explicitly encoded in their tests,
+with additional inputs generated afterwards (Section~\ref{sec:three-variant-design}).
+Section~\ref{sec:limitations-eval} analyzes how often this mapping fails in practice.
 
 \ToolTeralizer{} first executes the original test suite
 and parses JUnit XML reports to identify successfully executed test methods.
 Using JUnit reports rather than custom static analysis
 avoids reimplementing JUnit's test handling logic
-for ignored tests, parameterized tests, and test failures --
-ensuring we only process tests that actually pass.
+for ignored tests and test failures,
+ensuring we only process tests that actually pass
+and can serve as reliable oracles for generalization.
 For each identified test,
 we use static analysis based on Spoon~\cite{pawlak_2016_spoon}
-to locate assertions (calls to methods in \texttt{org.junit.Assert}
-or \texttt{org.junit.jupiter.api.Assertions})
+to locate assertions (calls to methods in \texttt{org.\-junit.\-Assert}
+or \texttt{org.\-junit.\-jupiter.\-api.\-Assertions})
 and trace data flow backwards to identify which method call
 produced the value being asserted.
 We currently support four assertion types:
 \texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}, and \texttt{assertThrows}.
 
-\begin{algorithm}[t]
-\caption{Test-Method Mapping via Data Flow Analysis}
-\label{alg:test-method-mapping}
-\begin{algorithmic}[1]
-\REQUIRE Test method $T$, Assertion invocation $A$
-\ENSURE Method invocation $M$ that produced the asserted value, or \texttt{null}
-\IF{$A.name = $ \texttt{assertThrows}}
-    \STATE $body \gets $ executable body from $A.arguments[1]$
-    \STATE $invocations \gets $ all method calls in $body$
-    \RETURN last element of $invocations$ \COMMENT{Last call likely throws}
-\ELSE
-    \STATE $index \gets $ position of actual parameter in $A$ \COMMENT{Varies by JUnit version}
-    \STATE $actual \gets A.arguments[index]$
-    \IF{$actual$ is \texttt{MethodInvocation}}
-        \RETURN $actual$ \COMMENT{Direct method call}
-    \ELSIF{$actual$ is \texttt{VariableRead}}
-        \STATE $declaration \gets $ find variable declaration
-        \STATE $assignment \gets declaration.rightHandSide$
-        \IF{$assignment$ is \texttt{MethodInvocation}}
-            \RETURN $assignment$
-        \ENDIF
-    \ENDIF
-\ENDIF
-\STATE \RETURN \texttt{null} \COMMENT{Cannot resolve to method call}
-\end{algorithmic}
-\end{algorithm}
+Test analysis produces assertion-method pairs that identify
+which specific method invocation each assertion validates,
+along with the concrete input values used in the original test.
+This information enables the specification extraction phase
+to obtain precise path conditions and symbolic outputs for each tested behavior.
+
+Our data flow analysis handles different assertion types systematically.
+For \texttt{assertThrows} assertions, 
+we extract the executable body from the lambda expression
+and identify the last method call,
+which typically represents the operation expected to throw the exception.
+For value assertions (\texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}),
+we locate the actual parameter (whose position varies between JUnit versions)
+and trace its origin.
+If the actual value comes from a direct method invocation,
+we use that method immediately.
+If it comes from a variable,
+we trace back to the variable's assignment statement
+and extract the method call from the right-hand side.
+When this analysis cannot resolve a clear method invocation,
+we return null to indicate that the assertion
+cannot be mapped to a testable method.
 
 Our current implementation requires that tested methods
 are pure functions: deterministic, side-effect-free,
 and dependent only on their input parameters.
-This constraint stems from \ToolSPF{}'s limitations --
-its symbolic representation cannot accurately model
-state changes or external effects,
-preventing accurate generalization of test oracles
-for methods with side effects.
+This constraint reflects both \ToolSPF{}'s symbolic execution capabilities
+and our deliberate scope decisions --
+\ToolSPF{} produces accurate constraints for numeric computations
+but cannot model complex state changes or external effects,
+while our single-path approach requires deterministic behavior
+to ensure generalized tests validate the same semantics as originals.
 Additionally, we only support numeric parameters
 (\texttt{byte}, \texttt{short}, \texttt{int}, \texttt{long}, \texttt{float}, \texttt{double})
 where \ToolSPF{} produces accurate constraints.
 Section~\ref{sec:limitations-eval} analyzes how often
-these constraints limit applicability in practice.
+these constraints limit applicability in practice,
+while Section~\ref{sec:limitations} discusses the fundamental challenges
+in extending type support beyond current capabilities.
 
 \subsection{Specification Extraction}
 \label{sec:specification-extraction}
@@ -153,8 +167,8 @@ the path condition that characterizes which inputs
 follow the same execution path as the test,
 and the symbolic output expression that computes
 the expected result for any input in that partition.
-Examples of extracted specifications are shown
-in Listings~\ref{lst:bonus-method}--\ref{lst:input-output-specs}.
+Examples of extracted specifications from the \texttt{BonusCalculator.calculate} method are shown
+in Listing~\ref{lst:input-output-specs}.
 These specifications enable the test transformation phase
 (Section~\ref{sec:test-transformation})
 to create input generators and generalized oracles
@@ -172,21 +186,102 @@ requiring minor modifications to bypass constraint solving during collection mod
 Section~\ref{sec:runtime-eval} evaluates the runtime efficiency
 of this approach.
 
+\subsubsection{Driver Program Generation}
+\label{sec:driver-generation}
 
-Operationally, we register a custom \ToolSPF{} listener
-that starts symbolic state tracking when entering the tested method
-and extracts specifications when exiting.
-The listener captures the path condition
-(conjunction of all branch conditions along the execution path)
+To enable \ToolSPF{} analysis of individual assertions,
+we generate a driver program for each assertion-method pair.
+The driver program serves as an executable entry point
+that isolates the targeted behavior within \ToolSPF{}'s execution environment,
+ensuring that symbolic analysis focuses precisely on the tested method
+without interference from unrelated test logic.
+
+Each driver program consists of a simple class with a \texttt{main} method
+that recreates the test execution context.
+The driver instantiates the test class,
+executes any setup methods annotated with \texttt{@Before}, \texttt{@BeforeClass},
+\texttt{@BeforeEach}, or \texttt{@BeforeAll},
+and then invokes the target test method.
+This approach preserves the original test's execution environment
+while providing \ToolSPF{} with a clean entry point for analysis.
+
+Algorithm~\ref{alg:driver-generation} describes this process systematically.
+For each assertion, we clone the original test class
+and remove all other test methods and assertions,
+leaving only the target behavior for focused analysis.
+The driver generation process also creates the \ToolSPF{} configuration file
+that specifies which method to analyze symbolically,
+sets execution limits (60-second timeout, 100,000-character path condition limit, 100-step depth limit),
+and configures our custom listener for specification extraction.
+
+\begin{algorithm}[t]
+\caption{Driver Program Generation}
+\label{alg:driver-generation}
+\begin{algorithmic}[1]
+\REQUIRE Test class $C$, Test method $M$, Assertion $A$, Tested method $T$
+\ENSURE Driver program $D$ and \ToolSPF{} configuration $F$
+\STATE $I \gets $ create instrumented class from $C$ containing only $M$ with only $A$
+\STATE $I_T \gets $ create instrumented method in $I$ that calls $T$ with symbolic parameters
+\STATE Replace call to $T$ in $M$ with call to $I_T$
+\STATE $S \gets $ detect setup methods in $C$ with annotations @Before*, @BeforeEach*
+\STATE Generate driver class $D$:
+\STATE \hspace{1em} Create \texttt{main} method
+\STATE \hspace{1em} Instantiate $I$
+\STATE \hspace{1em} Execute static setup methods from $S$ on class $I$
+\STATE \hspace{1em} Execute instance setup methods from $S$ on instance
+\STATE \hspace{1em} Invoke target test method $M$ on instance
+\STATE Generate \ToolSPF{} configuration $F$:
+\STATE \hspace{1em} Set \texttt{target} to driver class $D$
+\STATE \hspace{1em} Set \texttt{symbolic.method} to instrumented method $I_T$
+\STATE \hspace{1em} Enable \texttt{symbolic.collect\_constraints}
+\STATE \hspace{1em} Configure execution limits and custom listener
+\STATE \RETURN $(D, F)$
+\end{algorithmic}
+\end{algorithm}
+
+The instrumentation process creates unique identifiers for each driver
+to avoid conflicts when processing multiple assertions from the same test.
+This systematic isolation ensures that each assertion gets its own focused
+analysis environment within the \ToolSPF{} execution framework.
+
+The driver program executes within \ToolSPF{}'s modified Java Virtual Machine,
+which maintains both concrete and symbolic state throughout execution.
+We register a custom \ToolSPF{} listener that monitors method entry and exit events,
+starting symbolic state tracking when entering the tested method
+and extracting specifications when exiting.
+This listener implements several key mechanisms to ensure robust specification collection.
+
+First, the listener tracks execution depth to handle method recursion correctly,
+only extracting specifications when exiting the outermost call to the tested method.
+Second, it enforces the configured execution limits during symbolic execution:
+terminating analysis if the path condition exceeds 100,000 characters,
+if execution time exceeds the 60-second timeout,
+or if the search depth reaches the 100-step limit.
+These safeguards prevent resource exhaustion on complex methods
+while allowing successful analysis of the target behaviors.
+
+When the tested method completes execution,
+the listener captures both concrete and symbolic execution results.
+The concrete results include the actual input parameter values
+and the returned output value (or thrown exception),
+providing ground truth for validation.
+The symbolic results include the path condition
+(conjunction of all branch conditions encountered along the execution path)
 and the symbolic output expression
-(output as a function of symbolic inputs).
+(output computed as a function of symbolic input variables).
 For methods that throw exceptions,
-we record the exception type as a constant output,
-since all inputs in that partition throw the same exception type.
-Once specifications are extracted and persisted,
-we terminate \ToolSPF{} execution immediately
+we record the exception type as a constant symbolic output,
+since all inputs satisfying the same path condition
+produce the same exception type.
+
+The listener transforms these \ToolSPF{}-specific symbolic representations
+into our intermediate model format,
+then serializes them as JSON files for later processing.
+Once specifications are successfully extracted and persisted,
+the listener terminates \ToolSPF{} execution immediately
 to minimize runtime overhead --
-no further information is needed from that test execution.
+no further symbolic exploration is needed
+since we only analyze the single path exercised by the original test.
 
 \subsection{Test Transformation}
 \label{sec:test-transformation}
@@ -211,10 +306,10 @@ a property-based test. The transformation process:
 (a simple data structure with public fields for each generalizable parameter),
 (6) adds a \texttt{TestParametersSupplier} to generate inputs,
 and (7) replaces method arguments with values from \texttt{TestParameters}.
-
 We generate one class per assertion rather than combining multiple assertions
-because PIT mutation testing requires class-level granularity --
-this isolation prevents failed generalizations from affecting successful ones.
+because PIT mutation testing operates at class-level granularity --
+this isolation ensures that failed generalizations do not prevent
+successful ones from being included in mutation testing.
 The original test method is preserved alongside the generalized version
 to maintain backward compatibility.
 
@@ -222,25 +317,30 @@ to maintain backward compatibility.
 \label{sec:three-variant-design}
 
 We generate three variants following standard ablation study methodology
-to isolate different aspects of the approach:
-
+to isolate different aspects of the approach,
+enabling systematic analysis of how constraint complexity affects generation effectiveness
+(Section~\ref{sec:key-findings}):
+%
 \textbf{\VariantBaseline{}} uses only the original test inputs,
 measuring pure framework overhead without additional input generation.
 This variant creates a \texttt{TestParametersSupplier} that returns
 a single \texttt{TestParameters} instance with the original values.
-
-\textbf{\VariantNaive{}} generates random inputs matching parameter types,
-then filters them against the input specification.
-This approach generates values independently for each parameter,
+%
+\textbf{\VariantNaive{}} first includes the original test inputs,
+then generates additional random inputs matching parameter types
+and filters them against the input specification.
+This approach generates additional values independently for each parameter,
 then applies a filter function encoding the complete path condition.
-For complex constraints, this leads to many rejected values
-and \texttt{TooManyFilterMissesException}s.
-
-\textbf{\VariantImproved{}} partially encodes constraints during generation
+For complex constraints, this leads to high rejection rates
+and \texttt{TooManyFilterMissesException}s when generation cannot find valid inputs.
+%
+\textbf{\VariantImproved{}} first includes the original test inputs,
+then generates additional inputs by partially encoding constraints
+during input generation
 to reduce filtering failures.
 This variant analyzes the input specification to extract
 equality and inequality constraints,
-then generates values respecting these constraints
+then generates additional values respecting these constraints
 before applying the complete filter.
 The next section details this constraint encoding strategy.
 
@@ -258,6 +358,26 @@ Complex expressions involving arithmetic operations
 (e.g., \texttt{x + y == z}) or function calls
 (e.g., \texttt{sin(x) > 0}) cannot be encoded
 and must be handled through filtering.
+%
+To handle circular dependencies (e.g., \texttt{a >= b \&\& b >= a}),
+we rewrite constraints to apply only to the variable with the highest index.
+For example, \texttt{a >= b} becomes \texttt{b <= a},
+allowing us to first generate \texttt{a} without constraints,
+then generate \texttt{b} respecting both \texttt{b <= a} and \texttt{b >= a}
+(which together imply \texttt{b == a}).
+This constraint rewriting enables us to generate custom jqwik arbitraries
+that respect variable dependencies during runtime input generation.
+Algorithm~\ref{alg:constraint-encoding} describes this constraint-aware generation process systematically.
+We deliberately handle only simple equality and inequality constraints
+to keep the approach tractable for demonstrating generalization feasibility,
+while more complex constraints are handled through filtering.
+%
+Despite these optimizations, some valid constraints lead to unsatisfiable
+situations during generation.
+For example, with \texttt{b > a \&\& b <= 0},
+if we generate \texttt{a = 0}, no valid \texttt{b} exists.
+In such cases, we return an empty arbitrary,
+prompting \ToolJqwik{} to retry with different values.
 
 \begin{algorithm}[t]
 \caption{Constraint-Aware Input Generation (\VariantImproved{})}
@@ -293,22 +413,6 @@ and must be handled through filtering.
 \STATE \RETURN generated inputs if filter passes
 \end{algorithmic}
 \end{algorithm}
-
-To handle circular dependencies (e.g., \texttt{a >= b \&\& b >= a}),
-we rewrite constraints to apply only to the variable with the highest index.
-For example, \texttt{a >= b} becomes \texttt{b <= a},
-allowing us to first generate \texttt{a} without constraints,
-then generate \texttt{b} respecting both \texttt{b <= a} and \texttt{b >= a}
-(which together imply \texttt{b == a}).
-This constraint rewriting follows standard constraint propagation techniques
-from constraint satisfaction problems.
-
-Despite these optimizations, some valid constraints lead to unsatisfiable
-situations during generation.
-For example, with \texttt{b > a \&\& b <= 0},
-if we generate \texttt{a = 0}, no valid \texttt{b} exists.
-In such cases, we return an empty arbitrary,
-prompting \ToolJqwik{} to retry with different values.
 
 \subsection{Running Example}
 \label{sec:running-example}
@@ -349,12 +453,12 @@ class BonusCalculator {
 @Test
 void testCalculate() {
   BonusCalculator c = new BonusCalculator();
-  // exceptional performance
-  assertEquals(250, c.calculate(2500, 1000));
-  // good performance
-  assertEquals(75, c.calculate(1500, 1000));
-  // bad performance
-  assertEquals(0, c.calculate(500, 1000));
+  int b1 = c.calculate(2500, 1000);
+  int b2 = c.calculate(1500, 1000);
+  int b3 = c.calculate(500, 1000);
+  assertEquals(250, b1);
+  assertEquals(75, b2);
+  assertEquals(0, b3);
 }
 \end{lstlisting}
 
@@ -374,10 +478,10 @@ bad performance:
 @Property(supplier = ..., tries = ...)
 void testCalculate(TestParams _p_) {
   BonusCalculator c = new BonusCalculator();
-  assertEquals(
-    calculateExpected(_p_),
-    c.calculate(_p_.sales, _p_.target)
-  );
+  ...
+  int b2 = c.calculate(_p_.sales, _p_.target);
+  ...
+  assertEquals(calculateExpected(_p_), b2);
 }
 \end{lstlisting}
 
@@ -437,428 +541,138 @@ int calculateExpected(TestParams _p_) {
 \subsection{Filtering Strategy}
 \label{sec:all-filtering}
 
-\ToolTeralizer{} employs a three-level filtering cascade to focus computational resources on feasible generalizations
-while ensuring test suite validity for mutation testing.
-Filtering addresses two fundamental requirements:
-(1)~generated tests must compile and pass to enable PIT mutation testing,
-and (2)~processing should avoid tests unlikely to generalize successfully.
-The cascade progressively narrows the scope from tests to assertions to generated property-based tests.
-
-\subsubsection{Test-Level Filtering}
-
-Test-level filtering excludes entire test methods that cannot be processed:
-\begin{itemize}
-\item \textbf{Non-passing tests}: Tests that fail in their original form are excluded, as PIT requires a green test suite.
-This includes tests that fail after disabling \ToolEvoSuite{}'s isolation features (necessary to prevent PIT crashes).
-\item \textbf{Unsupported test types}: Tests with annotations beyond standard \texttt{@Test} (e.g., \texttt{@ParameterizedTest}) are excluded.
-\item \textbf{No assertions}: Tests without assertions in the main method provide no target for generalization.
-Note that assertions in helper methods are not currently detected, causing false positives (Section~\ref{sec:limitations-eval}).
-\end{itemize}
-
-\subsubsection{Assertion-Level Filtering}
-
-Within passing tests, individual assertions undergo filtering based on feasibility:
-\begin{itemize}
-\item \textbf{Missing tested method}: Assertions where data flow analysis cannot identify the tested method (24.7\% in primary dataset).
-\item \textbf{Non-generalizable parameters}: Methods lacking numeric parameters (\texttt{byte}, \texttt{short}, \texttt{int}, \texttt{long}, \texttt{float}, \texttt{double}).
-\item \textbf{Void return types}: Methods returning \texttt{void} provide no output specification for property verification.
-\item \textbf{Unsupported assertion types}: Only \texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}, and \texttt{assertThrows} are supported.
-\end{itemize}
-
-Additionally, assertions belonging to already-excluded tests are filtered for consistency.
-
-\subsubsection{Generalization-Level Filtering}
-
-After transformation, generated property-based tests undergo execution-based validation:
-\begin{itemize}
-\item \textbf{Non-passing generalizations}: Generated tests that fail execution are excluded.
-Failures stem from either transformation issues or \texttt{TooManyFilterMissesException}s when \ToolJqwik{} cannot generate valid inputs.
-\end{itemize}
-
-\subsubsection{Runtime Safeguards}
-
-To prevent resource exhaustion during \ToolSPF{} execution, we enforce operational limits:
-path condition size (100,000 characters), execution timeout (60 seconds), and search depth.
-These safeguards prevent 45.3\% of specification extraction failures in our evaluation (Section~\ref{sec:limitations-eval}).
-
-The filtering cascade's impact varies by dataset: approximately 50\% of assertions successfully generalize
-under favorable conditions (simple control flow, numeric computations),
-while real-world projects show significantly higher exclusion rates due to complex test patterns
-and non-numeric types (Section~\ref{sec:limitations-eval}).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Rough Approach Description / Notes
-
-% \section{Approach}
-% \label{sec:approach}
-
-% \subsection{Overview}
-% \label{sec:approach-overview}
-
-% processing pipeline:
-% CLEANUP\_PROJECT(0),
-% %
-% DOWNLOAD\_PROJECT(1),
-% SETUP\_PROJECT(2),
-% %
-% ADD\_DEPENDENCIES(3),
-% BUILD\_PROJECT\_ORIGINAL(4),
-% %
-% GENERATE\_EVOSUITE\_TESTS(5),
-% POSTPROCESS\_EVOSUITE\_TESTS(6),
-% %
-% BUILD\_SPOON\_MODEL(7),
-% %
-% EXECUTE\_TESTS\_ORIGINAL(8),
-% COLLECT\_JUNIT\_REPORTS\_ORIGINAL(9),
-% COLLECT\_JACOCO\_DATA\_ORIGINAL(10),
-% FILTER\_TESTS\_ORIGINAL(11),
-% COLLECT\_PIT\_DATA\_ORIGINAL(12),
-% %
-% ANALYZE\_TESTS(13),
-% FILTER\_TESTS(14),
-% FILTER\_ASSERTIONS(15),
-% %
-% ADD\_JPF\_INSTRUMENTATION(16),
-% BUILD\_PROJECT\_INSTRUMENTED(17),
-% EXECUTE\_JPF(18),
-% ANALYZE\_JPF(19),
-% CLEANUP\_JPF\_INSTRUMENTATION(20),
-% %
-% BUILD\_PROJECT\_INITIAL(21),
-% EXECUTE\_TESTS\_INITIAL(22),
-% %
-% COLLECT\_JUNIT\_REPORTS\_INITIAL(23),
-% COLLECT\_JACOCO\_DATA\_INITIAL(24),
-% COLLECT\_PIT\_DATA\_INITIAL(25),
-% %
-% CLEANUP\_GENERALIZATION(26),
-% %
-% GENERALIZE\_TESTS(27),
-% BUILD\_PROJECT\_GENERALIZED(28),
-% %
-% EXECUTE\_TESTS\_GENERALIZED(29),
-% COLLECT\_JUNIT\_REPORTS\_GENERALIZED(30),
-% FILTER\_GENERALIZATIONS(31),
-% %
-% COLLECT\_JACOCO\_DATA\_GENERALIZED(32),
-% COLLECT\_PIT\_DATA\_GENERALIZED(33);
-
-% basically:
-% - instrument project
-% - detect test methods + assertions + tested methods
-% - for each assertion / tested method, collect input + output specification with SPF
-% - for each assertion / tested method, create generalization with 3 variants (utilizing extracted specifications): BASELINE, NAIVE, IMPROVED
-
-% at various points, apply filtering to avoid processing of tests / assertions / generalizations that are unlikely to successfully pass all processing steps (or even guaranteed to fail)
-
-% thoughout the pipeline, track (i) runtime, (ii) (intermediate) results (success? failure? causes? other task outputs / created files?), (iii) mutation / coverage / test data;
-
-% offers a cleanup task to revert any changes applied by generalization (we only add files, so cleanup is just removing files; no existing files are modified);
-
-% \subsection{Project Instrumentation}
-% \label{sec:project-instrumentation}
-
-% (shorten + merge this with the overview? we have so many subsections...)
-
-% accepts either a URL to Git repository or a path to local directory as target;
-% if target is a URL to a Git repository, the project is cloned automatically (with Git's default settings);
-% processing then continues the same for both types of projects;
-
-% detects JUnit 4 vs. JUnit 5 testing framework, others not supported;
-% detects Maven vs. Gradle (Groovy DSL) projects, others not supported;
-% adds required dependencies based on detected project type (update JUnit, add JUnit Vintage, add JaCoCo, add PIT, add jqwik);
-% creates separate pom.xml / build.gradle (with comments for additions by Teralizer) - original file is left untouched;
-% to verify successful instrumentation, project is built, tests executed, test / coverage / mutation results collected;
-
-% \subsection{Test / Assertion Detection and Analysis}
-% \label{sec:test-analysis}
-
-% execute test suite;
-% identify executed test methods via junit / surefire XML reports;
-% for each test method, identify all assertions in the method via Spoon (calls to methods in "org.junit.Assert" (JUnit 4) or "org.junit.jupiter.api.Assertions" (JUnit 5)));
-% for each (supported) assertion (assertEquals, assertTrue, assertFalse, assertThrows), identify one tested method call via Spoon (for assertThrows: the executed method, for assertEquals/True/False: the method that returned the "actual" value of the assertion);
-% we assume each assertion "tests" one method, and do not consider side effects => no support for, e.g., method sequences that modify object state (e.g.: list.add(...), assert(..., list.size()));
-% side effects could be modeled as inputs/outputs of the tested method;
-
-% tests and assertions are filtered if they cannot be (correctly) handled by the current implementation. for details, see Section "Test / Assertion / Generalization Filtering".
-
-% \subsection{Specification Extraction}
-% \label{sec:specification-extraction}
-
-% \subsubsection{Driver Generation}
-% \label{sec:driver-generation}
-
-% for each assertion / tested method call, create a driver program and a corresponding SPF configuration;
-% the driver program is a single class with a "public static void main(...)" method;
-
-% the main method:
-% (i) executes any setup methods of the test class (JUnit 4: "@Before", "@BeforeClass", JUnit 5: "@BeforeAll", "@BeforeEach"),
-% (ii) creates an instance of the test class, and then
-% (iii) calls the tested method.
-
-% the SPF configuration:
-% (i) sets the main method of the driver program as the entrypoint for SPF execution,
-% (ii) sets the tested method as SPF's "symbolicMethod" (using symbolic inputs for generalizable input parameters),
-% (ii) configures SPF to run in constraint-collection mode (=> no constraint solving, just following the concrete execution path),
-% (iii) registers + configures a custom listener that extracts input-output specifications (see next Section "SPF Execution"),
-% (iv) configures several execution limits (depth limit, execution time limit, etc.; see Section "Other Limits / Safeguards").
-
-% (note: we had to modify (fix?) SPF to disable constraint solving during constraint-collection mode execution.)
-% (note: we're actually also creating an instrumented version of the test class / method, but that's only there so we can more easily identify the tested method call during SPF execution if the same method is called multiple times.)
-
-% \subsubsection{SPF Execution}
-% \label{sec:spf-execution}
-
-% execute SPF once for each driver program;
-% start tracking symbolic state when entering the tested method;
-% when exiting the tested method:
-% (i) write the concrete input values to a file,
-% (ii) write the concrete output values to a file,
-% (iii) write the symbolic input values to a file (=> path condition / input specification),
-% (iv) write the symbolic output values to a file (=> output specification),
-% then immediately terminate the execution (no need to keep going - we have everything we need);
-
-% ((show an example of extracted data here))
-
-% for tested methods that exit via thrown exception,
-% use the thrown exception (type) as the concrete output value.
-% no symbolic output value can be collected in this case
-% (because the (type of the) thrown exception is not a function of the symbolic input values,
-% but is instead constant for all sets of inputs in the partition).
-
-% \subsection{Test Transformation}
-% \label{sec:test-transformation}
-
-
-% using jqwik (1.8.5) for property-based testing (\url{https://github.com/jqwik-team/jqwik});
-% last official release in 2024 (1.9.2);
-% last commit 2 days ago (checked on: 2005-04-23);
-% 590 GitHub stars;
-% built for junit 5!;
-% comprehensive user guide (\url{https://jqwik.net/docs/current/user-guide.html});
-
-% competition 1:
-% junit-quickcheck (\url{https://github.com/pholser/junit-quickcheck});
-% last official release in 2020 (1.0);
-% last commit 8 months ago;
-% 590 GitHub stars;
-% built for junit 4, junit 5 support only via junit-vintage (\url{https://github.com/pholser/junit-quickcheck/issues/189#issuecomment-414706607});
-% documentation less comprehensive (\url{https://pholser.github.io/junit-quickcheck/site/1.0/index.html});
-
-% competition 2:
-% quicktheories (\url{https://github.com/quicktheories/QuickTheories});
-% last official release in 2018 (0.25);
-% last commit 6 years ago;
-% 509 GitHub stars;
-% built for junit 4;
-
-% \subsubsection{"BASELINE" Generalization}
-% \label{sec:baseline-generalization}
-
-% transforms target test into a property-based test;
-% one test class per generalizable assertion;
-% (PIT only offers class-level selections / exclusions, so generating classes causes less "collateral damage" for failing generalizations);
-% uses only the original set of input values via custom arbitrary;
-
-% allows us to see how much runtime overhead jqwik introduces even without any generation of input values;
-
-% transformation steps:
-% clone the original test class (all further actions on the cloned class);
-% delete other test methods in the class (non-test methods need to be preserved because they might be used by the target test);
-% add a nested class "TestParameters" that can hold values for all generalizable parameters of the tested method (i.e., all parameters of type byte, short, int, long, float, double);
-% add a nested class "TestParametersSupplier" that can generate "arbitrary" (jqwik term) "TestParameters" instances;
-% for the BASELINE variant, only one instance of TestParameters is generated by the supplier;
-% this instance uses the same tested method input values as the original test;
-% delete all existingTest annotations from the test method (removing @Test is most important, but other annotations are removed as well because they are unlikely to be compatible with @Property);
-% add jqwik @Property annotation (seed = 0, ShrinkingMode.OFF, EdgeCasesMode.FIRST, tries = 10 / 50 / 200);
-% add parameter of type "TestParameters \_p\_" with annotation \@ForAll(supplier = TestParametersSupplier) to the test method;
-% replace tested method arguments with values from TestParameters instance \_p\_ (e.g., foo(a, b, c) -> foo(\_p\_.a, \_p\_.b, \_p\_.c); only for generalizable inputs, the others remain unchanged).
-% delete other assertions in the test method (unless they have return values that are used in the code, e.g., Exception e = assertThrows(...));
-% no need to modify assertions (because inputs stay the same, so expected outputs should also stay the same);
-
-% the original test method is always preserved in the current implementation;
-% this would not be necessary for cases where there is only a single assertion in the test method and generalization is successful;
-% this would also not be necessary for casses where all assertions in a test method are successfully generalized;
-% statistics on how common these cases are in R1 (or RQ2? or RQ4?).
-
-% because most of the test method is copied for each generalized assertion, this creates a lot of duplicate code;
-% the currently implementation does not optimize for this at all - statistics on test suite size increases in RQ2;
-% some of this could likely be avoided by putting in more engineering effort, e.g., automatically extracting setup functions that can be reused across all generalizations of a test method;
-% alternatively, we could add multiple TestParameters parameters (one for each generalized assertion) - but that might not be very maintainable either;
-
-% \subsubsection{"NAIVE" Generalization}
-% \label{sec:naive-generalization}
-
-% same basic processing flow as BASELINE variant (clone class, add TestParameters + Supplier, remove other tests + assertions);
-% uses "naive" approach for selecting sets of input values;
-
-% basic approach:
-% step 1: randomly generate sets of values that match the types of input parameters;
-% step 2: apply filter to keep only value sets that satisfy the input specification;
-% repeat until desired number of input sets (we use 10, 50, 200 in the evaluation) has been generated (automatically done by jqwik, we just set how many we want);
-% still preserves original test inputs via a custom arbitrary => no reduction of mutation score due to "bad" random values;
-% beware that generalization does NOT change coverage - we only test additional inputs of already covered input partitions;
-
-% problem: many TooManyFilterMissesExceptions;
-% reason: depending on the input specification, randomly selecting sets of input values can be (very) unlikely to produce satisfying inputs (e.g., a = b = c => 3 random ints that are equal);
-
-% example: a = b = c (all ints);
-% randomly generate a;
-% randomly generate b;
-% randomly generate c;
-% apply the a = b = c filter (likely not a match => throw away and try again; after too many non-matching attempts => TooManyFilterMissesExceptions)
-
-% \subsubsection{"IMPROVED" Generalization}
-% \label{sec:improved-generalization}
-
-% same basic processing flow as BASELINE variant (clone class, add TestParameters + Supplier, remove other tests + assertions);
-% uses "improved" approach for selecting sets of input values to reduce TooManyFilterMissesExceptions;
-
-% basic approach:
-% step 1: generate sets of input values that already take into account "as many constraints as possible";
-% step 2: apply filter to keep only value sets that satisfy the full input specification;
-% repeat until the desired number of input sets has been generated;
-% like NAIVE, IMPROVED also preserves original test inputs via a custom arbitrary;
-% like NAIVE, IMPROVED also does NOT cover any previously uncovered input partitions;
-
-% example: a = b \&\& b = c (all ints);
-% randomly generate a since we don't have any constraints to consider yet;
-% generate b such that b = a (i.e., take into account the a = b constraint);
-% generate c such that b = c (i.e., take into account the b = c constraint);
-% apply the a = b = c filter (trivial in this case => use a more interesting example);
-
-% currently only considers the following constraints:
-% var1 == (var2 | const);
-% var1 < (var2 | const);
-% var1 <= (var2 | const);
-% var1 > (var2 | const);
-% var1 >= (var2 | const);
-
-% supported types: byte, short, int, long, float, double;
-% mixed-type constraints are also supported (e.g., int-var < float-var);
-
-% more complex terms (e.g., "compound" terms (is this the correct terminology?), (trigonometric) function calls) are not taken into account (e.g., a < b - c, a == cos(b));
-% constraints that are not equality, upper- or lower-bound constraints are not taken into account either (e.g., inequality constraints);
-% => show some statistics about used vs. unused constraints -> further details in RQ4 or the discussion;
-
-% actual value selection logic (code that implements this logic for all generalizable inputs is automatically generated):
-
-% if at least one equality constraint exists for a variable, all other constraints are ignored
-% if multiple equality constraints exist, we just take "the first one";
-% all equality constraints have the same value anyway because we select these at runtime based on whichever concrete values have already been assigned to involved variables;
-
-% if multiple upper / lower bounds exist, the strongest bound is used, i.e., the highest lower bound and the lowest upper bound.
-% as with equality constraints, this is determined at runtime, i.e., based on on whichever values have already been assigned to involved variables;
-
-% in practice, naive processing of constraints often leads to "dead ends" where no further assignments are possible;
-% for example: a >= b \&\& b >= a; here we would have a ">= b" constraint on "a" and a ">= a" constraint on "b";
-% to resolve such situations, we assign an index to each variable that occurs in the input specification, e.g., idx(a)=1, idx(b)=2;
-% constraints are then rewritten to apply only to the variable with the highest index, e.g. (i) "a >= b" -> "b <= a", and (ii) "b >= a" -> "b >= a";
-% thus, the used constraints for variable value selection become: a -> no constraints, b -> {"<= a", ">= a"};
-% since a is now unconstrained, we can simply select a random value for it; once a is assined, b can be assigned as well; 
-% similar transformations are applied for all suppored constraints (==, <, <=, >, >=);
-% (todo: find the correct terminology to describe this; perhaps constraint rewriting / simplification?
-% other related terms: constraint satisfaction problems, variable elimination, constraint propagation, domain reduction, and arc consistency algorithms)
-
-% in some cases, choices of early variables lead to unsatisfiable constraints later on;
-% for example: b > a \&\& b <= 0 -> no satisfying assignment for b if a a >= 0;
-% in this cases, we return an empty arbitrary for b, thus prompting jqwik to pick a new value for a;
-% similar situations occur for over-/underflows, e.g., b > a with a = Integer.MAX\_VALUE;
-% in this case, b = a + 1 = Integer.MIN\_VALUE, which will be rejected by filtering;
-
-% some current limitations could be resolved through more engineering effort (e.g., custom arbitraries);
-% one way to generate values that satisfy all / more constraints would be through constraint solving (add references);
-% however, this would have a significant runtime cost and would still suffer various limitations (add references);
-
-% \subsection{Test / Assertion / Generalization Filtering}
-% \label{sec:all-filtering}
-
-% describe filtering here or in RQ4?
-
-% we need to ensure that:
-% 1: we do not generate any incompilable code;
-% 2: we have a green test suite for mutation testing (PIT only works with green suites - otherwise it throws an error);
-% also, we would like to avoid spending processing effort on generalization attempts that are unlikely to be successful (=> early excludes);
-% to achieve this, we apply filtering at multiple stages + levels in the processing pipeline (for filtering data, see RQ4).
-
-% (note: large reduction of required filtering would be possible by putting in more engineering effort)
-
-% \subsubsection{Test-level Filtering}
-% \label{sec:test-filtering}
-
-% filterTestOriginal:
-% NonPassingTestFilter: filters failing tests (PIT requires green suite, and generalization of failing tests does not seem useful anyway);
-% TestTypeFilter: filters tests with unsupported test annotations (we currently only support @Test annotations);
-
-% filterTest:
-% NoAssertionsFilter: filters tests without assertions (with no assertions, choosing a target method is even trickier than it already is, and we have no useful output specification);
-
-% \subsubsection{Assertion-level Filtering}
-% \label{sec:assertion-filtering}
-
-% filterAssertion:
-% ExcludedTestFilter: filters assertions that are part of filtered or otherwise excluded tests (if the tests cannot be handled, assertion-level results cannot override this);
-% MissingValueFilter: filters assertions for which no tested method could be identified (without a tested method, we don't have specifications, so cannot perform generalization);
-% VoidReturnTypeFilter: filters assertions with a tested method that has a void return type (no return type -> no output specification -> no generalization);
-% UnsupportedAssertionFilter: filters unsupported assertions (we currently only support assertEquals, assertTrue, assertFalse, and (with some caveats?) asserThrows);
-% ParameterTypeFilter: filters assertions with a tested method that has no parameters of supported types (we can currently generalize parameters of types byte, short, int, long, float, double);
-
-% \subsubsection{Generalization-level Filtering}
-% \label{sec:generalization-filtering}
-
-% filterGeneralization:
-% NonPassingTestFilter: filters generalizations that fail during test execution (PIT requires green suite, can be either due to "incorrect" generalization or due to "bad" original tests);
-
-% \subsubsection{Other Limits / Safeguards}
-% \label{sec:other-filtering}
-
-% During SPF execution:
-% maximum PC size limit;
-% maximum depth limit;
-% maximum execution time;
-
-% During Test Transformation:
-% maximum Java specification size;
-
-% \subsection{Program Output / Collected Data}
-% \label{sec:collected-data}
-
-% primarily, we provide 1 property-based test for each original assertion (excluding ones that are filtered throughout the processing pipeline).
-% (do we need this section? or are outputs / data already explained well enough in the other section? even then, might still be useful to have a condensed overview here)
-
-% additionally, we provide (i) a PostgreSQL database with data about the processed projects and (ii) various intermediate results / log files.
-% (perhaps move this information to some "Data Availability" section.)
-
-% The database contains tables:
-% - project,
-% - test,
-% - assertion,
-% - generaliztion,
-% - filter\_result,
-% - (evosuite\_runtime),
-% - (evosuite\_report),
-% - junit\_test\_report,
-% - jacoco\_coverage\_report,
-% - pit\_coverage\_report,
-% - pit\_mutation\_report,
-% - task.
-
-% The intermediate results / log files contain:
-% - modified pom.xml / build.gradle files,
-% - command-data (all executed commands + output logs + error logs),
-% - jacoco-data (JaCoCo coverage CSV reports per project + variant),
-% - jpf-data (output logs, input-output values + specifications, driver + config + instrumented test files),
-% - junit-data (JUnit / Surefire XML reports per project + variant),
-% - pit-data (PIT linecoverage + mutations XML reports per project variant),
-
-% using PIT for mutation testing because;
-% most mutation testing tools
-% (i) do not provide results in a structured format
-% that's suitable for automated processing
-% and / or (ii) do not provide (official) support for Java 8,
-% and / or (iii) are not actively maintained anymore
-% (according to the PIT website:
-% \url{https://pitest.org/java_mutation_testing_systems/#summary-of-mutation-testing-systems})
-% using DEFAULTS set of mutators (see Table~\ref{tab:pit-mutators})
-% for further details about mutators, see the PIT website \footnote{\url{https://pitest.org/quickstart/mutators/}}
+Automated test generalization succeeds only when tests meet specific structural and semantic requirements.
+\ToolTeralizer{} applies systematic filtering across three levels
+that correspond to the pipeline phases,
+characterizing the boundaries of current generalization capabilities.
+This filtering strategy ensures generated tests execute correctly
+while systematically documenting test characteristics that enable or prevent transformation.
+The three-level cascade identifies distinct categories of constraints:
+structural prerequisites at the test level,
+specification extraction requirements at the assertion level,
+and property generation feasibility at the generalization level.
+Section~\ref{sec:limitations-eval} provides empirical quantification of these filtering boundaries.
+
+\subsubsection{Test-Level Filtering: Structural Prerequisites}
+
+Test-level filtering identifies the structural foundations required for generalization,
+applying three primary filters that address distinct requirements.
+
+The \textbf{NonPassingTest} filter excludes tests that fail during execution,
+including originally failing tests and tests that fail after disabling \ToolEvoSuite{}'s isolation features
+(which must be disabled to prevent \ToolPit{} crashes during property-based test execution).
+This requirement stems from both practical constraints (mutation testing requires a green test suite)
+and the fundamental need for reliable behavioral oracles.
+Only tests that execute successfully provide trustworthy specifications for generalization.
+
+The \textbf{TestType} filter restricts processing to standard \texttt{@Test} annotations,
+excluding parameterized tests (\texttt{@ParameterizedTest}) and other specialized test types.
+These alternative test patterns require different generalization strategies
+beyond the current transformation approach.
+
+The \textbf{NoAssertions} filter excludes tests lacking explicit assertions in the main test method body.
+This includes tests that validate behavior solely through successful execution (no exception thrown)
+and tests that delegate assertion logic to helper methods.
+While both patterns represent valid testing approaches,
+they cannot provide the explicit oracles needed for property-based test generation.
+Our current implementation uses intraprocedural static analysis,
+which cannot trace assertions in helper methods.
+While interprocedural analysis could address this limitation,
+we chose the simpler approach as sufficient for demonstrating generalization feasibility.
+
+
+\subsubsection{Assertion-Level Filtering: Specification Extraction Requirements}
+
+Assertion-level filtering addresses the requirements for extracting usable specifications,
+revealing where current static analysis and symbolic execution capabilities
+create boundaries for automated test generalization.
+These filters check both the feasibility of identifying tested behaviors
+and the compatibility of those behaviors with \ToolSPF{}'s constraint generation.
+
+The \textbf{MissingValue} filter excludes assertions where static data flow analysis
+cannot establish which method invocation produced the asserted value.
+Common failure patterns include assertions on values computed through complex control flow
+(e.g., conditional assignments across multiple branches),
+indirect method calls stored in variables before assertion,
+and unresolvable method declarations due to inheritance hierarchies or external dependencies.
+These cases represent the practical limits of intraprocedural analysis
+in the presence of modern Java programming patterns.
+
+The \textbf{ParameterType} filter restricts generalization to methods with numeric and boolean parameters
+(\texttt{byte}, \texttt{short}, \texttt{int}, \texttt{long}, \texttt{float}, \texttt{double}, \texttt{boolean}).
+This constraint reflects fundamental challenges in symbolic constraint generation for complex types~\cite{baldoni_2018_survey}.
+While \ToolSPF{} can track symbolic values for strings, arrays, and objects during execution,
+the resulting constraints often involve complex heap relationships and aliasing conditions
+that cannot be readily encoded as input generators for property-based testing frameworks.
+String constraint solving, despite significant advances in SMT solvers like Z3-str~\cite{zheng_2013_z3str},
+remains computationally expensive for complex patterns~\cite{amadini_2021_string_survey}.
+For example, string constraints may depend on internal character array representations
+or involve complex regular expression patterns that exhibit PSPACE-complete satisfiability~\cite{chen_2022_regex_complexity}.
+
+The \textbf{VoidReturnType} filter excludes methods with void return types
+because generalization requires output specifications for property validation.
+While void methods could theoretically be generalized by modeling side effects,
+our current implementation focuses on pure functions with explicit return values.
+
+The \textbf{AssertionType} filter restricts processing to assertion patterns
+amenable to symbolic specification extraction:
+\texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}, and \texttt{assertThrows}.
+Unsupported assertion types include reference equality checks (\texttt{assertSame}),
+null checks (\texttt{assertNull}), and array comparisons (\texttt{assertArrayEquals}).
+These assertions involve object identity, memory layout, or structural comparisons
+that cannot be adequately captured through \ToolSPF{}'s path-condition-based constraint generation,
+which focuses on value-based relationships rather than heap topology.
+
+The \textbf{ExcludedTest} filter ensures consistency by excluding assertions
+from tests already filtered at the test level.
+
+Beyond these proactive filters, assertion-level exclusions also result from
+\ToolSPF{} execution failures during specification extraction.
+These failures include exceptions from missing native method models
+in \ToolSPF{}'s incomplete standard library implementation,
+exceeded analysis limits (60-second execution timeout, 100,000-character path condition size limit, 100-step search depth limit),
+and null pointer exceptions in our specification extraction implementation
+when handling edge cases in symbolic state management.
+These execution failures highlight the practical challenges
+of applying symbolic execution tools to diverse real-world codebases,
+where implementation completeness and robustness remain ongoing research challenges~\cite{baldoni_2018_survey}.
+
+\subsubsection{Generalization-Level Filtering: Property Generation Feasibility}
+
+Generalization-level filtering validates that extracted specifications can produce
+executable property-based tests, revealing the boundaries of practical constraint handling.
+
+The primary failure mode is \texttt{TooManyFilterMissesException}s,
+which occur when \ToolJqwik{} cannot generate inputs satisfying path constraints
+within its retry limits.
+This reflects fundamental limitations in constraint-based input generation
+for property-based testing~\cite{claessen_2000_quickcheck,link_2022_jqwik}:
+when the discard ratio exceeds framework thresholds (typically 0.5),
+generation fails rather than continuing expensive search.
+While \VariantImproved{} encodes simple equality and inequality constraints
+during input generation (Section~\ref{sec:constraint-encoding}),
+complex constraints involving arithmetic expressions or function calls
+must be handled through filtering.
+When constraints are highly restrictive,
+even constraint-aware generation struggles to find valid inputs,
+resulting in generation failures.
+
+Additional failures stem from inaccurate specifications
+caused by patterns not properly handled by current specification extraction,
+such as implicit preconditions, assertions within loops,
+or tested methods called within loops.
+These patterns can produce specifications that do not accurately capture
+the intended behavior, leading to generalized tests that fail execution.
+
+Finally, Java's 64KB method bytecode limit can prevent compilation
+of generated tests with extremely large specifications,
+necessitating preemptive exclusion of the most complex constraint sets.
+
+These filtering outcomes illustrate the gap between
+theoretical constraint extraction and practical input generation,
+identifying constraint encoding and input generation as key research challenges
+for expanding automated test generalization capabilities.
+The boundary between extractable and generateable specifications
+depends not only on constraint complexity
+but also on the sophisticated interplay between symbolic analysis,
+constraint satisfaction, and property-based testing framework capabilities.
