@@ -103,7 +103,7 @@ Our evaluation reveals the current capabilities and boundaries of automated test
 We measure effectiveness through mutation testing~\cite{jia_2011_analysis,papadakis_2019_mutation},
 which systematically injects faults to assess test suite quality~\cite{coles_2016_pit}.
 On \ToolEvoSuite{}-generated tests, \ToolTeralizer{} achieves consistent improvements:
-mutation scores increase by 2--3 percentage points on EqBench (from 48--52\% to 50--55\%)
+mutation scores increase by 3--4 percentage points on \DatasetEqBench{} (from 48--52\% to 52--55\%)
 and 1--2 percentage points on Apache Commons utilities (from 57--58\% to 58--59\%).
 These improvements persist across different \ToolEvoSuite{} search budgets (1s, 10s, 60s)
 and three generalization strategies that trade off between generation cost and effectiveness.
@@ -112,11 +112,11 @@ show minimal improvement (0.05--0.07 percentage points),
 suggesting diminishing returns for mature test suites.
 Beyond controlled evaluation, we systematically analyze 1,160 RepoReapers projects
 to quantify the gap between current capabilities and broad applicability.
-Among the 42\% of projects that build successfully (a prerequisite for any testing approach),
-our pipeline completes for 2.1\% of projects.
+Among the 53\% of projects that build successfully (a prerequisite for any testing approach),
+our pipeline completes for 1.6\% of projects.
 This systematic analysis identifies which technical advances would enable broader deployment:
-improved static analysis for method resolution (24.7\% of technical failures),
-support for non-numeric types (15.4--49.4\% of exclusions),
+improved static analysis for method resolution (24.7\% of assertion-level failures),
+support for non-numeric types (15.4\% of assertion exclusions),
 and handling of methods with side effects beyond pure numeric computations.
 
 This paper makes the following contributions:
@@ -159,5 +159,4 @@ generalization runtime requirements, and causes of unsuccessful generalizations.
 Section~\ref{sec:discussion} interprets the results and their implications.
 Section~\ref{sec:related-work} positions our work within the broader testing literature.
 Section~\ref{sec:conclusions} summarizes contributions and outlines future research directions.
-Our implementation and complete replication package, including all experimental data
-and analysis scripts, are publicly available at \url{https://github.com/XXX}~\cite{replicationpackage}.
+Our implementation and complete replication package, including all experimental data and analysis scripts, are publicly available~\cite{replicationpackage}.
