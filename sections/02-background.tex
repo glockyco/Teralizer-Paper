@@ -47,8 +47,11 @@ that developers have already encoded in their assertions.
 \subsection{Property-Based Testing}
 \label{sec:property-based-testing}
 
-Property-based testing provides the framework for expressing and validating
-generalized specifications across entire input partitions~\cite{claessen_2000_quickcheck}.
+Property-based testing, pioneered by QuickCheck for Haskell~\cite{claessen_2000_quickcheck}
+and now available through frameworks like ScalaCheck for Scala~\cite{nilsson_2014_scalacheck},
+Hypothesis for Python~\cite{maciver_2019_hypothesis}, and \ToolJqwik{} for Java~\cite{link_2022_jqwik},
+provides the framework for expressing and validating
+generalized specifications across entire input partitions.
 Instead of verifying that \texttt{Math.abs(-5)} returns \texttt{5},
 a property-based test would verify that \texttt{Math.abs(x)} returns \texttt{-x}
 for hundreds of semi-randomly generated negative values.
