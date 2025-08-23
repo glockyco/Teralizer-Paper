@@ -8,8 +8,11 @@ Empirical studies report that regression test suites frequently miss faults
 due to incomplete oracles and limited input exploration~\cite{rothermel_1996_analyzing,barr_2015_oracle}.
 Each test encodes valuable domain knowledge about expected behavior,
 but this knowledge remains underutilized when confined to single examples.
-This section reviews four foundational areas that enable automated generalization
-of such domain knowledge into more comprehensive test specifications.
+This section establishes the technical foundation for automated test generalization:
+test amplification provides the conceptual framework for enhancing existing tests,
+property-based testing defines our target representation,
+single-path symbolic analysis enables extraction of path-exact specifications from existing test executions,
+and mutation testing measures the effectiveness of our generalization approach.
 
 \subsection{Test Amplification}
 \label{sec:test-amplification}
@@ -19,20 +22,27 @@ to improve their effectiveness while preserving embedded domain knowledge.
 These techniques exploit information already encoded in tests---such as
 valid input ranges, expected behaviors, and important scenarios---to
 strengthen fault detection without requiring developers to write tests from scratch.
+Understanding the different amplification strategies helps clarify
+what distinguishes test generalization from other enhancement approaches.
 Danglot et~al.~\cite{danglot_2019_snowballing} provide a taxonomy of amplification strategies:
-\textbf{AMP\_add} creates new tests from existing ones,
-\textbf{AMP\_change} generates tests targeting specific program modifications,
-\textbf{AMP\_exec} varies execution conditions,
-and \textbf{AMP\_mod} modifies test structure or assertions to generalize behavior.
+AMP\textsubscript{add} creates new tests from existing ones,
+AMP\textsubscript{change} generates tests targeting specific program modifications,
+AMP\textsubscript{exec} varies execution conditions,
+and AMP\textsubscript{mod} modifies test structure or assertions to generalize behavior.
 
-Test generalization belongs to the \textbf{AMP\_mod} category,
+Test generalization belongs to the AMP\textsubscript{mod} category,
 transforming tests from validating individual input-output pairs
 to validating properties across entire input partitions.
 A test verifying that \texttt{Math.abs(-5)} returns \texttt{5}
 suggests the general property that \texttt{Math.abs(x)} returns \texttt{-x} for negative inputs,
 but validates this relationship for only a single value.
-Automating such transformations requires extracting path-exact specifications
-that accurately capture program behavior across input partitions.
+This single-point validation leaves the test vulnerable to mutations
+that preserve behavior at that specific input but break the general property.
+Transforming such tests to validate the general property
+requires extracting path-exact specifications
+that capture program behavior across input partitions
+while preserving the validated oracles
+that developers have already encoded in their assertions.
 
 \subsection{Property-Based Testing}
 \label{sec:property-based-testing}
@@ -41,38 +51,37 @@ Property-based testing provides the framework for expressing and validating
 generalized specifications across entire input partitions~\cite{claessen_2000_quickcheck}.
 Instead of verifying that \texttt{Math.abs(-5)} returns \texttt{5},
 a property-based test would verify that \texttt{Math.abs(x)} returns \texttt{-x}
-for hundreds of automatically generated negative values.
+for hundreds of semi-randomly generated negative values.
 Property-based testing frameworks provide three key components:
 \emph{generators} that produce inputs according to specified constraints,
 \emph{properties} that express invariants holding for all generated inputs,
 and \emph{shrinking} algorithms that minimize failing inputs to aid debugging.
 
-Property-based testing can reveal edge cases and boundary conditions
+This combination of constrained generation and property checking
+enables thorough exploration of input spaces,
+revealing edge cases and boundary conditions
 that developers might not explicitly consider~\cite{hughes_2016_experiences,maciver_2019_hypothesis}.
 However, adoption remains limited in practice~\cite{goldstein_2024_pbt_practice}.
-Creating effective property-based tests requires developers to identify appropriate properties,
-define input generators with suitable constraints,
-and translate example-based assertions into general specifications.
-
-The combination of these requirements---identifying properties,
-defining generators, and translating assertions---combined with
-the conceptual shift from examples to properties,
-creates a barrier to adoption~\cite{barr_2015_oracle,tillmann_2005_parameterized}.
+Creating effective property-based tests requires identifying appropriate properties,
+defining input generators with suitable constraints,
+and translating example-based assertions into general specifications---a conceptual shift
+that creates significant barriers~\cite{barr_2015_oracle,tillmann_2005_parameterized}.
 Automated transformation from conventional unit tests to property-based tests
-could preserve the domain knowledge encoded in existing test suites
+would preserve the domain knowledge encoded in existing test suites
 while enabling validation across much larger input spaces.
 
 \subsection{Symbolic Analysis for Specification Extraction}
 \label{sec:symbolic-analysis}
 
-Automated generalization requires extracting two elements from each existing test:
+Automating the transformation from conventional tests to property-based specifications
+requires extracting two elements from each existing test:
 the \emph{path condition} that characterizes inputs following the same execution path,
 and the \emph{symbolic output expression} that computes expected results for those inputs.
 For the \texttt{Math.abs(-5)} test, extraction would yield
 the path condition \texttt{x < 0} and the symbolic output \texttt{-x}.
-These specifications enable property-based tests that validate behavior
+Together, these extracted specifications enable property-based tests that validate behavior
 across entire input partitions while preserving the original test's semantics.
-The specifications must be both guaranteed correct for their execution path
+The specifications must be correct for their execution path
 and precise enough to generate valid test inputs and oracles.
 
 Single-path symbolic analysis provides this capability by following
@@ -82,20 +91,13 @@ Unlike full symbolic execution, which faces path explosion when exploring all po
 single-path analysis records conditions only along the test's actual execution path.
 The analysis extracts path-exact specifications for the covered path
 without the high runtime cost of exploring alternative branches.
-Each test requires only one traversal of its execution path,
+Each test requires only a single traversal of its execution path,
 avoiding the scalability challenges of comprehensive path exploration.
-
-\ToolSPF{} supports single-path analysis through its constraint collection mode,
-which tracks symbolic state without performing constraint solving
-for path exploration~\cite{pasareanu_2013_symbolic}.
-The constraint collection mode enables specification extraction
-from existing test paths at a fraction of the computational cost
-required for discovering new paths through full symbolic execution.
 
 \subsection{Mutation Testing for Evaluation}
 \label{sec:mutation-testing}
 
-Mutation testing provides a principled approach for evaluating
+Mutation testing provides a systematic approach for evaluating
 whether generalized tests improve fault detection effectiveness.
 The technique systematically introduces artificial faults---such as
 arithmetic operator changes, conditional boundary modifications, and return value alterations---and
@@ -103,7 +105,7 @@ measures whether test suites detect them~\cite{jia_2011_analysis}.
 The mutation score, representing the percentage of detected mutants,
 correlates with real fault detection capability~\cite{just_2014_mutants,papadakis_2019_mutation}.
 
-Generalized tests create additional opportunities to detect behavioral deviations
+Generalized property-based tests create additional opportunities to detect behavioral deviations
 by exploring many inputs within the same execution paths as original tests.
 Consider a unit test verifying that \texttt{Math.abs(0)} returns \texttt{0}.
 A mutation changing the condition from \texttt{x >= 0} to \texttt{x == 0}
