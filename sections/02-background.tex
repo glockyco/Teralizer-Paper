@@ -54,7 +54,7 @@ provides the framework for expressing and validating
 generalized specifications across entire input partitions.
 Instead of verifying that \texttt{Math.abs(-5)} returns \texttt{5},
 a property-based test would verify that \texttt{Math.abs(x)} returns \texttt{-x}
-for hundreds of semi-randomly generated negative values.
+for hundreds of semi-randomly generated negative values (typically 100--1000 iterations).
 Property-based testing frameworks provide three key components:
 \emph{generators} that produce inputs according to specified constraints,
 \emph{properties} that express invariants holding for all generated inputs,
