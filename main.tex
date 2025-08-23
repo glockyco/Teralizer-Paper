@@ -237,35 +237,29 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Unit tests validate single input-output pairs, leaving vast input spaces unexplored within execution paths.
+Unit tests validate single input-output pairs, leaving most inputs along the same execution path untested.
 Property-based testing addresses this by generating multiple inputs satisfying properties,
 but requires significant manual effort to create generators and specifications.
-We present \ToolTeralizer{},
-a semantics-based approach for automated transformation
-of conventional unit tests into property-based tests.
-Unlike prior work such as JARVIS,
-which generalizes from input-output examples using predefined abstraction templates,
-\ToolTeralizer{} extracts path-exact specifications directly from the implementation
-through single-path symbolic analysis using \ToolSPF{}'s constraint collection mode.
-Our approach analyzes test assertions to identify tested methods via data flow analysis,
-extracts specifications from these methods through single-path symbolic analysis,
-and uses these specifications to transform conventional tests into property-based tests.
-Evaluation on three datasets reveals both potential and limitations.
-On \ToolEvoSuite{}-generated tests, mutation scores improve 1--4 percentage points
-(\DatasetEqBench{}: 48--52\%$\rightarrow$52--55\%, Commons: 57--58\%$\rightarrow$58--59\%).
-% Data source: mutation-detection-figure-data.csv - worst to best case improvements across budgets
-Developer-written tests show minimal improvement (80.35\%$\rightarrow$80.42\%),
-suggesting diminishing returns for mature suites.
-Analysis of 1,160 real-world projects identifies applicability barriers:
-only 0.9\% process successfully,
-with test-method mapping failures (24.7\%),
-type limitations (15.4\%),
-and generation failures (14.6--16.2\%) as primary obstacles.
-We contribute:
-(1)~semantics-based test generalization via single-path symbolic analysis,
-(2)~comprehensive empirical dataset characterizing test generalizability,
-(3)~systematic mapping distinguishing engineering from fundamental barriers,
-(4)~open implementation and replication package.
+We present \ToolTeralizer{}, a semantics-based approach that automatically transforms
+conventional unit tests into property-based tests by extracting path-exact specifications
+directly from implementations via single-path symbolic analysis.
+Unlike prior work that generalizes from input-output examples,
+we derive specifications from program semantics.
+
+Through systematic evaluation across three progressively challenging datasets,
+we establish both the potential and boundaries of automated test generalization.
+On \ToolEvoSuite{}-generated tests, mutation scores improve by 1-4 percentage points
+(e.g., \DatasetEqBench{}: 48\% to 52\%), while mature developer tests show minimal gains (0.07pp).
+Analysis of 1,160 real-world projects quantifies applicability barriers:
+only 0.9\% complete successfully, with failures being primarily caused by assertion-to-method mapping issues,
+type support limitations, and constraint encoding challenges.
+Our empirical mapping distinguishes addressable engineering barriers from fundamental research challenges,
+providing the research community with a comprehensive dataset characterizing test generalizability patterns
+across assertion types, specification complexity, and filtering outcomes.
+
+These results demonstrate feasibility under favorable conditions while identifying
+which advances would enable broader adoption.
+Artifacts available at \url{[URL]}.
 \end{abstract}
 
 %%
