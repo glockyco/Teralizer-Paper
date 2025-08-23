@@ -59,7 +59,7 @@ The three main phases of \ToolTeralizer{}'s pipeline are:
 \end{itemize}
 
 Throughout the pipeline, we apply filtering to focus on tests
-amenable to automated generalization (detailed analysis in Section~\ref{sec:limitations-eval}).
+amenable to semantics-based generalization (detailed analysis in Section~\ref{sec:limitations-eval}).
 Current limitations reflect both implementation scope and fundamental challenges:
 we require pure functions with numeric parameters,
 clear assertion-method relationships identifiable through \ToolTeralizer{}'s static analysis,
@@ -71,7 +71,7 @@ Even with complete constraints, efficiently generating satisfying inputs
 for property-based testing remains computationally expensive,
 as filtering-based approaches suffer from poor efficiency with complex constraints~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
 These limitations define the scope within which we demonstrate
-automated generalization feasibility.
+the feasibility of semantics-based generalization.
 
 Our implementation targets Java 5--8 projects (limited by \ToolSPF{})
 with Maven or Gradle build systems and JUnit 4/5 test suites.
@@ -307,9 +307,9 @@ then generate \texttt{b} respecting both \texttt{b <= a} and \texttt{b >= a}
 This constraint rewriting enables us to generate custom jqwik arbitraries
 that respect variable dependencies during runtime input generation.
 Algorithm~\ref{alg:constraint-encoding} describes this constraint-aware generation process systematically.
-We deliberately handle only simple equality and inequality constraints
-to keep the approach tractable for demonstrating generalization feasibility,
-while more complex constraints are handled through filtering.
+We handle only simple equality and inequality constraints
+to keep the approach tractable.
+More complex constraints are addressed through filtering rather than encoding.
 %
 Despite these optimizations, some valid constraints lead to unsatisfiable
 situations during generation.

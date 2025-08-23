@@ -13,7 +13,7 @@ by automatically generating multiple test inputs that satisfy specified properti
 enabling more thorough exploration of program behavior within tested execution paths.
 However, creating property-based tests requires significant expertise
 in both the testing framework and the domain under test,
-along with manual effort to define appropriate input generators and property specifications~\cite{barr_2015_oracle}.
+along with manual effort to define appropriate input generators and property specifications~\cite{goldstein_2024_pbt_practice}.
 
 This paper presents \ToolTeralizer{}, an automated approach
 that transforms conventional unit tests into property-based tests.
@@ -22,8 +22,8 @@ that generalizes from single input-output pairs to properties holding across ent
 Test amplification exploits knowledge embedded in existing tests to enhance them
 for engineering goals such as improved fault detection or better coverage~\cite{danglot_2019_snowballing,baudry_2015_dspot,xie_2006_augmenting}.
 \ToolTeralizer{} achieves this enhancement through test generalization:
-transforming point-specific tests into property-based tests
-that validate behavior across input classes.
+transforming conventional unit tests into property-based tests
+that validate behavior for entire input partitions.
 For instance, our approach automatically transforms the test \texttt{assertEquals(0, Math.abs(0))}
 into a property-based test that verifies \texttt{Math.abs(x)} returns \texttt{x}
 for hundreds of generated inputs where \texttt{x >= 0}, as illustrated in Figure~\ref{fig:generalization}.
@@ -72,7 +72,7 @@ and test intent encoded in existing test suites~\cite{barr_2015_oracle}.
   \label{fig:regression-detection}
 \end{figure}
 
-To understand both the potential and limitations of automated test generalization,
+To understand both the potential and limitations of semantics-based test generalization,
 we evaluate \ToolTeralizer{} across three complementary datasets that progressively
 reveal the gap between ideal and real-world conditions.
 The EqBench benchmark~\cite{badihi_2021_eqbench} provides controlled conditions
@@ -81,8 +81,8 @@ For Apache Commons utility methods, we extract production code and create two ev
 one using the original developer-written tests and another using \ToolEvoSuite{}-generated tests,
 enabling direct comparison of generalization effectiveness across test creation approaches.
 Finally, 1,160 projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
-with their existing developer-written tests expose the full complexity of real-world deployment.
-Beyond measuring effectiveness, our implementation captures comprehensive metrics
+with their existing developer-written tests expose the full complexity of practical applicability.
+Beyond demonstrating feasibility, our implementation captures comprehensive metrics
 throughout the transformation pipeline, revealing which test characteristics
 predict successful generalization and which technical barriers require attention.
 Our current implementation leverages \ToolSPF{} for specification extraction,
@@ -99,7 +99,7 @@ suitable for encoding as input generators.
 Extending support to other types and newer Java versions remains an open research challenge
 in specification extraction.
 
-Our evaluation reveals the current capabilities and boundaries of automated test generalization.
+Our evaluation reveals the current capabilities and boundaries of the semantics-based approach.
 We measure effectiveness through mutation testing~\cite{jia_2011_analysis,papadakis_2019_mutation},
 which systematically injects faults to assess test suite quality~\cite{coles_2016_pit}.
 On \ToolEvoSuite{}-generated tests, \ToolTeralizer{} achieves consistent improvements:
@@ -114,7 +114,7 @@ Beyond controlled evaluation, we systematically analyze 1,160 RepoReapers projec
 to quantify the gap between current capabilities and broad applicability.
 Among the 53\% of projects that build successfully (a prerequisite for any testing approach),
 our pipeline completes for 1.6\% of projects.
-This systematic analysis identifies which technical advances would enable broader deployment:
+This systematic analysis identifies which technical advances would enable broader applicability:
 improved static analysis for method resolution (24.7\% of assertion-level failures),
 support for non-numeric types (15.4\% of assertion exclusions),
 and handling of methods with side effects beyond pure numeric computations.
@@ -152,7 +152,7 @@ enabling reproduction and extension of our work.
 \end{enumerate}
 
 The remainder of this paper is organized as follows.
-Section~\ref{sec:background} introduces the technical foundations for automated test generalization.
+Section~\ref{sec:background} introduces the technical foundations for test generalization.
 Section~\ref{sec:approach} presents \ToolTeralizer{}'s three-phase pipeline
 for automated test transformation.
 Section~\ref{sec:evaluation} evaluates our approach through four research questions

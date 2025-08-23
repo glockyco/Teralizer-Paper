@@ -247,10 +247,9 @@ Unlike prior work such as JARVIS,
 which generalizes from input-output examples using predefined abstraction templates,
 \ToolTeralizer{} extracts path-exact specifications directly from the implementation
 through single-path symbolic analysis using \ToolSPF{}'s constraint collection mode.
-% TODO: Clarify "test-method mapping" (it's actually an "assertion-method mapping").
-Our approach comprises test-method mapping via data flow analysis,
-specification extraction along concrete test paths,
-and property-based test generation with \ToolJqwik{}.
+Our approach analyzes test assertions to identify tested methods via data flow analysis,
+extracts specifications from these methods through single-path symbolic analysis,
+and uses these specifications to transform conventional tests into property-based tests.
 Evaluation on three datasets reveals both potential and limitations.
 On \ToolEvoSuite{}-generated tests, mutation scores improve 1--4 percentage points
 (\DatasetEqBench{}: 48--52\%$\rightarrow$52--55\%, Commons: 57--58\%$\rightarrow$58--59\%).
