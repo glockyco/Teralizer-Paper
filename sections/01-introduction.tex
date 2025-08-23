@@ -25,8 +25,7 @@ This paper presents \ToolTeralizer{}, a semantics-based test generalization appr
 that automatically transforms conventional unit tests into property-based tests.
 \ToolTeralizer{} implements generalization through a three-phase pipeline:
 first analyzing tests to identify tested methods and their assertions,
-then extracting specifications through single-path symbolic analysis
-using Symbolic PathFinder's constraint collection mode~\cite{pasareanu_2013_symbolic},
+then extracting specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
 and finally using these specifications to transform existing unit tests into property-based tests.
 Unlike prior work that generalizes from input-output examples 
 by instantiating predefined abstraction templates that overapproximate program behaviors~\cite{peleg_2018_jarvis},
