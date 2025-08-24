@@ -110,7 +110,7 @@ Symbolic execution tools excel at numeric constraints (e.g., \texttt{x > 0}, \te
 producing exact conditions that can be directly used for input generation.
 However, constraints involving strings, arrays, and complex objects remain challenging,
 as symbolic representations of these types often lose precision
-or become too complex for practical constraint solving~\cite{baldoni_2018_survey}.
+or become too complex for practical constraint solving~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
 This type limitation fundamentally shapes which tests can be successfully generalized.
 
 \subsection{Mutation Testing for Evaluation}
@@ -120,10 +120,9 @@ Having established how to extract specifications from existing tests,
 we need a systematic way to evaluate
 whether transforming tests based on these specifications
 improves test effectiveness.
-Traditional coverage metrics---statement coverage~\cite{zhu_1997_software},
-branch coverage~\cite{frankl_1988_applicable},
-or path coverage~\cite{ntafos_1988_comparison}---cannot
-distinguish between original and generalized tests
+Traditional coverage metrics
+such as statement coverage, branch coverage, or path coverage~\cite{zhu_1997_software}
+cannot distinguish between original and generalized tests
 since both execute the same paths with different inputs.
 Mutation testing provides the necessary discrimination by measuring a test suite's ability
 to detect artificially introduced faults~\cite{jia_2011_analysis}.
