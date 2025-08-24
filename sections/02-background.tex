@@ -33,8 +33,8 @@ and AMP\textsubscript{mod} modifies test structure or assertions to generalize b
 Test generalization belongs to the AMP\textsubscript{mod} category,
 transforming tests from validating individual input-output pairs
 to validating properties across entire input partitions.
-A test verifying that \texttt{Math.abs(-5)} returns \texttt{5}
-suggests the general property that \texttt{Math.abs(x)} returns \texttt{-x} for negative inputs,
+A test verifying that \texttt{abs(0)} returns \texttt{0}
+suggests the general property that \texttt{abs(x)} returns \texttt{x} for non-negative inputs,
 but validates this relationship for only a single value.
 This single-point validation leaves the test vulnerable to mutations
 that preserve behavior at that specific input but break the general property.
@@ -52,9 +52,9 @@ and now available through frameworks like ScalaCheck for Scala~\cite{nilsson_201
 Hypothesis for Python~\cite{maciver_2019_hypothesis}, and \ToolJqwik{} for Java~\cite{link_2022_jqwik},
 provides the framework for expressing and validating
 generalized specifications across entire input partitions.
-Instead of verifying that \texttt{Math.abs(-5)} returns \texttt{5},
-a property-based test would verify that \texttt{Math.abs(x)} returns \texttt{-x}
-for hundreds of semi-randomly generated negative values (typically 100--1000 iterations).
+Instead of verifying that \texttt{abs(0)} returns \texttt{0},
+a property-based test would verify that \texttt{abs(x)} returns \texttt{x}
+for hundreds of semi-randomly generated non-negative values (typically 100--1,000 iterations).
 Property-based testing frameworks provide three key components:
 \emph{generators} that produce inputs according to specified constraints,
 \emph{properties} that express invariants holding for all generated inputs,
@@ -80,8 +80,8 @@ Automating the transformation from conventional tests to property-based specific
 requires extracting two elements from each existing test:
 the \emph{path condition} that characterizes inputs following the same execution path,
 and the \emph{symbolic output expression} that computes expected results for those inputs.
-For the \texttt{Math.abs(-5)} test, extraction would yield
-the path condition \texttt{x < 0} and the symbolic output \texttt{-x}.
+For the \texttt{abs(0)} test, extraction would yield
+the path condition \texttt{x >= 0} and the symbolic output \texttt{x}.
 Together, these extracted specifications enable property-based tests that validate behavior
 across entire input partitions while preserving the original test's semantics.
 The specifications must be correct for their execution path
@@ -110,7 +110,7 @@ correlates with real fault detection capability~\cite{just_2014_mutants,papadaki
 
 Generalized property-based tests create additional opportunities to detect behavioral deviations
 by exploring many inputs within the same execution paths as original tests.
-Consider a unit test verifying that \texttt{Math.abs(0)} returns \texttt{0}.
+Consider a unit test verifying that \texttt{abs(0)} returns \texttt{0}.
 A mutation changing the condition from \texttt{x >= 0} to \texttt{x == 0}
 would not be detected by this single test, as the input \texttt{0} still produces the correct result.
 However, a generalized property-based test exploring the non-negative partition
