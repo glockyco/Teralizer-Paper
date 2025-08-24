@@ -21,25 +21,6 @@ and designing generators that produce relevant test inputs~\cite{goldstein_2024_
 This manual effort requirement limits adoption,
 motivating research into automated transformation approaches.
 
-This paper presents \ToolTeralizer{}, a semantics-based test generalization approach
-that automatically transforms conventional unit tests into property-based tests.
-\ToolTeralizer{} implements generalization through a three-phase pipeline:
-first analyzing tests to identify tested methods and their assertions,
-then extracting specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
-and finally using these specifications to transform existing unit tests into property-based tests.
-Unlike prior work that generalizes from input-output examples 
-by instantiating predefined abstraction templates that overapproximate program behaviors~\cite{peleg_2018_jarvis},
-we extract specifications directly from the program semantics.
-This approach yields path-exact properties for the specific execution paths covered by original tests.
-Our approach builds on the observation that existing assertions encode oracles
-that should hold for all inputs following the same execution path
-(i.e., all inputs that are part of the same input partition),
-not just the single tested input.
-Figure~\ref{fig:generalization} illustrates the described transformation,
-showing how a simple equality assertion \texttt{abs(0) = 0}
-is transformed into a property \texttt{abs(x) = x}
-that holds for all non-negative values of \texttt{x}.
-
 \begin{figure}[t]
   \centering
   \includegraphics[width=.95\linewidth]{figures/fig_regression_detection}
@@ -71,24 +52,52 @@ that holds for all non-negative values of \texttt{x}.
   \label{fig:generalization}
 \end{figure}
 
+We propose a semantics-based approach for automated test generalization
+that analyzes both test code and implementation code
+to extract path-exact specifications via single-path symbolic analysis.
+Our approach identifies which inputs follow the same execution path as existing tests,
+then transforms conventional unit tests into property-based tests
+that validate the same assertions across entire input partitions.
+By extracting specifications directly from program semantics,
+we obtain precise properties for each execution path,
+preserving the oracles that developers have encoded in their assertions
+while enabling thorough testing within those validated behaviors.
+To our knowledge, JARVIS~\cite{peleg_2018_jarvis} is the only prior work
+that automatically transforms conventional tests into property-based tests.
+However, JARVIS analyzes only test code to infer properties from input-output examples,
+requiring predefined abstraction templates that produce overapproximations.
+Our white-box approach avoids these limitations by leveraging implementation analysis
+to extract exact specifications for covered paths.
+
+We demonstrate this approach through \ToolTeralizer{}, a prototype tool for Java
+that transforms JUnit tests into property-based \ToolJqwik{} \cite{link_2022_jqwik} tests.
+\ToolTeralizer{} operates through a three-phase pipeline:
+first analyzing tests to identify tested methods and their assertions,
+then extracting specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
+and finally generating property-based tests that explore additional inputs within the identified partitions.
+Figure~\ref{fig:generalization} illustrates this transformation,
+showing how a simple equality assertion \texttt{abs(0) = 0}
+is transformed into a property \texttt{abs(x) = x}
+that holds for all non-negative values of \texttt{x}.
+
 To understand both the potential and limitations of semantics-based test generalization,
-we evaluate our prototype implementation of \ToolTeralizer{}
-across three complementary datasets that progressively
+we evaluate our approach by applying \ToolTeralizer{}
+to three complementary datasets that progressively
 reveal the gap between ideal and real-world conditions.
 The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled conditions
-with numeric-focused programs ideal for symbolic analysis;
-since it lacks test suites, we generate tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
+with numeric-focused programs ideal for symbolic analysis.
+Since \DatasetEqBench{} lacks test suites, we generate tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
 Utility methods extracted from Apache Commons projects
 offer a middle ground between ideal and real-world conditions,
 enabling direct comparison between \ToolEvoSuite{}-generated and developer-written tests
 on the same codebase to partially isolate
 the effects of test architecture and quality on generalization outcomes.
-Finally, 1,160 projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
-with their existing developer tests expose the full complexity of practical application conditions.
-This systematic progression from favorable to challenging conditions helps us identify
+Finally, 1,160 real-world Java projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
+with their existing developer-written tests expose the full complexity of practical application conditions.
+This progression from favorable to challenging conditions helps us identify
 both achievable fault detection improvements as well as current theoretical and practical limitations of the proposed approach.
 
-Our evaluation results show consistent but modest improvements under favorable conditions.
+Our evaluation shows consistent but modest improvements under favorable conditions.
 On \ToolEvoSuite{}-generated tests, mutation scores improve by 1--4 percentage points:
 \DatasetEqBench{} increases from 48--52\% to 52--55\%
 across different baseline test suites and generalization strategies,
@@ -100,7 +109,7 @@ of detectable faults that automated test generalization targets.
 Beyond mutation detection results,
 our analysis of 1,160 real-world projects identifies practical barriers:
 only 0.9\% of projects successfully pass the full generalization pipeline,
-with generalization failures being primarily caused by 
+with generalization failures primarily caused by 
 assertion-to-method mapping issues, type support limitations, and constraint encoding challenges.
 Our overall classification of failures distinguishes between
 issues that can be resolved through additional engineering effort
@@ -110,28 +119,30 @@ This paper makes the following contributions:
 
 \begin{enumerate}
 \item \textbf{Semantics-based test generalization:}
-We demonstrate automated transformation from unit tests to property-based tests
+We introduce an automated approach for transforming unit tests to property-based tests
 through semantics-based specification extraction,
+analyzing both test code and implementation code to extract path-exact specifications.
+Our prototype implementation \ToolTeralizer{} demonstrates feasibility for Java projects,
 achieving mutation score improvements of 1--4 percentage points
 under conditions suitable for current symbolic analysis.
 
 \item \textbf{Empirical dataset:}
 We provide a dataset characterizing test structure
-and generalizability across a diverse set of projects,
-including metrics on assertion patterns, specification complexity,
-and filtering outcomes to support future testing research.
+and generalizability across 1,160+ Java projects,
+including assertion patterns (types, frequencies, per-test distributions),
+specification complexity metrics (operation counts, constraint utilization),
+and detailed filtering outcomes revealing why 99.1\% of real-world generalizations fail.
 
 \item \textbf{Analysis of applicability challenges:}
-We identify and quantify barriers to practical applicability
-of semantics-based test generalization,
-categorizing identified issues into engineering limitations
-and more fundamental research challenges
-requiring advances in specification extraction.
+We systematically identify and quantify barriers to practical test generalization,
+distinguishing addressable engineering limitations
+(e.g., identifying tested methods in complex control flow, detecting assertions in helper methods)
+from fundamental research challenges (e.g., constraint solving for non-numeric types),
+providing concrete guidance for advancing the field.
 
 \item \textbf{Open implementation and replication package:}
-We provide a complete implementation of the proposed generalization approach
-and comprehensive replication package including all experimental data,
-enabling reproduction and extension of our work.
+We provide a complete implementation and comprehensive replication package
+with all experimental data, enabling reproduction and extension of our work.
 \end{enumerate}
 
 The remainder of this paper is organized as follows.
@@ -143,5 +154,5 @@ examining mutation score improvements, test suite size and execution time impact
 generalization runtime requirements, and causes of unsuccessful generalizations.
 Section~\ref{sec:discussion} interprets the results, implications, and threats to validity.
 Section~\ref{sec:related-work} positions our work within the broader testing literature.
-Section~\ref{sec:conclusions} summarizes contributions and outlines future research directions.
+Finally, Section~\ref{sec:conclusions} summarizes contributions and outlines future research directions.
 Our implementation and complete replication package, including all experimental data and analysis scripts, are publicly available~\cite{replicationpackage}.

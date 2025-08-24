@@ -1,6 +1,11 @@
 \section{Approach}
 \label{sec:approach}
 
+Our semantics-based test generalization approach extracts path-exact specifications
+from implementations and uses them to transform conventional unit tests into property-based tests.
+This section describes \ToolTeralizer{}, our prototype implementation that demonstrates
+the approach through a three-phase pipeline.
+
 Consider the bonus calculation method in Listing~\ref{lst:bonus-method} that returns different rates based on sales performance.
 The unit test in Listing~\ref{lst:original-test} verifying \texttt{calculate(2500, 1000)} returns \texttt{250}
 passes for the current implementation but would miss regressions that alter behavior within the same partition.
@@ -29,17 +34,15 @@ that the single-input test would miss.
 \ToolTeralizer{} achieves this automated transformation
 through a three-phase pipeline (Figure~\ref{fig:approach-overview})
 that leverages existing symbolic analysis capabilities.
+Our current implementation operates on Java 5--8 projects (limited by \ToolSPF{})
+with Maven or Gradle build systems and JUnit 4/5 test suites.
 The complete transformation process is illustrated through
 a BonusCalculator example in Listings~\ref{lst:bonus-method}--\ref{lst:java-spec-encodings}.
-Our key design insight is that existing tests already encode
-the necessary oracles for generalization:
-developer-written assertions validate specific behaviors
-that should hold for entire input partitions,
-not just the single tested input.
 By following the execution paths of existing tests,
 we extract path-exact specifications only for behaviors that developers
 have explicitly validated, avoiding the risk of overfitting
 to implementation details of untested paths.
+
 The three main phases of \ToolTeralizer{}'s pipeline are:
 
 \begin{itemize}
@@ -54,7 +57,7 @@ The three main phases of \ToolTeralizer{}'s pipeline are:
     uses the extracted input/output specifications
     to create property-based \ToolJqwik{} tests from original JUnit tests,
     generating three variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{})
-    to systematically study the mutation detection effectiveness and runtime efficiency
+    to study the mutation detection effectiveness and runtime efficiency
     of different input generation strategies.
 \end{itemize}
 
@@ -72,10 +75,7 @@ for property-based testing remains computationally expensive,
 as filtering-based approaches suffer from poor efficiency with complex constraints~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
 These limitations define the scope within which we demonstrate
 the feasibility of semantics-based generalization.
-
-Our implementation targets Java 5--8 projects (limited by \ToolSPF{})
-with Maven or Gradle build systems and JUnit 4/5 test suites.
-To systematically understand the impact of these limitations,
+To understand the impact of these limitations,
 we capture comprehensive metrics throughout the transformation pipeline,
 documenting not only successful generalizations
 but also the specific reasons tests cannot be generalized.
@@ -255,7 +255,7 @@ to maintain backward compatibility.
 
 We generate three variants following standard ablation study methodology
 to isolate different aspects of the approach,
-enabling systematic analysis of how constraint complexity affects generation effectiveness
+enabling analysis of how constraint complexity affects generation effectiveness
 (Section~\ref{sec:key-findings}).
 The implementation differences between these variants are illustrated
 in Listings~\ref{lst:baseline-supplier}--\ref{lst:improved-supplier}:
@@ -510,11 +510,11 @@ and the partial constraints \ToolSPF{} provides cannot be readily encoded as \To
 The \textbf{AssertionType} filter supports \texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}, and \texttt{assertThrows};
 unsupported assertions like \texttt{assertSame}, \texttt{assertNull}, and \texttt{assertArrayEquals}
 involve object identity or structural comparisons
-that \ToolTeralizer{}'s specification extraction approach cannot handle.
+that our current implementation cannot handle.
 Additional exclusions result from \ToolSPF{} execution failures:
 missing native method models,
 exceeded analysis limits (60-second timeout, 100,000-character path condition limit),
-and null pointer exceptions in \ToolTeralizer{}'s specification extraction implementation.
+and null pointer exceptions in our specification extraction implementation.
 
 \subsubsection{Generalization-Level Filtering}
 

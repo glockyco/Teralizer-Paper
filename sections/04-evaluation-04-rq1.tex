@@ -54,10 +54,10 @@ While these patterns enable comprehensive integration testing,
 they create barriers for specification extraction, explaining
 why over one-third of developer tests cannot be generalized.
 
-The three primary exclusion causes reflect \ToolTeralizer{}'s current limitations:
+The three primary exclusion causes reflect current limitations in our prototype:
 (i)~tests without assertions provide no specification to generalize,
 (ii)~tests where no tested method can be identified typically involve
-program constructs that \ToolTeralizer{}'s simple static analysis cannot resolve,
+program constructs that our simple static analysis implementation cannot resolve,
 such as loops in test code or modifications of object state rather than direct return values,
 and (iii)~tests exercising methods without generalizable parameters have no numeric
 or boolean inputs to vary.
