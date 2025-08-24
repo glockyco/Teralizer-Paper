@@ -29,8 +29,8 @@ then extracting specifications through single-path symbolic analysis~\cite{pasar
 and finally using these specifications to transform existing unit tests into property-based tests.
 Unlike prior work that generalizes from input-output examples 
 by instantiating predefined abstraction templates that overapproximate program behaviors~\cite{peleg_2018_jarvis},
-we extract specifications directly from the program semantics
-to obtain path-exact properties for the specific execution paths covered by original tests.
+we extract specifications directly from the program semantics.
+This approach yields path-exact properties for the specific execution paths covered by original tests.
 Our approach builds on the observation that existing assertions encode oracles
 that should hold for all inputs following the same execution path
 (i.e., all inputs that are part of the same input partition),
