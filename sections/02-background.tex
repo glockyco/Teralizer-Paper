@@ -57,10 +57,11 @@ validates specifications over entire input partitions rather than single test ca
 Where a conventional test might verify \texttt{sqrt(4)} returns \texttt{2},
 a property-based test instead verifies \texttt{sqrt(x) * sqrt(x) = x}
 across hundreds of randomly generated non-negative values.
-PBT frameworks comprise three key components:
-\emph{generators} that produce inputs according to specified constraints,
-\emph{properties} that express invariants holding for all generated inputs,
-and \emph{shrinking} algorithms that minimize failing inputs to simplify debugging.
+PBT frameworks comprise three key components.
+\emph{Generators} produce inputs according to specified constraints, such as positive integers.
+\emph{Properties} express invariants that must hold for all generated inputs, such as \texttt{abs(x) >= 0}.
+\emph{Shrinking} algorithms minimize failing inputs to simplify debugging,
+such as reducing a failing input from 2147483647 to 1 when the same property violation occurs.
 For example, the property-based test in Figure~\ref{fig:regression-detection}
 uses \texttt{@Property} to indicate property-based testing,
 \texttt{@Int(min=0)} to constrain input generation to non-negative integers,
