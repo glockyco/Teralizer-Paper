@@ -527,7 +527,7 @@ and null pointer exceptions in \ToolTeralizer{}'s specification extraction imple
 Generalization-level filtering validates that extracted specifications produce executable property-based tests.
 The primary failure mode is \texttt{TooManyFilterMissesException}s,
 which occur when \ToolJqwik{} cannot generate inputs satisfying path constraints
-within retry limits (typically when discard ratio exceeds 0.5).
+within its configured retry limits.
 This reflects the fundamental inefficiency of filtering-based input generation
 for complex constraints~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
 \VariantImproved{} reduces these failures by encoding simple equality and inequality constraints
