@@ -533,3 +533,42 @@ implicit preconditions, assertions within loops, or tested methods called within
 These filtering outcomes identify specific areas where enhanced static analysis,
 extended type support, and more sophisticated constraint handling
 could expand \ToolTeralizer{}'s generalization capabilities.
+
+\subsection{Approach Generalizability}
+\label{sec:approach-generalizability}
+
+While our implementation targets Java with SPF and jqwik,
+the core approach of semantics-based test generalization
+generalizes to other languages and tools.
+The fundamental principle—extracting path-exact specifications through white-box analysis
+of both test and implementation code—applies to any language
+with appropriate tool support.
+
+Adapting the approach requires three components:
+(i)~a unit test framework with assertion mechanisms,
+(ii)~a symbolic execution tool capable of constraint extraction,
+and (iii)~a property-based testing framework.
+Several language ecosystems provide all three components with varying maturity levels.
+JVM-based languages offer the most straightforward adaptation path,
+as they can directly leverage SPF:
+Scala (ScalaTest + SPF + ScalaCheck),
+Kotlin (Kotest + SPF + Kotest Property Testing),
+and Groovy (Spock + SPF + jqwik).
+Similarly, .NET languages benefit from Microsoft's Pex infrastructure:
+C\# and F\# can combine xUnit/FsUnit with IntelliTest and FsCheck.
+For native code, C and C++ programs can use KLEE~\cite{cadar_2008_klee}
+with frameworks like RapidCheck for property generation,
+though KLEE requires compilation to LLVM bitcode.
+Python offers PyExZ3~\cite{ball_2015_pyexz3} paired with Hypothesis~\cite{maciver_2019_hypothesis},
+though with less mature symbolic execution support than SPF or KLEE.
+
+Beyond tool availability, two fundamental constraints affect generalizability.
+First, the oracle problem persists regardless of language:
+we can only generalize tests with developer-provided assertions,
+as other execution paths lack validated expected behaviors.
+Second, the pure function requirement remains universal:
+methods with side effects, non-deterministic behavior, or external dependencies
+challenge symbolic analysis across all platforms.
+These constraints—both the fundamental requirements and varying tool maturity—mean that
+while the approach itself is language-agnostic,
+its practical realization remains tied to the capabilities of each language's symbolic execution ecosystem.
