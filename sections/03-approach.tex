@@ -231,7 +231,7 @@ The transformation process:
 and (7) replaces generalizable method arguments with values from \texttt{TestParameters}
 while non-generalizable arguments retain their original concrete values.
 We generate one class per assertion rather than combining multiple assertions
-because PIT mutation testing operates at class-level granularity.
+because \ToolPit{} requires a green test suite and only supports class-level exclusions.
 This isolation ensures that failed generalizations do not prevent
 successful ones from being included in mutation testing.
 The original test method is preserved alongside the generalized version
