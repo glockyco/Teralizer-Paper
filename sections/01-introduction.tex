@@ -6,7 +6,7 @@ but leave most inputs along the same execution path untested~\cite{orso_2014_sof
 Property-based testing~\cite{claessen_2000_quickcheck,hughes_2007_quickcheck} instead generates many inputs
 and checks whether specified properties hold across executions.
 For example, a unit test verifying that \texttt{abs(0)} returns \texttt{0} would 
-still pass if the implementation incorrectly changes \texttt{x == 0} instead of \texttt{x >= 0}, 
+still pass after an erroneous change from \texttt{x >= 0} to \texttt{x == 0}, 
 whereas a property-based test asserting \texttt{abs(x) = x} for non-negative \texttt{x} 
 would expose this regression (Figure~\ref{fig:regression-detection}).
 Industrial experience reports suggest that property-based testing 
