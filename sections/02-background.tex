@@ -58,16 +58,20 @@ Where a conventional test might verify \texttt{sqrt(4)} returns \texttt{2},
 a property-based test instead verifies \texttt{sqrt(x) * sqrt(x) = x}
 across hundreds of randomly generated non-negative values.
 PBT frameworks comprise three key components.
-\emph{Generators} produce inputs according to specified constraints, such as positive integers.
-\emph{Properties} express invariants that must hold for all generated inputs, such as \texttt{abs(x) >= 0}.
-\emph{Shrinking} algorithms minimize failing inputs to simplify debugging,
-such as reducing a failing input from 2147483647 to 1 when the same property violation occurs.
+\emph{Generators} produce inputs according to specified constraints, such as \texttt{x >= 0}.
+\emph{Properties} express invariants that must hold for all generated inputs, such as \texttt{abs(x) == x}.
+\emph{Shrinking} minimizes failing inputs to simplify debugging,
+such as reducing a failing input from 776837 to 1 when the same property violation occurs.
+
 For example, the property-based test in Figure~\ref{fig:regression-detection}
 uses \texttt{@Property} to indicate property-based testing,
 \texttt{@Int(min=0)} to constrain input generation to non-negative integers,
 and validates that \texttt{assertEquals(x, abs(x))} holds for all generated values.
-PBT frameworks typically generate hundreds to thousands of test inputs
-using primarily random values mixed with boundary cases.
+When this test executes, \ToolJqwik{} generates hundreds of non-negative integers,
+including edge cases like 0, 1, and \texttt{Integer.MAX\_VALUE},
+and verifies the property holds for each.
+If a failure occurs, the framework's shrinking algorithm automatically reduces
+the failing input to its minimal form, simplifying debugging.
 
 The combination of constrained generation and property checking
 enables thorough exploration of input spaces,
@@ -89,18 +93,17 @@ Automating the transformation from conventional tests into property-based specif
 requires extracting two elements:
 the \emph{path condition} that characterizes inputs following the same execution path,
 and the \emph{symbolic output expression} that computes expected results for those inputs.
-For example, the \texttt{abs(0)} test yields
-the path condition \texttt{x >= 0} (the branch condition) and the symbolic output \texttt{x} (the return value).
+For example, the \texttt{abs(0)} test in Figure~\ref{fig:generalization} yields
+the path condition \texttt{x >= 0} and the symbolic output \texttt{x}.
 These path-exact specifications enable property-based tests that validate behavior
 across entire input partitions while preserving the original test's semantics.
 
-Single-path symbolic analysis follows the concrete execution path of an existing test
+Single-path symbolic analysis achieves this extraction by following the concrete execution path of an existing test
 while maintaining symbolic representations of variables~\cite{pasareanu_2013_symbolic}.
 Unlike full symbolic execution, which faces path explosion
 when exploring all possible paths~\cite{baldoni_2018_survey,cadar_2013_symbolic},
-single-path analysis omits the backtracking and constraint solving stages
-of traditional symbolic execution
-and records conditions only along the executed path.
+single-path analysis omits backtracking and constraint solving,
+recording conditions only along the executed path.
 This focused approach is well suited to test generalization:
 existing tests already identify the behaviors of interest
 and provide validated oracles for those behaviors.
@@ -112,25 +115,24 @@ values involved. Linear integer constraints (e.g., \texttt{x > 0},
 \texttt{y <= 2*x}) are well supported by symbolic execution tools such as
 Symbolic PathFinder (SPF) for Java~\cite{pasareanu_2013_symbolic} and KLEE for
 C~\cite{cadar_2008_klee},
-which can record exact conditions and solve them efficiently. Non-linear
-arithmetic and floating-point operations are more problematic: tools can still
-represent them precisely, but constraint solving quickly becomes computationally intractable,
-often leading to timeouts~\cite{de_moura_2008_z3}. Strings,
-arrays, and complex objects pose the greatest barrier: symbolic representations
+which can both record exact conditions and solve them efficiently. Non-linear
+arithmetic and floating-point operations are more problematic: although tools can still
+represent them precisely through symbolic formulas, constraint solving quickly becomes computationally intractable,
+leading to timeouts~\cite{de_moura_2008_z3}. Strings,
+arrays, and complex objects pose the greatest practical barrier: symbolic representations
 typically lose precision or become overly abstract, limiting their usefulness
 for specification extraction~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
 
 These limitations affect test generalization at two distinct stages.
-First, imprecise specifications (as with complex types) prevent generalization entirely—
-we cannot create meaningful property-based tests without accurate models.
+First, imprecise specifications (as with complex types) prevent generalization entirely
+since we cannot create meaningful property-based tests without accurate models.
 Second, even with precise specifications (as with non-linear numeric constraints),
 test generalization succeeds but the resulting tests may fail during execution
-when property-based testing frameworks cannot efficiently produce inputs
-satisfying complex constraints.
+when PBT frameworks cannot efficiently produce inputs satisfying complex constraints.
 This input generation difficulty represents a fundamental computational challenge
-that frameworks cannot fully overcome through filtering or constraint encoding~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
+that frameworks cannot overcome through filtering or constraint encoding~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
 Thus, while test generalization can theoretically handle any accurately modeled behavior,
-practical success currently requires both precise specifications and tractable constraints.
+practical success requires both precise specifications and tractable constraints.
 
 \subsection{Mutation Testing for Evaluation}
 \label{sec:mutation-testing}
@@ -145,11 +147,11 @@ remain identical whether a test validates one input or hundreds from the same pa
 Mutation testing, in contrast, reflects the ability of a test suite to expose
 behavioral differences within those paths, making it the appropriate measure for
 evaluating test generalization~\cite{jia_2011_analysis}.
-It rests on two hypotheses: the competent programmer hypothesis
+
+Mutation testing rests on two hypotheses: the competent programmer hypothesis
 (real faults are small deviations from correct programs) and the coupling effect
 (tests that detect simple faults also detect more complex ones)~\cite{offutt_1992_investigations}.
 These hypotheses support using small syntactic changes, i.e., mutations, as proxies for real programming errors.
-
 Mutation operators systematically alter program statements
 to create mutants, each containing a single fault.
 Common mutation operators include arithmetic replacements (e.g., \texttt{+} to
