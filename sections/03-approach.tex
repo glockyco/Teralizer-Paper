@@ -134,7 +134,7 @@ we mark the assertion as unmappable.
 Our current implementation requires that tested methods are pure functions:
 deterministic, side-effect-free, and dependent only on their input parameters.
 This purity requirement is common across symbolic execution tools~\cite{cadar_2013_symbolic,baldoni_2018_survey}
-and test generation approaches~\cite{tillmann_2008_pex,pacheco_2007_randoop},
+and white-box test generation approaches such as Pex~\cite{tillmann_2008_pex},
 as non-determinism undermines the fundamental assumption that inputs determine execution paths.
 Without determinism, the same inputs could follow different paths on different executions,
 invalidating our extracted specifications.
