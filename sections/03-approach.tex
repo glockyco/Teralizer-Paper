@@ -1,66 +1,7 @@
 \section{Approach}
 \label{sec:approach}
 
-\ToolTeralizer{} demonstrates the feasibility of semantics-based test generalization,
-transforming conventional unit tests into property-based tests
-by analyzing both test and implementation code.
-While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
-they traditionally require manual specification of generators and properties,
-a barrier that limits adoption.
-Our approach automates this transformation by extracting path-exact specifications
-(specifications that precisely characterize behavior for specific execution paths)
-directly from program semantics through single-path symbolic analysis.
-The oracle problem fundamentally shapes this design (Section~\ref{sec:test-amplification}):
-we can only generalize execution paths where developers have provided assertions
-to validate expected behavior.
-Other paths lack such validated oracles,
-making it impossible to distinguish intended functionality from implementation artifacts.
-This leads us to follow the concrete execution of existing tests,
-collecting path conditions along the way without exploring alternative branches.
-While this single-path approach also avoids the computational cost of full symbolic execution,
-the oracle problem alone requires this focused strategy.
-This white-box approach differs from JARVIS~\cite{peleg_2018_jarvis},
-which uses black-box analysis of test input-output examples with predefined abstraction templates.
-Because JARVIS analyzes only test code,
-it produces overapproximations that may be too general for the actual execution paths.
-In contrast, our analysis of both test and implementation enables
-extraction of specifications that are exact for each covered path.
-Beyond demonstrating feasibility, our comprehensive evaluation
-characterizes which tests can be successfully generalized and identifies the barriers that prevent others,
-providing empirical guidance for future research (Section~\ref{sec:limitations-eval}).
-
-Figure~\ref{fig:approach-overview} presents \ToolTeralizer{}'s three-stage pipeline.
-Throughout the pipeline, we apply filtering to focus on tests
-amenable to semantics-based generalization 
-(Section~\ref{sec:limitations-eval} quantifies these exclusions, 
-revealing that even under favorable conditions substantial filtering is required),
-with comprehensive metrics captured at each stage to characterize
-both successful transformations and failure modes.
-The three stages are:
-
-\begin{itemize}
-    \item \textbf{Test Analysis}:
-    identifies executable test methods from JUnit reports
-    and establishes assertion-to-method mappings through data flow analysis.
-    \item \textbf{Specification Extraction}:
-    uses \ToolSPFLong{} (\ToolSPF{})~\cite{pasareanu_2013_symbolic} in constraint collection mode
-    to derive path conditions and symbolic outputs for each assertion-method pair.
-    \item \textbf{Test Transformation}:
-    generates property-based \ToolJqwik{} tests from extracted specifications,
-    producing three test variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{})
-    to evaluate different input generation strategies.
-\end{itemize}
-
-Consider the bonus calculation method in Listing~\ref{lst:bonus-method},
-which returns different rates based on sales performance.
-The unit test in Listing~\ref{lst:original-test} verifies that \texttt{calculate(2500, 1000)} returns \texttt{250}.
-This test passes for the specified input but cannot detect regressions within the same partition.
-For example, changing the condition from \texttt{sales/2 >= target} to \texttt{sales/2 > target}
-preserves test success but breaks the boundary case.
-\ToolTeralizer{} transforms this test into a property-based variant
-that represents the entire partition, detecting such regressions.
-
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
   \caption{Overview of Teralizer's test generalization process.}
@@ -76,10 +17,61 @@ that represents the entire partition, detecting such regressions.
   \label{fig:approach-overview}
 \end{figure}
 
+\ToolTeralizer{} demonstrates the feasibility of semantics-based test generalization,
+transforming conventional unit tests into property-based tests
+by analyzing both test and implementation code.
+While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
+they traditionally require manual specification of generators and properties~\cite{goldstein_2024_pbt_practice},
+a barrier that limits adoption in practice.
+Our approach automates this transformation through a three-phase pipeline (Figure~\ref{fig:approach-overview}):
+test analysis identifies assertions and maps them to tested methods,
+specification extraction recovers path conditions and symbolic outputs through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
+and test transformation generates property-based tests with constraint-aware input generation.
+
+The oracle problem fundamentally shapes this design~\cite{barr_2015_oracle} (Section~\ref{sec:test-amplification}).
+We can only generalize execution paths where developers have provided assertions,
+as other paths lack validated oracles to distinguish intended behavior from incidental state changes or outputs.
+This requirement leads us to follow the concrete execution of existing tests,
+collecting conditions along their paths without exploring alternative branches.
+Our white-box analysis of implementation code enables extraction of path-exact specifications,
+unlike black-box approaches such as JARVIS~\cite{peleg_2018_jarvis}
+that infer patterns solely from test input-output examples.
+JARVIS applies predefined abstraction templates to these examples,
+producing overapproximations that may be too general for the actual execution paths.
+
+Figure~\ref{fig:approach-overview} presents \ToolTeralizer{}'s three-stage pipeline.
+Throughout the pipeline, we apply filtering to focus on tests
+amenable to semantics-based generalization
+(Section~\ref{sec:limitations-eval} quantifies these exclusions),
+with comprehensive metrics captured at each stage.
+The three stages are:
+
+\begin{itemize}
+    \item \textbf{Test Analysis}:
+    identifies executable test methods from JUnit reports
+    and establishes assertion-to-method mappings through data flow analysis.
+    \item \textbf{Specification Extraction}:
+    uses \ToolSPFLong{} (\ToolSPF{})~\cite{pasareanu_2013_symbolic} in constraint collection mode
+    to derive path conditions and symbolic outputs for each assertion-method pair.
+    \item \textbf{Test Transformation}:
+    generates property-based \ToolJqwik{}~\cite{link_2022_jqwik} tests from extracted specifications,
+    producing three test variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{})
+    to evaluate different input generation strategies.
+\end{itemize}
+
+Consider the bonus calculation method in Listing~\ref{lst:bonus-method},
+which returns different rates based on sales performance.
+The unit test in Listing~\ref{lst:original-test} verifies that \texttt{calculate(2500, 1000)} returns \texttt{250}.
+This test passes for the specified input but cannot detect regressions within the same partition.
+For example, changing the condition from \texttt{sales/2 >= target} to \texttt{sales/2 > target}
+preserves test success but breaks the boundary case.
+\ToolTeralizer{} transforms this test into a property-based variant
+that represents the entire partition, detecting such regressions.
+
 Our implementation targets Java 5--8 projects (limited by \ToolSPF{})
 with Maven or Gradle build systems and JUnit 4/5 test suites.
 Before processing, \ToolTeralizer{} detects the build system
-and injects necessary dependencies including \ToolJqwik{}, \ToolPit{}, and \ToolJacoco{}.
+and injects necessary dependencies including \ToolJqwik{}~\cite{link_2022_jqwik}, \ToolPit{}~\cite{coles_2016_pit}, and \ToolJacoco{}\footnote{\url{https://github.com/jacoco/jacoco}}.
 This instrumentation creates modified build files while preserving originals,
 enabling the pipeline to execute tests and collect mutation testing results
 for evaluating generalization effectiveness.
