@@ -90,7 +90,7 @@ requires extracting two elements:
 the \emph{path condition} that characterizes inputs following the same execution path,
 and the \emph{symbolic output expression} that computes expected results for those inputs.
 For example, the \texttt{abs(0)} test yields
-the path condition \texttt{x >= 0} and the symbolic output \texttt{x}.
+the path condition \texttt{x >= 0} (the branch condition) and the symbolic output \texttt{x} (the return value).
 These path-exact specifications enable property-based tests that validate behavior
 across entire input partitions while preserving the original test's semantics.
 
