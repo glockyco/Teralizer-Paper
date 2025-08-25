@@ -65,8 +65,7 @@ For example, the property-based test in Figure~\ref{fig:regression-detection}
 uses \texttt{@Property} to indicate property-based testing,
 \texttt{@Int(min=0)} to constrain input generation to non-negative integers,
 and validates that \texttt{assertEquals(x, abs(x))} holds for all generated values.
-The PBT framework generates many test inputs
-(typically 100--1,000, with \ToolJqwik{}~\cite{link_2022_jqwik} defaulting to 1,000),
+PBT frameworks typically generate hundreds to thousands of test inputs
 using primarily random values mixed with boundary cases.
 
 The combination of constrained generation and property checking
