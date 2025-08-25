@@ -106,14 +106,30 @@ and provide validated oracles for those behaviors.
 The analysis thus extracts path-exact specifications
 without the computational overhead of exploring alternative branches.
 
-The precision of extracted specifications depends heavily
-on the types of values being analyzed.
-Symbolic execution tools excel at numeric constraints (e.g., \texttt{x > 0}, \texttt{y <= 2*x}),
-producing exact conditions that can directly guide input generation.
-However, constraints involving strings, arrays, and complex objects remain challenging,
-as symbolic representations of these types often lose precision
-or become too complex for practical constraint solving~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
-These type limitations fundamentally constrain which tests can be successfully generalized.
+The precision of extracted specifications depends strongly on the types of
+values involved. Linear integer constraints (e.g., \texttt{x > 0},
+\texttt{y <= 2*x}) are well supported by symbolic execution tools such as
+Symbolic PathFinder (SPF) for Java~\cite{pasareanu_2013_symbolic} and KLEE for
+C~\cite{cadar_2008_klee},
+which can record exact conditions and solve them efficiently. Non-linear
+arithmetic and floating-point operations are more problematic: tools can still
+represent them precisely, but constraint solving quickly becomes computationally intractable,
+often leading to timeouts~\cite{de_moura_2008_z3}. Strings,
+arrays, and complex objects pose the greatest barrier: symbolic representations
+typically lose precision or become overly abstract, limiting their usefulness
+for specification extraction~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
+
+These limitations affect test generalization at two distinct stages.
+First, imprecise specifications (as with complex types) prevent generalization entirely—
+we cannot create meaningful property-based tests without accurate models.
+Second, even with precise specifications (as with non-linear numeric constraints),
+test generalization succeeds but the resulting tests may fail during execution
+when property-based testing frameworks cannot efficiently produce inputs
+satisfying complex constraints.
+This input generation difficulty represents a fundamental computational challenge
+that frameworks cannot fully overcome through filtering or constraint encoding~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
+Thus, while test generalization can theoretically handle any accurately modeled behavior,
+practical success currently requires both precise specifications and tractable constraints.
 
 \subsection{Mutation Testing for Evaluation}
 \label{sec:mutation-testing}
