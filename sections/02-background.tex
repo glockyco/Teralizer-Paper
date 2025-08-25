@@ -122,12 +122,13 @@ These type limitations fundamentally constrain which tests can be successfully g
 Having established how to extract specifications from existing tests,
 we require a systematic way to assess whether transforming tests based on these specifications
 improves effectiveness.
-Traditional coverage metrics
-such as statement, branch, and path coverage~\cite{zhu_1997_software}
-cannot discriminate between original and generalized tests,
-because both traverse the same control-flow paths with different inputs.
-Mutation testing provides this discrimination by measuring a test suite's ability to detect (kill)
-artificially introduced faults~\cite{jia_2011_analysis}.
+Because original and generalized tests execute the same paths, traditional
+coverage metrics cannot reveal improvements~\cite{inozemtseva_2014_coverage}.
+Statement, branch, and path coverage~\cite{zhu_1997_software}
+remain identical whether a test validates one input or hundreds from the same partition.
+Mutation testing, in contrast, reflects the ability of a test suite to expose
+behavioral differences within those paths, making it the appropriate measure for
+evaluating test generalization~\cite{jia_2011_analysis}.
 It rests on two hypotheses: the competent programmer hypothesis
 (real faults are small deviations from correct programs) and the coupling effect
 (tests that detect simple faults also detect more complex ones)~\cite{offutt_1992_investigations}.
