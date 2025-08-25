@@ -123,8 +123,7 @@ We handle different assertion types systematically.
 For \texttt{assertThrows}, we extract the executable body from the lambda expression
 and identify the last method call, which typically represents the operation expected to throw.
 For value assertions (\texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}),
-we locate the actual parameter (whose position varies between JUnit versions)
-and trace its origin.
+we locate the actual parameter and trace its origin.
 If the actual value comes from a direct method invocation, we use that method.
 If it comes from a variable, we trace back to the variable's assignment
 and extract the method call from the right-hand side.
