@@ -135,10 +135,11 @@ These hypotheses support using small syntactic changes, i.e., mutations, as prox
 
 Mutation operators systematically alter program statements
 to create mutants, each containing a single fault.
-Common mutation operators include arithmetic replacement (\texttt{+} to \texttt{-}),
-relational boundary shifts (\texttt{>} to \texttt{>=}),
-logical connector changes (\texttt{\&\&} to \texttt{||}),
-and constant modifications~\cite{jia_2011_analysis}.
+Common mutation operators include arithmetic replacements (e.g., \texttt{+} to
+\texttt{-}), relational boundary shifts (e.g., \texttt{>} to \texttt{>=}),
+logical connector changes (e.g., \texttt{\&\&} to \texttt{||}), constant
+modifications, and replacements of return values with defaults such as
+\texttt{0}, \texttt{true}, or \texttt{null}~\cite{jia_2011_analysis}.
 A test suite's mutation score, i.e., the proportion of mutants killed,
 provides a quantitative measure of test effectiveness
 that correlates with real fault detection capability~\cite{just_2014_mutants,papadakis_2019_mutation}.
