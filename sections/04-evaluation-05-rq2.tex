@@ -338,7 +338,9 @@ not only holds the potential to increase detection rates
 (as suggested in Section~\ref{sec:boundary-detection-effectiveness})
 but could also reduce the runtime cost of generalized tests at the same time.
 
-\textbf{Answer to RQ2:}
+\begin{center}
+\fbox{\begin{minipage}{0.98\textwidth}
+\paragraph{Answer to RQ2:}
 Test generalization adds 0--3 tests to final test suites after compensation,
 but increases lines of code by 5--59\% due to explicit constraint encoding and test isolation.
 Test suite runtime increases 1.5--3$\times$ for \ToolEvoSuite{}-generated tests
@@ -349,3 +351,5 @@ single-assertion tests enable near-complete compensation
 while multi-assertion tests resist consolidation.
 Implementation choices like constraint libraries and test integration
 could substantially reduce these overheads.
+\end{minipage}}
+\end{center}

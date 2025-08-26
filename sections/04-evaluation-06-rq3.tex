@@ -228,7 +228,9 @@ This increases the mutation detection rate and runtime advantage that
 because the more sophisticated input value generation avoids
 \texttt{TooManyFilterMissesException}s.
 
-\textbf{Answer to RQ3:}
+\begin{center}
+\fbox{\begin{minipage}{0.98\textwidth}
+\paragraph{Answer to RQ3:}
 \ToolTeralizer{} requires 3.4--30.9 hours total runtime per project,
 with validation consuming 40--78\% of processing time
 while core generalization (specification extraction and transformation) takes less than 10\%.
@@ -241,5 +243,7 @@ The efficiency gains stem from their complementary optimization targets:
 while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
 Runtime optimization should focus on validation efficiency
 rather than core generalization logic.
+\end{minipage}}
+\end{center}
 
 %\input{tables/tab-teralizer-runtimes}
