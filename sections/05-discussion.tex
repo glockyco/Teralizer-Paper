@@ -11,10 +11,10 @@ and identify unexplored optimization opportunities.
 Finally, we position test generalization within the broader testing landscape
 and outline pathways toward practical applicability.
 
-\subsection{Understanding Differential Generalization Success}
-\label{sec:differential-success}
+\subsection{Test Structure as Primary Success Factor}
+\label{sec:test-structure-success}
 
-\subsubsection{Test Structure as Primary Determinant}
+\subsubsection{Structural Characteristics of Generalizable Tests}
 
 A central observation from our evaluation is that
 automatically-generated test suites achieve 3--4 percentage point improvements
@@ -45,7 +45,7 @@ a preprocessing step to enable better generalization outcomes.
 The 20-percentage-point gap in test inclusion rates (83--85\% for \ToolEvoSuite{} versus 63.6\% for developers)
 quantifies the impact of these structural differences.
 
-\subsubsection{The Math Mutation Effect and Constraint Complexity}
+\subsubsection{Mutation Distribution and Variant Performance}
 
 The dominance of \texttt{Math} mutations---comprising 59.1\% of all mutants in our evaluation---fundamentally
 shapes which generalization strategies succeed.
@@ -76,7 +76,7 @@ These patterns suggest that adaptive strategies---dynamically allocating \tries{
 based on observed mutation distributions and constraint complexity---could
 capture the benefits of both approaches.
 
-\subsubsection{Specification Precision Through Semantic Analysis}
+\subsubsection{Constraint Complexity Effects}
 
 Our white-box approach extracts path-exact specifications
 by analyzing both test and implementation code,
@@ -105,10 +105,10 @@ Overapproximation could improve generation success
 but risks producing inputs that violate implicit preconditions,
 leading to spurious test failures.
 
-\subsection{Analyzing the Deployment Gap}
-\label{sec:deployment-gap}
+\subsection{Analysis of Deployment Barriers}
+\label{sec:deployment-barriers}
 
-\subsubsection{The Oracle Problem and Design Choices}
+\subsubsection{Oracle Availability and Design Decisions}
 
 The oracle problem fundamentally shapes our approach to test generalization.
 We follow existing test execution paths not because we must,
@@ -136,7 +136,7 @@ that these dimensions provide orthogonal benefits.
 Future advances in oracle inference could expand the paths available for generalization,
 but the fundamental requirement for validated expected behaviors remains.
 
-\subsubsection{Systematic Barrier Analysis}
+\subsubsection{Three-Level Filtering Cascade}
 
 Our progressive evaluation design---from favorable conditions to real-world projects---reveals
 how barriers compound across the processing pipeline.
@@ -161,7 +161,7 @@ while parameter type limitations (15.4\%) reflect fundamental symbolic execution
 At the generalization level, 14.6--28.4\% of generated tests fail execution,
 primarily from \texttt{TooManyFilterMissesExceptions} when constraint satisfaction becomes intractable.
 
-\subsubsection{Addressable vs Fundamental Limitations}
+\subsubsection{Engineering vs Research Challenges}
 
 Distinguishing engineering challenges from research barriers proves crucial
 for understanding improvement potential.
@@ -194,10 +194,10 @@ will face similar infrastructure challenges.
 The 0.9\% success rate thus represents not just \ToolTeralizer{}'s limitations
 but the compound effect of multiple barriers that any test generalization approach must address.
 
-\subsection{Performance Costs and Optimization Potential}
-\label{sec:performance-analysis}
+\subsection{Runtime Performance Characteristics}
+\label{sec:runtime-performance}
 
-\subsubsection{Tool Processing vs Test Execution Costs}
+\subsubsection{Tool Processing vs Test Execution}
 
 Performance analysis reveals two distinct runtime dimensions with different optimization strategies.
 Tool processing time---the one-time cost of running \ToolTeralizer{}---ranges from 3.4 to 30.9 hours per project,
@@ -255,7 +255,7 @@ The key insight: search-based tools face diminishing returns as they exhaust
 easily discoverable paths, while generalization provides orthogonal improvements
 by thoroughly testing already-discovered behaviors.
 
-\subsubsection{Unexplored Optimizations}
+\subsubsection{Optimization Opportunities}
 
 Beyond performance improvements, semantic-based test suite reduction presents an unexplored opportunity.
 Current test suites often contain multiple tests exercising the same execution path---structural
@@ -281,8 +281,8 @@ while automated generalization ensures thorough testing within covered paths.
 This division of labor---humans for breadth, automation for depth---aligns
 with the relative strengths of each approach.
 
-\subsection{Implications and Future Directions}
-\label{sec:implications}
+\subsection{Positioning and Future Directions}
+\label{sec:positioning-future}
 
 \subsubsection{Complementary Role in Test Enhancement}
 
@@ -308,7 +308,7 @@ Each technique contributes different capabilities,
 and their combination promises more comprehensive testing
 than any single approach provides.
 
-\subsubsection{Toward Practical Applicability}
+\subsubsection{Deployment Considerations}
 
 Given current limitations, practical deployment requires careful target selection.
 Numeric-heavy components---scientific computing, financial calculations, data analytics---align
