@@ -1,87 +1,99 @@
 \section{Discussion}
 \label{sec:discussion}
 
-This section synthesizes our findings to understand the nature of test generalization as a research problem.
-We first examine why certain tests benefit more from generalization,
-revealing how test structure and constraint complexity determine success.
-We then analyze the gap between favorable conditions and real-world deployment,
-identifying which barriers require engineering effort versus fundamental research advances.
-Next, we examine the performance trade-offs inherent in test generalization
-and identify unexplored optimization opportunities.
-Finally, we position test generalization within the broader testing landscape
-and outline pathways toward practical applicability.
+Our evaluation reveals that test generalization succeeds under specific conditions—single-assertion tests with simple numeric constraints—while facing fundamental barriers when complexity increases.
+This section synthesizes these findings to understand test generalization as a research problem,
+examining why success varies so dramatically across test types,
+what causes the gap between favorable and real-world conditions,
+how performance costs relate to benefits,
+and which research directions show most promise.
 
-\subsection{Test Structure as Primary Success Factor}
-\label{sec:test-structure-success}
+\subsection{Understanding Differential Generalization Success}
+\label{sec:differential-success}
 
-\subsubsection{Structural Characteristics of Generalizable Tests}
+Single-assertion tests with simple numeric constraints generalize successfully,
+achieving 3--4 percentage point mutation score improvements,
+while multi-assertion tests with complex constraints show minimal benefit (0.05--0.07 percentage points).
+This differential success stems from three interrelated factors:
+test structure alignment with symbolic analysis capabilities,
+mutation type distributions that favor different input generation strategies,
+and constraint complexity that determines input generation success rates.
 
-A central observation from our evaluation is that
-automatically-generated test suites achieve 3--4 percentage point improvements
-while developer tests improve by only 0.07 percentage points.
-This differential success stems primarily from structural alignment with symbolic analysis capabilities.
-\ToolEvoSuite{}-generated tests exhibit three characteristics that facilitate generalization:
+\paragraph{Test Structure as Primary Determinant}
+
+The counterintuitive finding that automatically-generated test suites achieve 3--4 percentage point improvements
+while developer tests improve by only 0.05--0.07 percentage points
+reflects structural differences rather than quality differences.
+\ToolEvoSuite{} generates tests with characteristics that align with symbolic analysis:
 single assertions per test method enabling complete test replacement after generalization,
 direct method calls without complex setup logic simplifying method resolution,
 and numeric-focused computations matching \ToolSPF{}'s constraint modeling capabilities.
-Developer-written tests, conversely, embody patterns that create generalization barriers:
-multiple assertions per test preventing removal even when partially generalized (Section~\ref{sec:test-suite-test-count}),
-helper methods and elaborate fixtures that complicate static analysis (Section~\ref{sec:filtering-eval}),
+These structural properties lead to 83--85\% test inclusion rates.
+Developer-written tests exhibit opposite patterns:
+multiple assertions per test preventing removal even when partially generalized,
+helper methods and elaborate fixtures that complicate static analysis,
 and integration-style validation that spans multiple components.
+These characteristics reduce inclusion to 63.6\%, 
+a 20-percentage-point gap quantifying structural impact (Section~\ref{sec:included-mutants}).
 
-The connection to test smells provides a useful diagnostic framework.
-Tests that resist generalization often exhibit well-documented anti-patterns:
-Assertion Roulette (multiple unrelated assertions) prevents atomic generalization,
-Eager Test (validating multiple methods) obscures the tested behavior,
-and Mystery Guest (external dependencies) introduces non-deterministic elements
-that symbolic analysis cannot model.
+The connection to test smells provides diagnostic insight.
+Tests resisting generalization exhibit Assertion Roulette (multiple unrelated assertions) preventing atomic generalization,
+Eager Test (validating multiple methods) obscuring the tested behavior,
+and Mystery Guest (external dependencies) introducing non-deterministic elements that symbolic analysis cannot model.
 \ToolEvoSuite{} avoids these smells by construction,
 generating focused tests with explicit input-output relationships.
 Developer tests accumulate these patterns through iterative development,
 as maintainers add assertions and expand scope over time.
-This suggests that automated test refactoring---splitting multi-assertion tests,
-inlining helper methods, and isolating tested behaviors---could serve as
-a preprocessing step to enable better generalization outcomes.
-The 20-percentage-point gap in test inclusion rates (83--85\% for \ToolEvoSuite{} versus 63.6\% for developers)
-quantifies the impact of these structural differences.
+This suggests automated test refactoring—splitting multi-assertion tests,
+inlining helper methods, isolating tested behaviors—could serve as
+a preprocessing step enabling better generalization outcomes.
 
-\subsubsection{Mutation Distribution and Variant Performance}
+Single-assertion architecture proves particularly important for test suite management.
+When generalization succeeds for all assertions in a test,
+the original test can be completely removed after adding the generalized version,
+maintaining stable test counts despite adding property-based tests (Section~\ref{sec:test-suite-test-count}).
+Multi-assertion tests cannot be removed when only partially generalized,
+explaining why developer suites show no compensation effect
+while EvoSuite suites achieve near-complete replacement.
 
-The dominance of \texttt{Math} mutations---comprising 59.1\% of all mutants in our evaluation---fundamentally
-shapes which generalization strategies succeed.
-Our results reveal a surprising pattern:
-the theoretically more sophisticated \VariantImproved{} approach
-underperforms the simpler \VariantNaive{} variant on \DatasetsEqBenchEs{} projects
-despite better handling of boundary mutations.
-\VariantNaive{} achieves 4.0 percentage points improvement on \texttt{Math} mutations
-compared to \VariantImproved{}'s 3.4 percentage points (Section~\ref{sec:detection-rates-per-mutator}).
-This occurs because arithmetic mutations benefit more from diverse random sampling
-across the numeric range than from focused boundary testing.
+\paragraph{The Math Mutation Phenomenon}
+
+\texttt{Math} mutations comprising 59.1\% of all mutants fundamentally shape which generalization strategies succeed.
+\VariantNaive{} achieves 4.0 percentage points improvement on these mutations
+versus \VariantImproved{}'s 3.4 percentage points,
+despite \VariantImproved{}'s more sophisticated boundary detection (Section~\ref{sec:detection-rates-per-mutator}).
+This occurs because arithmetic mutations often produce different results across input ranges—a
+mutation changing \texttt{x * 2} to \texttt{x + 2} coincidentally produces correct results at specific points
+but fails across diverse inputs.
 When \VariantImproved{} allocates initial \tries{} to partition boundaries,
-it reduces the diversity of arithmetic inputs,
-missing mutations that would be caught by intermediate values.
+it concentrates testing on extreme values (0, MAX\_VALUE, MIN\_VALUE),
+reducing the diversity of intermediate arithmetic inputs that would expose these mutations.
+The effect reverses for \texttt{ConditionalsBoundary} mutations,
+where \VariantImproved{} achieves 2.5 percentage points improvement
+versus \VariantNaive{}'s 1.2 percentage points,
+confirming boundary-focused generation achieves its intended purpose.
 
-Project characteristics strongly influence which approach succeeds.
-\DatasetsEqBenchEs{} projects feature simple constraints with high utilization rates (47--70\%),
+Project characteristics determine which approach succeeds.
+\DatasetsEqBenchEs{} combines simple constraints (47--70\% utilization)
+with Math mutation dominance,
 allowing \VariantNaive{}'s random generation to remain effective
-while \VariantImproved{}'s boundary focus becomes a liability given the Math mutation prevalence.
-\DatasetsCommonsEs{} projects present the opposite scenario:
-complex constraints reduce utilization to 25--47\%,
-causing \VariantNaive{} to generate 2--2.5$\times$ more \texttt{TooManyFilterMissesExceptions}
+while \VariantImproved{}'s boundary focus becomes a liability.
+\DatasetsCommonsEs{} presents complex constraints (25--47\% utilization),
+causing \VariantNaive{} to generate 2--2.5× more \texttt{TooManyFilterMissesExceptions}
 than \VariantImproved{} (Section~\ref{sec:filtering-eval}).
-Here, \VariantImproved{} succeeds in 7 of 9 comparisons
-despite its \texttt{Math} mutation disadvantage
+Here \VariantImproved{} succeeds in 7 of 9 comparisons
+despite its Math mutation disadvantage
 because constraint-aware generation prevents excessive filtering failures.
-These patterns suggest that adaptive strategies---dynamically allocating \tries{}
-based on observed mutation distributions and constraint complexity---could
-capture the benefits of both approaches.
+These patterns suggest adaptive strategies—dynamically allocating \tries{}
+based on observed mutation distributions and constraint complexity—could
+capture benefits of both approaches.
 
-\subsubsection{Constraint Complexity Effects}
+\paragraph{Constraint Complexity and Utilization}
 
 Our white-box approach extracts path-exact specifications
 by analyzing both test and implementation code,
 capturing precise constraints for the actual execution paths exercised by tests.
-This precision comes with trade-offs in constraint utilization.
+This precision reveals a fundamental trade-off in constraint utilization.
 Simple numeric comparisons achieve high utilization (70--80\% for basic inequalities),
 enabling effective boundary-aware input generation.
 However, compound terms like \texttt{a == (b + 1)} and mathematical functions
@@ -92,11 +104,12 @@ versus 28.5\% for \DatasetsCommonsEs{} (Section~\ref{sec:boundary-detection-effe
 quantifies how specification complexity affects generation effectiveness.
 
 The distinction between engineering and fundamental limits proves important here.
-Compound term support represents an engineering challenge---we could extend
+Compound term support represents an engineering challenge—we could extend
 the implementation to handle more complex expressions,
 though this might introduce non-linearity that complicates constraint solving.
+Modular arithmetic operations similarly require engineering effort but remain tractable.
 Mathematical functions without models represent a fundamental barrier:
-without knowing the semantics of \texttt{Math.hypot} or custom utility functions,
+without knowing the semantics of \texttt{Math.cos} or custom utility functions,
 symbolic analysis cannot reason about their behavior.
 This creates an inherent tension:
 precise specifications enable accurate testing within partitions,
@@ -105,15 +118,31 @@ Overapproximation could improve generation success
 but risks producing inputs that violate implicit preconditions,
 leading to spurious test failures.
 
-\subsection{Analysis of Deployment Barriers}
-\label{sec:deployment-barriers}
+Crucially, low utilization does not indicate specification problems
+but rather inherent implementation complexity.
+Precise models always help;
+the challenge lies in generating inputs satisfying complex constraints,
+not in having exact specifications.
+Path-exact specifications remain superior to overapproximations
+even when utilization is low,
+as they prevent false positives from invalid inputs.
 
-\subsubsection{Oracle Availability and Design Decisions}
+\subsection{Analyzing the Deployment Gap}
+\label{sec:deployment-gap}
+
+Approximately 50\% of assertions generalize under favorable conditions,
+yet only 0.9\% of real-world projects complete processing.
+This gap reveals how barriers compound across the pipeline,
+from oracle availability through type support to infrastructure challenges.
+Understanding these barriers—distinguishing addressable engineering from fundamental research challenges—identifies
+improvement priorities.
+
+\paragraph{The Oracle Problem and Design Choice}
 
 The oracle problem fundamentally shapes our approach to test generalization.
 We follow existing test execution paths not because we must,
 but because these paths provide validated oracles through developer-provided assertions.
-Other execution paths lack trustworthy specifications of expected behavior---we
+Other execution paths lack trustworthy specifications of expected behavior—we
 cannot distinguish intentional outputs from incidental state changes
 without developer knowledge encoded in assertions.
 This design choice makes our approach complementary to, rather than competitive with,
@@ -130,47 +159,79 @@ than simply increasing generation time (Section~\ref{sec:execution-efficiency}).
 Each tool optimizes for different dimensions:
 \ToolEvoSuite{} for breadth through coverage,
 \ToolTeralizer{} for depth through partition exploration.
-The success of this combination---1-second \ToolEvoSuite{} plus generalization
-outperforming 60-second \ToolEvoSuite{} alone---demonstrates
+The success of this combination—1-second \ToolEvoSuite{} plus generalization
+outperforming 60-second \ToolEvoSuite{} alone—demonstrates
 that these dimensions provide orthogonal benefits.
 Future advances in oracle inference could expand the paths available for generalization,
 but the fundamental requirement for validated expected behaviors remains.
 
-\subsubsection{Three-Level Filtering Cascade}
+\paragraph{Systematic Barrier Analysis}
 
-Our progressive evaluation design---from favorable conditions to real-world projects---reveals
-how barriers compound across the processing pipeline.
-We deliberately constructed datasets to isolate different challenges:
+Our progressive evaluation design deliberately isolates different challenges:
 \DatasetsEqBenchEs{} represents best-case scenarios with generated tests and numeric focus,
 \DatasetsCommons{} introduces real-world complexity while maintaining some favorable characteristics,
 and the RepoReapers dataset captures full real-world diversity.
 This progression explains why approximately 50\% of assertions can be generalized
 under favorable conditions, yet only 0.9\% of real-world projects successfully complete processing.
 
-The three-level filtering cascade diagnoses specific bottlenecks.
+\begin{table}[t]
+\centering
+\caption{Three-level filtering cascade showing progressive exclusion from tests to generalizations}
+\label{tab:filtering-cascade}
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Level} & \textbf{Input} & \textbf{Excluded} & \textbf{Rate} & \textbf{Primary Causes} \\
+\midrule
+Test & 23,246 & 3,940 & 16.9\% & No assertions (10.3\%), unsupported types (0.8\%) \\
+Assertion & 28,923 & 15,087 & 52.2\% & Method resolution (24.7\%), parameter types (15.4\%) \\
+Generalization & 13,804 & 2,006--3,920 & 14.6--28.4\% & TooManyFilterMisses, inaccurate specs \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:filtering-cascade} summarizes the three-level cascade revealing specific bottlenecks.
 At the test level, 16.9\% of tests lack extractable specifications,
 primarily due to missing assertions (10.3\%) or unsupported test types (0.8\%).
-The NoAssertions exclusions reveal an opportunity:
-these tests could be generalized using crash-only oracles
-("executes without exception" as the property),
-and interprocedural analysis could detect assertions in helper methods
-that our current implementation misses.
+The NoAssertions exclusions reveal opportunities and limitations:
+these tests could be generalized using crash-only oracles ("executes without exception" as the property),
+though 86.3\% of NoAssertions exclusions in developer tests are false positives—these
+tests contain assertions in helper methods that our current static analysis misses.
+Interprocedural analysis could detect these delegated assertions,
+potentially recovering significant test coverage.
+
 At the assertion level, 52.2\% cannot be generalized,
 with method resolution failures (24.7\%) representing an engineering challenge
 while parameter type limitations (15.4\%) reflect fundamental symbolic execution constraints.
+The specification extraction failures provide additional insight:
+SPF exceptions constitute 51.4\% of extraction failures (1,540 cases),
+primarily from missing models for native methods.
+Another 45.3\% exceed analysis limits (1,358 cases),
+including maximum specification size (790 cases) and depth limits (524 cases),
+implemented to prevent timeouts and memory exhaustion.
+
 At the generalization level, 14.6--28.4\% of generated tests fail execution,
 primarily from \texttt{TooManyFilterMissesExceptions} when constraint satisfaction becomes intractable.
+\VariantImproved{} halves these failures compared to \VariantNaive{} through constraint-aware generation,
+though both struggle with complex specifications.
+Additionally, \ToolPit{}'s limitation to class-level exclusion amplifies the impact—132
+failing tests cause 1,395 additional passing tests in the same classes to be excluded,
+a 10× amplification effect.
 
-\subsubsection{Engineering vs Research Challenges}
+Real-world projects face additional barriers beyond the cascade:
+43\% fail before reaching generalization due to dependency and compilation issues,
+project structure detection failures affect 119 projects,
+and timeouts affect 89 projects.
+The 0.9\% success rate reflects compound effects across thousands of tests,
+not fundamental approach failure.
 
-Distinguishing engineering challenges from research barriers proves crucial
-for understanding improvement potential.
-Our extended evaluation identifies three categories of barriers with different solution paths.
+\paragraph{Addressable vs Fundamental Limitations}
+
+Distinguishing engineering challenges from research barriers helps prioritize improvements.
 Engineering improvements could recover 45\% of failed real-world projects:
 401 projects fail due to filtering exclusions that better analysis might prevent,
 119 projects cannot be processed due to project structure detection failures,
 and 89 timeout during processing but might succeed with optimization or extended time limits.
-These represent implementation limitations rather than fundamental constraints.
+These represent implementation limitations rather than inherent constraints.
 
 Type support represents the primary research challenge.
 The increase from 15.4\% parameter type exclusions in favorable conditions
@@ -184,8 +245,8 @@ across symbolic execution tools.
 While some tools provide partial string or array support,
 the extracted constraints lack sufficient precision for generating meaningful test inputs.
 
-External barriers affecting 500 projects---dependency resolution failures,
-compilation errors, and missing build configurations---lie outside \ToolTeralizer{}'s control.
+External barriers affecting 500 projects—dependency resolution failures,
+compilation errors, and missing build configurations—lie outside \ToolTeralizer{}'s control.
 These reflect the messy reality of real-world software projects
 rather than limitations of the generalization approach.
 The diagnostic value of this systematic failure analysis extends beyond our specific tool:
@@ -194,13 +255,19 @@ will face similar infrastructure challenges.
 The 0.9\% success rate thus represents not just \ToolTeralizer{}'s limitations
 but the compound effect of multiple barriers that any test generalization approach must address.
 
-\subsection{Runtime Performance Characteristics}
-\label{sec:runtime-performance}
+\subsection{Performance Trade-offs and Optimization Potential}
+\label{sec:performance-tradeoffs}
 
-\subsubsection{Tool Processing vs Test Execution}
+Test generalization incurs significant costs—3.4--30.9 hours tool processing,
+1.5--3× test execution overhead—but provides value in specific scenarios.
+Understanding when benefits justify costs,
+and identifying optimization opportunities,
+guides practical application.
+
+\paragraph{Tool Processing vs Test Execution Costs}
 
 Performance analysis reveals two distinct runtime dimensions with different optimization strategies.
-Tool processing time---the one-time cost of running \ToolTeralizer{}---ranges from 3.4 to 30.9 hours per project,
+Tool processing time—the one-time cost of running \ToolTeralizer{}—ranges from 3.4 to 30.9 hours per project,
 with validation consuming 40--78\% of total time (Section~\ref{sec:execution-time}).
 This validation cost stems primarily from mutation testing,
 which must evaluate every candidate generalization to identify those that improve detection.
@@ -208,8 +275,10 @@ While high in absolute terms, this cost amortizes over the lifetime of the gener
 The filtering effect justifies this expense:
 only 4,240 of 65,633 candidate generalizations (6.5\%) demonstrably improve mutation detection
 and merit retention (Section~\ref{sec:test-suite-test-count}).
+Without validation, test suites would contain 15× more tests with no benefit,
+drastically increasing execution costs.
 
-Test execution time---the ongoing cost when running tests---increases by 1.5--3$\times$
+Test execution time—the ongoing cost when running tests—increases by 1.5--3×
 for generalized suites (Section~\ref{sec:test-suite-execution-time}).
 This overhead combines multiple factors:
 baseline \ToolJqwik{} framework overhead of 150ms per test regardless of \tries{},
@@ -217,7 +286,7 @@ constraint checking and filtering during input generation,
 and the cost of executing multiple \tries{} per property.
 Importantly, we made no attempt to optimize either dimension in our prototype,
 prioritizing feasibility demonstration over performance.
-The existence of significant overhead does not indicate fundamental inefficiency
+The existence of significant overhead does not indicate inherent inefficiency
 but rather unexplored optimization potential.
 
 The relationship between these dimensions bears emphasis:
@@ -231,11 +300,11 @@ using the PIT accelerator plugin for faster mutation testing,
 or generating parameterized tests instead of property-based ones
 to avoid framework overhead entirely.
 
-\subsubsection{Cost-Benefit Analysis}
+\paragraph{When Benefits Justify Costs}
 
 The value of test generalization depends strongly on initial test suite characteristics.
 Mature developer suites already achieving 80.4\% mutation scores show minimal improvement (0.07 percentage points),
-making the 1.5--3$\times$ runtime increase difficult to justify.
+making the 1.5--3× runtime increase difficult to justify.
 The decades of refinement in widely-used Apache Commons libraries
 have already addressed most detection gaps that generalization might fill.
 In contrast, \ToolEvoSuite{}-generated suites starting from 48--52\% detection
@@ -255,63 +324,64 @@ The key insight: search-based tools face diminishing returns as they exhaust
 easily discoverable paths, while generalization provides orthogonal improvements
 by thoroughly testing already-discovered behaviors.
 
-\subsubsection{Optimization Opportunities}
+\paragraph{Unexplored Optimizations}
 
 Beyond performance improvements, semantic-based test suite reduction presents an unexplored opportunity.
-Current test suites often contain multiple tests exercising the same execution path---structural
+Current test suites often contain multiple tests exercising the same execution path—structural
 redundancy that inflates both test counts and execution times.
-While existing work identifies structural clones (exact, renamed, or modified duplicates),
+While existing work identifies structural clones (exact, renamed, or modified duplicates—Type 1, 2, and 3 clones),
 our specification extraction enables detection of semantic clones:
 tests that validate the same input partition despite syntactic differences.
 Multiple conventional tests could be replaced by a single property-based test
 covering the same partition more thoroughly.
-The challenge lies in handling multi-assertion tests---we cannot remove a test
+The challenge lies in handling multi-assertion tests—we cannot remove a test
 if only some assertions belong to a semantic clone group.
 Nevertheless, the potential for both reducing test suite size
 and improving fault detection makes this direction promising.
 
 Selective application strategies could further improve cost-benefit ratios.
-Rather than generalizing entire test suites, targeted application to high-value components---critical
-algorithms, security-sensitive code, or frequently-modified modules---would
+Rather than generalizing entire test suites, targeted application to high-value components—critical
+algorithms, security-sensitive code, or frequently-modified modules—would
 focus effort where improvements matter most.
 Incremental generalization of newly-added tests could maintain benefits
 without repeatedly processing stable code.
 For new development, we envision developers focusing primarily on achieving coverage
 while automated generalization ensures thorough testing within covered paths.
-This division of labor---humans for breadth, automation for depth---aligns
+This division of labor—humans for breadth, automation for depth—aligns
 with the relative strengths of each approach.
 
-\subsection{Positioning and Future Directions}
-\label{sec:positioning-future}
+\subsection{Implications for Future Research}
+\label{sec:future-research}
 
-\subsubsection{Complementary Role in Test Enhancement}
+Test generalization provides unique value but requires careful positioning
+and continued research to address current limitations.
+The approach complements existing techniques,
+suggests specific deployment strategies,
+and identifies concrete research opportunities.
+
+\paragraph{Complementary Positioning}
 
 Test generalization occupies a unique position in the test amplification landscape,
-providing orthogonal benefits to existing approaches.
-While test generation tools like \ToolEvoSuite{} optimize for coverage metrics,
-discovering new paths and achieving high statement or branch coverage,
-generalization optimizes for thoroughness within existing paths.
-This depth-versus-breadth distinction explains why combining approaches
-yields better results than either alone.
+providing orthogonal benefits to existing approaches—test generation tools like \ToolEvoSuite{}
+discover new paths achieving coverage (breadth),
+while generalization thoroughly validates discovered behaviors (depth).
+This complementarity explains why combining approaches yields better results than either alone
+and suggests natural integration points:
+test generation could identify high-value paths for subsequent generalization,
+fault localization could prioritize tests near suspicious code,
+and test selection could choose variants based on available execution time.
 The preservation of developer intent through existing oracles
 distinguishes our approach from inference-based techniques:
 we strengthen tests while maintaining their original semantics
 rather than hypothesizing new expected behaviors.
-
-The orthogonal nature of these benefits suggests natural integration points.
-Test generation could identify high-value paths for subsequent generalization.
-Fault localization could prioritize which tests to generalize
-based on their proximity to suspicious code.
-Test selection could choose between conventional and generalized variants
-based on available execution time.
 Each technique contributes different capabilities,
 and their combination promises more comprehensive testing
 than any single approach provides.
 
-\subsubsection{Deployment Considerations}
+\paragraph{Deployment Strategies and Limitations}
 
 Given current limitations, practical deployment requires careful target selection.
-Numeric-heavy components---scientific computing, financial calculations, data analytics---align
+Numeric-heavy components—scientific computing, financial calculations, data analytics—align
 well with \ToolSPF{}'s constraint modeling capabilities and show the strongest improvements.
 New development projects benefit more than legacy systems,
 as developers can write tests with generalization in mind from the start.
@@ -319,9 +389,9 @@ Projects using test generation tools provide particularly fertile ground,
 as their structural uniformity facilitates automated processing.
 
 Developer guidance could improve generalization outcomes even with current limitations.
-Simple practices---writing single-assertion tests,
+Simple practices—writing single-assertion tests,
 avoiding complex test helpers,
-preferring direct method calls over elaborate setup---would
+preferring direct method calls over elaborate setup—would
 increase the percentage of generalizable tests.
 Tool integration could flag tests with generalization-hostile patterns,
 suggesting refactoring opportunities.
@@ -332,16 +402,16 @@ Realistic deployment acknowledges that test generalization is not yet ready
 for general continuous integration pipelines.
 The combination of high processing time, limited type support, and modest improvements
 makes universal application premature.
-Instead, selective deployment---perhaps as a nightly or weekly analysis
-for critical components---provides value while managing costs.
+Instead, selective deployment—perhaps as a nightly or weekly analysis
+for critical components—provides value while managing costs.
 As tool support improves and optimization reduces overhead,
 broader application becomes feasible.
 
-\subsubsection{Research Opportunities}
+\paragraph{Research Opportunities}
 
 Several research directions could address current limitations.
 Test smell detection and automated resolution would prepare existing tests for generalization,
-potentially dramatic improvements for legacy test suites.
+potentially yielding dramatic improvements for legacy test suites.
 Hybrid specification extraction combining symbolic analysis with dynamic invariant detection
 or machine learning could handle types that symbolic execution cannot model precisely.
 Statistical approaches might infer likely properties from test execution traces,
@@ -352,7 +422,7 @@ By identifying tests that validate identical input partitions,
 we could eliminate redundancy while improving coverage within each partition.
 This requires extending our specification extraction to compare partitions across tests,
 handling the complexity of multi-assertion tests and varying test structures.
-The potential benefits---smaller, faster, more effective test suites---justify
+The potential benefits—smaller, faster, more effective test suites—justify
 the research investment.
 
 Cross-language implementations would validate the generality of our approach.
@@ -363,49 +433,63 @@ Comparing effectiveness across different symbolic execution engines
 and property-based testing frameworks would identify which tool characteristics
 most influence generalization success.
 
-\subsection{Threats to Validity}
+\section{Threats to Validity}
 \label{sec:threats-to-validity}
 
 \paragraph{Construct Validity}
-% The choice of mutation operators affects which improvements we can detect.
-% \ToolPit{}'s default operators may not capture all fault types,
-% potentially over- or under-estimating generalization benefits.
-% Our filtering strategy---retaining only tests that improve mutation scores---might
-% discard tests that would detect non-mutation faults.
-% The use of specific \tries{} values (10, 50, 200) influences results;
-% different values might alter the relative performance of \VariantNaive{} and \VariantImproved{} variants.
+Our choice of \ToolPit{}'s default mutation operators may not represent all fault types,
+potentially over- or underestimating generalization benefits.
+The filtering strategy retaining only tests that improve mutation scores
+might discard tests that would detect non-mutation faults.
+Using specific \tries{} values (10, 50, 200) influences results;
+different values might alter the relative performance of \VariantNaive{} and \VariantImproved{} variants.
+Mutation score as our primary metric assumes correlation with fault detection,
+though this relationship varies across domains.
 
 \paragraph{Internal Validity}
-% Our evaluation uses mutation score as a proxy for fault detection capability,
-% which assumes the coupling hypothesis holds in our context.
-% While prior work demonstrates correlation between mutation scores and real fault detection~\cite{just_2014_mutants},
-% the relationship is not perfect.
-% Some mutations may not represent realistic faults,
-% and some real faults may not be modeled by our mutation operators.
-% Additionally, our experiments use single runs per configuration.
-% While property-based tests include randomness that could produce variation across runs,
-% the consistent patterns across projects suggest our results are robust.
-% Multiple runs would strengthen confidence in precise improvement magnitudes.
+Our evaluation uses mutation score as a proxy for fault detection capability,
+which assumes the coupling hypothesis holds in our context.
+While prior work demonstrates correlation between mutation scores and real fault detection~\cite{just_2014_mutants},
+the relationship is not perfect.
+Some mutations may not represent realistic faults,
+and some real faults may not be modeled by our mutation operators.
+Additionally, our experiments use single runs per configuration.
+While property-based tests include randomness that could produce variation across runs,
+the consistent patterns across projects suggest our results are robust.
+Multiple runs would strengthen confidence in precise improvement magnitudes.
+Tool version dependencies (\ToolSPF{}, \ToolJqwik{}, \ToolPit{}) may affect reproducibility.
+Timeout settings during specification extraction could bias against complex methods.
+Disabling \ToolEvoSuite{}'s isolation features for \ToolPit{} compatibility
+causes some test failures, amplifying exclusions through class-level filtering.
 
 \paragraph{External Validity}
-% Although our implementation targets Java with \ToolSPF{} and \ToolJqwik{},
-% the approach generalizes to other languages with appropriate tool support.
-% The core requirements---unit test frameworks, symbolic execution tools,
-% and property-based testing frameworks---exist across multiple ecosystems.
-% JVM languages (Scala, Kotlin, Groovy) can leverage \ToolSPF{} directly
-% with their respective property-based testing frameworks.
-% Languages like C/C++ could use KLEE for symbolic execution,
-% while Python offers PyExZ3 paired with Hypothesis.
-% However, tool maturity varies significantly:
-% \ToolSPF{}'s constraint support exceeds that of many alternatives,
-% potentially limiting effectiveness in other languages.
+Although our implementation targets Java with \ToolSPF{} and \ToolJqwik{},
+the approach generalizes to other languages with appropriate tool support.
+The core requirements—unit test frameworks, symbolic execution tools,
+and property-based testing frameworks—exist across multiple ecosystems.
+JVM languages (Scala, Kotlin, Groovy) can leverage \ToolSPF{} directly
+with their respective property-based testing frameworks.
+Languages like C/C++ could use KLEE for symbolic execution,
+while Python offers PyExZ3 paired with Hypothesis.
+However, tool maturity varies significantly:
+\ToolSPF{}'s constraint support exceeds that of many alternatives,
+potentially limiting effectiveness in other languages.
 
-% Our evaluation focuses on domains where symbolic execution excels:
-% numeric computations with tractable constraints.
-% String manipulation, I/O operations, concurrent code, and GUI testing remain unexplored.
-% These domains may prove less amenable to our approach
-% given current symbolic execution limitations.
-% The fundamental constraints---the oracle problem and requirement for deterministic behavior---persist
-% across all languages and domains.
-% We can only generalize tests with existing assertions,
-% and symbolic analysis requires pure functions without side effects or external dependencies.
+Our evaluation focuses on domains where symbolic execution excels:
+numeric computations with tractable constraints.
+String manipulation, I/O operations, concurrent code, and GUI testing remain unexplored.
+These domains may prove less amenable to our approach
+given current symbolic execution limitations.
+The fundamental constraints—the oracle problem and requirement for deterministic behavior—persist
+across all languages and domains.
+We can only generalize tests with existing assertions,
+and symbolic analysis requires pure functions without side effects or external dependencies.
+
+\paragraph{Statistical Validity}
+We report percentage point improvements without significance testing due to single runs.
+Practical significance of 1--4 percentage point improvements depends on context—meaningful
+for safety-critical systems, perhaps negligible for prototypes.
+Effect sizes vary considerably across project types,
+suggesting aggregate statistics may obscure important nuances.
+Future work should examine improvement distributions across individual tests
+rather than only aggregate scores.
