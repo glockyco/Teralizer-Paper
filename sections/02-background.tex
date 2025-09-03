@@ -139,38 +139,42 @@ practical success requires both precise specifications and tractable constraints
 
 Having established how to extract specifications from existing tests,
 we require a systematic way to assess whether transforming tests based on these specifications
-improves effectiveness.
+improves fault detection capability.
 Because original and generalized tests execute the same paths, traditional
 coverage metrics cannot reveal improvements~\cite{inozemtseva_2014_coverage}.
 Statement, branch, and path coverage~\cite{zhu_1997_software}
 remain identical whether a test validates one input or hundreds from the same partition.
 Mutation testing, in contrast, reflects the ability of a test suite to expose
-behavioral differences within those paths, making it the appropriate measure for
-evaluating test generalization~\cite{jia_2011_analysis}.
+behavioral differences within those paths, making it a suitable metric for evaluating
+which generalized tests provide additional fault detection capability~\cite{jia_2011_analysis}.
 
-Mutation testing rests on two hypotheses: the competent programmer hypothesis
+Mutation testing systematically introduces small faults into program code
+and measures whether test suites detect them.
+The approach rests on two hypotheses: the competent programmer hypothesis
 (real faults are small deviations from correct programs) and the coupling effect
 (tests that detect simple faults also detect more complex ones)~\cite{offutt_1992_investigations}.
-These hypotheses support using small syntactic changes, i.e., mutations, as proxies for real programming errors.
-Mutation operators systematically alter program statements
-to create mutants, each containing a single fault.
-Common mutation operators include arithmetic replacements (e.g., \texttt{+} to
-\texttt{-}), relational boundary shifts (e.g., \texttt{>} to \texttt{>=}),
-logical connector changes (e.g., \texttt{\&\&} to \texttt{||}), constant
-modifications, and replacements of return values with defaults such as
-\texttt{0}, \texttt{true}, or \texttt{null}~\cite{jia_2011_analysis}.
-A test suite's mutation score, i.e., the proportion of mutants killed,
-provides a quantitative measure of test effectiveness
-that correlates with real fault detection capability~\cite{just_2014_mutants,papadakis_2019_mutation}.
+These hypotheses justify using small syntactic changes as proxies for real programming errors.
+Mutation operators systematically alter program statements to create mutants,
+each containing a single fault.
+Common operators include arithmetic replacements (e.g., \texttt{+} to \texttt{-}),
+relational boundary shifts (e.g., \texttt{>} to \texttt{>=}),
+logical connector changes (e.g., \texttt{\&\&} to \texttt{||}),
+constant modifications, and replacements of return values with defaults
+such as \texttt{0}, \texttt{true}, or \texttt{null}~\cite{jia_2011_analysis}.
+A test suite's mutation score,
+which is calculated as the proportion of mutants the test suite detects ("kills"),
+provides a quantitative measure that correlates with real fault detection capability~\cite{just_2014_mutants,papadakis_2019_mutation}.
 
-Mutation testing also clarifies the limitations of single-input tests
-when evaluating amplification techniques.
-The unit test verifying \texttt{abs(0) = 0}
+The limitations of single-input tests become clear through mutation analysis.
+A unit test verifying \texttt{abs(0) = 0}
 cannot kill a mutant changing \texttt{x >= 0} to \texttt{x == 0},
 because the test's single input still satisfies the mutated condition.
-A generalized property-based test
+A property-based test
 that exercises the same execution path with multiple inputs
 will detect this mutant when positive values produce negative results.
-The difference in mutants killed by the original and generalized suites
-quantifies the improvement in fault detection.
-Tools such as \ToolPit{}~\cite{coles_2016_pit} support this evaluation for Java programs.
+This difference reveals both the improvement potential of test generalization
+and provides a concrete criterion for selecting which generalized tests
+to retain. Only those generalizations that detect mutants not caught by existing tests
+contribute unique fault detection capability to the test suite,
+whereas generalizations that do not kill any new mutants only increase test suite size and runtime
+without any tangible benefits.
