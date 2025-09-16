@@ -18,84 +18,25 @@
   \label{fig:approach-overview}
 \end{figure}
 
-\ToolTeralizer{} demonstrates the feasibility of semantics-based test generalization,
-transforming conventional unit tests into property-based tests
+This section presents our semantics-based approach for automated test generalization,
+which transforms conventional unit tests into property-based tests
 by analyzing both test and implementation code.
 While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
-they traditionally require manual specification of generators and properties~\cite{goldstein_2024_pbt_practice},
-a barrier that limits adoption in practice.
-Our approach automates this transformation through a five-stage pipeline (Figure~\ref{fig:approach-overview}):
-test and assertion analysis identifies executable tests and their assertions,
-tested method identification maps assertions to the methods they validate,
-specification extraction recovers path conditions and symbolic outputs through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
-generalized test creation produces property-based tests with constraint-aware input generation,
-and test suite reduction selects tests that improve fault detection capability.
+they traditionally require manual specification of generators and properties,
+a barrier that limits adoption in practice~\cite{goldstein_2024_pbt_practice}.
+Our approach automates this transformation by extracting path-exact specifications
+through single-path symbolic analysis of existing test executions.
+We implement this approach in \ToolTeralizer{}, a prototype tool for Java
+that demonstrates the feasibility of semantics-based test generalization.
 
-The oracle problem fundamentally shapes this design~\cite{barr_2015_oracle} (Section~\ref{sec:test-amplification}).
-We can only generalize execution paths where developers have provided assertions,
-as other paths lack validated oracles to distinguish intended behavior from incidental state changes or outputs.
-This requirement leads us to follow the concrete execution of existing tests,
-collecting conditions along their paths without exploring alternative branches.
-Our white-box analysis of implementation code enables extraction of path-exact specifications,
-unlike black-box approaches such as JARVIS~\cite{peleg_2018_jarvis}
-that infer patterns solely from test input-output examples.
-JARVIS applies predefined abstraction templates to these examples,
-producing overapproximations that may be too general for the actual execution paths.
-
-Figure~\ref{fig:approach-overview} presents \ToolTeralizer{}'s five-stage pipeline.
-Throughout the pipeline, we apply systematic filtering to focus on tests
-amenable to semantics-based generalization.
-The filtering cascade operates at multiple levels:
-test-level structural prerequisites (e.g., passing tests with standard @Test annotations),
-assertion-level specification extraction requirements (e.g., identifiable method calls with numeric parameters),
-specification-level symbolic analysis constraints (e.g., pure functions with supported types),
-and generalization-level property generation feasibility (e.g., specifications where jqwik can generate satisfying inputs).
-Each stage applies appropriate filters to ensure only viable tests proceed to subsequent processing.
-The five stages are:
-
-\begin{itemize}
-    \item \textbf{Test and Assertion Analysis}:
-    identifies executable test methods from JUnit reports
-    and locates assertions within each test.
-    \item \textbf{Tested Method Identification}:
-    establishes assertion-to-method mappings through data flow analysis.
-    \item \textbf{Specification Extraction}:
-    uses \ToolSPFLong{} (\ToolSPF{})~\cite{pasareanu_2013_symbolic} in constraint collection mode
-    to derive path conditions and symbolic outputs for each assertion-method pair.
-    \item \textbf{Generalized Test Creation}:
-    generates property-based \ToolJqwik{}~\cite{link_2022_jqwik} tests from extracted specifications,
-    producing three test variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{})
-    to evaluate different input generation strategies.
-    \item \textbf{Test Suite Reduction}:
-    uses mutation testing to identify and retain only generalized tests
-    that detect faults not caught by existing tests.
-\end{itemize}
-
-Consider the bonus calculation method in Listing~\ref{lst:bonus-method},
-which returns different rates based on sales performance.
-The unit test in Listing~\ref{lst:original-test} verifies that \texttt{calculate(2500, 1000)} returns \texttt{250}.
-This test passes for the specified input but cannot detect regressions within the same partition.
-For example, changing the condition from \texttt{sales/2 >= target} to \texttt{sales/2 > target}
-preserves test success but breaks the boundary case.
-\ToolTeralizer{} transforms this test into a property-based variant
-that represents the entire partition, detecting such regressions.
-
-Our implementation targets Java 5--8 projects (limited by \ToolSPF{})
-with Maven or Gradle build systems and JUnit 4/5 test suites.
-Before processing, \ToolTeralizer{} detects the build system
-and injects necessary dependencies including \ToolJqwik{}~\cite{link_2022_jqwik}, \ToolPit{}~\cite{coles_2016_pit}, and \ToolJacoco{}\footnote{\url{https://github.com/jacoco/jacoco}}.
-This instrumentation creates modified build files while preserving originals,
-enabling the pipeline to execute tests and collect mutation testing results
-for evaluating generalization effectiveness.
-
-The following subsections detail each stage:
-Sections~\ref{sec:test-assertion-analysis} and \ref{sec:tested-method-identification} explain test identification and assertion-to-method mapping,
-Section~\ref{sec:specification-extraction} describes path condition and symbolic output extraction,
-Section~\ref{sec:generalized-test-creation} presents the three generalization strategies,
-and Section~\ref{sec:test-suite-reduction} describes the mutation-based test selection process.
-Comprehensive metrics (available in our replication package~\cite{replicationpackage})
-reveal what makes tests amenable to generalization
-and highlight technical advances needed for broader applicability.
+As shown in Figure~\ref{fig:approach-overview}, our approach follows a five-stage pipeline
+that takes the implementation and corresponding tests of a software project as input
+and produces generalized, property-based tests as output:
+(1)~test and assertion analysis identifies potentially generalizable tests and their assertions,
+(2)~tested method identification maps assertions to the methods they validate through data flow analysis,
+(3)~specification extraction recovers input/output specifications from the tested methods through single-path symbolic analysis,
+(4)~generalized test creation produces property-based tests with three input generation variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}),
+and (5)~test suite reduction filters generalized tests to retain only those generalizations that measurably improve the mutation score of the overall test suite.
 
 {
 \begin{genericfloat}[tbph]
@@ -119,12 +60,19 @@ class BonusCalculator {
 }
 \end{lstlisting}
 
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+
 \begin{lstlisting}[language=Java, caption={Original test for the \texttt{calculate} method.}, label=lst:original-test]
 @Test
 void testCalculate() {
   BonusCalculator c = new BonusCalculator();
+  // exceptional performance:
   int b1 = c.calculate(2500, 1000);
+  // good performance:
   int b2 = c.calculate(1500, 1000);
+  // bad performance:
   int b3 = c.calculate(500, 1000);
   assertEquals(250, b1);
   assertEquals(75, b2);
@@ -132,81 +80,46 @@ void testCalculate() {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Input/output specifications of \texttt{calculate}.}, label=lst:input-output-specs]
-exceptional performance:
-- input:  sales / 2 >= target
-- output: sales / 10 
-good performance:
-- input:  sales / 2 < target && sales >= target
-- output: sales / 20
-bad performance:
-- input:  sales / 2 < target && sales < target
-- output: 0
-\end{lstlisting}
-
-\begin{lstlisting}[language=Java, caption={Generalized test for the \textit{good performance} assertion.}, label=lst:generalized-test]
-@Property(supplier = ..., tries = ...)
-void testCalculate(TestParams _p_) {
-  BonusCalculator c = new BonusCalculator();
-  ...
-  int b2 = c.calculate(_p_.sales, _p_.target);
-  ...
-  assertEquals(calculateExpected(_p_), b2);
-}
-\end{lstlisting}
-
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\textwidth}
-
-\begin{lstlisting}[language=Java, caption={\VariantBaseline{} supplier for \texttt{testCalculate(...)} inputs. The supplier uses the same inputs as the original test.}, label=lst:baseline-supplier]
-class BaselineSupplier {
-  Arbitrary get() {
-    return Arbitraries.just(
-      new TestParams(1500, 1000));
-  }
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=Java, caption={\VariantNaive{} supplier for \texttt{testCalculate(...)} inputs. The supplier generates random inputs and then filters them to only test cases that match the input specification.}, label=lst:naive-supplier]
-class NaiveSupplier {
-  Arbitrary get() {
-    return Arbitraries.integers().flatMap(
-      sales -> Arbitraries.integers().map(
-        target -> new TestParams(sales, target)))
-    .filter(this::satisfiesInputSpec);
-  }
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=Java, caption={\VariantImproved{} supplier for \texttt{testCalculate(...)} inputs. The supplier partially encodes the input specification during generation, reducing filtering failures compared to \VariantNaive{}.}, label=lst:improved-supplier]
-class ImprovedSupplier {
-  Arbitrary get() {
-    return Arbitraries.integers().flatMap(
-      target -> Arbitraries.integers()
-        // sales >= target is encoded
-        // sales / 2 < target is not encoded
-        .between(target, Integer.MAX_VALUE)
-        .map(sales -> 
-          new TestParams(sales, target)))
-    .filter(this::satisfiesInputSpec);
-  }
-}
-\end{lstlisting}
-
-\begin{lstlisting}[language=Java, caption={Java encodings of input/output specifications.}, label=lst:java-spec-encodings]
-boolean satisfiesInputSpec(TestParams _p_) {
-  return _p_.sales / 2 < _p_.target
-    && _p_.sales >= _p_.target;
-}
-
-int calculateExpected(TestParams _p_) {
-  return _p_.sales / 20;
-}
-\end{lstlisting}
 \end{minipage}
 \end{genericfloat}
 }
+
+We illustrate our approach with a running example.
+Listing~\ref{lst:bonus-method} shows a bonus calculation method with three distinct execution paths
+for exceptional, good, and bad performance.
+Listing~\ref{lst:original-test} shows a typical unit test that validates this method
+by testing one representative input for each performance level.
+While this test detects regressions that affect these three specific inputs,
+it misses regressions that affect other inputs within the same partitions.
+Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target},
+replacing the non-strict inequality with a strict inequality.
+Despite the change, the test still passes because all three tested inputs still follow the same execution paths.
+However, all boundary cases where \texttt{sales = 2 * target} now incorrectly
+return the good performance bonus instead of the exceptional performance bonus.
+To detect such subtle regressions, \ToolTeralizer{} automatically transforms existing
+unit tests into property-based tests that encode the intended behavior
+for all inputs in the covered input partitions.
+
+While the underlying generalization approach is independent of
+specific programming languages or project environments,
+our current implementation of \ToolTeralizer{} targets Java 5--8 projects
+(imposed by our dependency on \ToolSPFLong{})
+that use Maven or Gradle for dependency management and JUnit 4 or JUnit 5 for testing.
+Before starting the main processing stages, \ToolTeralizer{} automatically detects the build system
+that is used by the target project and injects necessary dependencies including
+\ToolJqwik{}~\cite{link_2022_jqwik} for property-based testing,
+\ToolPit{}~\cite{coles_2016_pit} for mutation testing,
+and \ToolJacoco{}\footnote{\url{https://github.com/jacoco/jacoco}} for coverage tracking,
+thus ensuring full automation without the need for manual preprocessing steps.
+All changes that \ToolTeralizer{} applies are easily reversible via an integrated cleanup task.
+
+The following subsections detail each stage of the main generalization process as implemented in \ToolTeralizer{}.
+Section~\ref{sec:test-assertion-analysis} explains test and assertion analysis.
+Section~\ref{sec:tested-method-identification} describes tested method identification.
+Section~\ref{sec:specification-extraction} presents input/output specification extraction
+and Section~\ref{sec:generalized-test-creation} covers generalized test creation.
+Finally, Section~\ref{sec:test-suite-reduction} describes mutation-based test suite reduction.
+The full implementation of \ToolTeralizer{} is available in our replication package~\cite{replicationpackage}.
 
 \subsection{Test and Assertion Analysis}
 \label{sec:test-assertion-analysis}
