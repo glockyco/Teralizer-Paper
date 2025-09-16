@@ -185,58 +185,87 @@ required for the next stage to identify which methods each assertion validates.
 \subsection{Tested Method Identification}
 \label{sec:tested-method-identification}
 
-The tested method identification stage maps each assertion to the specific method invocation it validates.
-This mapping requires tracing data flow through tests that often invoke multiple methods,
-store results in intermediate variables, and assert on those variables.
-For example, the BonusCalculator test (Listing~\ref{lst:original-test}) calls
-\texttt{calculate} several times and then asserts on separate variables.
+After identifying generalizable tests and assertions,
+the next step in the generalization pipeline
+is to identify which implementation methods are validated by the tests.
+These methods under test (MUT) serve as targets for subsequent specification extraction.
+The challenges encountered in this pipeline stage are twofold.
+First, we must distinguish test setup code
+from code that exercises and validates the MUT
+to be able to restrict specification extraction
+to relevant parts of the implementation.
+Second, when a test validates multiple MUTs,
+we must determine which MUT call corresponds to each assertion
+so we can replace the expected value used in the assertion
+with the right output specification when creating the corresponding generalized test.
+Our current implementation of \ToolTeralizer{} achieves this
+through static analysis based on Spoon~\cite{pawlak_2016_spoon}
+that traces output values validated by assertions
+back to the method calls that produced them.
+As a result, \ToolTeralizer{} collects descriptions of
+identified MUTs (source code locations, method signatures, etc.)
+as well as mappings that connect each MUT call to a corresponding assertion.
 
-\ToolTeralizer{} must trace each assertion backward to the call that produced
-the asserted value. This mapping is essential because all input generators
-must include the original concrete inputs encoded by developers.
+Consider the \texttt{testCalculate} method in Listing~\ref{lst:original-test}.
+To identify MUT calls in this method,
+\ToolTeralizer{} uses Spoon to first get the \texttt{actual}
+arguments that are passed into each assertion.
+In our example, all three assertions are \texttt{assertEquals} calls with two integer parameters,
+matching the method signature \texttt{static void assertEquals(int expected, int actual)}.
+\ToolTeralizer{} thus identifies \texttt{b1}, \texttt{b2}, and \texttt{b3}
+as the \texttt{actual} arguments of the three assertions.
+Since all three arguments are local variables,
+\ToolTeralizer{} uses Spoon to identify where they were defined.
+For example, for \texttt{b1}, Spoon identifies \texttt{int b1 = c.calculate(2500, 1000)} as the definition.
+Since the right side of the assignment is a method call,
+\ToolTeralizer{} marks it as a MUT call, storing a description of the method
+as well as a mapping to the corresponding \texttt{assertEquals(250, b1)} call in its database.
+Processing \texttt{b2} and \texttt{b3} similarly identifies
+\texttt{c.calculate(1500, 1000)} and \texttt{c.calculate(500, 1000)}
+as the MUT calls for the second and third assertions.
 
-We handle different assertion types systematically.
-For \texttt{assertThrows}, we extract the executable body from the lambda expression
-and identify the last method call within it,
-which typically represents the operation expected to throw.
-For value assertions (i.e., \texttt{assertEquals}, \texttt{assertTrue}, \texttt{assertFalse}),
-we locate the actual parameter and trace its origin.
-If the actual value comes from a direct method invocation, we use that method.
-If it comes from a variable, we trace back to the variable's assignment
-and extract the method call from the right-hand side.
-This analysis targets well-structured unit tests that follow single-responsibility principles.
-Complex data flow patterns such as method chaining or indirect calls through multiple variables
-typically indicate test design issues outside our intended scope.
+Processing for other assertion types and code structures follows similar patterns.
+\ToolTeralizer{} always identifies the assertion argument
+that represents the (output of the) MUT call
+as its first processing step.
+If the argument is a method call,
+\ToolTeralizer{} directly marks it as a MUT call.
+Otherwise, \ToolTeralizer{} aims to identify
+a corresponding method call from the argument.
+For example, for local variables,
+it traces them back to their definition
+using the simple static data flow analysis based on Spoon
+we described in the previous paragraph.
+For lambda expressions, which are commonly used
+as the \texttt{executable} argument of 
+\texttt{assertThrows(Class expectedType, Executable executable)}
+assertions,
+\ToolTeralizer{} instead marks the last method call within the lambda expression as the MUT call,
+following the heuristic that the last call typically triggers the expected exception.
 
-Multiple filters apply at this stage to exclude assertions
-where method identification fails.
-MissingValue filtering excludes assertions when static analysis
-cannot identify which method call represents the tested method
-or when the declaration of the tested method cannot be resolved by Spoon,
-commonly due to conditional assignments across branches,
-indirect method calls through variables,
-or unresolved method declarations in inheritance hierarchies.
-ParameterType filtering excludes assertions for tested methods
-whose parameters are not generalizable types (numeric or boolean).
-Methods with mixed parameter types can be partially generalized:
-numeric parameters become property-based test inputs while non-numeric parameters
-retain their original concrete values from the test.
-While \ToolSPF{} can track symbolic values for strings, arrays, and objects,
-it cannot extract complete constraints for these types.
-Without accurate constraints for these complex types, we cannot precisely characterize their input partitions.
-VoidReturnType filtering excludes assertions for methods with void return types,
-as SPF does not report symbolic outputs for such methods.
-When method identification cannot resolve a clear method invocation for an assertion,
-\ToolTeralizer{} marks the assertion as excluded
-and skips it during subsequent processing stages.
-
-As a result of this analysis, \ToolTeralizer{} outputs assertion-method pairs that record which invocation
-an assertion validates.
-These pairs drive specification extraction, enabling extraction of
-precise path conditions (constraints on tested method inputs)
-and symbolic outputs (expressions representing tested method outputs)
-for each method under test.
-
+Similar to test and assertion filtering,
+\ToolTeralizer{} applies three filters to exclude MUTs that
+are not viable candidates for generalization:
+\texttt{MissingValue}, \texttt{ParameterType}, and \texttt{ReturnType}.
+The \texttt{MissingValue} filter rejects cases where
+\ToolTeralizer{} cannot identify a MUT for a given assertion
+or cannot extract the full method signature for an identified MUT.
+Common causes for this include
+reversed \texttt{expected} and \texttt{actual} arguments (e.g., \texttt{assertEquals(abs(0), 0)}),
+validation of object fields set as side effects rather than return values (e.g., \texttt{assertEquals(3, a.length)}),
+and MUTs within inheritance hierarchies that Spoon cannot resolve.
+The \texttt{ParameterType} and \texttt{ReturnType} filters reject MUTs
+that use unsupported types for all of the MUT's parameters or return values.
+While methods with mixed parameter types can be partially generalized
+(numeric and boolean parameters become input parameters for property-based tests
+while other parameters remain unchanged),
+\ToolSPF{} cannot extract complete constraints
+for parameters and return values that are strings, arrays, or objects.
+This limitation to numeric and boolean types
+aligns with current symbolic analysis capabilities
+discussed in Section~\ref{sec:symbolic-analysis}.
+Section~\ref{sec:limitations-eval} evaluates
+how often all filtering-based exclusions occur.
 
 \subsection{Specification Extraction}
 \label{sec:specification-extraction}
