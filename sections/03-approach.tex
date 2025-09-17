@@ -270,77 +270,149 @@ how often all filtering-based exclusions occur.
 \subsection{Specification Extraction}
 \label{sec:specification-extraction}
 
-The specification extraction stage transforms assertion-method pairs from tested method identification
-into input/output specifications using \ToolSPF{}.
-Each specification comprises two elements:
-the path condition that characterizes inputs following the same execution path as the test,
-and the symbolic output expression that computes expected results for any input in that partition.
-Listing~\ref{lst:input-output-specs} shows example specifications extracted from the \texttt{calculate} method.
-These specifications enable generalized test creation
-to produce property-based tests that validate assertions across entire input partitions.
+The specification extraction stage takes
+the MUT-to-assertion mappings from tested method identification
+as its input and produces input/output specifications for every MUT as its output.
+Each input/output specification captures two elements:
+the path condition that describes which inputs
+follow the same execution path through the MUT as the test,
+and the symbolic output expression that describes expected results
+for any input satisfying the path condition.
+Our current implementation of \ToolTeralizer{}
+extracts specifications through a two-step process:
+first instrumenting tests to create controlled entry points for symbolic analysis,
+then executing them with \ToolSPFLong{} (\ToolSPF{}) in constraint collection mode.
+In this mode, \ToolSPF{} follows the test's concrete execution path
+while maintaining symbolic representations,
+extracting path-exact specifications without exploring alternative paths.
 
-We leverage \ToolSPF{}'s constraint collection mode,
-which follows the test's concrete execution path while maintaining symbolic representations.
-Unlike full symbolic execution, which explores all possible paths and faces exponential complexity,
-this mode accumulates path conditions only along the executed path.
-This focused approach aligns with the oracle problem discussed in Section~\ref{sec:test-amplification}:
-validated oracles exist only for the executed path,
-making exploration of alternative paths unnecessary.
-To enable targeted symbolic analysis of each assertion-method pair,
-we instrument the test, configure which parameters \ToolSPF{} treats symbolically,
-and use a custom listener to capture specifications when the tested method completes.
-During execution, \ToolSPF{} records conditions at each branch point.
-When executing \texttt{calculate(1500, 1000)}, for example,
-the condition \texttt{sales/2 >= target} evaluates to false (750 < 1000),
-so \ToolSPF{} records the negated constraint \texttt{sales/2 < target}.
-The subsequent condition \texttt{sales >= target} evaluates to true (1500 >= 1000),
-yielding the complete path condition \texttt{sales/2 < target \&\& sales >= target}.
-We modified \ToolSPF{} to consistently bypass constraint solving in collection mode,
-as the original implementation occasionally invoked the solver despite the collection-only setting.
+The first step, test instrumentation, generates three artifacts for each identified MUT:
+an instrumented version of the test class,
+a driver class, 
+and a configuration file for \ToolSPF{}.
+In our running example,
+the \texttt{Instrumented} test class 
+for the \textit{good performance} MUT call
+(Listing~\ref{lst:instrumented-test})
+wraps the original \texttt{c.calculate(1500, 1000)} call
+in a new \texttt{wrapper} method that marks the starting point for symbolic analysis
+while preserving the behavior of the original test.
+The \texttt{Driver} class (Listing~\ref{lst:instrumented-test})
+provides the entry point for \ToolSPF{}.
+It first instantiates the instrumented test class,
+then runs any setup code in methods annotated with one of JUnit's \texttt{@Before} annotations,
+and finally executes the targeted test method \texttt{testCalculate}.
+The \ToolSPF{} configuration (Listing~\ref{lst:jpf-config})
+sets up symbolic analysis of the \texttt{wrapper} method,
+registers a custom \texttt{TestGeneralizationListener} for specification extraction,
+and configures relevant resource limits.
 
-The approach operates within specific constraints.
-\ToolTeralizer{}'s current implementation requires that tested methods are pure functions:
-deterministic, side-effect-free, and dependent only on their input parameters.
-This purity requirement is common across symbolic execution tools~\cite{cadar_2013_symbolic,baldoni_2018_survey}
-and white-box test generation approaches such as Pex~\cite{tillmann_2008_pex},
-as non-determinism undermines the fundamental assumption that inputs determine execution paths.
-Without determinism, the same inputs could follow different paths on different executions,
-invalidating our extracted specifications.
-We support only boolean and numeric parameters
-(\texttt{byte}, \texttt{short}, \texttt{int}, \texttt{long}, \texttt{float}, \texttt{double})
-where \ToolSPF{} produces accurate constraints,
-while strings, arrays, and objects remain concrete.
+{
+\begin{genericfloat}[tbph]
+\newpage{}
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
 
-We impose resource limits to maintain tractability:
-60-second timeout per assertion, 100,000-character path conditions, and 100-step recursion depth.
-These limits ensure practical processing times based on evaluation findings
-that show specification extraction consuming less than 10\% of total runtime (Section~\ref{sec:runtime-eval}).
-Without these limits, processing hundreds of assertions in large test suites
-could require days for methods with complex control flow.
+\begin{lstlisting}[language=Java, caption={Driver and instrumented test class used for specification extraction of the \textit{good performance} case.}, label=lst:instrumented-test]
+public class Driver {
+  // Driver.main provides entry point for SPF:
+  public static void main(String[] args) {
+    Instrumented i = new Instrumented();
+    i.testCalculate();
+  }
+}
 
-SPF execution can fail for multiple reasons.
-SPF exceptions constitute the majority of extraction failures,
-occurring primarily due to missing models for native methods
-in the current implementation of \ToolSPF{}
-and implementation bugs in \ToolSPF{}/\ToolJPF{}.
-The approach handles these failures gracefully by filtering failed extractions
-and continuing with successful ones, maintaining robustness across diverse codebases.
-Exceeded analysis limits account for another significant portion of failures:
-extractions may be interrupted after exceeding the configured maximum specification size
-to avoid timeouts and memory exhaustion in the presence of complex constraints,
-while others exceed the configured maximum depth limit for similar reasons.
-Timeouts and out-of-memory errors represent additional failure modes
-that evade preemptive detection via the preceding measures.
-Exceptions due to null pointer dereferences
-in \ToolTeralizer{}'s current specification extraction implementation
-represent the remaining failures.
+public class Instrumented {
+  @Test
+  void testCalculate() {
+    BonusCalculator c = new BonusCalculator();
+    ...
+    // Instrumented.wrapper marks the
+    // starting point for symbolic analysis:
+    int b2 = this.wrapper(c, 1500, 1000);
+    ...
+  }
 
-Upon completion, \ToolSPF{} outputs the path condition and symbolic output expression,
-then terminates immediately since only the single test path requires analysis.
-For inputs \texttt{(1500, 1000)}, this yields
-path condition \texttt{sales/2 < target \&\& sales >= target}
-and output expression \texttt{sales/20},
-providing the complete semantics for property-based test generation.
+  int wrapper(
+    BonusCalculator c, int sales, int target
+  ) {
+    return c.calculate(sales, target);
+  }
+}
+\end{lstlisting}
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[caption={\ToolSPFLong{} configuration used for specification extraction of the \textit{good performance} case.}, label=lst:jpf-config]
+target=Driver
+symbolic.method=Instrumented.wrapper(con#sym#sym)
+symbolic.collect_constraints=true
+
+listener=teralizer.jpf.TestGeneralizationListener
+
+teralizer.max_execution_time=60.0
+teralizer.max_path_condition_size=100000
+search.depth_limit=100
+
+...
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Input/Output specifications extracted for the MUT calls in the \texttt{testCalculate} method.}, label=lst:extracted-specs]
+exceptional performance:
+- input:  sales / 2 >= target
+- output: sales / 10
+
+good performance:
+- input:  sales / 2 < target && sales >= target
+- output: sales / 20
+
+bad performance:
+- input:  sales / 2 < target && sales < target
+- output: 0
+\end{lstlisting}
+
+\end{minipage}
+\end{genericfloat}
+}
+
+The second step, symbolic analysis, executes these artifacts with \ToolSPF{},
+which follows the test's concrete execution path
+while maintaining symbolic representations of the wrapper method's numeric parameters.
+For the \textit{good performance} case with concrete inputs (1500, 1000),
+the first if condition \texttt{sales / 2 >= target}
+in the \texttt{calculate} method (see Listing~\ref{lst:bonus-method})
+evaluates to false (i.e., 1500 / 2 is \textit{not} greater than or equal to 1000),
+so \ToolSPF{} records the negated constraint \texttt{sales / 2 < target}.
+The second if condition \texttt{sales >= target} evaluates to true (i.e., 1500 \textit{is} greater than or equal to 1000),
+adding \texttt{sales >= target} to the accumulated path condition.
+When the wrapper method returns, our custom \texttt{TestGeneralizationListener}
+captures the complete path condition
+(\texttt{sales / 2 < target \&\& sales >= target}) and the symbolic output expression (\texttt{sales / 20}),
+writes both concrete input/output values and symbolic input/output specifications to JSON files,
+and then immediately terminates \ToolSPF{} without exploring alternative paths.
+Listing~\ref{lst:extracted-specs} shows the input/output specifications
+that are collected for the three identified MUT calls of our running example.
+
+Single-path symbolic analysis requires tested methods to be pure functions, i.e.,
+deterministic, side-effect-free, and dependent only on their input parameters~\cite{cadar_2013_symbolic,baldoni_2018_survey}.
+Furthermore, \ToolSPF{} can only provide precise specifications for numeric and boolean values.
+Because of this, \ToolTeralizer{} only targets generalization of
+numeric and boolean inputs, leaving string, array, and object inputs unchanged.
+If no input/output specification can be extracted for a given MUT,
+\ToolTeralizer{} excludes this MUT from further processing.
+The primary causes of such exclusions are \ToolSPF{} errors,
+NullPointerExceptions for certain edge cases
+in our current implementation of \ToolTeralizer{},
+and exceeded resource limits.
+By default, \ToolTeralizer{} uses a 60-second timeout per MUT,
+a 100,000-character limit per path condition,
+and a function call depth limit of 100.
+We empirically determined these settings to provide
+a reasonable trade-off between resource consumption and result quality.
+Section~\ref{sec:limitations-eval} shows how often all of the mentioned causes
+lead to exclusions in our evaluation.
 
 \subsection{Generalized Test Creation}
 \label{sec:generalized-test-creation}
