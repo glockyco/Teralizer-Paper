@@ -1,0 +1,146 @@
+\subsection{Specification Extraction}
+\label{sec:specification-extraction}
+
+The specification extraction stage takes
+the MUT-to-assertion mappings from tested method identification
+as its input and produces input/output specifications for every MUT as its output.
+Each input/output specification captures two elements:
+the path condition that describes which inputs
+follow the same execution path through the MUT as the test,
+and the symbolic output expression that describes expected results
+for any input satisfying the path condition.
+Our current implementation of \ToolTeralizer{}
+extracts specifications through a two-step process:
+first instrumenting tests to create controlled entry points for symbolic analysis,
+then executing them with \ToolSPFLong{} (\ToolSPF{}) in constraint collection mode.
+In this mode, \ToolSPF{} follows the test's concrete execution path
+while maintaining symbolic representations,
+extracting path-exact specifications without exploring alternative paths.
+
+The first step, test instrumentation, generates three artifacts for each identified MUT:
+an instrumented version of the test class,
+a driver class, 
+and a configuration file for \ToolSPF{}.
+In our running example,
+the \texttt{Instrumented} test class 
+for the \textit{good performance} MUT call
+(Listing~\ref{lst:instrumented-test})
+wraps the original \texttt{c.calculate(1500, 1000)} call
+in a new \texttt{wrapper} method that marks the starting point for symbolic analysis
+while preserving the behavior of the original test.
+The \texttt{Driver} class (Listing~\ref{lst:instrumented-test})
+provides the entry point for \ToolSPF{}.
+It first instantiates the instrumented test class,
+then runs any setup code in methods annotated with one of JUnit's \texttt{@Before} annotations,
+and finally executes the targeted test method \texttt{testCalculate}.
+The \ToolSPF{} configuration (Listing~\ref{lst:jpf-config})
+sets up symbolic analysis of the \texttt{wrapper} method,
+registers a custom \texttt{TestGeneralizationListener} for specification extraction,
+and configures relevant resource limits.
+
+{
+\begin{genericfloat}[tbph]
+\newpage{}
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[language=Java, caption={Driver and instrumented test class used for specification extraction of the \textit{good performance} case.}, label=lst:instrumented-test]
+public class Driver {
+  // Driver.main provides entry point for SPF:
+  public static void main(String[] args) {
+    Instrumented i = new Instrumented();
+    i.testCalculate();
+  }
+}
+
+public class Instrumented {
+  @Test
+  void testCalculate() {
+    BonusCalculator c = new BonusCalculator();
+    ...
+    // Instrumented.wrapper marks the
+    // starting point for symbolic analysis:
+    int b2 = this.wrapper(c, 1500, 1000);
+    ...
+  }
+
+  int wrapper(
+    BonusCalculator c, int sales, int target
+  ) {
+    return c.calculate(sales, target);
+  }
+}
+\end{lstlisting}
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[caption={\ToolSPFLong{} configuration used for specification extraction of the \textit{good performance} case.}, label=lst:jpf-config]
+target=Driver
+symbolic.method=Instrumented.wrapper(con#sym#sym)
+symbolic.collect_constraints=true
+
+listener=teralizer.jpf.TestGeneralizationListener
+
+teralizer.max_execution_time=60.0
+teralizer.max_path_condition_size=100000
+search.depth_limit=100
+
+...
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Input/Output specifications extracted for the MUT calls in the \texttt{testCalculate} method.}, label=lst:extracted-specs]
+exceptional performance:
+- input:  sales / 2 >= target
+- output: sales / 10
+
+good performance:
+- input:  sales / 2 < target && sales >= target
+- output: sales / 20
+
+bad performance:
+- input:  sales / 2 < target && sales < target
+- output: 0
+\end{lstlisting}
+
+\end{minipage}
+\end{genericfloat}
+}
+
+The second step, symbolic analysis, executes these artifacts with \ToolSPF{},
+which follows the test's concrete execution path
+while maintaining symbolic representations of the wrapper method's numeric parameters.
+For the \textit{good performance} case with concrete inputs (1500, 1000),
+the first if condition \texttt{sales / 2 >= target}
+in the \texttt{calculate} method (see Listing~\ref{lst:bonus-method})
+evaluates to false (i.e., 1500 / 2 is \textit{not} greater than or equal to 1000),
+so \ToolSPF{} records the negated constraint \texttt{sales / 2 < target}.
+The second if condition \texttt{sales >= target} evaluates to true (i.e., 1500 \textit{is} greater than or equal to 1000),
+adding \texttt{sales >= target} to the accumulated path condition.
+When the wrapper method returns, our custom \texttt{TestGeneralizationListener}
+captures the complete path condition
+(\texttt{sales / 2 < target \&\& sales >= target}) and the symbolic output expression (\texttt{sales / 20}),
+writes both concrete input/output values and symbolic input/output specifications to JSON files,
+and then immediately terminates \ToolSPF{} without exploring alternative paths.
+Listing~\ref{lst:extracted-specs} shows the input/output specifications
+that are collected for the three identified MUT calls of our running example.
+
+Single-path symbolic analysis requires tested methods to be pure functions, i.e.,
+deterministic, side-effect-free, and dependent only on their input parameters~\cite{cadar_2013_symbolic,baldoni_2018_survey}.
+Furthermore, \ToolSPF{} can only provide precise specifications for numeric and boolean values.
+Because of this, \ToolTeralizer{} only targets generalization of
+numeric and boolean inputs, leaving string, array, and object inputs unchanged.
+If no input/output specification can be extracted for a given MUT,
+\ToolTeralizer{} excludes this MUT from further processing.
+The primary causes of such exclusions are \ToolSPF{} errors,
+NullPointerExceptions for certain edge cases
+in our current implementation of \ToolTeralizer{},
+and exceeded resource limits.
+By default, \ToolTeralizer{} uses a 60-second timeout per MUT,
+a 100,000-character limit per path condition,
+and a function call depth limit of 100.
+We empirically determined these settings to provide
+a reasonable trade-off between resource consumption and result quality.
+Section~\ref{sec:limitations-eval} shows how often all of the mentioned causes
+lead to exclusions in our evaluation.

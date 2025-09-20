@@ -1,0 +1,122 @@
+\section{Approach}
+\label{sec:approach}
+
+\begin{figure}[b]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
+  \caption{Overview of Teralizer's test generalization process.}
+  \Description{System architecture diagram showing Teralizer's five-stage pipeline.
+  Input (left): Java Project box containing Implementation and Test Suite components.
+  Center: Teralizer system with five numbered stages:
+  (1) Test and Assertion Analysis, (2) Tested Method Identification, 
+  (3) Specification Extraction, (4) Generalized Test Creation, (5) Test Suite Reduction.
+  Below stages: Intermediate Outputs listing Processing Logs, Test/Assertion/Generalization Data,
+  Input/Output Specifications, and External Tool Reports.
+  Bottom row shows integrated tools: JUnit, JaCoCo, PIT, jqwik, Spoon, and JPF/SPF.
+  Output (right): Generalized Tests box containing three variants: BASELINE, NAIVE, and IMPROVED.
+  Thick arrows connect input to Teralizer and Teralizer to output.}
+  \label{fig:approach-overview}
+\end{figure}
+
+This section presents our semantics-based approach for automated test generalization,
+which transforms conventional unit tests into property-based tests
+by analyzing both test and implementation code.
+While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
+they traditionally require manual specification of generators and properties,
+a barrier that limits adoption in practice~\cite{goldstein_2024_pbt_practice}.
+Our approach automates this transformation by extracting path-exact specifications
+through single-path symbolic analysis of existing test executions.
+We implement this approach in \ToolTeralizer{}, a prototype tool for Java
+that demonstrates the feasibility of semantics-based test generalization.
+
+As shown in Figure~\ref{fig:approach-overview}, our approach follows a five-stage pipeline
+that takes the implementation and corresponding tests of a software project as input
+and produces generalized, property-based tests as output:
+(1)~test and assertion analysis identifies potentially generalizable tests and their assertions,
+(2)~tested method identification maps assertions to the methods they validate through data flow analysis,
+(3)~specification extraction recovers input/output specifications from the tested methods through single-path symbolic analysis,
+(4)~generalized test creation produces property-based tests with three input generation variants (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}),
+and (5)~test suite reduction filters generalized tests to retain only those generalizations that measurably improve the mutation score of the overall test suite.
+
+{
+\begin{genericfloat}[tbph]
+\newpage{}
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[language=Java, caption={Implementation of the \texttt{calculate} method.}, label=lst:bonus-method]
+class BonusCalculator {
+  int calculate(int sales, int target) {
+    if (sales / 2 >= target) {
+      // exceptional performance
+      return sales / 10; 
+    } else if (sales >= target) {
+      // good performance
+      return sales / 20; 
+    }
+    // bad performance
+    return 0; 
+  }
+}
+\end{lstlisting}
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+
+\begin{lstlisting}[language=Java, caption={Original test for the \texttt{calculate} method.}, label=lst:original-test]
+@Test
+void testCalculate() {
+  BonusCalculator c = new BonusCalculator();
+  // exceptional performance:
+  int b1 = c.calculate(2500, 1000);
+  // good performance:
+  int b2 = c.calculate(1500, 1000);
+  // bad performance:
+  int b3 = c.calculate(500, 1000);
+  assertEquals(250, b1);
+  assertEquals(75, b2);
+  assertEquals(0, b3);
+}
+\end{lstlisting}
+
+\end{minipage}
+\end{genericfloat}
+}
+
+We illustrate our approach with a running example.
+Listing~\ref{lst:bonus-method} shows a bonus calculation method with three distinct execution paths
+for exceptional, good, and bad performance.
+Listing~\ref{lst:original-test} shows a typical unit test that validates this method
+by testing one representative input for each performance level.
+While this test detects regressions that affect these three specific inputs,
+it misses regressions that affect other inputs within the same partitions.
+Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target},
+replacing the non-strict inequality with a strict inequality.
+Despite the change, the test still passes because all three tested inputs still follow the same execution paths.
+However, all boundary cases where \texttt{sales = 2 * target} now incorrectly
+return the good performance bonus instead of the exceptional performance bonus.
+To detect such subtle regressions, \ToolTeralizer{} automatically transforms existing
+unit tests into property-based tests that encode the intended behavior
+for all inputs in the covered input partitions.
+
+While the underlying generalization approach is independent of
+specific programming languages or project environments,
+our current implementation of \ToolTeralizer{} targets Java 5--8 projects
+(imposed by our dependency on \ToolSPFLong{})
+that use Maven or Gradle for dependency management and JUnit 4 or JUnit 5 for testing.
+Before starting the main processing stages, \ToolTeralizer{} automatically detects the build system
+that is used by the target project and injects necessary dependencies including
+\ToolJqwik{}~\cite{link_2022_jqwik} for property-based testing,
+\ToolPit{}~\cite{coles_2016_pit} for mutation testing,
+and \ToolJacoco{}\footnote{\url{https://github.com/jacoco/jacoco}} for coverage tracking,
+thus ensuring full automation without the need for manual preprocessing steps.
+All changes that \ToolTeralizer{} applies are easily reversible via an integrated cleanup task.
+
+The following subsections detail each stage of the main generalization process as implemented in \ToolTeralizer{}.
+Section~\ref{sec:test-assertion-analysis} explains test and assertion analysis.
+Section~\ref{sec:tested-method-identification} describes tested method identification.
+Section~\ref{sec:specification-extraction} presents input/output specification extraction
+and Section~\ref{sec:generalized-test-creation} covers generalized test creation.
+Finally, Section~\ref{sec:test-suite-reduction} describes mutation-based test suite reduction.
+The full implementation of \ToolTeralizer{} is available in our replication package~\cite{replicationpackage}.

@@ -1,0 +1,34 @@
+\subsection{Test Suite Reduction}
+\label{sec:test-suite-reduction}
+
+The test suite reduction stage uses mutation testing to identify and retain
+only generalized tests that improve fault detection capability
+beyond what the original test suite provides.
+Since generalized tests exercise more inputs than their original counterparts,
+they may detect additional mutants that the original test suite missed.
+However, not all generalized tests provide this improvement:
+some may only detect mutants already caught by other tests in the suite.
+
+\ToolTeralizer{} uses \ToolPit{} to execute mutation testing
+on three test suite variants:
+\VariantOriginal{} (the original test suite),
+\VariantInitial{} (the subset with successful specification extraction),
+and the generalized test variants (\VariantBaseline{}, \VariantNaive{}, \VariantImproved{}).
+By comparing which mutants each suite detects,
+we identify generalized tests that catch mutants not detected by \VariantOriginal{}.
+
+The selection criterion is straightforward:
+retain only generalized tests that detect mutants
+not caught by the original test suite.
+This ensures that every generalized test in the final suite
+contributes unique fault detection capability.
+Generalized tests that only detect mutants already caught by existing tests
+are excluded as redundant.
+
+The final test suite combines the retained generalized tests
+with the original test suite,
+providing both the original developer-validated test cases
+and the additional fault detection capability from generalization.
+This approach maintains backward compatibility
+while strengthening the test suite's ability to detect regressions
+within the execution paths already covered by the original tests.
