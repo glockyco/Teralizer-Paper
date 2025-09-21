@@ -1,34 +1,98 @@
 \subsection{Test Suite Reduction}
 \label{sec:test-suite-reduction}
 
-The test suite reduction stage uses mutation testing to identify and retain
-only generalized tests that improve fault detection capability
-beyond what the original test suite provides.
-Since generalized tests exercise more inputs than their original counterparts,
-they may detect additional mutants that the original test suite missed.
-However, not all generalized tests provide this improvement:
-some may only detect mutants already caught by other tests in the suite.
+Not all generalized tests provide value to the test suite.
+Despite covering many more inputs than the original tests,
+some property-based tests still only detect the same faults
+as the corresponding conventional unit tests from which they were created.
+Thus, these generalized tests
+increase runtime costs of overall test suite execution
+but do not provide any tangible benefits in exchange for this.
+Similarly, successful generalization may render some original tests redundant.
+This is because tests created by all three of \ToolTeralizer{}'s generalization variants
+are designed to use the original input values as the first
+set of inputs exercised during property-based test execution.
+To address these inefficiencies,
+\ToolTeralizer{} performs test suite reduction
+as the final stage of the generalization pipeline,
+using mutation testing to measure each test's contribution to fault detection
+and retaining only those tests that strengthen the suite's effectiveness.
 
-\ToolTeralizer{} uses \ToolPit{} to execute mutation testing
-on three test suite variants:
-\VariantOriginal{} (the original test suite),
-\VariantInitial{} (the subset with successful specification extraction),
-and the generalized test variants (\VariantBaseline{}, \VariantNaive{}, \VariantImproved{}).
-By comparing which mutants each suite detects,
-we identify generalized tests that catch mutants not detected by \VariantOriginal{}.
+\ToolTeralizer{} evaluates fault detection capability
+using the \texttt{DEFAULTS} group of mutation operators
+provided by \ToolPit{}~\cite{coles_2016_pit}.
+This group provides a stable set of operators that minimize equivalent mutants
+and avoid subsumption~\cite{coles_2021_less_is_more, coles_pit_mutators}.
+Thus, the group excludes mutations
+that would be redundant or trivially detected,
+ensuring that each generated mutant represents a meaningful potential fault.
+The full set of 12 mutation operators from the \texttt{DEFAULTS} group
+is listed in Table~\ref{tab:pit-mutators}.
+Each row in the table shows the name of the mutator,
+a short description of its behavior,
+and an example that shows a source code representation
+of the mutator's effects.
+The operators can be roughly categorized by the type of mutation they produce.
+The first subgroup modifies arithmetic operations.
+The second one replaces return values.
+The third one modifies conditionals,
+and the fourth one removes calls to methods
+that have \texttt{void} as their return type.
 
+To perform test suite reduction, \ToolTeralizer{}
+first executes mutation testing on the original
+test suite as well as the non-reduced test suites
+created by the three test generalization variants.
+By comparing which mutants each configuration detects,
+\ToolTeralizer{} identifies generalized tests
+that catch mutants not detected by the original test suite.
 The selection criterion is straightforward:
-retain only generalized tests that detect mutants
+retain only generalized tests that detect at least one mutant
 not caught by the original test suite.
 This ensures that every generalized test in the final suite
-contributes unique fault detection capability.
-Generalized tests that only detect mutants already caught by existing tests
-are excluded as redundant.
+contributes unique fault detection capability,
+while those that only detect already-caught mutants are excluded as redundant.
 
-The final test suite combines the retained generalized tests
-with the original test suite,
-providing both the original developer-validated test cases
-and the additional fault detection capability from generalization.
-This approach maintains backward compatibility
-while strengthening the test suite's ability to detect regressions
-within the execution paths already covered by the original tests.
+Beyond filtering generalized tests, \ToolTeralizer{} identifies original tests
+that can be removed without loss of test suite effectiveness.
+An original test is removable when all of its assertions
+have been successfully generalized into property-based tests.
+For tests containing a single assertion, successful generalization means
+the property-based test validates that assertion across the entire input partition,
+making the original single-input validation redundant.
+For tests containing multiple assertions, removal requires that
+every assertion has been successfully transformed.
+If any assertion cannot be generalized
+(due to type limitations, failed MUT identification, or other filtering criteria)
+the original test must be retained to preserve that validation.
+The final test suite of each variant
+combines the retained generalized tests
+with the necessary original tests.
+
+\begin{table}[t]
+  \caption{Mutation operators from \ToolPit{}'s DEFAULTS group used in our evaluation.}
+  \label{tab:pit-mutators}
+  \begin{tabular}{l l l l}
+    \toprule
+    &&\multicolumn{2}{l}{Example} \\
+    \cmidrule{3-4}
+    Mutator & Description  & Before & After\\
+    \midrule
+    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
+    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
+    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
+    \midrule
+    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
+    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
+    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
+    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
+    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
+    \midrule
+    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
+    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
+    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
+    \midrule
+    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
