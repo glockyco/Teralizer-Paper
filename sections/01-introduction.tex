@@ -70,7 +70,7 @@ that transforms JUnit tests into property-based \ToolJqwik{} \cite{link_2022_jqw
 (1)~analyzing tests and their assertions regarding suitability for generalization,
 (2)~identifying tested methods through data flow analysis,
 (3)~extracting specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
-(4)~creating generalized, property-based tests, and
+(4)~creating generalized property-based tests, and
 (5)~filtering generalized tests to retain only those that improve fault detection capability.
 Figure~\ref{fig:generalization} illustrates the effects of this transformation,
 showing how a simple equality assertion \texttt{abs(0) = 0}
@@ -78,22 +78,21 @@ becomes the property \texttt{abs(x) = x},
 valid for all non-negative values of \texttt{x}.
 
 To evaluate the potential and limitations of semantics-based test generalization,
-we apply \ToolTeralizer{} to three complementary datasets that progressively
-reveal the gap between ideal and real-world conditions.
+we apply \ToolTeralizer{} to three complementary datasets.
 First, the \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled settings
 with numeric-focused programs well-suited for symbolic analysis.
 Because \DatasetEqBench{} lacks test suites, we generate tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
 Second, utility methods extracted from Apache Commons projects
-offer a middle ground between idealized and real-world scenarios.
+offer a middle ground between controlled and real-world scenarios.
 Here, we can directly compare \ToolEvoSuite{}-generated and developer-written tests
 on the same codebase, partially isolating the influence of test architecture and quality on generalization outcomes.
 Finally, 1,160 real-world Java projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers},
 with their existing developer-written tests, expose the full complexity of practical application conditions.
-This progression from favorable to challenging conditions highlights
+This progression from controlled to real-world conditions highlights
 the achievable fault-detection improvements
 as well as the theoretical and practical limitations of the proposed approach.
 
-Our evaluation shows modest yet consistent improvements under favorable conditions.
+Our evaluation shows modest yet consistent improvements under controlled conditions.
 On \ToolEvoSuite{}-generated tests, mutation scores increase by 1--4 percentage points:
 from 48--52\% to 52--55\% on \DatasetEqBench{},
 and from 57--58\% to 58--59\% on Apache Commons utilities.
