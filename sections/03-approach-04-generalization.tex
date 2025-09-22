@@ -325,7 +325,7 @@ cannot fully eliminate \texttt{TooManyFilterMissesException}s for all cases,
 it reduces their prevalence by constraining
 the input space from which generated inputs can be selected.
 An additional benefit that the constraint-aware input generation approach provides
-that it enables \ToolJqwik{}'s \texttt{Arbitraries}
+is that it enables \ToolJqwik{}'s \texttt{Arbitraries}
 to more reliably produce inputs at the boundaries of input partitions.
 For example, consider \texttt{x >= 0 \&\& x <= 1000}.
 In the \VariantNaive{} variant, \ToolJqwik{} has no knowledge of the true
