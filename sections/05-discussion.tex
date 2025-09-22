@@ -71,7 +71,7 @@ reducing the diversity of intermediate arithmetic inputs that would expose these
 The effect reverses for \texttt{ConditionalsBoundary} mutations,
 where \VariantImproved{} achieves 2.5 percentage points improvement
 versus \VariantNaive{}'s 1.2 percentage points,
-confirming boundary-focused generation achieves its intended purpose.
+confirming constraint-aware generation achieves its intended purpose.
 
 Project characteristics determine which approach succeeds.
 \DatasetsEqBenchEs{} combines simple constraints (47--70\% utilization)
@@ -95,7 +95,7 @@ by analyzing both test and implementation code,
 capturing precise constraints for the actual execution paths exercised by tests.
 This precision reveals a fundamental trade-off in constraint utilization.
 Simple numeric comparisons achieve high utilization (70--80\% for basic inequalities),
-enabling effective boundary-aware input generation.
+enabling effective constraint-aware input generation.
 However, compound terms like \texttt{a == (b + 1)} and mathematical functions
 without \ToolSPF{} models cannot be encoded during generation,
 only enforced through post-generation filtering.

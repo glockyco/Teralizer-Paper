@@ -253,7 +253,7 @@ would likely require additional assertions to be introduced,
 rather than test inputs to be varied.
 
 \VariantImprovedC{} demonstrates different strengths than \VariantNaive{}
-through boundary-aware input generation.
+through constraint-aware input generation.
 Comparing the two variants across all 12 mutation operators:
 \VariantImprovedC{} outperforms \VariantNaiveC{} for 7 operators,
 achieves the same detection rate for 4 operators (the zero-improvement return value mutations),
@@ -261,7 +261,7 @@ and underperforms for only 1 operator (\texttt{Math}).
 The largest advantage is observed for \texttt{Conditionals\-Boundary} detection,
 where \VariantImprovedC{} achieves 2.5 percentage points improvement
 compared to \VariantNaiveC{}'s 1.2 percentage points.
-These results confirm that the boundary-focused input generation strategy
+These results confirm that the constraint-aware input generation strategy
 followed by \VariantImproved{} variants achieves its intended purpose.
 Furthermore, the slightly higher detection rates for several other mutators
 suggest that testing at partition boundaries may also provide slight benefits
@@ -272,7 +272,7 @@ in boundary versus non-boundary testing:
 \VariantImprovedC{} achieves 3.4 percentage points improvement
 compared to \VariantNaiveC{}'s 4.0 percentage points.
 The \VariantImprovedC{} variant achieves smaller improvements here
-because boundary-focused input generation produces less diverse arithmetic inputs,
+because constraint-aware input generation produces less diverse arithmetic inputs,
 concentrating on boundary values rather than exploring the full numeric range
 where arithmetic mutations might create more varied outputs.
 Given that \texttt{Math} mutations comprise 59.1\% of all mutants,
@@ -394,10 +394,10 @@ higher \tries{} settings or balanced generation strategies
 that maintain boundary detection advantages while improving arithmetic coverage.
 Second, extending constraint support to handle more complex constraints
 would further increase utilization rates,
-thus enabling more effective boundary-aware input generation.
+thus enabling more effective constraint-aware input generation.
 Third, adaptive strategies could select generation approaches based on
 measured constraint complexity and mutation distribution,
-applying boundary-aware generation where it provides the largest benefit.
+applying constraint-aware generation where it provides the largest benefit.
 
 \begin{center}
 \fbox{\begin{minipage}{0.98\textwidth}
