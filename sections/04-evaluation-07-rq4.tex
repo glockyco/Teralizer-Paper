@@ -1,436 +1,251 @@
-\subsection{RQ4: Causes of Unsuccessful Generalizations}
-\label{sec:limitations-eval}
+\subsection{RQ3: Runtime Costs and Effiency}
+\label{sec:runtime-eval}
 
-% TODO: Use larger paragraphs to have less whitespace?
-% TODO: Remove generalization results from tab:exclusions-filtering, since they are all NonPassingTest?
-% TODO: Remove "Accept"/"Reject" vs. "Defer" distinction from tab:exclusions-filtering?
-% TODO: Merge tab:exclusions-filtering and tab:exclusions-summary?
-% TODO: Merge tab:processing-failures-per-stage and tab:processing-failure-causes?
+We measured \ToolTeralizer{}'s runtime across seven project variants
+to assess viability compared to existing automated testing tools.
+Since no existing tools perform automated test generalization from unit tests to property-based tests,
+we compared efficiency against \ToolEvoSuite{}~\cite{fraser_2011_evosuite}, the established test generation tool.
+Runtime results were collected on a MacBook Air with M2 processor and 24~GB of memory.
+Shared processing stages were executed only once per project by \ToolTeralizer{}
+and collected specifications were then reused across all seven generalization variants.
+Processing required a total time of 3.4 hours for \DatasetCommonsDev{},
+8.2--9.8 hours for \DatasetsCommonsEs{},
+and 24.8--30.9 hours for \DatasetsEqBenchEs{} (Section~\ref{sec:execution-time}).
+Despite the relatively high runtime cost,
+Pareto analysis (Section~\ref{sec:execution-efficiency}) shows
+that combining low search budget \ToolEvoSuite{} generation and \ToolTeralizer{} generalization
+achieved better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets
+in several configurations.
 
-Understanding why test generalization fails is as important as measuring when it succeeds.
-While RQ1--3 demonstrated that \ToolTeralizer{} can improve mutation detection rates
-and operate within practical time constraints,
-our evaluations also revealed that many generalization attempts do not succeed.
-This research question systematically investigates
-the causes of unsuccessful generalizations
-to identify which barriers to generalization stem from 
-limitations that are internal versus external to \ToolTeralizer{},
-and which ones require engineering effort
-versus research advances to resolve.
+\subsubsection{Execution Time of \ToolTeralizer{}}
+\label{sec:execution-time}
 
-We examine unsuccessful generalizations across two complementary datasets.
-First, we analyze the primary evaluation dataset (\DatasetsEqBenchEs{} and \DatasetsCommons{})
-which represents favorable conditions:
-predominantly \ToolEvoSuite{}-generated tests 
-with simple control flow and numeric computations.
-This establishes baseline expectations for test generalization 
-when project characteristics align with current tool capabilities.
-Second, we apply \ToolTeralizer{} to 1,160 real-world Java projects from the RepoReapers dataset,
-revealing the additional challenges that emerge in practical application scenarios.
-The contrast between these datasets
-(from approximately 50\% success in favorable conditions
-to 0.9\% in real-world projects)
-identifies clear priorities 
-for future test generalization advances.
+Runtime distribution across processing stages reveals
+that validation stages dominate overall computational cost of \ToolTeralizer{}'s processing pipeline.
+Figure~\ref{fig:teralizer-runtimes} shows
+generalization validation consuming 1,110--35,538 seconds (40.5--78.5\% of total processing time)
+while specification extraction requires 65--2,793 seconds (0.7--8.2\%)
+and test transformation takes 5--173 seconds (0.1--0.5\%).
+This resembles \ToolEvoSuite{}'s distribution,
+where the JUnit checking phase,
+which is most comparable to \ToolTeralizer{}'s
+generalization validation stage,
+consumes 86\%, 72\%, and 34\% of median runtime
+for 1s, 10s, and 60s search budgets respectively.
 
-% --
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
+  \caption{Teralizer runtimes per project, processing stage, and generalization variant.}
+  \Description{Grouped bar chart showing runtime breakdown across processing stages for seven projects.
+  Y-axis shows runtime in seconds (up to 40000).
+  X-axis groups bars by processing stage:
+  Original Validation, Specification Extraction, Initial Validation,
+  Test Transformation, and Generalization Validation.
+  Each group contains bars for different variants (SHARED, BASELINE, NAIVE with 10/50/200 tries,
+  and IMPROVED with 10/50/200 tries) shown in different colors.
+  Bar heights show runtime with values labeled above each bar.
+  Generalization Validation stage shows the highest runtimes (up to 35.5k seconds),
+  while Test Transformation shows minimal runtime (5-173 seconds).
+  Pattern reveals validation stages dominate total runtime,
+  particularly for higher tries settings.}
+  \label{fig:teralizer-runtimes}
+\end{figure}
 
-\subsubsection{Unsuccessful Generalizations in the Primary Evaluation Dataset}
-\label{sec:filtering-eval}
+\paragraph{Non-Validation Runtimes}
 
-We first present exclusion results for the primary evaluation dataset
-to establish a baseline of exclusion patterns under favorable conditions.
-The vast majority of exclusions stem from systematic filtering that identifies
-cases the current \ToolTeralizer{} implementation cannot handle,
-rather than unexpected failures during processing.
-\ToolTeralizer{} determines generalization feasibility
-through a three-level filtering cascade
-(Section~\ref{sec:all-filtering}):
-test-level filtering excludes 16.9\% of tests,
-assertion-level filtering excludes 52.2\% of assertions within remaining tests,
-and generalization-level filtering excludes 0.2--28.4\% of generated tests
-across the seven generalization variants
-(Table~\ref{tab:exclusions-summary}).
-Throughout the remainder of this section,
-we provide detailed descriptions of the different failure causes
-responsible for these exclusions (Table~\ref{tab:exclusions-filtering}).
-
-\input{tables/tab-exclusions-summary}
-
-\paragraph{Test-Level Filtering}
-
-Test-level filtering excludes 3,940 tests (16.9\%),
-with 3,933 excluded through filtering
-(Table~\ref{tab:exclusions-filtering})
-and 7 from \ToolTeralizer{} exceptions
-during test analysis and filtering phases
-(Sections~\ref{sec:test-analysis} and \ref{sec:all-filtering}).
-
-NonPassingTest rejections account for 1,527 exclusions (6.6\% of total tests).
-132 of the 1,527 exclusions are tests that fail
-after disabling \ToolEvoSuite{}'s isolation and reproducibility features.
-These features had to be disabled to prevent \ToolPit{} crashes during mutation testing with \ToolJqwik{}.
-However, their removal causes tests relying on system time or specific environmental conditions to fail.
-Because \ToolPit{} only supports class-level exclusion,
-1,395 additional passing tests in the same classes must also be excluded,
-amplifying the impact of individual test failures by over 10$\times$.
-
-Another 180 tests (0.8\% of total tests) are excluded due to TestType rejections.
-All of these exclusions are caused by
-@Parameterized\-Test annotations in the \DatasetCommonsDev{} project.
-\ToolTeralizer{} currently supports only standard @Test annotations,
-excluding parameterized, repeated, and other specialized test types
-(Section~\ref{sec:test-analysis}).
-
-The NoAssertions filter applies after the two preceding filters,
-operating on 21,532 remaining tests from the initial 23,246.
-From this subset, 10.3\% (2,226 tests) are excluded by the filter
-because they do not contain any assertions in the main test method.
-In \ToolEvoSuite{}-generated test suites, all NoAssertions exclusions
-are genuinely assertion-free tests that simply pass if no exception occurs.
-In contrast, 69 of 80 NoAssertions exclusions (86.3\%) in the developer-written
-\DatasetCommonsDev{} test suite are false positives: these tests
-contain assertions in helper methods called from the main test method.
-However, \ToolTeralizer{}'s current static analysis
-only examines the top-level test method,
-which causes it to miss these delegated assertion calls.
-
-\input{tables/tab-exclusions-filtering}
-%\input{tables/tab-exclusions-test-fails-by-project} % TODO: Cover in text only (?).
-%\input{tables/tab-exclusions-test-fails-by-variant} % TODO: Cover in text only (?).
-%\input{tables/tab-exclusions-spf} % TODO: Cover in text only (?).
-
-\paragraph{Assertion-Level Filtering}
-
-Assertion-level filtering examines 28,923 assertions within passing tests,
-excluding 15,087 (52.2\%) that cannot be generalized
-(Table~\ref{tab:exclusions-filtering}).
-Of these exclusions, 12,092 stem from filtering decisions
-while 2,995 result from unsuccessful specification extraction
-during \ToolSPF{} execution.
-
-The MissingValue filter excludes 24.7\% of assertions.
-A rejection occurs when \ToolTeralizer{}'s static analysis
-cannot identify which method call represents the tested method
-or when the declaration of the tested method cannot be resolved by Spoon.
-Missing values also cause ParameterType and VoidReturnType filters
-to report a filtering result of \textit{defer},
-which indicates that these filters do not have enough information
-to make a definitive \textit{accept} or \textit{reject} decision.
-
-The ParameterType filter rejects 15.4\% of assertions
-when none of the tested method's parameters
-have generalizable types (numeric or boolean).
-Deferral numbers are lower than rejections of MissingValue filters
-because \ToolTeralizer{} can sometimes infer parameter types from the call site
-of the tested method if the full method declaration cannot be resolved.
-
-The VoidReturnType filter rejects 3 assertions
-for tested methods with void return types.
-The current implementation of \ToolTeralizer{}
-does not support such methods because \ToolSPF{}
-does not report any symbolic outputs
-(i.e., symbolic representations of return values)
-for them.
-
-Another 5.5\% of assertions (1,597) are rejected by the ExcludedTest filter
-because they belong to tests already excluded at the test level.
-This cascading effect ensures consistency between filtering stages.
-
-Finally, 2.6\% of assertions (743) are rejected by the AssertionType filter
-because the current \ToolTeralizer{} version
-does not offer generalization support for them.
-Specifically, excluded assertions in the dataset comprise
-reference equality checks (assertSame: 142, assertNotSame: 79),
-null checks (assertNull: 124, assertNotNull: 86),
-array comparisons (assertArrayEquals: 207),
-inequality assertions (assertNotEquals: 54),
-type checks (assertInstanceOf: 18),
-and explicit failures (fail: 33).
-These assertions largely involve data types
-that are not supported by \ToolTeralizer{}'s
-current specification extraction.
-
-\paragraph{Specification Extraction Failures}
-
-As mentioned above, 2,995 assertion-level exclusions are due to
-unsuccessful specification extraction attempts during \ToolSPF{} execution.
-Causes for this include \ToolSPF{} errors, \ToolTeralizer{} errors,
-and exceeded analysis limits (timeout, specification size limit, depth limit, etc.).
-
-SPF exceptions constitute 51.4\% of extraction failures (1,540 cases).
-They occur primarily because of missing models for native methods
-in the current implementation of \ToolSPF{}
-and, to a lesser extent,
-because of implementation bugs in \ToolSPF{}/\ToolJPF{}.
-
-Exceeded analysis limits account for another 45.3\%
-of failed specification extractions (1,358 cases).
-For example, 790 (26.4\%) \ToolSPF{} runs are interrupted
-after exceeding the configured maximum specification size,
-and 524 (17.5\%) additional cases exceed the configured maximum depth limit
+Non-validation stages complete efficiently
+despite containing the core generalization logic.
+Specification extraction (65--2,793 seconds) uses \ToolSPF{}
+to concretely execute tests using single-path symbolic analysis,
+extracting path conditions and symbolic outputs
+without requiring any constraint solving calls
 (Section~\ref{sec:specification-extraction}).
-Both of these aim to avoid timeouts and memory exhaustion
-in the presence of complex control flows or complex constraints.
-The remaining failures are due to timeouts (0.9\%, 28 cases)
-and out-of-memory errors (0.5\%, 16 cases)
-which evade preemptive detection via the two preceding measures.
+While this introduces some overhead
+because the JVM implementation of \ToolJPF / \ToolSPF{}
+is less optimized than production-ready JVM implementations
+(\ToolJPF{} itself runs inside of a host JVM process \cite{pasareanu_2013_symbolic}),
+the cost is comparatively small, representing a one-time cost
+of ca.\ 100$\times$ the runtime of an original test suite execution.
+Test transformation cost is even smaller at a one-time runtime cost
+of only 5--173 seconds per project.
+The reason for this low cost is that test transformation
+only performs syntactic replacements, e.g.,
+converting JUnit annotations to \ToolJqwik{} ones,
+wrapping input constraint encodings in \texttt{TestParameters} classes,
+and replacing expected values in assertions 
+(Section~\ref{sec:generalized-test-creation}).
+Consequently, both specification extraction as well as test transformation
+offer comparatively little opportunity for runtime improvements.
 
-Exceptions due to null pointer dereferences
-in \ToolTeralizer{}'s current specification extraction implementation
-represent the remaining 3.2\% of failures (97 cases).
+\paragraph{Validation Runtimes}
 
-\paragraph{Generalization-Level Filtering}
+Validation costs are substantially larger than non-validation costs
+due to the high runtime cost of mutation testing,
+which is by far the largest contributing factor in all validation stages.
+For example, even on the \VariantOriginal{} test suite
+without any added generalized tests,
+execution of \VariantOriginal{} validation (701--3,898 seconds)
+generally requires 1.5--10$\times$ as much runtime as specification extraction,
+with mutation testing representing 88\% of the total runtime cost of this stage on average.
+Execution times for \VariantInitial{} validation (652--4,131 seconds)
+are generally slightly lower than for \VariantOriginal{} validation
+because of the filtering that takes place
+between the two stages (Sections~\ref{sec:test-assertion-analysis}--\ref{sec:generalized-test-creation}).
+Validation of generalized test suites has higher runtime requirements (1,110--35,538 seconds)
+than for the \VariantOriginal{} and \VariantInitial{} ones
+for largely the same reasons that individual property-based \ToolJqwik{} tests
+take longer to execute than conventional JUnit tests, i.e.,
+\ToolJqwik{} overhead, larger number of tested inputs,
+as well as filter-and-regenerate cycles
+which occur more often for \VariantNaive{} variants
+and in the presence of more complex input constraints (Section~\ref{sec:test-suite-execution-time}).
 
-After generating property-based tests, generalization validation
-identifies generalized tests that fail execution
-(Table~\ref{tab:exclusions-filtering}).
+While it might seem tempting to forgo any validation,
+this would result in considerable increases to the execution times of generalized test suites.
+After all, one of the primary purpose of validation stages is
+(i)~to provide a baseline for mutation detection comparisons
+(\VariantOriginal{} / \VariantInitial{} Validation),
+and (ii)~to identify which generalized tests do not
+measurably increase mutation detection rates (Generalization Validation),
+thereby enabling \ToolTeralizer{} to remove non-contributing tests from the final generalized test suite.
+In our evaluation, this filtering reduces the number of retained generalized tests
+from a total of 65,633 to 4,240 across all projects and variants
+(Section~\ref{sec:test-suite-test-count}),
+thus demonstrating the impact
+that validation-based filtering has on generalization outcomes.
+Even though there is a non-negligible one-time cost associated with this,
+that cost amortizes over time compared to a longer-running test suite
+that incurs further cost with every repeated execution.
+Future optimization efforts could focus on validation efficiency
+through faster mutation testing approaches
+or lightweight pre-filtering heuristics
+that identify likely-beneficial candidates without full validation.
 
-\VariantBaseline{} generalized tests fail in 0.2\% of cases (22 out of 13,836 tests).
-This low failure rate indicates
-that the transformation to property-based \ToolJqwik{} tests
-is largely successful in producing compilable code
-that matches the behavior of the original JUnit tests.
-The few failures stem from inaccurate specifications caused by
-implicit preconditions, assertions in loops,
-assertions in transitively called methods,
-or tested methods called within loops.
-None of these patterns is properly accounted for
-by \ToolTeralizer{}'s current specification extraction.
+\subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
+\label{sec:execution-efficiency}
 
-\VariantNaive{} and \VariantImproved{} variants
-process 32 fewer tests than \VariantBaseline{}
-to avoid Java's "code too large" compilation error.
-This error occurs when a method's bytecode exceeds 64KB,
-Java's hard limit for method size.
-Generated property-based tests with large input/output specifications
-can approach this limit when specifications contain
-numerous complex constraints,
-necessitating preemptive exclusion of the largest specifications.
+Combining \ToolEvoSuite{}'s test generation with \ToolTeralizer{}'s test generalization
+can achieve better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets.
+This efficiency gain stems from their complementary optimization targets:
+\ToolEvoSuite{} optimizes primarily for breadth (increasing coverage)~\cite{fraser_2011_evosuite},
+while \ToolTeralizer{} optimizes exclusively for depth (testing discovered paths thoroughly).
+Figure~\ref{fig:teralizer-efficiency} identifies which tool configurations
+provide the best detection-to-runtime trade-offs through Pareto analysis.
+Configurations on the frontier represent optimal choices:
+for any given runtime budget, they achieve the highest possible detection rate.
+Configurations outside the frontier are suboptimal,
+i.e., dominated by the Pareto-optimal points,
+because the Pareto points achieve higher mutation detection rates in less time.
 
-\VariantNaive{} variants show the highest failure rates:
-22.2\% for \VariantNaiveA{},
-27.8\% for \VariantNaiveB{},
-and 28.4\% for \VariantNaiveC{}.
-The primary failure cause is TooManyFilterMissesExceptions,
-with specific counts of 2,233 for \VariantNaiveA{},
-2,938 for \VariantNaiveB{},
-and 3,005 for \VariantNaiveC{}.
-These exceptions occur when \ToolJqwik{} cannot generate
-inputs satisfying path constraints within its retry limit.
-Failure counts increase with higher \tries{} values
-as \VariantNaive{} input generation struggles to produce valid inputs,
-especially for more complex path constraints
-(Section~\ref{sec:boundary-detection-effectiveness}).
+The results show that combining \ToolEvoSuite{}'s generation with \ToolTeralizer{}'s generalization
+not only increases detection rates (Section~\ref{sec:primary-effects-eval})
+but also yields several configurations with lower runtime costs
+than executing \ToolEvoSuite{} with higher search budgets.
+For example, for the \DatasetsEqBenchEs{} projects,
+only 2 of 3 \ToolEvoSuite{} search budget settings are Pareto optimal.
+\ToolEvoSuite{} generation with a 60-second per-class search budget
+achieves 51.6\% detection in 55,075 seconds yet falls outside the Pareto frontier.
+In the runtime dimension,
+this result is most strongly dominated by 1-second \ToolEvoSuite{} generation
+combined with \VariantNaiveB{} generalization
+(Pareto point \#5 in Table~\ref{tab:pareto-eqbench}),
+which achieves 51.7\% detection in 37,532 seconds,
+i.e., 0.1 percentage points higher detection with 31.9\% lower runtime cost.
+In the mutation detection dimension,
+the result is most strongly dominated by 10-second \ToolEvoSuite{} generation
+combined with \VariantImprovedC{} generalization (Pareto point \#9),
+which produces a 53.8\% detection result in 48,269 seconds, i.e.,
+a detection improvement of 2.2 percentage points achieved in 12.4\% less runtime.
+Increasing the runtime beyond this comparison point achieves even higher
+detection rates that further extend the Pareto frontier (Pareto points \#10--\#14).
 
-\VariantImproved{} variants reduce overall failure rates to 14.6--16.0\%
-through constraint-aware input value generation
-(Section~\ref{sec:boundary-detection-effectiveness}).
-Specifically, TooManyFilterMissesExceptions decrease to
-1,189 for \VariantImprovedA{},
-1,223 for \VariantImprovedB{},
-and 1,265 for \VariantImprovedC{},
-i.e., approximately half the counts seen in naive variants.
-However, failures from inaccurate specifications remain similar
-across both variant types at approximately 2.5--2.8\% of tests
-because specification extraction logic is shared across generalization variants.
+Efficiency improvements of \ToolEvoSuite{} + \ToolTeralizer{} combinations
+over \ToolEvoSuite{} search budget increases
+are less pronounced for the \DatasetsCommonsEs{} projects.
+Here, all three \ToolEvoSuite{} search budget settings are Pareto optimal
+(Pareto points \#1, \#2, and \#4 in Table~\ref{tab:pareto-commons}).
+Nevertheless, generalization via \ToolTeralizer{} contributes
+8 additional points to the Pareto frontier.
+Specifically, the combination of 1-second \ToolEvoSuite{} generation
+and \VariantImprovedA{} generalization (Pareto point \#3)
+produces a Pareto optimal result
+that has higher detection rate and runtime cost than \#2
+but lower detection rate and runtime cost than \#4.
+The 7 remaining Pareto points \#5--\#11 again extend the Pareto frontier
+toward higher detection rates at higher runtime cost,
+reflecting the increased detection rates achievable via generalization
+before reaching a plateau at around
+1.0--1.3 percentage points above the corresponding \ToolEvoSuite{} results
+(Section~\ref{sec:primary-effects-eval}.)
 
-Project-specific patterns show how test characteristics affect generalization.
-\DatasetsCommons{} projects exhibit 4.99--6.00\% TooManyFilterMissesException rates
-and 4.00--4.31\% from inaccurate specifications,
-while \DatasetsEqBenchEs{} projects show 3.34--3.78\% and 0.41--0.45\% respectively.
-The higher TooManyFilterMissesException rates in \DatasetsCommons{} projects
-result from their more complex constraints (Section~\ref{sec:boundary-detection-effectiveness}).
-The 10$\times$ higher rate of inaccurate specification failures
-in \DatasetsCommons{} projects reflects fundamental differences in test construction:
-\ToolEvoSuite{}-generated tests avoid loops and never invoke assertions through helper methods,
-while developer-written tests commonly use both patterns.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
+  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
+  \Description{Two scatter plots showing Pareto efficiency analysis.
+  Left panel shows eqbench project, right panel shows commons-utils project.
+  X-axis shows runtime in seconds, Y-axis shows mutation detection percentage.
+  Blue circles represent EvoSuite-only configurations,
+  red X marks show EvoSuite + NAIVE combinations,
+  green triangles show EvoSuite + IMPROVED combinations.
+  Dashed black line connects Pareto-optimal configurations numbered 1-14 (eqbench) and 1-11 (commons-utils).
+  For eqbench, points show detection rates from 48% to 56% with runtimes from 30000 to 90000 seconds.
+  For commons-utils, points show detection rates from 56.5% to 59.5% with runtimes from 5000 to 20000 seconds.
+  Pareto frontier demonstrates that combining EvoSuite with Teralizer
+  can achieve better detection-to-runtime ratios than increasing EvoSuite search budgets alone.}
+  \label{fig:teralizer-efficiency}
+\end{figure}
 
-\paragraph{Summary}
+\begin{table}[H]
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-eqbench}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-commons}
+  \end{minipage}
+\end{table}
 
-The three-level filtering cascade reveals that even under favorable conditions,
-i.e., primarily \ToolEvoSuite{}-generated test suites
-that avoid complex patterns like helper methods and loops,
-\ToolTeralizer{} excludes significant portions at each stage:
-16.9\% at test level,
-52.2\% at assertion level,
-and 14.6--28.4\% at generalization level
-for \VariantNaive{} and \VariantImproved{} generalization variants.
-Each level presents distinct challenges:
-support for non-@Test and no-assertion tests at test level,
-specification extraction and type support at assertion level,
-and input generation at generalization level.
-Constraint-aware generation (\VariantImproved{})
-reduces generalization-level failures by approximately 50\%
-compared to naive approaches (14.6--16.0\% vs. 22.2--28.4\%),
-while project-specific patterns show developer-written tests
-pose greater challenges than synthetic, \ToolEvoSuite{}-generated tests.
-These findings establish that even under favorable conditions,
-significant engineering and research challenges remain for test generalization.
-Further insights and implications are discussed following the extended dataset analysis
-in Section~\ref{sec:filtering-eval-extended}.
+Comparing \VariantNaive{} to \VariantImproved{},
+we find that both variants produce
+6 Pareto optimal results from their 9 evaluated configurations
+for the \DatasetsEqBenchEs{} project
+(3 \ToolEvoSuite{} search budgets, each combined with 3 \tries{} settings).
+For the \DatasetsCommonsEs{} projects,
+\VariantImproved{} has 7 of 9 of results on the Pareto frontier,
+compared to only 1 of 9 results produced by \VariantNaive{}.
+The underlying causes were previously discussed in RQ1 and RQ2
+(Section~\ref{sec:primary-effects-eval} and Section~\ref{sec:ancillary-effects-eval}):
+less complex constraints in the \DatasetsEqBenchEs{} project
+favor \VariantNaive{}, thus enabling it to be competitive with
+\VariantImproved{} despite its less sophisticated input generation approach.
+In contrast, constraints are more complex for the \DatasetsCommonsEs{} projects.
+This increases the mutation detection rate and runtime advantage that
+\VariantImproved{} has over \VariantNaive{}
+because the more sophisticated input value generation avoids
+\texttt{TooManyFilterMissesException}s.
 
-\subsubsection{Unsuccessful Generalizations in the Extended Evaluation Dataset}
-\label{sec:filtering-eval-extended}
+TODO: Answer to RQ3.
 
-The extended evaluation applies \ToolTeralizer{} to 1,160 real-world Java projects
-from the RepoReapers dataset (Section~\ref{sec:additional-oss-projects}),
-thereby moving beyond the favorable conditions of the primary dataset
-to examine more challenging, practical application scenarios.
-Table~\ref{tab:processing-failures-per-stage}
-reveals progressive attrition throughout the processing pipeline:
-only 10 projects (0.9\%) successfully complete all processing stages.
-While many exclusions are still caused by filtering,
-real-world projects face additional barriers throughout the different processing stages,
-from dependency resolution through final mutation testing.
-This evaluation identifies which barriers are internal versus external to \ToolTeralizer{},
-and which ones require engineering effort versus research advances to resolve.
+% \begin{center}
+% \fbox{\begin{minipage}{0.98\textwidth}
+% \paragraph{Answer to RQ3:}
+% \ToolTeralizer{} requires 3.4--30.9 hours total runtime per project,
+% with validation consuming 40--78\% of processing time
+% while core generalization (specification extraction and transformation) takes less than 10\%.
+% Despite high absolute costs,
+% combining \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
+% achieves better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets
+% in several configurations.
+% The efficiency gains stem from their complementary optimization targets:
+% \ToolEvoSuite{} optimizes for breadth (coverage)
+% while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
+% Runtime optimization should focus on validation efficiency
+% rather than core generalization logic.
+% \end{minipage}}
+% \end{center}
 
-\input{tables/tab-processing-failures-per-stage}
-\input{tables/tab-processing-failure-causes}
-
-\paragraph{Processing Pipeline Failures}
-
-While filter rejections only cause
-individual tests, assertions, or generalizations
-to be excluded from further processing,
-processing failures immediately stop
-the full processing pipeline
-because no further progress can be made
-(Tables~\ref{tab:processing-failures-per-stage} and \ref{tab:processing-failure-causes}).
-The observed failures reveal three actionable improvement categories.
-First, reducing exclusions caused by filtering
-would recover 401 projects
-(129 from all tests excluded,
-3 from all classes excluded from mutation testing,
-269 from all generalizations excluded).
-Second, adding support for more varied project structures
-would recover 119 projects
-(26 missing source/test directories,
-18 missing compilation outputs,
-31 missing JUnit reports,
-40 missing \ToolJacoco{} data,
-4 missing \ToolPit{} data).
-Third, increasing timeouts or reducing processing times
-would recover 89 projects
-(48 during \VariantOriginal{} test execution,
-1 during \VariantInitial{} test execution,
-40 during \ToolPit{} analysis).
-In contrast, dependency resolution and compilation errors
-in the original project code (500 projects total)
-as well as external tool errors (38 projects) are less actionable,
-as they reflect issues outside \ToolTeralizer{}'s control.
-\ToolTeralizer{} implementation errors affect only 3 projects,
-offering minimal improvement opportunity.
-
-\paragraph{Filter-based Exclusions}
-
-For projects reaching the filtering stages,
-Table~\ref{tab:exclusions-filtering-extended}
-reveals substantially higher exclusion rates
-compared to the primary dataset.
-NoAssertions filtering rejects 41.3\% of tests versus 10.3\% in the primary dataset,
-reflecting real-world testing practices where assertions often reside in helper methods
-or tests only check whether execution completes without crashing.
-At the assertion level, MissingValue rejections increase to 57.9\% from 24.7\%,
-indicating greater difficulty in resolving tested methods.
-ParameterType rejections rise to 49.4\% from 15.4\%,
-while ReturnType introduces a new category at 32.6\%
-that accounts for void return types as well as unsupported non-void return types.
-The primary dataset showed no (non-void) ReturnType exclusions because
-target methods were pre-selected to have numeric or boolean return types,
-whereas the extended dataset includes all methods regardless of return type.
-AssertionType exclusions reach 23.9\% compared to 2.6\%,
-demonstrating the larger diversity of assertions used in real-world tests.
-
-\input{tables/tab-exclusions-filtering-extended}
-
-These filtering patterns suggest targeted improvement strategies.
-Enhanced static analysis could reduce the 57.9\% MissingValue exclusions
-by better resolving method calls in the presence of complex control flow,
-while also reducing the 41.3\% NoAssertions rate by detecting assertions in helper methods.
-Improvements to specification extraction could reduce the 32.6\% ReturnType exclusions
-by modeling side effects as symbolic outputs,
-enabling generalization of void methods that only modify object state.
-Methods with non-numeric/non-boolean return types,
-as well as the 49.4\% ParameterType and 23.9\% AssertionType exclusions
-would all benefit from improved support
-for non-numeric/non-boolean types in \ToolSPF{}.
-While there already is some support
-for strings, arrays, and objects in \ToolSPF{},
-the provided information is insufficient
-for accurate extraction of input/output specifications
-as required for \ToolTeralizer{}'s automated test generalization.
-For the 119 projects failing due to project structure detection,
-improved heuristics for locating source directories, test directories,
-and build outputs across diverse project layouts could improve achievable results.
-
-% [PLACEHOLDER: Analysis of specific parameter types, return types, and assertion patterns
-% observed in the extended dataset. Include distribution of non-generalizable types
-% (e.g., String: X%, List: Y%, custom objects: Z%) and assertion methods
-% (e.g., assertThat: X%, Mockito.verify: Y%, custom assertions: Z%).]
-
-Within the 10 successfully processed projects,
-\ToolTeralizer{} creates 229 property-based tests using the \VariantImprovedC{} variant.
-The generalization-level filtering rate of 10.0\%
-is comparable to the 16.0\% observed in the primary dataset.
-This indicates similar failure patterns
-from complex and implicit constraints
-as in the primary dataset.
-However, even though generalization-level filtering
-leaves 206 successfully generalized tests,
-none of these tests improve mutation detection rates
-beyond the results achieved by the original test suites.
-
-% [PLACEHOLDER: Test quality metrics for the 10 successful projects.
-% Include original mutation scores, statement coverage, and mutation coverage.
-% Likely finding: These projects already have strong test suites (>80\% mutation score),
-% leaving limited room for improvement through generalization.
-% Alternative explanation: The small number of successful generalizations (229)
-% may be insufficient to detect marginal improvements.]
-
-\paragraph{Summary}
-
-The extended evaluation reveals that practical applicability faces challenges
-at every stage of the processing pipeline,
-with only 0.9\% of projects successfully completing all stages.
-Failures stem from three categories of barriers:
-(i) internal engineering challenges that \ToolTeralizer{} could address
-(filtering exclusions, project structure detection, and static analysis limitations),
-(ii) external research challenges requiring advances in \ToolSPF{}
-(extended type support beyond numeric and boolean),
-and (iii) external issues beyond our control
-(dependency resolution and compilation errors in original projects).
-The similar generalization-level failure rates (10\% and 16\%)
-and systematic filtering patterns across both evaluations
-suggest that the core generalization approach remains sound.
-Addressing the internal engineering barriers could potentially
-enable processing for 520 additional projects (45\% of the dataset),
-while the external research challenge of expanding type support
-remains crucial for broader applicability.
-The gap between favorable (50\%) and real-world (0.9\%) success rates
-underscores that practical applicability requires addressing both
-the actionable engineering improvements and the fundamental type support limitations.
-
-% Data sources for RQ4 answer:
-% - Static analysis failures: 24.7% MissingValue (line 99), 41.3% NoAssertions in extended (line 328)
-% - Type support: 15.4% ParameterType primary (line 108), 49.4% extended (line 333)
-% - Constraint handling: 14.6-28.4% from Improved vs Naive variants (lines 209-210)
-% - Success rates: ~50% from "approx half of assertions" (line 244), 0.9% from extended (line 271)
-% - 45% recovery: 520 projects = 401 (filtering) + 119 (structure) out of 1,160 total (lines 291-304, 400)
-
-\begin{center}
-\fbox{\begin{minipage}{0.98\textwidth}
-\paragraph{Answer to RQ4:}
-Unsuccessful generalizations primarily result from three root causes:
-inadequate static analysis (24.7\% missing value extractions, plus undetected assertions in helper methods),
-limited type support (15.4\% non-generalizable parameters in favorable conditions, rising to 49.4\% in real-world),
-and complex constraint handling (14.6--28.4\% failures during input generation depending on variant sophistication).
-Real-world projects face additional infrastructure barriers, with only 0.9\% successfully processing
-compared to approximately 50\% assertion success under favorable conditions.
-Most failures stem from internal engineering limitations that \ToolTeralizer{} could address:
-enhanced static analysis and project structure detection could recover 45\% of failed projects.
-Expanding type support remains the key external research and engineering challenge,
-requiring advances in \ToolSPF{}'s constraint encoding.
-\end{minipage}}
-\end{center}
+%\input{tables/tab-teralizer-runtimes}

@@ -7,20 +7,22 @@ within already-covered execution paths. Our approach automates this transformati
 conventional unit tests to property-based tests, reducing the manual effort
 traditionally required to implement such a transformation.
 We empirically evaluate the potential and limitations of semantics-based test generalization
-through four research questions:
+through five research questions:
 
 \begin{itemize}
-  \item \textbf{RQ1:} To which degree does generalization affect the mutation score of the target test suites?
-  \item \textbf{RQ2:} To which degree does generalization affect the size and runtime of the target test suites?
-  \item \textbf{RQ3:} What are the runtime requirements of the generalization approach?
-  \item \textbf{RQ4:} What are the causes of unsuccessful generalization attempts?
+  \item \textbf{RQ1:} How much does test generalization improve mutation detection?
+  \item \textbf{RQ2:} How does constraint complexity affect constraint-aware versus random input generation?
+  \item \textbf{RQ3:} To which degree does generalization affect the size and runtime of the target test suites?
+  \item \textbf{RQ4:} How efficient is test generalization compared to extended test generation?
+  \item \textbf{RQ5:} What are the causes of unsuccessful generalization attempts?
 \end{itemize}
 
 These questions progress from measuring direct effects to understanding practical constraints.
 RQ1 establishes effectiveness through mutation score improvements.
-RQ2 quantifies associated side effects in terms of increased test suite size and execution time.
-RQ3 examines the runtime costs of the approach and compares its efficiency to test generation via \ToolEvoSuite.
-RQ4 analyzes failure cases to identify current limitations and guide future improvements.
+RQ2 explores how constraint complexity affects mutation score improvements achieved by the \VariantNaive{} and \VariantImproved{} generation variants.
+RQ3 quantifies effects on test suite size and execution time.
+RQ4 examines the runtime costs and efficiency of test generalization compared to extended test generation via \ToolEvoSuite{}
+and RQ5 analyzes failure cases to identify current limitations and guide future improvements.
 
 Our experimental framework (Section~\ref{sec:experimental-framework}) establishes the methodology:
 mutation testing measures effectiveness, three complementary datasets progressively reveal

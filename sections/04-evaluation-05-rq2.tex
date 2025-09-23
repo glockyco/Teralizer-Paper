@@ -1,355 +1,139 @@
-\subsection{RQ2: Effects on Test Suite Size and Runtime}
-\label{sec:ancillary-effects-eval}
+\subsection{RQ2: Examining Constraint Complexity}
+\label{sec:constraint-complexity-eval}
 
-Test generalization transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
-While this transformation improves mutation detection (Section~\ref{sec:primary-effects-eval}),
-it also affects test suite characteristics in several ways:
+Mutation testing provides a rigorous measure of test effectiveness
+by evaluating a test suite's ability to detect deliberately introduced faults.
+For \ToolTeralizer{}, mutation scores reveal whether testing additional inputs
+within existing execution paths achieves the intended improvement in fault detection capabilities.
+Section~\ref{sec:included-mutants} first establishes which tests and mutants are included in the evaluation,
+revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
+Section~\ref{sec:overall-detection-rates} quantifies detection improvements
+across projects and variants,
+demonstrating that generalization improves mutation scores
+for \DatasetsEqBenchEs{} and \DatasetsCommons{} projects, albeit with varying improvement magnitudes.
+Section~\ref{sec:detection-rates-per-mutator} dissects these improvements by mutation operator,
+uncovering how much detection of different mutants benefits from generalization.
+Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
+detailed analysis of the \VariantImproved{} generalization variant,
+demonstrating that its effectiveness correlates with constraint complexity,
+i.e., projects with more complex input constraints show greater improvements
+from constraint-aware input generation.
 
-\begin{enumerate}
-  \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
-  \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
-  \item the execution time of the test suite (Section~\ref{sec:test-suite-execution-time}).
-\end{enumerate}
+\subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
+\label{sec:boundary-detection-effectiveness}
 
-Section~\ref{sec:test-suite-test-count} reveals how test architecture determines
-whether added generalized tests can be compensated by original test removals,
-explaining why \ToolEvoSuite{}-generated test suites achieve near-complete compensation
-while the developer-written test suite in \DatasetCommonsDev{} does not allow for any test removals at all.
-Section~\ref{sec:test-suite-line-count} documents
-how current constraint encoding and test isolation implementations increase lines of code in the test suite,
-suggesting that the introduction of constraint abstraction libraries
-as well as tighter integration of generalized tests into the original test suite
-could reduce this overhead.
-Section~\ref{sec:test-suite-execution-time} analyzes runtime patterns,
-showing that costs stem primarily from property-based testing overhead and \tries{} repetition,
-but could be at least partially alleviated
-through test suite reduction and improved support for more complex input constraints.
+As discussed in Section~\ref{sec:overall-detection-rates},
+\VariantNaive{} variants
+outperformed \VariantImproved{}
+on \DatasetsEqBenchEs{} projects.
+However, \DatasetsCommonsEs{} projects show \VariantImproved{}
+outperforming \VariantNaive{} in 7 of 9 cases.
+To provide a more thorough understanding of these contrasting results, we examine
+how constraint complexity differs between project types and
+what the underlying mechanisms are that explain how complexity affects mutation detection differences.
+Table~\ref{tab:mutation-detection-comparison} shows the constraint characteristics
+of mutants that are (not) detected by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
+Models represent the constraints that inputs must satisfy
+to reach each mutant along a specific execution path.
+We measure model complexity through operation count (total operators)
+and constraint count (individual boolean conditions),
+while tracking which percentage of constraints \VariantImproved{} can encode
+for use during input generation versus enforce through post-generation filtering.
 
-Throughout the result presentation, we focus primarily on the results
-of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants
-as they best represent the current capabilities of \ToolTeralizer{}.
-The results for variants with fewer \tries{} follow similar trends
-albeit with correspondingly smaller effects
-on the measured test suite characteristics.
-Full results for all generalization variants
-are available in our replication package~\cite{replicationpackage}.
+\input{tables/tab-mutation-detection-comparison}
 
-\subsubsection{Number of Tests in the Test Suite}
-\label{sec:test-suite-test-count}
+As described in more detail in Section~\ref{sec:improved-generalization},
+the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
+only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
+More complex constraints are not encoded
+in the initial input value generation of the \VariantImproved{} property-based tests
+but are still enforced during input value filtering,
+which takes place after initial input value generation.
+For instance, consider the model \texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
+This model contains three constraints:
+\texttt{a < 0}, \texttt{a == (b + 1)}, and~\texttt{c}.
+\VariantImproved{} encodes the simple comparison \texttt{a < 0} and the boolean variable \texttt{c}
+in the created input value generation code,
+but encodes \texttt{a~==~(b~+~1)} only in the input value filtering code
+because it contains the compound term \texttt{b + 1}.
+Thus, \VariantImproved{} uses 2 of 3 total constraints for input value generation (66.7\% utilization),
+and the model contains 5 operators:
+\texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
+With these metrics established, we are ready to examine the observed results.
 
-Generalization creates new property-based tests
-for each successfully transformed unit test,
-yet the net effect on test counts can vary considerably
-depending on test architecture and mutation detection capabilities
-of the \VariantOriginal{} test suite.
-Table~\ref{tab:tests-per-project} quantifies the observed changes
-for the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
-The number of added tests is between 174--211
-(3.5--4.3\% of \VariantOriginal{} test suite size)
-for the \DatasetsEqBenchEs{} projects,
-between 60--75 (2.2--2.9\%)
-for the \DatasetsCommonsEs{} projects,
-and 3 (0.4\%) for the \DatasetCommonsDev{} project.
+Undetected mutants have more complex models than detected ones
+across all evaluated projects.
+Operation counts for undetected mutants are 1.2--3$\times$ higher:
+\DatasetsEqBenchEs{} projects show mean counts of 218--231 versus 138--147 for detected mutants,
+while \DatasetsCommonsEs{} exhibit even larger gaps with 389--507 versus 290--468 operations.
+Constraint counts follow similar patterns,
+with undetected mutants having 1.0--2.5$\times$ more constraints.
+Even though both \VariantNaive{} and \VariantImproved{}
+achieve better generalization outcomes for simpler constraints,
+more complex constraints have a stronger detrimental effect on \VariantNaive{},
+which produces 2-2.5$\times$ as many \texttt{TooManyFilterMissesExceptions} as \VariantImproved{},
+as discussed in more detail in Section~\ref{sec:filtering-eval}.
 
-\input{tables/tab-tests-per-project}
+Constraint utilization rates show large differences across project types.
+\DatasetsEqBenchEs{} achieve 47--70\% mean constraint utilization for detected mutants,
+while \DatasetsCommonsEs{} achieve only 25--47\% mean utilization.
+The higher utilization in \DatasetsEqBenchEs{} reflects their simpler constraint structures:
+these projects primarily use basic numeric comparisons
+that match \VariantImproved{}'s encoding capabilities.
+\DatasetsCommonsEs{} projects contain more compound terms
+and mathematical functions that are not modeled by \ToolSPF{},
+reducing the percentage of constraints that can guide input generation.
 
-\VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
-because more of the tests that are created by \VariantNaiveC{}
-are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
-(as described in Section~\ref{sec:naive-generalization}
-and evaluated in Section~\ref{sec:filtering-eval}).
-Furthermore, the number of added tests is much smaller
-than the total number of generalizations that are created and evaluated by \ToolTeralizer{}
-because only tests that measurably increase the mutation score of the test suite are retained.
-In total, \ToolTeralizer{} generates 65,633 candidate generalizations across all projects and variants,
-but filtering retains only 4,240 (6.5\%) that demonstrably improve mutation detection results.
+These utilization differences explain the contrasting performance between project types.
+In the \DatasetsEqBenchEs{} projects, simple constraints enable effective boundary targeting for \VariantImproved{} variants,
+yet these same simple constraints make random generation followed by \VariantNaive{} variants viable.
+In fact, the higher constraint utilization even has detrimental effects
+on the overall detection rates of \VariantImproved{} variants for these projects
+because the focus on boundary testing detracts from testing of intermediate values.
+As a result, detection rates for the very common \texttt{Math} mutations decrease,
+causing overall detection rates to go down despite detection rates for most other mutants increasing.
 
-Even though \ToolTeralizer{} adds hundreds of tests to the generalized test suites,
-net test count changes remain minimal.
-Added tests are largely compensated by removed tests
-in the \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
-which use \ToolEvoSuite{}-generated test suites.
-As a result, total test suite size only increases by 0--1 test cases
-(0--0.04\% of \VariantOriginal{} test suite size)
-for these projects.
-The \DatasetCommonsDev{} project sees less compensation success:
-none of the tests for which generalizations are added can be removed.
-This is because an \VariantOriginal{} test can only be removed
-if generalized tests are created for all assertions in the test
-(Section~\ref{sec:baseline-generalization}).
-In projects with \ToolEvoSuite{}-generated tests,
-this requirement is generally satisfied because most tests only contain a single assertion.
-However, this requirement is more difficult to satisfy for \DatasetCommonsDev{} 
-because the developer-written tests often contain multiple assertions.
+\DatasetsCommonsEs{} present a different scenario.
+Complex constraints reduce utilization to 25--47\%,
+causing \VariantImproved{} variants to generate inputs from broader ranges
+that overapproximate the actual partition boundaries.
+As a result, fewer partition boundaries are accurately identified,
+and the number of generated inputs that need to be excluded during filtering increases.
+Nevertheless, constraint utilization still reduces \texttt{TooManyFilterMissesException} failures
+relative to \VariantNaive{} (Section~\ref{sec:filtering-eval}), which
+enables \VariantImproved{} variants to achieve overall higher mutation detection rates
+than \VariantNaive{} in 7 of 9 cases
+despite its current \texttt{Math} mutation detection disadvantage.
 
-The observed compensation patterns reveal how test architecture shapes generalization outcomes.
-Projects containing mostly focused, single-assertion tests enable near-complete compensation,
-while multi-assertion test suites resist such consolidation.
-In future work, we plan to explore opportunities
-for generalization to decrease overall test suite size.
-This can be achieved
-by replacing multiple \VariantOriginal{} tests
-that all cover the same input partition
-with a single property-based test that covers the same partition instead.
-For further discussion and related work covering this idea, see Section~\ref{sec:test-suite-reduction}.
+Three paths emerge to further enhance \VariantImproved{}'s effectiveness.
+First, the \texttt{Math} mutation trade-off can be addressed through
+higher \tries{} settings or balanced generation strategies
+that maintain boundary detection advantages while improving arithmetic coverage.
+Second, extending constraint support to handle more complex constraints
+would further increase utilization rates,
+thus enabling more effective constraint-aware input generation.
+Third, adaptive strategies could select generation approaches based on
+measured constraint complexity and mutation distribution,
+applying constraint-aware generation where it provides the largest benefit.
 
-\subsubsection{Lines of Code in the Test Suite}
-\label{sec:test-suite-line-count}
+TODO: Answer to RQ1.
 
-While test counts remain relatively stable through the test replacement mechanism,
-lines of code (LOC) increase across all projects and generalization variants.
-Table~\ref{tab:lines-per-project} shows increases of
-31.5--58.7\% for \DatasetsEqBenchEs{} projects,
-18.8--29.9\% for \DatasetsCommonsEs{} projects,
-and 4.9--5.3\% for \DatasetCommonsDev{}.
-These increases correlate with the number of added tests
-rather than net test count changes.
-For example, for the \DatasetEqBenchA{} project,
-\VariantNaiveC{} adds 177 generalized tests and removes all 177 corresponding original tests.
-However, the added tests increase test suite size by 11,780 LOC while the removed tests reduce LOC by only 1,127.
-This asymmetry between added and removed LOC stems from
-two characteristics inherent to \ToolTeralizer{}'s current implementation.
-
-\input{tables/tab-lines-per-project}
-
-First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests.
-More specifically, each generalized test defines input ranges matching extracted constraints by
-translating input specifications into Java code for a custom \ToolJqwik{} \texttt{Arbitrary}
-(Section~\ref{sec:test-transformation}).
-As a result, the LOC impact scales with both parameter count and constraint complexity.
-\VariantImproved{} variants also show higher per-test LOC as a consequence of this mechanism 
-because of their more sophisticated input generation logic.
-For example, \DatasetCommonsDev{}'s three generalized tests require
-36 additional LOC with \VariantImprovedC{} compared to \VariantNaiveC{}
-(9,018 vs.\ 8,982 total LOC).
-Methods with multiple parameters amplify this effect,
-as each parameter requires its own constraint encoding logic in \VariantImproved{} tests.
-
-Second, test isolation creates structural duplication.
-\ToolTeralizer{} creates new test classes for each generalized method,
-copying imports, setup/teardown methods, helper functions, class fields, etc.
-from original test classes (Section~\ref{sec:test-transformation}).
-This architectural choice prioritizes safety over LOC efficiency,
-preventing unintended interactions between generalized and original tests
-while avoiding potential side effects on developer-written code.
-
-The duplication overhead varies significantly between \ToolEvoSuite{}-generated and developer-written tests.
-\DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects show similar LOC overhead per generalization
-(66-67 vs 62-63 LOC per added test, respectively),
-reflecting the structural uniformity of \ToolEvoSuite{}-generated tests.
-In contrast, \DatasetCommonsDev{} shows substantially higher duplication overhead
-(140 LOC per added test).
-This is because developer-written tests contain more shared setup code
-as well as multi-assertion architectures that hinder compensation through test removals.
-The higher percentage increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
-stem primarily from the retained generalized tests representing a larger fraction of the original test suite
-in \DatasetsEqBenchEs{} (~3.5-3.8\%) compared to \DatasetsCommonsEs{} (~2.2-2.4\%).
-The smaller difference between \VariantNaive{} and \VariantImproved{}
-LOC increases in \DatasetsCommonsEs{} projects compared to \DatasetsEqBenchEs{} projects
-likely reflects \VariantImproved{}'s lower constraint utilization on more complex specifications
-(28.5\% for \DatasetsCommonsEs{} vs.\ 54.7\% for \DatasetsEqBenchEs{}).
-
-Both overhead sources represent implementation choices rather than inherent limitations.
-Integration of generalized methods into original test classes would eliminate duplication,
-while constraint specification libraries could abstract input value generator details.
-The primary reason \ToolTeralizer{} avoids in-place transformation of tests
-is to keep changes unintrusive and isolated from original test suites,
-preventing unintended adverse side-effects on developer-written code.
-However, no technical limitation strictly requires separate test classes.
-Similarly, constraint encoding logic could be extracted to a library
-that abstracts implementation details.
-In the test code of the target projects, only minor changes would remain then:
-modified test annotations, parameterized inputs, and generalized assertions.
-As a result, such optimizations could reduce the current LOC increases
-while preserving generalization's mutation detection benefits.
-
-\subsubsection{Execution Time of the Test Suite}
-\label{sec:test-suite-execution-time}
-
-As shown in Table~\ref{tab:runtime-per-project},
-generalization with \VariantNaiveC{} and \VariantImprovedC{}
-increases overall test suite runtimes
-for all \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
-More specifically, test suite runtimes
-show increases of 574.5--1210.0\% for the \DatasetsEqBenchEs{} projects,
-444.1--2651.5\% for the \DatasetsCommonsEs{} projects,
-and 9.4--57.1\% for the \DatasetCommonsDev{} project.
-Runtime increases are primarily affected by the following factors:
-
-\begin{enumerate}
-  \item the number of tests added by the generalization, even if they are compensated for by removed tests,
-  \item the number of \tries{} used during property-based testing,
-  \item the used generalization approach, i.e., \VariantNaive{} vs. \VariantImproved{} generalization,
-  \item the complexity of input partition constraints.
-\end{enumerate}
-
-In the following paragraphs,
-we discuss how each of the above factors
-influences overall test suite execution times
-and how these factors interact with each other.
-
-\input{tables/tab-runtime-per-project}
-
-\paragraph{Added Tests}
-
-Execution of conventional JUnit tests has a lower runtime cost
-than execution of corresponding property-based jqwik tests.
-More specifically, individual property-based tests
-created with the \VariantBaseline{} generalization variant 
-take, on average, 149.56 milliseconds (ms) longer to execute
-than the corresponding \VariantOriginal{} tests
-(as shown in the left plot of Figure~\ref{fig:test-runtime-differences})
-which have a mean execution time of only 3.6~ms. % 0.0035570506476290337
-% Exact number = 0.0035570506476290337 via:
-% SELECT AVG(runtime)
-% FROM junit_test_report jtr
-% JOIN generalization g ON g.test_id = jtr.test_id
-% WHERE stage = 'COLLECT_JUNIT_REPORTS_ORIGINAL'
-% AND g.is_included;
-Therefore, overall test suite execution time increases,
-on average, by at least 149.56~ms per jqwik test
-that is added during the generalization process,
-even if no new test inputs are exercised
-and the added tests are compensated for by removed JUnit tests.
-Since these runtime increases are inherent to the use of jqwik,
-they are orthogonal to our specific generalization approach.
-Any manual or automated transformation of JUnit tests
-to jqwik tests incurs the same runtime overhead,
-and this overhead can only be reduced
-if fewer jqwik tests are created
-(e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
-or if the runtime performance of jqwik is improved.
-
-\paragraph{Number of \tries{}}
-
-Increasing the number of \tries{}
-directly increases the number of test inputs
-that need to be generated and exercised
-during property-based test execution.
-For example, as shown in Figure~\ref{fig:test-runtime-differences},
-execution time of \VariantNaive{} tests
-is, on average, 286.13 milliseconds (ms) longer per test
-than for \VariantOriginal{} tests when using 10 \tries{}
-(a +91.3\% increase compared to the \VariantBaseline{} overhead of 149.56~ms),
-348.56~ms (+133.0\%) longer with 50 \tries{},
-and 1136.21~ms (+659.7\%) longer with 200 \tries{}.
-Similarly, execution time of \VariantImproved{} tests
-is 189.17~ms (+26.5\%) longer with 10 \tries{},
-246.85~ms (+65.1\%) longer with 50 \tries{},
-and 395.26~ms (+164.3\%) longer with 200 \tries{}.
-While overall runtime increases
-get larger as \texttt{tries} increase,
-runtime increases per \texttt{try}
-get smaller as \texttt{tries} increase.
-More specifically, \VariantNaive{} variants
-show per-\texttt{try} increases
-of 28.61~ms / 6.97~ms / 5.68~ms at 10 / 50 / 200 \tries{}.
-\VariantImproved{} variants show
-per-\texttt{try} increases 
-of 18.92~ms / 4.94~ms / 1.98~ms at 10 / 50 / 200 \tries{}.
-However, to attribute these observed
-improvements in per-\texttt{try} efficiency to any specific causes
-would require a more thorough microbenchmarking setup
-that properly accounts for confounding factors such as JVM warmup,
-which is beyond the scope of this evaluation.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
-  \caption{Runtime Comparison: Test vs. Generalization.}
-  \Description{Two bar charts comparing runtime overhead of generalized tests.
-  Left chart shows mean runtime difference in milliseconds between original and generalized tests.
-  BASELINE adds 149.56ms overhead.
-  NAIVE variants show increasing overhead with more tries:
-  286.13ms (10 tries), 348.56ms (50 tries), 1136.21ms (200 tries).
-  IMPROVED variants show lower overhead:
-  189.17ms (10 tries), 246.85ms (50 tries), 395.26ms (200 tries).
-  Right chart shows mean runtime difference per try in milliseconds.
-  BASELINE shows 149.56ms per try.
-  NAIVE variants show decreasing per-try cost:
-  28.61ms (10 tries), 6.97ms (50 tries), 5.68ms (200 tries).
-  IMPROVED variants show better per-try efficiency:
-  18.92ms (10 tries), 4.94ms (50 tries), 1.98ms (200 tries).}
-  \label{fig:test-runtime-differences}
-\end{figure}
-
-\paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
-
-Runtime increases were larger
-for \VariantNaive{} than for \VariantImproved{}
-when comparing the same tests.
-For example, \VariantNaiveC{} and \VariantImprovedC{}
-both generalize the same three tests of \DatasetCommonsDev{}
-(see Table~\ref{tab:tests-per-project}).
-Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
-generalization with \VariantNaiveC{}
-increases overall test suite runtime by 4.54 seconds
-(+57.1\% compared to \VariantOriginal{}).
-\VariantImprovedC{}, on the other hand,
-only increases runtime by 0.74 seconds (+9.4\%).
-The more pronounced runtime impact of \VariantNaive{} variants is caused by 
-the input value generation approach used by these variants.
-As described in Section~\ref{sec:naive-generalization},
-\VariantNaive{} generalization selects inputs for test execution
-by first randomly generating inputs
-that match the parameter types of the tested method,
-and then discarding any inputs that do not satisfy the input specification.
-Especially for cases with restrictive input specifications (e.g., \texttt{a~==~b~\&\&~b~==~c}),
-this causes a large runtime overhead
-because many discard-and-regenerate cycles are required
-until a valid set of inputs is identified
-(or \ToolJqwik{} aborts the process due to \texttt{TooManyFilterMisses}).
-\VariantImproved{} variants are less affected by this
-because they already consider (some) input constraints
-during initial input value generation
-(as described in Section~\ref{sec:improved-generalization}).
-As a result, fewer inputs need to be discarded and regenerated,
-which lessens the overall runtime impact of \VariantImproved{} generalization
-despite the more involved input value generation process.
-
-\paragraph{Complexity of Constraints}
-
-As complexity of input specifications increases,
-required runtime also increases.
-This is because more complex constraints
-cause more filter-and-regenerate cycles to occur
-during execution of property-based tests.
-While \VariantNaive{} generalization
-is more strongly affected by this than \VariantImproved{}
-because it does not consider any constraints during value generation
-(as discussed in the previous paragraph),
-the issue also affects \VariantImproved{} generalization
-in cases where less than 100\% of constraints can be used
-(for further details on constraint use,
-see Sections~\ref{sec:improved-generalization} and \ref{sec:boundary-detection-effectiveness}).
-For example, as shown in Table~\ref{tab:tests-per-project},
-\VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
-as it adds to \DatasetCommonsA{},
-yet runtime increases are similar: +578.7\% vs.\ +680.5\%.
-This is because input specifications in \DatasetEqBenchA{}
-have fewer operations (mean: 159.1 vs.\ 208.0, median: 10 vs.\ 15)
-and constraints (mean: 6.5 vs.\ 7.5, median: 2 vs.\ 5)
-than in \DatasetCommonsA{}, 
-and fewer of these constraints
-can be used during input value generation
-(mean: 42.9\% vs.\ 61.5\%, median: 80\% vs.\ 100\%).
-This indicates that better support for more complex input constraints
-not only holds the potential to increase detection rates
-(as suggested in Section~\ref{sec:boundary-detection-effectiveness})
-but could also reduce the runtime cost of generalized tests at the same time.
-
-\begin{center}
-\fbox{\begin{minipage}{0.98\textwidth}
-\paragraph{Answer to RQ2:}
-Test generalization adds 0--3 tests to final test suites after compensation,
-but increases lines of code by 5--59\% due to explicit constraint encoding and test isolation.
-Test suite runtime increases 1.5--3$\times$ for \ToolEvoSuite{}-generated tests
-and 9--57\% for developer tests,
-primarily from property-based testing overhead and the number of \tries{}.
-These impacts vary significantly based on test architecture:
-single-assertion tests enable near-complete compensation
-while multi-assertion tests resist consolidation.
-Implementation choices like constraint libraries and test integration
-could substantially reduce these overheads.
-\end{minipage}}
-\end{center}
+% \begin{center}
+% \fbox{\begin{minipage}{0.98\textwidth}
+% \paragraph{Answer to RQ1:}
+% \ToolTeralizer{} improves mutation detection rates across all evaluated datasets,
+% with effectiveness strongly influenced by initial test suite quality and constraint complexity.
+% EvoSuite-generated test suites achieve the largest improvements:
+% 1.2--3.9 percentage points (2.4--8.2\% relative) on \DatasetsEqBenchEs{}
+% and 0.82--1.33 percentage points (1.4--2.3\% relative) on \DatasetsCommonsEs{}.
+% Developer-written Apache Commons tests, already achieving 80.4\% mutation score,
+% show minimal improvement (0.05--0.07 percentage points),
+% demonstrating diminishing returns for mature test suites.
+% \VariantNaive{} and \VariantImproved{} variants show complementary strengths:
+% \VariantNaive{} excels at detecting \texttt{Math} mutations through diverse numeric inputs,
+% while \VariantImproved{} better detects \texttt{ConditionalsBoundary} mutations
+% through constraint-aware generation.
+% Higher \tries{} settings consistently improve detection with diminishing returns,
+% though \VariantImproved{} requires sufficient attempts to balance boundary and non-boundary testing.
+% \end{minipage}}
+% \end{center}

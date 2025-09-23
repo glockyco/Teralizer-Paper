@@ -1,249 +1,357 @@
-\subsection{RQ3: Runtime Requirements}
-\label{sec:runtime-eval}
+\subsection{RQ2: Effects on Test Suite Size and Runtime}
+\label{sec:ancillary-effects-eval}
 
-We measured \ToolTeralizer{}'s runtime across seven project variants
-to assess viability compared to existing automated testing tools.
-Since no existing tools perform automated test generalization from unit tests to property-based tests,
-we compared efficiency against \ToolEvoSuite{}~\cite{fraser_2011_evosuite}, the established test generation tool.
-Runtime results were collected on a MacBook Air with M2 processor and 24~GB of memory.
-Shared processing stages were executed only once per project by \ToolTeralizer{}
-and collected specifications were then reused across all seven generalization variants.
-Processing required a total time of 3.4 hours for \DatasetCommonsDev{},
-8.2--9.8 hours for \DatasetsCommonsEs{},
-and 24.8--30.9 hours for \DatasetsEqBenchEs{} (Section~\ref{sec:execution-time}).
-Despite the relatively high runtime cost,
-Pareto analysis (Section~\ref{sec:execution-efficiency}) shows
-that combining low search budget \ToolEvoSuite{} generation and \ToolTeralizer{} generalization
-achieved better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets
-in several configurations.
+Test generalization transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
+While this transformation improves mutation detection (Section~\ref{sec:primary-effects-eval}),
+it also affects test suite characteristics in several ways:
 
-\subsubsection{Execution Time of \ToolTeralizer{}}
-\label{sec:execution-time}
+\begin{enumerate}
+  \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
+  \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
+  \item the execution time of the test suite (Section~\ref{sec:test-suite-execution-time}).
+\end{enumerate}
 
-Runtime distribution across processing stages reveals
-that validation stages dominate overall computational cost of \ToolTeralizer{}'s processing pipeline.
-Figure~\ref{fig:teralizer-runtimes} shows
-generalization validation consuming 1,110--35,538 seconds (40.5--78.5\% of total processing time)
-while specification extraction requires 65--2,793 seconds (0.7--8.2\%)
-and test transformation takes 5--173 seconds (0.1--0.5\%).
-This resembles \ToolEvoSuite{}'s distribution,
-where the JUnit checking phase,
-which is most comparable to \ToolTeralizer{}'s
-generalization validation stage,
-consumes 86\%, 72\%, and 34\% of median runtime
-for 1s, 10s, and 60s search budgets respectively.
+Section~\ref{sec:test-suite-test-count} reveals how test architecture determines
+whether added generalized tests can be compensated by original test removals,
+explaining why \ToolEvoSuite{}-generated test suites achieve near-complete compensation
+while the developer-written test suite in \DatasetCommonsDev{} does not allow for any test removals at all.
+Section~\ref{sec:test-suite-line-count} documents
+how current constraint encoding and test isolation implementations increase lines of code in the test suite,
+suggesting that the introduction of constraint abstraction libraries
+as well as tighter integration of generalized tests into the original test suite
+could reduce this overhead.
+Section~\ref{sec:test-suite-execution-time} analyzes runtime patterns,
+showing that costs stem primarily from property-based testing overhead and \tries{} repetition,
+but could be at least partially alleviated
+through test suite reduction and improved support for more complex input constraints.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
-  \caption{Teralizer runtimes per project, processing stage, and generalization variant.}
-  \Description{Grouped bar chart showing runtime breakdown across processing stages for seven projects.
-  Y-axis shows runtime in seconds (up to 40000).
-  X-axis groups bars by processing stage:
-  Original Validation, Specification Extraction, Initial Validation,
-  Test Transformation, and Generalization Validation.
-  Each group contains bars for different variants (SHARED, BASELINE, NAIVE with 10/50/200 tries,
-  and IMPROVED with 10/50/200 tries) shown in different colors.
-  Bar heights show runtime with values labeled above each bar.
-  Generalization Validation stage shows the highest runtimes (up to 35.5k seconds),
-  while Test Transformation shows minimal runtime (5-173 seconds).
-  Pattern reveals validation stages dominate total runtime,
-  particularly for higher tries settings.}
-  \label{fig:teralizer-runtimes}
-\end{figure}
+Throughout the result presentation, we focus primarily on the results
+of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants
+as they best represent the current capabilities of \ToolTeralizer{}.
+The results for variants with fewer \tries{} follow similar trends
+albeit with correspondingly smaller effects
+on the measured test suite characteristics.
+Full results for all generalization variants
+are available in our replication package~\cite{replicationpackage}.
 
-\paragraph{Non-Validation Runtimes}
+\subsubsection{Number of Tests in the Test Suite}
+\label{sec:test-suite-test-count}
 
-Non-validation stages complete efficiently
-despite containing the core generalization logic.
-Specification extraction (65--2,793 seconds) uses \ToolSPF{}
-to concretely execute tests using single-path symbolic analysis,
-extracting path conditions and symbolic outputs
-without requiring any constraint solving calls
-(Section~\ref{sec:specification-extraction}).
-While this introduces some overhead
-because the JVM implementation of \ToolJPF / \ToolSPF{}
-is less optimized than production-ready JVM implementations
-(\ToolJPF{} itself runs inside of a host JVM process \cite{pasareanu_2013_symbolic}),
-the cost is comparatively small, representing a one-time cost
-of ca.\ 100$\times$ the runtime of an original test suite execution.
-Test transformation cost is even smaller at a one-time runtime cost
-of only 5--173 seconds per project.
-The reason for this low cost is that test transformation
-only performs syntactic replacements, e.g.,
-converting JUnit annotations to \ToolJqwik{} ones,
-wrapping input constraint encodings in \texttt{TestParameters} classes,
-and replacing expected values in assertions 
-(Section~\ref{sec:test-transformation}).
-Consequently, both specification extraction as well as test transformation
-offer comparatively little opportunity for runtime improvements.
+Generalization creates new property-based tests
+for each successfully transformed unit test,
+yet the net effect on test counts can vary considerably
+depending on test architecture and mutation detection capabilities
+of the \VariantOriginal{} test suite.
+Table~\ref{tab:tests-per-project} quantifies the observed changes
+for the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
+The number of added tests is between 174--211
+(3.5--4.3\% of \VariantOriginal{} test suite size)
+for the \DatasetsEqBenchEs{} projects,
+between 60--75 (2.2--2.9\%)
+for the \DatasetsCommonsEs{} projects,
+and 3 (0.4\%) for the \DatasetCommonsDev{} project.
 
-\paragraph{Validation Runtimes}
+\input{tables/tab-tests-per-project}
 
-Validation costs are substantially larger than non-validation costs
-due to the high runtime cost of mutation testing,
-which is by far the largest contributing factor in all validation stages.
-For example, even on the \VariantOriginal{} test suite
-without any added generalized tests,
-execution of \VariantOriginal{} validation (701--3,898 seconds)
-generally requires 1.5--10$\times$ as much runtime as specification extraction,
-with mutation testing representing 88\% of the total runtime cost of this stage on average.
-Execution times for \VariantInitial{} validation (652--4,131 seconds)
-are generally slightly lower than for \VariantOriginal{} validation
-because of the filtering that takes place
-between the two stages (Section~\ref{sec:all-filtering}).
-Validation of generalized test suites has higher runtime requirements (1,110--35,538 seconds)
-than for the \VariantOriginal{} and \VariantInitial{} ones
-for largely the same reasons that individual property-based \ToolJqwik{} tests
-take longer to execute than conventional JUnit tests, i.e.,
-\ToolJqwik{} overhead, larger number of tested inputs,
-as well as filter-and-regenerate cycles
-which occur more often for \VariantNaive{} variants
-and in the presence of more complex input constraints (Section~\ref{sec:test-suite-execution-time}).
+\VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
+because more of the tests that are created by \VariantNaiveC{}
+are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
+(as described in Section~\ref{sec:naive-generalization}
+and evaluated in Section~\ref{sec:filtering-eval}).
+Furthermore, the number of added tests is much smaller
+than the total number of generalizations that are created and evaluated by \ToolTeralizer{}
+because only tests that measurably increase the mutation score of the test suite are retained.
+In total, \ToolTeralizer{} generates 65,633 candidate generalizations across all projects and variants,
+but filtering retains only 4,240 (6.5\%) that demonstrably improve mutation detection results.
 
-While it might seem tempting to forgo any validation,
-this would result in considerable increases to the execution times of generalized test suites.
-After all, one of the primary purpose of validation stages is
-(i)~to provide a baseline for mutation detection comparisons
-(\VariantOriginal{} / \VariantInitial{} Validation),
-and (ii)~to identify which generalized tests do not
-measurably increase mutation detection rates (Generalization Validation),
-thereby enabling \ToolTeralizer{} to remove non-contributing tests from the final generalized test suite.
-In our evaluation, this filtering reduces the number of retained generalized tests
-from a total of 65,633 to 4,240 across all projects and variants
-(Section~\ref{sec:test-suite-test-count}),
-thus demonstrating the impact
-that validation-based filtering has on generalization outcomes.
-Even though there is a non-negligible one-time cost associated with this,
-that cost amortizes over time compared to a longer-running test suite
-that incurs further cost with every repeated execution.
-Future optimization efforts could focus on validation efficiency
-through faster mutation testing approaches
-or lightweight pre-filtering heuristics
-that identify likely-beneficial candidates without full validation.
+Even though \ToolTeralizer{} adds hundreds of tests to the generalized test suites,
+net test count changes remain minimal.
+Added tests are largely compensated by removed tests
+in the \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects
+which use \ToolEvoSuite{}-generated test suites.
+As a result, total test suite size only increases by 0--1 test cases
+(0--0.04\% of \VariantOriginal{} test suite size)
+for these projects.
+The \DatasetCommonsDev{} project sees less compensation success:
+none of the tests for which generalizations are added can be removed.
+This is because an \VariantOriginal{} test can only be removed
+if generalized tests are created for all assertions in the test
+(Section~\ref{sec:baseline-generalization}).
+In projects with \ToolEvoSuite{}-generated tests,
+this requirement is generally satisfied because most tests only contain a single assertion.
+However, this requirement is more difficult to satisfy for \DatasetCommonsDev{} 
+because the developer-written tests often contain multiple assertions.
 
-\subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
-\label{sec:execution-efficiency}
+The observed compensation patterns reveal how test architecture shapes generalization outcomes.
+Projects containing mostly focused, single-assertion tests enable near-complete compensation,
+while multi-assertion test suites resist such consolidation.
+In future work, we plan to explore opportunities
+for generalization to decrease overall test suite size.
+This can be achieved
+by replacing multiple \VariantOriginal{} tests
+that all cover the same input partition
+with a single property-based test that covers the same partition instead.
+For further discussion and related work covering this idea, see Section~\ref{sec:test-suite-reduction}.
 
-Combining \ToolEvoSuite{}'s test generation with \ToolTeralizer{}'s test generalization
-can achieve better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets.
-This efficiency gain stems from their complementary optimization targets:
-\ToolEvoSuite{} optimizes primarily for breadth (increasing coverage)~\cite{fraser_2011_evosuite},
-while \ToolTeralizer{} optimizes exclusively for depth (testing discovered paths thoroughly).
-Figure~\ref{fig:teralizer-efficiency} identifies which tool configurations
-provide the best detection-to-runtime trade-offs through Pareto analysis.
-Configurations on the frontier represent optimal choices:
-for any given runtime budget, they achieve the highest possible detection rate.
-Configurations outside the frontier are suboptimal,
-i.e., dominated by the Pareto-optimal points,
-because the Pareto points achieve higher mutation detection rates in less time.
+\subsubsection{Lines of Code in the Test Suite}
+\label{sec:test-suite-line-count}
 
-The results show that combining \ToolEvoSuite{}'s generation with \ToolTeralizer{}'s generalization
-not only increases detection rates (Section~\ref{sec:primary-effects-eval})
-but also yields several configurations with lower runtime costs
-than executing \ToolEvoSuite{} with higher search budgets.
-For example, for the \DatasetsEqBenchEs{} projects,
-only 2 of 3 \ToolEvoSuite{} search budget settings are Pareto optimal.
-\ToolEvoSuite{} generation with a 60-second per-class search budget
-achieves 51.6\% detection in 55,075 seconds yet falls outside the Pareto frontier.
-In the runtime dimension,
-this result is most strongly dominated by 1-second \ToolEvoSuite{} generation
-combined with \VariantNaiveB{} generalization
-(Pareto point \#5 in Table~\ref{tab:pareto-eqbench}),
-which achieves 51.7\% detection in 37,532 seconds,
-i.e., 0.1 percentage points higher detection with 31.9\% lower runtime cost.
-In the mutation detection dimension,
-the result is most strongly dominated by 10-second \ToolEvoSuite{} generation
-combined with \VariantImprovedC{} generalization (Pareto point \#9),
-which produces a 53.8\% detection result in 48,269 seconds, i.e.,
-a detection improvement of 2.2 percentage points achieved in 12.4\% less runtime.
-Increasing the runtime beyond this comparison point achieves even higher
-detection rates that further extend the Pareto frontier (Pareto points \#10--\#14).
+While test counts remain relatively stable through the test replacement mechanism,
+lines of code (LOC) increase across all projects and generalization variants.
+Table~\ref{tab:lines-per-project} shows increases of
+31.5--58.7\% for \DatasetsEqBenchEs{} projects,
+18.8--29.9\% for \DatasetsCommonsEs{} projects,
+and 4.9--5.3\% for \DatasetCommonsDev{}.
+These increases correlate with the number of added tests
+rather than net test count changes.
+For example, for the \DatasetEqBenchA{} project,
+\VariantNaiveC{} adds 177 generalized tests and removes all 177 corresponding original tests.
+However, the added tests increase test suite size by 11,780 LOC while the removed tests reduce LOC by only 1,127.
+This asymmetry between added and removed LOC stems from
+two characteristics inherent to \ToolTeralizer{}'s current implementation.
 
-Efficiency improvements of \ToolEvoSuite{} + \ToolTeralizer{} combinations
-over \ToolEvoSuite{} search budget increases
-are less pronounced for the \DatasetsCommonsEs{} projects.
-Here, all three \ToolEvoSuite{} search budget settings are Pareto optimal
-(Pareto points \#1, \#2, and \#4 in Table~\ref{tab:pareto-commons}).
-Nevertheless, generalization via \ToolTeralizer{} contributes
-8 additional points to the Pareto frontier.
-Specifically, the combination of 1-second \ToolEvoSuite{} generation
-and \VariantImprovedA{} generalization (Pareto point \#3)
-produces a Pareto optimal result
-that has higher detection rate and runtime cost than \#2
-but lower detection rate and runtime cost than \#4.
-The 7 remaining Pareto points \#5--\#11 again extend the Pareto frontier
-toward higher detection rates at higher runtime cost,
-reflecting the increased detection rates achievable via generalization
-before reaching a plateau at around
-1.0--1.3 percentage points above the corresponding \ToolEvoSuite{} results
-(Section~\ref{sec:primary-effects-eval}.)
+\input{tables/tab-lines-per-project}
+
+First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests.
+More specifically, each generalized test defines input ranges matching extracted constraints by
+translating input specifications into Java code for a custom \ToolJqwik{} \texttt{Arbitrary}
+(Section~\ref{sec:generalized-test-creation}).
+As a result, the LOC impact scales with both parameter count and constraint complexity.
+\VariantImproved{} variants also show higher per-test LOC as a consequence of this mechanism 
+because of their more sophisticated input generation logic.
+For example, \DatasetCommonsDev{}'s three generalized tests require
+36 additional LOC with \VariantImprovedC{} compared to \VariantNaiveC{}
+(9,018 vs.\ 8,982 total LOC).
+Methods with multiple parameters amplify this effect,
+as each parameter requires its own constraint encoding logic in \VariantImproved{} tests.
+
+Second, test isolation creates structural duplication.
+\ToolTeralizer{} creates new test classes for each generalized method,
+copying imports, setup/teardown methods, helper functions, class fields, etc.
+from original test classes (Section~\ref{sec:generalized-test-creation}).
+This architectural choice prioritizes safety over LOC efficiency,
+preventing unintended interactions between generalized and original tests
+while avoiding potential side effects on developer-written code.
+
+The duplication overhead varies significantly between \ToolEvoSuite{}-generated and developer-written tests.
+\DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects show similar LOC overhead per generalization
+(66-67 vs 62-63 LOC per added test, respectively),
+reflecting the structural uniformity of \ToolEvoSuite{}-generated tests.
+In contrast, \DatasetCommonsDev{} shows substantially higher duplication overhead
+(140 LOC per added test).
+This is because developer-written tests contain more shared setup code
+as well as multi-assertion architectures that hinder compensation through test removals.
+The higher percentage increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
+stem primarily from the retained generalized tests representing a larger fraction of the original test suite
+in \DatasetsEqBenchEs{} (~3.5-3.8\%) compared to \DatasetsCommonsEs{} (~2.2-2.4\%).
+The smaller difference between \VariantNaive{} and \VariantImproved{}
+LOC increases in \DatasetsCommonsEs{} projects compared to \DatasetsEqBenchEs{} projects
+likely reflects \VariantImproved{}'s lower constraint utilization on more complex specifications
+(28.5\% for \DatasetsCommonsEs{} vs.\ 54.7\% for \DatasetsEqBenchEs{}).
+
+Both overhead sources represent implementation choices rather than inherent limitations.
+Integration of generalized methods into original test classes would eliminate duplication,
+while constraint specification libraries could abstract input value generator details.
+The primary reason \ToolTeralizer{} avoids in-place transformation of tests
+is to keep changes unintrusive and isolated from original test suites,
+preventing unintended adverse side-effects on developer-written code.
+However, no technical limitation strictly requires separate test classes.
+Similarly, constraint encoding logic could be extracted to a library
+that abstracts implementation details.
+In the test code of the target projects, only minor changes would remain then:
+modified test annotations, parameterized inputs, and generalized assertions.
+As a result, such optimizations could reduce the current LOC increases
+while preserving generalization's mutation detection benefits.
+
+\subsubsection{Execution Time of the Test Suite}
+\label{sec:test-suite-execution-time}
+
+As shown in Table~\ref{tab:runtime-per-project},
+generalization with \VariantNaiveC{} and \VariantImprovedC{}
+increases overall test suite runtimes
+for all \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
+More specifically, test suite runtimes
+show increases of 574.5--1210.0\% for the \DatasetsEqBenchEs{} projects,
+444.1--2651.5\% for the \DatasetsCommonsEs{} projects,
+and 9.4--57.1\% for the \DatasetCommonsDev{} project.
+Runtime increases are primarily affected by the following factors:
+
+\begin{enumerate}
+  \item the number of tests added by the generalization, even if they are compensated for by removed tests,
+  \item the number of \tries{} used during property-based testing,
+  \item the used generalization approach, i.e., \VariantNaive{} vs. \VariantImproved{} generalization,
+  \item the complexity of input partition constraints.
+\end{enumerate}
+
+In the following paragraphs,
+we discuss how each of the above factors
+influences overall test suite execution times
+and how these factors interact with each other.
+
+\input{tables/tab-runtime-per-project}
+
+\paragraph{Added Tests}
+
+Execution of conventional JUnit tests has a lower runtime cost
+than execution of corresponding property-based jqwik tests.
+More specifically, individual property-based tests
+created with the \VariantBaseline{} generalization variant 
+take, on average, 149.56 milliseconds (ms) longer to execute
+than the corresponding \VariantOriginal{} tests
+(as shown in the left plot of Figure~\ref{fig:test-runtime-differences})
+which have a mean execution time of only 3.6~ms. % 0.0035570506476290337
+% Exact number = 0.0035570506476290337 via:
+% SELECT AVG(runtime)
+% FROM junit_test_report jtr
+% JOIN generalization g ON g.test_id = jtr.test_id
+% WHERE stage = 'COLLECT_JUNIT_REPORTS_ORIGINAL'
+% AND g.is_included;
+Therefore, overall test suite execution time increases,
+on average, by at least 149.56~ms per jqwik test
+that is added during the generalization process,
+even if no new test inputs are exercised
+and the added tests are compensated for by removed JUnit tests.
+Since these runtime increases are inherent to the use of jqwik,
+they are orthogonal to our specific generalization approach.
+Any manual or automated transformation of JUnit tests
+to jqwik tests incurs the same runtime overhead,
+and this overhead can only be reduced
+if fewer jqwik tests are created
+(e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
+or if the runtime performance of jqwik is improved.
+
+\paragraph{Number of \tries{}}
+
+Increasing the number of \tries{}
+directly increases the number of test inputs
+that need to be generated and exercised
+during property-based test execution.
+For example, as shown in Figure~\ref{fig:test-runtime-differences},
+execution time of \VariantNaive{} tests
+is, on average, 286.13 milliseconds (ms) longer per test
+than for \VariantOriginal{} tests when using 10 \tries{}
+(a +91.3\% increase compared to the \VariantBaseline{} overhead of 149.56~ms),
+348.56~ms (+133.0\%) longer with 50 \tries{},
+and 1136.21~ms (+659.7\%) longer with 200 \tries{}.
+Similarly, execution time of \VariantImproved{} tests
+is 189.17~ms (+26.5\%) longer with 10 \tries{},
+246.85~ms (+65.1\%) longer with 50 \tries{},
+and 395.26~ms (+164.3\%) longer with 200 \tries{}.
+While overall runtime increases
+get larger as \texttt{tries} increase,
+runtime increases per \texttt{try}
+get smaller as \texttt{tries} increase.
+More specifically, \VariantNaive{} variants
+show per-\texttt{try} increases
+of 28.61~ms / 6.97~ms / 5.68~ms at 10 / 50 / 200 \tries{}.
+\VariantImproved{} variants show
+per-\texttt{try} increases 
+of 18.92~ms / 4.94~ms / 1.98~ms at 10 / 50 / 200 \tries{}.
+However, to attribute these observed
+improvements in per-\texttt{try} efficiency to any specific causes
+would require a more thorough microbenchmarking setup
+that properly accounts for confounding factors such as JVM warmup,
+which is beyond the scope of this evaluation.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
-  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
-  \Description{Two scatter plots showing Pareto efficiency analysis.
-  Left panel shows eqbench project, right panel shows commons-utils project.
-  X-axis shows runtime in seconds, Y-axis shows mutation detection percentage.
-  Blue circles represent EvoSuite-only configurations,
-  red X marks show EvoSuite + NAIVE combinations,
-  green triangles show EvoSuite + IMPROVED combinations.
-  Dashed black line connects Pareto-optimal configurations numbered 1-14 (eqbench) and 1-11 (commons-utils).
-  For eqbench, points show detection rates from 48% to 56% with runtimes from 30000 to 90000 seconds.
-  For commons-utils, points show detection rates from 56.5% to 59.5% with runtimes from 5000 to 20000 seconds.
-  Pareto frontier demonstrates that combining EvoSuite with Teralizer
-  can achieve better detection-to-runtime ratios than increasing EvoSuite search budgets alone.}
-  \label{fig:teralizer-efficiency}
+  \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
+  \caption{Runtime Comparison: Test vs. Generalization.}
+  \Description{Two bar charts comparing runtime overhead of generalized tests.
+  Left chart shows mean runtime difference in milliseconds between original and generalized tests.
+  BASELINE adds 149.56ms overhead.
+  NAIVE variants show increasing overhead with more tries:
+  286.13ms (10 tries), 348.56ms (50 tries), 1136.21ms (200 tries).
+  IMPROVED variants show lower overhead:
+  189.17ms (10 tries), 246.85ms (50 tries), 395.26ms (200 tries).
+  Right chart shows mean runtime difference per try in milliseconds.
+  BASELINE shows 149.56ms per try.
+  NAIVE variants show decreasing per-try cost:
+  28.61ms (10 tries), 6.97ms (50 tries), 5.68ms (200 tries).
+  IMPROVED variants show better per-try efficiency:
+  18.92ms (10 tries), 4.94ms (50 tries), 1.98ms (200 tries).}
+  \label{fig:test-runtime-differences}
 \end{figure}
 
-\begin{table}[H]
-  \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \input{tables/tab-pareto-eqbench}
-  \end{minipage}
-  \hfill
-  \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \input{tables/tab-pareto-commons}
-  \end{minipage}
-\end{table}
+\paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
 
-Comparing \VariantNaive{} to \VariantImproved{},
-we find that both variants produce
-6 Pareto optimal results from their 9 evaluated configurations
-for the \DatasetsEqBenchEs{} project
-(3 \ToolEvoSuite{} search budgets, each combined with 3 \tries{} settings).
-For the \DatasetsCommonsEs{} projects,
-\VariantImproved{} has 7 of 9 of results on the Pareto frontier,
-compared to only 1 of 9 results produced by \VariantNaive{}.
-The underlying causes were previously discussed in RQ1 and RQ2
-(Section~\ref{sec:primary-effects-eval} and Section~\ref{sec:ancillary-effects-eval}):
-less complex constraints in the \DatasetsEqBenchEs{} project
-favor \VariantNaive{}, thus enabling it to be competitive with
-\VariantImproved{} despite its less sophisticated input generation approach.
-In contrast, constraints are more complex for the \DatasetsCommonsEs{} projects.
-This increases the mutation detection rate and runtime advantage that
-\VariantImproved{} has over \VariantNaive{}
-because the more sophisticated input value generation avoids
-\texttt{TooManyFilterMissesException}s.
+Runtime increases were larger
+for \VariantNaive{} than for \VariantImproved{}
+when comparing the same tests.
+For example, \VariantNaiveC{} and \VariantImprovedC{}
+both generalize the same three tests of \DatasetCommonsDev{}
+(see Table~\ref{tab:tests-per-project}).
+Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
+generalization with \VariantNaiveC{}
+increases overall test suite runtime by 4.54 seconds
+(+57.1\% compared to \VariantOriginal{}).
+\VariantImprovedC{}, on the other hand,
+only increases runtime by 0.74 seconds (+9.4\%).
+The more pronounced runtime impact of \VariantNaive{} variants is caused by 
+the input value generation approach used by these variants.
+As described in Section~\ref{sec:naive-generalization},
+\VariantNaive{} generalization selects inputs for test execution
+by first randomly generating inputs
+that match the parameter types of the tested method,
+and then discarding any inputs that do not satisfy the input specification.
+Especially for cases with restrictive input specifications (e.g., \texttt{a~==~b~\&\&~b~==~c}),
+this causes a large runtime overhead
+because many discard-and-regenerate cycles are required
+until a valid set of inputs is identified
+(or \ToolJqwik{} aborts the process due to \texttt{TooManyFilterMisses}).
+\VariantImproved{} variants are less affected by this
+because they already consider (some) input constraints
+during initial input value generation
+(as described in Section~\ref{sec:improved-generalization}).
+As a result, fewer inputs need to be discarded and regenerated,
+which lessens the overall runtime impact of \VariantImproved{} generalization
+despite the more involved input value generation process.
 
-\begin{center}
-\fbox{\begin{minipage}{0.98\textwidth}
-\paragraph{Answer to RQ3:}
-\ToolTeralizer{} requires 3.4--30.9 hours total runtime per project,
-with validation consuming 40--78\% of processing time
-while core generalization (specification extraction and transformation) takes less than 10\%.
-Despite high absolute costs,
-combining \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
-achieves better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets
-in several configurations.
-The efficiency gains stem from their complementary optimization targets:
-\ToolEvoSuite{} optimizes for breadth (coverage)
-while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
-Runtime optimization should focus on validation efficiency
-rather than core generalization logic.
-\end{minipage}}
-\end{center}
+\paragraph{Complexity of Constraints}
 
-%\input{tables/tab-teralizer-runtimes}
+As complexity of input specifications increases,
+required runtime also increases.
+This is because more complex constraints
+cause more filter-and-regenerate cycles to occur
+during execution of property-based tests.
+While \VariantNaive{} generalization
+is more strongly affected by this than \VariantImproved{}
+because it does not consider any constraints during value generation
+(as discussed in the previous paragraph),
+the issue also affects \VariantImproved{} generalization
+in cases where less than 100\% of constraints can be used
+(for further details on constraint use,
+see Sections~\ref{sec:improved-generalization} and \ref{sec:boundary-detection-effectiveness}).
+For example, as shown in Table~\ref{tab:tests-per-project},
+\VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
+as it adds to \DatasetCommonsA{},
+yet runtime increases are similar: +578.7\% vs.\ +680.5\%.
+This is because input specifications in \DatasetEqBenchA{}
+have fewer operations (mean: 159.1 vs.\ 208.0, median: 10 vs.\ 15)
+and constraints (mean: 6.5 vs.\ 7.5, median: 2 vs.\ 5)
+than in \DatasetCommonsA{}, 
+and fewer of these constraints
+can be used during input value generation
+(mean: 42.9\% vs.\ 61.5\%, median: 80\% vs.\ 100\%).
+This indicates that better support for more complex input constraints
+not only holds the potential to increase detection rates
+(as suggested in Section~\ref{sec:boundary-detection-effectiveness})
+but could also reduce the runtime cost of generalized tests at the same time.
+
+TODO: Answer to RQ2.
+
+% \begin{center}
+% \fbox{\begin{minipage}{0.98\textwidth}
+% \paragraph{Answer to RQ2:}
+% Test generalization adds 0--3 tests to final test suites after compensation,
+% but increases lines of code by 5--59\% due to explicit constraint encoding and test isolation.
+% Test suite runtime increases 1.5--3$\times$ for \ToolEvoSuite{}-generated tests
+% and 9--57\% for developer tests,
+% primarily from property-based testing overhead and the number of \tries{}.
+% These impacts vary significantly based on test architecture:
+% single-assertion tests enable near-complete compensation
+% while multi-assertion tests resist consolidation.
+% Implementation choices like constraint libraries and test integration
+% could substantially reduce these overheads.
+% \end{minipage}}
+% \end{center}
