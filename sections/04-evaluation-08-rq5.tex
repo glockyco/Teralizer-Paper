@@ -20,7 +20,7 @@ versus research advances to resolve.
 
 We examine unsuccessful generalizations across two complementary datasets.
 First, we analyze the primary evaluation dataset (\DatasetsEqBenchEs{} and \DatasetsCommons{})
-which represents favorable conditions:
+which represents controlled conditions:
 predominantly \ToolEvoSuite{}-generated tests 
 with simple control flow and numeric computations.
 This establishes baseline expectations for test generalization 
@@ -28,7 +28,7 @@ when project characteristics align with current tool capabilities.
 Second, we apply \ToolTeralizer{} to 1,160 real-world Java projects from the RepoReapers dataset,
 revealing the additional challenges that emerge in practical application scenarios.
 The contrast between these datasets
-(from approximately 50\% success in favorable conditions
+(from approximately 50\% success in controlled conditions
 to 0.9\% in real-world projects)
 identifies clear priorities 
 for future test generalization advances.
@@ -39,7 +39,7 @@ for future test generalization advances.
 \label{sec:filtering-eval}
 
 We first present exclusion results for the primary evaluation dataset
-to establish a baseline of exclusion patterns under favorable conditions.
+to establish a baseline of exclusion patterns under controlled conditions.
 The vast majority of exclusions stem from systematic filtering that identifies
 cases the current \ToolTeralizer{} implementation cannot handle,
 rather than unexpected failures during processing.
@@ -248,7 +248,7 @@ while developer-written tests commonly use both patterns.
 
 \paragraph{Summary}
 
-The three-level filtering cascade reveals that even under favorable conditions,
+The three-level filtering cascade reveals that even under controlled conditions,
 i.e., primarily \ToolEvoSuite{}-generated test suites
 that avoid complex patterns like helper methods and loops,
 \ToolTeralizer{} excludes significant portions at each stage:
@@ -265,7 +265,7 @@ reduces generalization-level failures by approximately 50\%
 compared to naive approaches (14.6--16.0\% vs. 22.2--28.4\%),
 while project-specific patterns show developer-written tests
 pose greater challenges than synthetic, \ToolEvoSuite{}-generated tests.
-These findings establish that even under favorable conditions,
+These findings establish that even under controlled conditions,
 significant engineering and research challenges remain for test generalization.
 Further insights and implications are discussed following the extended dataset analysis
 in Section~\ref{sec:filtering-eval-extended}.
@@ -275,7 +275,7 @@ in Section~\ref{sec:filtering-eval-extended}.
 
 The extended evaluation applies \ToolTeralizer{} to 1,160 real-world Java projects
 from the RepoReapers dataset (Section~\ref{sec:additional-oss-projects}),
-thereby moving beyond the favorable conditions of the primary dataset
+thereby moving beyond the controlled conditions of the primary dataset
 to examine more challenging, practical application scenarios.
 Table~\ref{tab:processing-failures-per-stage}
 reveals progressive attrition throughout the processing pipeline:
@@ -408,7 +408,7 @@ beyond the results achieved by the original test suites.
 % enable processing for 520 additional projects (45\% of the dataset),
 % while the external research challenge of expanding type support
 % remains crucial for broader applicability.
-% The gap between favorable (50\%) and real-world (0.9\%) success rates
+% The gap between controlled (50\%) and real-world (0.9\%) success rates
 % underscores that practical applicability requires addressing both
 % the actionable engineering improvements and the fundamental type support limitations.
 
@@ -426,10 +426,10 @@ TODO: Answer to RQ4.
 % \paragraph{Answer to RQ4:}
 % Unsuccessful generalizations primarily result from three root causes:
 % inadequate static analysis (24.7\% missing value extractions, plus undetected assertions in helper methods),
-% limited type support (15.4\% non-generalizable parameters in favorable conditions, rising to 49.4\% in real-world),
+% limited type support (15.4\% non-generalizable parameters in controlled conditions, rising to 49.4\% in real-world),
 % and complex constraint handling (14.6--28.4\% failures during input generation depending on variant sophistication).
 % Real-world projects face additional infrastructure barriers, with only 0.9\% successfully processing
-% compared to approximately 50\% assertion success under favorable conditions.
+% compared to approximately 50\% assertion success under controlled conditions.
 % Most failures stem from internal engineering limitations that \ToolTeralizer{} could address:
 % enhanced static analysis and project structure detection could recover 45\% of failed projects.
 % Expanding type support remains the key external research and engineering challenge,

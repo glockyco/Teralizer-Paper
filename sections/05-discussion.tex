@@ -4,7 +4,7 @@
 Our evaluation reveals that test generalization succeeds under specific conditions—single-assertion tests with simple numeric constraints—while facing fundamental barriers when complexity increases.
 This section synthesizes these findings to understand test generalization as a research problem,
 examining why success varies so dramatically across test types,
-what causes the gap between favorable and real-world conditions,
+what causes the gap between controlled and real-world conditions,
 how performance costs relate to benefits,
 and which research directions show most promise.
 
@@ -130,7 +130,7 @@ as they prevent false positives from invalid inputs.
 \subsection{Analyzing the Deployment Gap}
 \label{sec:deployment-gap}
 
-Approximately 50\% of assertions generalize under favorable conditions,
+Approximately 50\% of assertions generalize under controlled conditions,
 yet only 0.9\% of real-world projects complete processing.
 This gap reveals how barriers compound across the pipeline,
 from oracle availability through type support to infrastructure challenges.
@@ -168,11 +168,11 @@ but the fundamental requirement for validated expected behaviors remains.
 \paragraph{Systematic Barrier Analysis}
 
 Our progressive evaluation design deliberately isolates different challenges:
-\DatasetsEqBenchEs{} represents best-case scenarios with generated tests and numeric focus,
-\DatasetsCommons{} introduces real-world complexity while maintaining some favorable characteristics,
+\DatasetsEqBenchEs{} represents controlled conditions with generated tests and numeric focus,
+\DatasetsCommons{} introduces real-world complexity while maintaining some controlled characteristics,
 and the RepoReapers dataset captures full real-world diversity.
 This progression explains why approximately 50\% of assertions can be generalized
-under favorable conditions, yet only 0.9\% of real-world projects successfully complete processing.
+under controlled conditions, yet only 0.9\% of real-world projects successfully complete processing.
 
 \begin{table}[t]
 \centering
@@ -234,7 +234,7 @@ and 89 timeout during processing but might succeed with optimization or extended
 These represent implementation limitations rather than inherent constraints.
 
 Type support represents the primary research challenge.
-The increase from 15.4\% parameter type exclusions in favorable conditions
+The increase from 15.4\% parameter type exclusions in controlled conditions
 to 49.4\% in real-world projects reflects the prevalence of strings, collections, and custom objects
 in practical code.
 As discussed in Section~\ref{sec:symbolic-analysis},
