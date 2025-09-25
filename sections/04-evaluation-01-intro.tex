@@ -21,12 +21,11 @@ These questions progress from measuring direct effects to understanding practica
 RQ1 establishes effectiveness through mutation score improvements.
 RQ2 explores how constraint complexity affects mutation score improvements achieved by the \VariantNaive{} and \VariantImproved{} generation variants.
 RQ3 quantifies effects on test suite size and execution time.
-RQ4 examines the runtime costs and efficiency of test generalization compared to extended test generation via \ToolEvoSuite{}
-and RQ5 analyzes failure cases to identify current limitations and guide future improvements.
-
-Our experimental framework (Section~\ref{sec:experimental-framework}) establishes the methodology:
-mutation testing measures effectiveness, three complementary datasets progressively reveal
-capabilities and limitations, and nine test variants isolate different generalization effects.
-Results (Sections~\ref{sec:primary-effects-eval}--\ref{sec:filtering-eval-extended})
-demonstrate mutation score improvements under controlled conditions,
-quantify resource trade-offs, and systematically map barriers to broader applicability.
+RQ4 examines the runtime costs and efficiency of test generalization compared to extended test generation via \ToolEvoSuite{}.
+RQ5 analyzes failure cases to identify current limitations and guide future improvements.
+Our experimental setup (Section~\ref{sec:experimental-framework}) establishes the evaluation methodology
+and our evaluation results (Sections~\ref{sec:primary-effects-eval}--\ref{sec:limitations-eval})
+provide the necessary data to answer RQ1-RQ5.
+All experiments were run on a MacBook Air
+with M2 processor and 24~GB of memory using default JVM settings.
+All collected data is available in our replication package~\cite{replicationpackage}.
