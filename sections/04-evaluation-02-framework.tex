@@ -1,123 +1,135 @@
-\subsection{Experimental Framework}
+\subsection{Experimental Setup}
 \label{sec:experimental-framework}
 
-\subsubsection{Mutation Testing Methodology}
-\label{sec:mutation-testing-methodology}
+To identify current capabilities and limitations
+of semantics-based test generalization,
+we systematically evaluate our implementation of \ToolTeralizer{}
+across a multitude of projects which range from
+controlled benchmark cases that are well-suited for test generalization
+to real-world projects that demonstrate which future advances are needed
+to improve practical applicability of test generalization tools.
+In this section, we describe key components of our experimental setup
+and establish a shared vocabulary
+that we use throughout the evaluation
+to refer to different stages of the processing pipeline,
+different test suite variants,
+and different groups of projects
+that are part of our evaluation dataset.
 
-Mutation testing provides our primary measure of test effectiveness
-by systematically injecting faults into the code and measuring whether tests detect them~\cite{jia_2011_analysis}.
-A test suite that detects more mutants demonstrates stronger fault-finding capability.
-We use \ToolPit{}~\cite{coles_2016_pit} with its DEFAULTS mutation operator group,
-the recommended set for Java projects.
-Understanding which mutations each generalization strategy detects is essential
-for interpreting our results, as different strategies show distinct strengths.
-Table~\ref{tab:pit-mutators} describes the specific operators we apply.
+\subsubsection{Processing Stages and Test Suite Variants}
 
-\begin{table}[t]
-  \caption{Mutation operators from \ToolPit{}'s DEFAULTS group used in our evaluation.}
-  \label{tab:pit-mutators}
-  \begin{tabular}{l l l l}
-    \toprule
-    &&\multicolumn{2}{l}{Example} \\
-    \cmidrule{3-4}
-    Mutator & Description  & Before & After\\
-    \midrule
-    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
-    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
-    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
-    \midrule
-    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
-    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
-    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
-    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
-    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
-    \midrule
-    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
-    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
-    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
-    \midrule
-    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+As previously shown in Figure~\ref{fig:approach-overview},
+\ToolTeralizer{}'s processing pipeline consists of five processing stages.
+The first three of these stages
+(i.e., test and assertion analysis, tested method identification, and specification extraction)
+are \VariantShared{} stages that are only executed once per pipeline run
+because their results can be reused by all three generalization strategies
+(i.e., \VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}).
+Processing starts with all tests from the \VariantOriginal{} test suite.
+However, each pipeline stage can exclude tests that it 
+determines to be unsuitable for further processing.
+We refer to the subset of \VariantOriginal{} tests that remain after
+the three \VariantShared{} processing stages
+as the \VariantInitial{} test suite.
+The last two processing stages
+(i.e., generalized test creation and test suite reduction)
+are executed once for the \VariantBaseline{} generalization strategy
+and three times each for the \VariantNaive{} and \VariantImproved{} strategies
+using different values for \ToolJqwik{}'s \tries{} setting.
+Thus, we distinguish the following nine test suite variants:
 
-\subsubsection{Datasets}
-\label{sec:datasets}
+\begin{itemize}
+  \item \VariantOriginal{}: before any processing has taken place,
+  \item \VariantInitial{}: after exclusions by \VariantShared{} processing stages,
+  \item \VariantBaseline{}: after \VariantBaseline{} generalization and reduction,
+  \item \VariantNaiveA{}, \VariantNaiveB{}, \VariantNaiveC{}: after \VariantNaive{} generalization and reduction (10/50/200~\tries{}),
+  \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}: after \VariantImproved{} generalization and reduction (10/50/200~\tries{}).
+\end{itemize}
+
+As previously described in Section~\ref{sec:three-variant-design},
+using \VariantInitial{} as a shared starting point for all three generalization strategies
+not only reduces the runtime costs of the evaluation
+but also enables a fairer comparison across strategies.
+This is because it avoids non-deterministic failures such as \texttt{OutOfMemoryError}s
+from affecting one generalized test suite variant more strongly than another.
+The used \tries{} settings of 10, 50, and 200 were selected based on our own testing
+to demonstrate the scaling behavior of higher \tries{} settings
+(both in terms of mutation score improvements as well as in terms of runtime costs)
+while keeping overall runtime costs of the evaluation manageable.
+
+\subsubsection{Evaluated Projects}
 
 Our evaluation employs three complementary datasets that progressively
 reveal the gap between controlled and real-world conditions for test generalization.
+The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench}
+provides numeric-focused programs
+that are well-suited for symbolic analysis.
+Utility methods extracted from Apache Commons projects
+bridge toward real-world complexity while maintaining the focus on numeric constraints.
+Real-world projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
+expose the full spectrum of practical applicability challenges.
+Table~\ref{tab:dataset-statistics} provides a high-level overview of these datasets
+through different project size metrics. For the implementation code, we show the
+number of files, classes, and source lines of code (SLOC).
+For the test code, we additionally provide the number of test methods,
+i.e., methods that are annotated with \texttt{@Test}, \texttt{@RepeatedTest}, or \texttt{@ParameterizedTest}.
+The following paragraphs provide further details
+about the construction and contents of the three datasets and their variants.
 
 \paragraph{EqBench}
-The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled conditions
+The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench}
+(rows \DatasetsEqBenchEs{} in Table~\ref{tab:dataset-statistics})
+provides controlled conditions
 for automated test generalization.
 Originally designed for equivalence checking research,
 its 652 Java classes implement equivalent and non-equivalent program pairs
 focusing on numeric computations while deliberately avoiding
-features that complicate automated reasoning (recursion, reflection, complex object graphs).
+features that complicate automated reasoning (e.g., recursion, reflection, and complex object graphs).
 Since EqBench provides only implementation code without tests,
 we generated test suites using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}
-with three search budgets (1s, 10s, 60s per class),
-creating datasets \DatasetEqBenchA{}, \DatasetEqBenchB{}, and \DatasetEqBenchC{}.
-This design explores the relationship between initial test suite characteristics
-and generalization effectiveness, allowing us to observe whether the diminishing
-returns from stronger baselines outweigh the benefits of better test diversity.
+with three different search budgets (1s, 10s, and 60s per implementation class),
+creating the dataset variants \DatasetEqBenchA{}, \DatasetEqBenchB{}, and \DatasetEqBenchC{}.
+This design explores how initial test suite quality affects generalization effectiveness:
+stronger initial suites offer better test diversity but less improvement potential
+due to their already-high mutation scores.
 
 \paragraph{Apache Commons}
 To bridge toward real-world complexity,
-we systematically extracted numeric utility methods from Apache Commons projects.
-Using Sourcegraph's code search,
-we identified public static methods with numeric or boolean parameters and return values,
-the types currently supported by \ToolTeralizer{}'s constraint extraction.
+we systematically extracted numeric utility methods from Apache Commons projects
+(rows \DatasetsCommons{} in Table~\ref{tab:dataset-statistics}).
+Using Sourcegraph's code search\footnote{\url{https://sourcegraph.com/search}},
+we identified public static methods with numeric or boolean parameters and return values ---
+the types currently supported by \ToolTeralizer{}'s specification extraction
+(search queries are available in our replication package~\cite{replicationpackage}).
 This yielded 247 classes from 106 source files,
 including all transitively called methods and dependencies
 to ensure compilation (19,709 LOC total).
-We created four dataset variants:
-\DatasetCommonsDev{} preserves the 725 original developer-written tests (14,389 LOC),
-while \DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}
-use \ToolEvoSuite{}-generated tests with 1s, 10s, and 60s search budgets respectively.
+From this baseline, we created four dataset variants:
+\DatasetCommonsA{}, \DatasetCommonsB{}, and \DatasetCommonsC{}
+use \ToolEvoSuite{}-generated tests
+with 1s, 10s, and 60s per-class search budgets respectively.
+In contrast, \DatasetCommonsDev{} preserves the 725 original developer-written tests (14,389 LOC).
 This enables direct comparison of generalization effectiveness between
-mature developer tests that combine multiple scenarios per method
-and generated tests that follow a one-scenario-per-test approach.
+mature developer-written tests and automatically created tests generated by \ToolEvoSuite{}.
 
 \paragraph{RepoReapers}
 To understand current limitations in practical settings,
 we selected 1,160 projects from RepoReapers~\cite{munaiah_2017_reporeapers},
-a curated collection of 2.9 million GitHub repositories
-specifically filtered for software engineering research quality.
-Our selection criteria balanced technical constraints with evaluation goals:
-projects needed Java 5--8 (for \ToolSPF{} compatibility),
-JUnit 4/5 with Maven builds (for our prototype),
-standard directory structures (for automated processing),
+a curated collection of 1.9 million GitHub repositories
+specifically filtered for their use of sound software engineering practices
+(e.g., sustained development over longer periods of time,
+use of software testing and issue tracking,
+availability of documentation, etc.).
+Our selection criteria balanced technical constraints with evaluation goals.
+All selected projects target Java 5--8 (for \ToolSPF{} compatibility),
+use JUnit 4 or 5 through Maven (for \ToolTeralizer{} compatibility),
+have standard directory structures (for automated processing),
 mid-size codebases (5,000--50,000 LOC),
 and substantial test suites (20--80\% of total code).
 The selected projects collectively comprise 95,404 implementation classes 
 and 53,039 test classes across diverse domains and coding styles.
 While \ToolTeralizer{} succeeds on EqBench and partially on Apache Commons,
-the RepoReapers projects expose fundamental barriers to practical applicability
-analyzed in RQ5 (Section~\ref{sec:filtering-eval-extended}).
-
-Table~\ref{tab:dataset-statistics} reveals important structural differences:
-EvoSuite plateaus quickly at ~4,900 tests regardless of budget,
-while developer tests achieve similar coverage with 3.5$\times$ fewer
-but more complex tests combining multiple scenarios per method.
+the RepoReapers projects expose current barriers to practical applicability
+which we analyze in RQ5 (Section~\ref{sec:limitations-eval}).
 
 \input{tables/tab-dataset-statistics}
-
-\subsubsection{Test Variants and Environment}
-\label{sec:test-variants}
-
-We evaluate nine test suite variants per project to isolate different aspects
-of the generalization approach:
-
-\begin{itemize}
-  \item \VariantOriginal{}: Original project before any processing
-  \item \VariantInitial{}: After filtering unsuitable tests (baseline for comparisons)
-  \item \VariantBaseline{}: Property-based format with original inputs only (isolates framework overhead)
-  \item \VariantNaiveA{}, \VariantNaiveB{}, \VariantNaiveC{}: Random generation with constraint filtering (10/50/200 \tries{})
-  \item \VariantImprovedA{}, \VariantImprovedB{}, \VariantImprovedC{}: Constraint-aware generation (10/50/200 \tries{})
-\end{itemize}
-
-All experiments ran on a MacBook Air with M2 processor and 24~GB memory
-using default JVM settings.
-\ToolTeralizer{} captures comprehensive metrics throughout execution,
-available in our replication package~\cite{replicationpackage}.
