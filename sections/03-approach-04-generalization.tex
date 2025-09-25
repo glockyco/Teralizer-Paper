@@ -131,7 +131,7 @@ class TestParams {
 
 \ToolTeralizer{} creates three variants of each property-based test
 that differ only in their input generation strategies.
-This systematic ablation study design allows us to isolate
+This design allows us to isolate
 and measure distinct aspects of test generalization:
 pure framework overhead (\VariantBaseline{}),
 benefits from testing additional inputs (\VariantNaive{}),
@@ -139,9 +139,9 @@ and improvements from constraint-aware input generation (\VariantImproved{}).
 To reduce evaluation costs of this multi-variant approach,
 \ToolTeralizer{} shares common analysis stages across all three variants.
 Test and assertion analysis, tested method identification, and specification extraction
-execute only once per test, with their results reused for each generalization variant.
+execute only once per test, with their results reused for each generalization strategy.
 This architecture ensures fair comparison
-while avoiding redundant computation—all variants work from identical specifications
+while avoiding redundant computation --- all three generalization strategies work from identical specifications
 and analysis results, eliminating confounding factors
 such as variation in analysis time or non-deterministic failures from \texttt{OutOfMemoryError}s.
 
