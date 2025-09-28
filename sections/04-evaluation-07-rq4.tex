@@ -1,4 +1,4 @@
-\subsection{RQ3: Runtime Costs and Effiency}
+\subsection{RQ4: How efficient is test generalization compared to extended test generation?}
 \label{sec:runtime-eval}
 
 We measured \ToolTeralizer{}'s runtime across seven project variants
@@ -228,24 +228,4 @@ This increases the mutation detection rate and runtime advantage that
 because the more sophisticated input value generation avoids
 \texttt{TooManyFilterMissesException}s.
 
-TODO: Answer to RQ3.
-
-% \begin{center}
-% \fbox{\begin{minipage}{0.98\textwidth}
-% \paragraph{Answer to RQ3:}
-% \ToolTeralizer{} requires 3.4--30.9 hours total runtime per project,
-% with validation consuming 40--78\% of processing time
-% while core generalization (specification extraction and transformation) takes less than 10\%.
-% Despite high absolute costs,
-% combining \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
-% achieves better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets
-% in several configurations.
-% The efficiency gains stem from their complementary optimization targets:
-% \ToolEvoSuite{} optimizes for breadth (coverage)
-% while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
-% Runtime optimization should focus on validation efficiency
-% rather than core generalization logic.
-% \end{minipage}}
-% \end{center}
-
-%\input{tables/tab-teralizer-runtimes}
+TODO: Answer to RQ4.
