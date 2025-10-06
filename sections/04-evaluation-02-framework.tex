@@ -85,7 +85,7 @@ Originally designed for equivalence checking research,
 its 652 Java classes implement equivalent and non-equivalent program pairs
 focusing on numeric computations while deliberately avoiding
 features that complicate automated reasoning (e.g., recursion, reflection, and complex object graphs).
-Since EqBench provides only implementation code without tests,
+Since \DatasetEqBench{} provides only implementation code without tests,
 we generated test suites using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}
 with three different search budgets (1s, 10s, and 60s per implementation class),
 creating the dataset variants \DatasetEqBenchA{}, \DatasetEqBenchB{}, and \DatasetEqBenchC{}.
@@ -128,7 +128,7 @@ mid-size codebases (5,000--50,000 LOC),
 and substantial test suites (20--80\% of total code).
 The selected projects collectively comprise 95,404 implementation classes 
 and 53,039 test classes across diverse domains and coding styles.
-While \ToolTeralizer{} succeeds on EqBench and partially on Apache Commons,
+While \ToolTeralizer{} succeeds on \DatasetEqBench{} and partially on Apache Commons,
 the RepoReapers projects expose current barriers to practical applicability
 which we analyze in RQ5 (Section~\ref{sec:limitations-eval}).
 
