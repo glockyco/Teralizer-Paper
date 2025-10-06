@@ -5,76 +5,76 @@ Mutation testing provides a rigorous measure of test effectiveness
 by evaluating a test suite's ability to detect deliberately introduced faults.
 For \ToolTeralizer{}, mutation scores reveal whether testing additional inputs
 within existing execution paths achieves the intended improvement in fault detection capabilities.
-Section~\ref{sec:included-mutants} first establishes which tests and mutants are included in the evaluation,
-revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
+%Section~\ref{sec:included-mutants} first establishes which tests and mutants are included in the evaluation,
+%revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
 Section~\ref{sec:overall-detection-rates} quantifies detection improvements
 across projects and variants,
 demonstrating that generalization improves mutation scores
-for \DatasetsEqBenchEs{} and \DatasetsCommons{} projects, albeit with varying improvement magnitudes.
+for \DatasetsEqBenchEs{} and \DatasetsCommons{} projects, albeit to different degrees.
 Section~\ref{sec:detection-rates-per-mutator} dissects these improvements by mutation operator,
 uncovering how much detection of different mutants benefits from generalization.
-Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
-detailed analysis of the \VariantImproved{} generalization variant,
-demonstrating that its effectiveness correlates with constraint complexity,
-i.e., projects with more complex input constraints show greater improvements
-from constraint-aware input generation.
+% Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
+% detailed analysis of the \VariantImproved{} generalization variant,
+% demonstrating that its effectiveness correlates with constraint complexity,
+% i.e., projects with more complex input constraints show greater improvements
+% from constraint-aware input generation.
 
-\subsubsection{Included Mutants}
-\label{sec:included-mutants}
+% \subsubsection{Included Mutants}
+% \label{sec:included-mutants}
 
-To evaluate mutation detection effects,
-we compare \ToolPit{} results for \VariantInitial{} variants
-against \VariantNaive{} and \VariantImproved{} variants
-using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
-This comparison isolates generalization effects by using \VariantInitial{} as the baseline,
-ensuring that differences stem solely from the presence or absence of generalized test cases.
-Comparison to \VariantOriginal{} would not isolate generalization effects
-because the original test suite contains tests excluded during
-test analysis and specification extraction (Section~\ref{sec:all-filtering}),
-i.e., before any transformation to property-based tests occurs.
+% To evaluate mutation detection effects,
+% we compare \ToolPit{} results for \VariantInitial{} variants
+% against \VariantNaive{} and \VariantImproved{} variants
+% using \ToolPit{}'s \texttt{DEFAULTS} group of mutation operators.
+% This comparison isolates generalization effects by using \VariantInitial{} as the baseline,
+% ensuring that differences stem solely from the presence or absence of generalized test cases.
+% Comparison to \VariantOriginal{} would not isolate generalization effects
+% because the original test suite contains tests excluded during
+% test analysis and specification extraction (Sections~\ref{sec:test-assertion-analysis}--\ref{sec:specification-extraction}),
+% i.e., before any transformation to property-based tests occurs.
 
-Test inclusion rates reveal fundamental differences between generated and developer-written test suites
-that shape generalization outcomes.
-EvoSuite-generated projects achieve 83.4--85.1\% inclusion rates across variants,
-while \DatasetCommonsDev{} includes only 63.6\% of original test methods
-(Table~\ref{tab:mutants-per-project}).
-This 20-percentage-point gap reflects how different test creation approaches
-align with \ToolTeralizer{}'s current processing capabilities.
+% Test inclusion rates reveal fundamental differences between generated and developer-written test suites
+% that shape generalization outcomes.
+% EvoSuite-generated projects achieve 83.4--85.1\% inclusion rates across variants,
+% while \DatasetCommonsDev{} includes only 63.6\% of original test methods
+% (Table~\ref{tab:mutants-per-project}).
+% This 20-percentage-point gap reflects how different test creation approaches
+% align with \ToolTeralizer{}'s current processing capabilities.
 
-\input{tables/tab-mutants-per-project}
+% \input{tables/tab-mutants-per-project}
 
-EvoSuite generates tests with characteristics that facilitate automated analysis:
-simple assertion patterns that compare single values,
-explicit parameter passing without complex setup logic,
-and method-level focus that isolates individual behaviors.
-Developer-written tests, conversely, combine multiple scenarios within single methods,
-employ elaborate fixture setup spanning multiple classes,
-and validate system state changes through sequences of operations.
-While these patterns enable comprehensive integration testing,
-they create barriers for specification extraction, explaining
-why over one-third of developer tests cannot be generalized.
+% EvoSuite generates tests with characteristics that facilitate automated analysis:
+% simple assertion patterns that compare single values,
+% explicit parameter passing without complex setup logic,
+% and method-level focus that isolates individual behaviors.
+% Developer-written tests, conversely, combine multiple scenarios within single methods,
+% employ elaborate fixture setup spanning multiple classes,
+% and validate system state changes through sequences of operations.
+% While these patterns enable comprehensive integration testing,
+% they create barriers for specification extraction, explaining
+% why over one-third of developer tests cannot be generalized.
 
-The three primary exclusion causes reflect current limitations in our prototype:
-(i)~tests without assertions provide no specification to generalize,
-(ii)~tests where no tested method can be identified typically involve
-program constructs that our simple static analysis implementation cannot resolve,
-such as loops in test code or modifications of object state rather than direct return values,
-and (iii)~tests exercising methods without generalizable parameters have no numeric
-or boolean inputs to vary.
-Section~\ref{sec:filtering-eval} quantifies how frequently all exclusion causes occur,
-providing guidance for extending generalization capabilities.
+% The three primary exclusion causes reflect current limitations in our prototype:
+% (i)~tests without assertions provide no specification to generalize,
+% (ii)~tests where no tested method can be identified typically involve
+% program constructs that our simple static analysis implementation cannot resolve,
+% such as loops in test code or modifications of object state rather than direct return values,
+% and (iii)~tests exercising methods without generalizable parameters have no numeric
+% or boolean inputs to vary.
+% Section~\ref{sec:filtering-eval} quantifies how frequently all exclusion causes occur,
+% providing guidance for extending generalization capabilities.
 
-Mutation coverage patterns highlight further differences across the project environments.
-\ToolPit{} generates approximately 8,000 total mutants for Apache Commons projects
-and 23,000--24,000 for EqBench projects (Table~\ref{tab:mutants-per-project}).
-Covered mutants, i.e., those mutants that are executed by at least one included test, range
-from 64.4\% for \DatasetCommonsDev{} to 97.1\% for \DatasetCommonsC{}.
-This coverage disparity primarily reflects dataset construction rather than test quality:
-\DatasetCommonsDev{} includes only tests directly covering the extracted utility methods
-(but no tests for transitively called methods),
-while EvoSuite variants generate comprehensive suites for all included code.
-This focused scope reflects our intent to evaluate code amenable to generalization in this part of the dataset,
-as discussed in Section~\ref{sec:apache-commons-utils}.
+% Mutation coverage patterns highlight further differences across the project environments.
+% \ToolPit{} generates approximately 8,000 total mutants for Apache Commons projects
+% and 23,000--24,000 for EqBench projects (Table~\ref{tab:mutants-per-project}).
+% Covered mutants, i.e., those mutants that are executed by at least one included test, range
+% from 64.4\% for \DatasetCommonsDev{} to 97.1\% for \DatasetCommonsC{}.
+% This coverage disparity primarily reflects dataset construction rather than test quality:
+% \DatasetCommonsDev{} includes only tests directly covering the extracted utility methods
+% (but no tests for transitively called methods),
+% while EvoSuite variants generate comprehensive suites for all included code.
+% This focused scope reflects our intent to evaluate code amenable to generalization in this part of the dataset,
+% as discussed in Section~\ref{sec:apache-commons-utils}.
 
 % With the evaluation scope established, we now analyze how effectively
 % the generalized tests detect mutations within the included subset.
@@ -118,13 +118,13 @@ from its 80.4\% baseline.
 In general, two factors strongly affect achievable generalization improvements:
 initial test suite strength and input constraint complexity.
 \DatasetsEqBenchEs{} projects offer the most suitable conditions for generalization.
-Their EvoSuite-generated tests leave more room for enhancement
+This is because EvoSuite-generated tests leave more room for enhancement
 (starting from 48.1--51.6\% detection rates)
 than the thorough \DatasetCommonsDev{} test suite,
 and the \DatasetEqBench{} benchmark's input constraints
 are simpler than the input constraints of \DatasetsCommons{},
 thus making valid input generation easier
-(as discussed in more detail in Section~\ref{sec:boundary-detection-effectiveness}).
+(as discussed in more detail in Section~\ref{sec:constraint-complexity-eval}).
 \DatasetsCommonsEs{} projects face one additional challenge:
 while they also start from EvoSuite-generated tests,
 the \DatasetsCommons{} methods involve more complex input specifications,
@@ -176,7 +176,7 @@ as enough attempts remain for both boundary and non-boundary testing.
 \DatasetsCommonsEs{} projects (rows 4--6) show less pronounced degradation at low \tries{},
 because their more complex constraints (Section~\ref{sec:constraint-complexity-eval})
 cause more boundary inputs to fail filtering,
-forcing the algorithm to explore non-boundary values sooner.
+forcing earlier exploration of non-boundary values.
 
 Combining short test generation with subsequent generalization
 can outperform longer generation alone.
@@ -192,11 +192,11 @@ Section~\ref{sec:execution-efficiency} analyzes the efficiency trade-offs
 between different combinations of \ToolEvoSuite{} timeouts and \ToolTeralizer{} \tries{}
 in further detail through Pareto front analysis.
 
-The reported improvements are based on single runs per project configuration.
-While property-based test generation includes randomness that could produce variation across runs,
-the consistent patterns across projects suggest the observed trends are robust.
-Multiple runs would strengthen confidence in the precise magnitude of improvements
-(a limitation we discuss in Section~\ref{sec:threats-to-validity}).
+% The reported improvements are based on single runs per project configuration.
+% While property-based test generation includes randomness that could produce variation across runs,
+% the consistent patterns across projects suggest the observed trends are robust.
+% Multiple runs would strengthen confidence in the precise magnitude of improvements
+% (a limitation we discuss in Section~\ref{sec:threats-to-validity}).
 
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
@@ -204,10 +204,15 @@ Multiple runs would strengthen confidence in the precise magnitude of improvemen
 Generalization effectiveness varies significantly across mutation operators,
 revealing which fault types benefit most from additional test inputs
 (Table~\ref{tab:detections-per-mutator}).
-Three operators dominate the mutation landscape:
-\texttt{Math} (59.1\% of all mutants),
-\texttt{Conditionals\-Boundary} (11.0\%),
-and \texttt{Remove\-Conditional\-Order\-Else} (11.0\%).
+The \texttt{Math} mutation operator dominates the mutation landscape
+in \DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
+making up 59.1\% of total mutants.
+This strong representation of \texttt{Math} mutations
+is primarly due to the deliberate focus on numeric computations in these datasets.
+The next most commonly occurring mutations are 
+\texttt{Conditionals\-Boundary} and \texttt{Remove\-Conditional\-Order\-Else}
+mutations, each of which accounts for 11.0\% of total mutants
+(both operators are applied at the same source code locations).
 In contrast, the least common operators, i.e., \texttt{Increments} (0.52\%),
 \texttt{Boolean\-False\-ReturnVals} (0.24\%),
 and \texttt{Empty\-Object\-Return\-Vals} (0.13\%), together
@@ -219,17 +224,23 @@ than improvements to less commonly occurring mutation types.
 
 \input{tables/tab-detections-per-mutator}
 
-Initial detection rates reveal a clear pattern:
-return value mutations are caught
-in the large majority of cases (87.9--98.8\% detection),
+\VariantInitial{} detection rates reveal a clear pattern: return value mutations
+(i.e., \texttt{Primitive\-Returns}, \texttt{Boolean\-True\-Return\-Vals},
+\texttt{Boolean\-False\-Return\-Vals}, and \texttt{Empty\-Object\-Return\-Vals})
+are caught in the large majority of cases (87.9--98.8\% detection),
 while behavioral mutations prove more elusive.
 For example, \texttt{VoidMethodCall} mutations achieve a detection rate of only 25.0\%
 because removing void method calls typically affects only internal state
-or produces side effects that are not directly verified by test assertions.
-\texttt{ConditionalsBoundary} mutations fare only slightly better at 27.7\% total detection rate,
-highlighting an opportunity for automated improvement.
-After all, the \texttt{Conditionals\-Boundary} mutations
-change comparison operators at partition boundaries,
+or produces side effects that are rarely verified by existing assertions.
+Because these cases often require new assertions to be added to achieve detection rate improvements,
+they are largely beyond the current capabilities of \ToolTeralizer{}.
+In contrast, \VariantInitial{} detection rates of
+27.7\% for \texttt{ConditionalsBoundary} mutations,
+61.1\% for \texttt{RemovConditionalOrderElse},
+and 58.8\% for \texttt{RemoveConditionalEqualElse}
+do highlight opportunities for automated improvement.
+After all, all three mutations
+affect partition boundaries,
 which is exactly where \VariantImproved{} generalization
 aims to generate additional test inputs.
 
@@ -297,7 +308,7 @@ The exception is \texttt{Math} mutation detection,
 where \VariantImprovedA{} achieves only 1.1\% improvement compared to 2.8\% for \VariantNaiveA{}.
 Given that \texttt{Math} mutations comprise 59.1\% of all mutants,
 this explains the low overall detection rate of \VariantImprovedA{} on \DatasetsEqBenchEs{} projects
-observed in Section~\ref{sec:overall-detection-rates}.
+observed in rows 1--3 of Figure~\ref{fig:mutation-detection-results}.
 With 50 \tries{}, the \texttt{Math} detection gap is noticeably smaller
 (\VariantImprovedB{} achieves 3.1\% versus \VariantNaiveB{}'s 3.6\%),
 confirming that limited \tries{} constrain arithmetic diversity
