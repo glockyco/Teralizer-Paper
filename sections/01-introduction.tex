@@ -14,7 +14,8 @@ often uncovers edge cases and boundary conditions missed by unit tests~\cite{hug
 Adoption, however, remains limited because writing property-based tests 
 requires manual effort to define both input generators and suitable properties,
 a task practitioners find challenging~\cite{goldstein_2024_pbt_practice}.
-This motivates research into automated transformation approaches.
+This motivates research into automated transformation approaches
+that automatically generalize existing unit tests by deriving properties from program semantics.
 
 \begin{figure}[t]
   \centering
@@ -61,7 +62,7 @@ To our knowledge, JARVIS~\cite{peleg_2018_jarvis} is the only prior work
 that automatically generalizes unit tests into property-based tests.
 However, JARVIS infers properties from input-output examples based solely on test code,
 relying on predefined abstraction templates that yield overapproximations.
-In contrast, our white-box approach leverages implementation analysis
+In contrast, our white-box approach leverages dynamic program analysis
 to extract exact specifications for the execution paths exercised by the original tests.
 
 We implement this approach in \ToolTeralizer{}, a prototype tool for Java
@@ -100,11 +101,15 @@ In contrast, generalization of developer-written tests for Apache Commons utilit
 shows minimal improvement (0.05--0.07 percentage points from a baseline of 80.35\%).
 These mature tests have already detected most of the faults targeted by automated generalization.
 Beyond mutation detection results,
-our analysis of 1,160 real-world projects reveals practical application barriers:
-only 0.9\% of projects successfully complete the full generalization pipeline,
-with failures primarily caused by 
-assertion-to-method mapping issues, type support limitations, and constraint encoding challenges.
-We classify these failures into those that can be resolved through additional engineering effort
+our analysis of 1,160 real-world projects reveals practical applicability barriers:
+only 0.9\% of projects successfully complete the full generalization pipeline.
+Failures are primarily caused by 
+fundamental type support limitations of symbolic analysis
+as well as static analysis and constraint encoding limitations
+of or current implementation of \ToolTeralizer{}.
+To provide a clear roadmap for future work,
+we classify these failures into
+those that can be resolved through additional engineering effort
 and those that represent deeper research challenges in specification extraction and encoding.
 
 This paper makes the following contributions:
@@ -114,7 +119,7 @@ This paper makes the following contributions:
 We introduce an automated approach for transforming unit tests into property-based tests
 via semantics-based specification extraction,
 analyzing both test code and implementation code to derive path-exact specifications.
-Our prototype implementation \ToolTeralizer{} demonstrates feasibility for Java projects,
+Our prototype implementation called \ToolTeralizer{} demonstrates feasibility for Java projects,
 achieving mutation score improvements of 1--4 percentage points
 under conditions suitable for current symbolic analysis.
 
