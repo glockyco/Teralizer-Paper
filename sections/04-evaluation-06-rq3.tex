@@ -1,7 +1,7 @@
 \subsection{RQ3: To which degree does generalization affect the size and runtime of the target test suites?}
 \label{sec:ancillary-effects-eval}
 
-Test generalization transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
+\ToolTeralizer{} transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
 While this transformation improves mutation detection (Section~\ref{sec:primary-effects-eval}),
 it also affects test suite characteristics in several ways:
 
@@ -26,7 +26,7 @@ but could be at least partially alleviated
 through test suite reduction and improved support for more complex input constraints.
 
 Throughout the result presentation, we focus primarily on the results
-of the \VariantNaiveC{} and \VariantImprovedC{} generalization variants
+of the \VariantNaiveC{} and \VariantImprovedC{} test suite generalization variants
 as they best represent the current capabilities of \ToolTeralizer{}.
 The results for variants with fewer \tries{} follow similar trends
 albeit with correspondingly smaller effects
@@ -37,11 +37,15 @@ are available in our replication package~\cite{replicationpackage}.
 \subsubsection{Number of Tests in the Test Suite}
 \label{sec:test-suite-test-count}
 
-Generalization creates new property-based tests
-for each successfully transformed unit test,
-yet the net effect on test counts can vary considerably
-depending on test architecture and mutation detection capabilities
-of the \VariantOriginal{} test suite.
+As described in Section~\ref{sec:test-suite-reduction},
+\ToolTeralizer{} aims to remove any original and generalized tests
+that do not contribute unique fault detection capability
+during its test suite reduction stage.
+In an ideal scenario, all added property-based tests
+are compensated by removed original tests.
+However, the effectiveness of test suite reduction
+depends strongly on overall test architecture
+and mutation detection capabilities of the \VariantOriginal{} test suite.
 Table~\ref{tab:tests-per-project} quantifies the observed changes
 for the \VariantNaiveC{} and \VariantImprovedC{} generalization variants.
 The number of added tests is between 174--211
@@ -51,18 +55,19 @@ between 60--75 (2.2--2.9\%)
 for the \DatasetsCommonsEs{} projects,
 and 3 (0.4\%) for the \DatasetCommonsDev{} project.
 
-\input{tables/tab-tests-per-project}
-
-\VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{} 
-because more of the tests that are created by \VariantNaiveC{}
-are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s
-(as described in Section~\ref{sec:naive-generalization}
-and evaluated in Section~\ref{sec:filtering-eval}).
+\VariantImprovedC{} generally adds a larger number of tests than \VariantNaiveC{}.
+This is because more of the tests that are created by \VariantNaiveC{}
+are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s and, therefore,
+not retained in the final test suite
+(as evaluated in Section~\ref{sec:filtering-eval}).
 Furthermore, the number of added tests is much smaller
-than the total number of generalizations that are created and evaluated by \ToolTeralizer{}
+than the total number of generalized tests that are created and evaluated by \ToolTeralizer{}
+for both \VariantNaiveC{} as well as \VariantImprovedC{}
 because only tests that measurably increase the mutation score of the test suite are retained.
-In total, \ToolTeralizer{} generates 65,633 candidate generalizations across all projects and variants,
-but filtering retains only 4,240 (6.5\%) that demonstrably improve mutation detection results.
+In total, \ToolTeralizer{} generates 21,478 candidate generalizations across the listed project and generalization variants.
+However, test suite reduction retains only 1,555~(7.2\%) generalized tests that demonstrably improve mutation detection results.
+
+\input{tables/tab-tests-per-project}
 
 Even though \ToolTeralizer{} adds hundreds of tests to the generalized test suites,
 net test count changes remain minimal.
@@ -75,8 +80,7 @@ for these projects.
 The \DatasetCommonsDev{} project sees less compensation success:
 none of the tests for which generalizations are added can be removed.
 This is because an \VariantOriginal{} test can only be removed
-if generalized tests are created for all assertions in the test
-(Section~\ref{sec:baseline-generalization}).
+if generalized tests are created for all assertions in the test.
 In projects with \ToolEvoSuite{}-generated tests,
 this requirement is generally satisfied because most tests only contain a single assertion.
 However, this requirement is more difficult to satisfy for \DatasetCommonsDev{} 
@@ -91,12 +95,12 @@ This can be achieved
 by replacing multiple \VariantOriginal{} tests
 that all cover the same input partition
 with a single property-based test that covers the same partition instead.
-For further discussion and related work covering this idea, see Section~\ref{sec:test-suite-reduction}.
+For further discussion of this idea, see Section~\ref{sec:discussion}.
 
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
 
-While test counts remain relatively stable through the test replacement mechanism,
+While test counts remain relatively stable through the test suite reduction mechanism,
 lines of code (LOC) increase across all projects and generalization variants.
 Table~\ref{tab:lines-per-project} shows increases of
 31.5--58.7\% for \DatasetsEqBenchEs{} projects,
@@ -115,7 +119,7 @@ two characteristics inherent to \ToolTeralizer{}'s current implementation.
 First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests.
 More specifically, each generalized test defines input ranges matching extracted constraints by
 translating input specifications into Java code for a custom \ToolJqwik{} \texttt{Arbitrary}
-(Section~\ref{sec:generalized-test-creation}).
+(as described in Section~\ref{sec:three-variant-design}).
 As a result, the LOC impact scales with both parameter count and constraint complexity.
 \VariantImproved{} variants also show higher per-test LOC as a consequence of this mechanism 
 because of their more sophisticated input generation logic.
@@ -128,7 +132,7 @@ as each parameter requires its own constraint encoding logic in \VariantImproved
 Second, test isolation creates structural duplication.
 \ToolTeralizer{} creates new test classes for each generalized method,
 copying imports, setup/teardown methods, helper functions, class fields, etc.
-from original test classes (Section~\ref{sec:generalized-test-creation}).
+from original test classes (as described in Section~\ref{sec:transformation-pipeline}).
 This architectural choice prioritizes safety over LOC efficiency,
 preventing unintended interactions between generalized and original tests
 while avoiding potential side effects on developer-written code.
@@ -143,25 +147,26 @@ This is because developer-written tests contain more shared setup code
 as well as multi-assertion architectures that hinder compensation through test removals.
 The higher percentage increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
 stem primarily from the retained generalized tests representing a larger fraction of the original test suite
-in \DatasetsEqBenchEs{} (~3.5-3.8\%) compared to \DatasetsCommonsEs{} (~2.2-2.4\%).
+in \DatasetsEqBenchEs{} (3.5-3.8\%) compared to \DatasetsCommonsEs{} (2.2-2.4\%).
 The smaller difference between \VariantNaive{} and \VariantImproved{}
 LOC increases in \DatasetsCommonsEs{} projects compared to \DatasetsEqBenchEs{} projects
 likely reflects \VariantImproved{}'s lower constraint utilization on more complex specifications
 (28.5\% for \DatasetsCommonsEs{} vs.\ 54.7\% for \DatasetsEqBenchEs{}).
 
 Both overhead sources represent implementation choices rather than inherent limitations.
-Integration of generalized methods into original test classes would eliminate duplication,
+Integration of generalized methods into original test classes would reduce duplication,
 while constraint specification libraries could abstract input value generator details.
 The primary reason \ToolTeralizer{} avoids in-place transformation of tests
-is to keep changes unintrusive and isolated from original test suites,
-preventing unintended adverse side-effects on developer-written code.
-However, no technical limitation strictly requires separate test classes.
+is to keep changes isolated,
+preventing unintended adverse effects on developer-written code
+and mutation testing (as discussed in Section~\ref{sec:transformation-pipeline}).
 Similarly, constraint encoding logic could be extracted to a library
 that abstracts implementation details.
 In the test code of the target projects, only minor changes would remain then:
 modified test annotations, parameterized inputs, and generalized assertions.
 As a result, such optimizations could reduce the current LOC increases
 while preserving generalization's mutation detection benefits.
+We leave these improvements for future work.
 
 \subsubsection{Execution Time of the Test Suite}
 \label{sec:test-suite-execution-time}
@@ -177,7 +182,8 @@ and 9.4--57.1\% for the \DatasetCommonsDev{} project.
 Runtime increases are primarily affected by the following factors:
 
 \begin{enumerate}
-  \item the number of tests added by the generalization, even if they are compensated for by removed tests,
+  \item the number of tests added by the generalization,
+  \item the number of tests removed by the test suite reduction,
   \item the number of \tries{} used during property-based testing,
   \item the used generalization approach, i.e., \VariantNaive{} vs. \VariantImproved{} generalization,
   \item the complexity of input partition constraints.
@@ -190,7 +196,7 @@ and how these factors interact with each other.
 
 \input{tables/tab-runtime-per-project}
 
-\paragraph{Added Tests}
+\paragraph{Added and Removed Tests}
 
 Execution of conventional JUnit tests has a lower runtime cost
 than execution of corresponding property-based jqwik tests.
@@ -289,7 +295,7 @@ increases overall test suite runtime by 4.54 seconds
 only increases runtime by 0.74 seconds (+9.4\%).
 The more pronounced runtime impact of \VariantNaive{} variants is caused by 
 the input value generation approach used by these variants.
-As described in Section~\ref{sec:naive-generalization},
+As described in Section~\ref{sec:three-variant-design},
 \VariantNaive{} generalization selects inputs for test execution
 by first randomly generating inputs
 that match the parameter types of the tested method,
@@ -321,7 +327,7 @@ because it does not consider any constraints during value generation
 the issue also affects \VariantImproved{} generalization
 in cases where less than 100\% of constraints can be used
 (for further details on constraint use,
-see Sections~\ref{sec:improved-generalization} and \ref{sec:boundary-detection-effectiveness}).
+see Sections~\ref{sec:three-variant-design} and \ref{sec:constraint-complexity-eval}).
 For example, as shown in Table~\ref{tab:tests-per-project},
 \VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
 as it adds to \DatasetCommonsA{},
@@ -335,7 +341,7 @@ can be used during input value generation
 (mean: 42.9\% vs.\ 61.5\%, median: 80\% vs.\ 100\%).
 This indicates that better support for more complex input constraints
 not only holds the potential to increase detection rates
-(as suggested in Section~\ref{sec:boundary-detection-effectiveness})
+(as suggested in Section~\ref{sec:constraint-complexity-eval})
 but could also reduce the runtime cost of generalized tests at the same time.
 
 TODO: Answer to RQ3.
