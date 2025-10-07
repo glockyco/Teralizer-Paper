@@ -14,19 +14,20 @@ for assessing the effectiveness of generalized tests.
 \subsection{Test Amplification and Generalization}
 \label{sec:test-amplification}
 
-Test amplification exploits knowledge embedded in existing test cases (e.g.,
-meaningful input data and expected outputs encoded as assertions) to
-automatically enhance manually written tests to support specific engineering goals~\cite{danglot_2019_snowballing}.
-Amplification techniques go beyond simply maximizing coverage,
-targeting diverse objectives ranging from regression detection to fault localization.
-\citeauthor{danglot_2019_snowballing}'s taxonomy~\cite{danglot_2019_snowballing} distinguishes four categories of amplification:
+Test amplification exploits knowledge embedded in existing test cases
+(e.g., meaningful input data and expected outputs encoded as assertions)
+to automatically enhance manually written tests. Going beyond simply
+maximizing coverage, amplification techniques target diverse engineering goals,
+such as improving regression detection or refining fault localization~\cite{danglot_2019_snowballing}.
+\citeauthor{danglot_2019_snowballing}'s taxonomy~\cite{danglot_2019_snowballing}
+distinguishes four categories of amplification:
 AMP\textsubscript{add} creates new tests from existing ones,
 AMP\textsubscript{change} targets specific program modifications,
-AMP\textsubscript{exec} varies execution conditions, and
-AMP\textsubscript{mod} modifies test structure or assertions to generalize behavior.
+AMP\textsubscript{exec} varies execution conditions,
+and AMP\textsubscript{mod} modifies test structure or assertions to generalize behavior.
 
-Test generalization belongs to the AMP\textsubscript{mod} category,
-transforming tests from validating individual input-output pairs
+Test generalization belongs to the AMP\textsubscript{mod} category. 
+It transforms tests from validating individual input-output pairs
 to validating properties across entire input partitions.
 For example, a test verifying that \texttt{abs(0)} returns \texttt{0}
 validates this relationship for only one input,
@@ -37,7 +38,7 @@ Generalizing such tests requires extracting path-exact specifications
 that capture program behavior across input partitions
 while preserving the oracles developers have encoded in their assertions.
 
-Central to all test amplification approaches is the oracle problem:
+A central challenge in all test amplification approaches is the oracle problem:
 determining expected outputs for new test inputs~\cite{barr_2015_oracle}.
 Existing tests provide validated oracles for their specific execution paths,
 encoding developer knowledge about expected behavior.
@@ -61,7 +62,9 @@ PBT frameworks comprise three key components.
 \emph{Generators} produce inputs according to specified constraints, such as \texttt{x >= 0}.
 \emph{Properties} express invariants that must hold for all generated inputs, such as \texttt{abs(x) == x}.
 \emph{Shrinking} minimizes failing inputs to simplify debugging,
-such as reducing a failing input from 776837 to 1 when the same property violation occurs.
+such as reducing a failing input from 776837 to 1.
+This generative approach distinguishes PBT from parameterized testing,
+which commonly relies on a predefined set of developer-supplied inputs.
 
 For example, the property-based test in Figure~\ref{fig:regression-detection}
 uses \texttt{@Property} to indicate property-based testing,
@@ -77,14 +80,14 @@ The combination of constrained generation and property checking
 enables thorough exploration of input spaces,
 revealing edge cases and boundary conditions
 that developers might not explicitly consider~\cite{hughes_2016_experiences,maciver_2019_hypothesis}.
-However, adoption remains limited in practice~\cite{goldstein_2024_pbt_practice}.
+However, adoption of property-based testing remains limited in practice~\cite{goldstein_2024_pbt_practice}.
 Creating effective property-based tests requires identifying appropriate properties,
 defining input generators with suitable constraints,
 and translating example-based assertions into general specifications: a conceptual shift
 that creates significant adoption barriers~\cite{barr_2015_oracle,tillmann_2005_parameterized}.
 Nevertheless, conventional unit tests already encode behavioral properties implicitly:
 a test verifying \texttt{abs(0) = 0} reflects the property \texttt{abs(x) = x} for non-negative inputs,
-but validates it at only a single point.
+but validates it only for a single case.
 
 \subsection{Symbolic Analysis for Specification Extraction}
 \label{sec:symbolic-analysis}
