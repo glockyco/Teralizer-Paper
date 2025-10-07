@@ -1,27 +1,6 @@
 \subsection{RQ2: How does constraint complexity affect random versus constraint-aware input generation?}
 \label{sec:constraint-complexity-eval}
 
-Mutation testing provides a rigorous measure of test effectiveness
-by evaluating a test suite's ability to detect deliberately introduced faults.
-For \ToolTeralizer{}, mutation scores reveal whether testing additional inputs
-within existing execution paths achieves the intended improvement in fault detection capabilities.
-Section~\ref{sec:included-mutants} first establishes which tests and mutants are included in the evaluation,
-revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
-Section~\ref{sec:overall-detection-rates} quantifies detection improvements
-across projects and variants,
-demonstrating that generalization improves mutation scores
-for \DatasetsEqBenchEs{} and \DatasetsCommons{} projects, albeit with varying improvement magnitudes.
-Section~\ref{sec:detection-rates-per-mutator} dissects these improvements by mutation operator,
-uncovering how much detection of different mutants benefits from generalization.
-Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
-detailed analysis of the \VariantImproved{} generalization variant,
-demonstrating that its effectiveness correlates with constraint complexity,
-i.e., projects with more complex input constraints show greater improvements
-from constraint-aware input generation.
-
-\subsubsection{Effectiveness of \VariantImproved{} Boundary Detection}
-\label{sec:boundary-detection-effectiveness}
-
 As discussed in Section~\ref{sec:overall-detection-rates},
 \VariantNaive{} variants
 outperformed \VariantImproved{}
