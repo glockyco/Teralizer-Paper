@@ -1,16 +1,26 @@
 \subsection{RQ2: How does constraint complexity affect random versus constraint-aware input generation?}
 \label{sec:constraint-complexity-eval}
 
-As discussed in Section~\ref{sec:overall-detection-rates},
+As previously discussed in Section~\ref{sec:overall-detection-rates},
 \VariantNaive{} variants
-outperformed \VariantImproved{}
+outperform \VariantImproved{}
 on \DatasetsEqBenchEs{} projects.
 However, \DatasetsCommonsEs{} projects show \VariantImproved{}
 outperforming \VariantNaive{} in 7 of 9 cases.
 To provide a more thorough understanding of these contrasting results, we examine
 how constraint complexity differs between project types and
 what the underlying mechanisms are that explain how complexity affects mutation detection differences.
-Table~\ref{tab:mutation-detection-comparison} shows the constraint characteristics
+As described in more detail in Section~\ref{sec:constraint-encoding},
+the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
+only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
+More complex constraints are not encoded
+in the initial input value generation of the \VariantImproved{} property-based tests
+but are still enforced during input value filtering,
+which takes place after initial input value generation.
+
+\input{tables/tab-mutation-detection-comparison}
+
+Table~\ref{tab:mutation-detection-comparison} shows the model properties
 of mutants that are (not) detected by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
 Models represent the constraints that inputs must satisfy
 to reach each mutant along a specific execution path.
@@ -18,17 +28,7 @@ We measure model complexity through operation count (total operators)
 and constraint count (individual boolean conditions),
 while tracking which percentage of constraints \VariantImproved{} can encode
 for use during input generation versus enforce through post-generation filtering.
-
-\input{tables/tab-mutation-detection-comparison}
-
-As described in more detail in Section~\ref{sec:improved-generalization},
-the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
-only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
-More complex constraints are not encoded
-in the initial input value generation of the \VariantImproved{} property-based tests
-but are still enforced during input value filtering,
-which takes place after initial input value generation.
-For instance, consider the model \texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
+For instance, consider \texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
 This model contains three constraints:
 \texttt{a < 0}, \texttt{a == (b + 1)}, and~\texttt{c}.
 \VariantImproved{} encodes the simple comparison \texttt{a < 0} and the boolean variable \texttt{c}
@@ -38,7 +38,7 @@ because it contains the compound term \texttt{b + 1}.
 Thus, \VariantImproved{} uses 2 of 3 total constraints for input value generation (66.7\% utilization),
 and the model contains 5 operators:
 \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
-With these metrics established, we are ready to examine the observed results.
+%With these metrics established, we are ready to examine the observed results.
 
 Undetected mutants have more complex models than detected ones
 across all evaluated projects.
