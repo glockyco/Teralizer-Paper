@@ -1,16 +1,16 @@
 \subsection{RQ4: How efficient is test generalization compared to extended test generation?}
 \label{sec:runtime-eval}
 
-We measured \ToolTeralizer{}'s runtime across seven project variants
+We measured \ToolTeralizer{}'s runtime across seven generalization strategies
 to assess viability compared to existing automated testing tools.
 Since no existing tools perform automated test generalization from unit tests to property-based tests,
 we compared efficiency against \ToolEvoSuite{}~\cite{fraser_2011_evosuite}, the established test generation tool.
-Runtime results were collected on a MacBook Air with M2 processor and 24~GB of memory.
-Shared processing stages were executed only once per project by \ToolTeralizer{}
-and collected specifications were then reused across all seven generalization variants.
+%Runtime results were collected on a MacBook Air with M2 processor and 24~GB of memory.
+\VariantShared{} processing stages were executed only once per project by \ToolTeralizer{}
+and collected specifications were then reused across all seven generalization strategies.
 Processing required a total time of 3.4 hours for \DatasetCommonsDev{},
-8.2--9.8 hours for \DatasetsCommonsEs{},
-and 24.8--30.9 hours for \DatasetsEqBenchEs{} (Section~\ref{sec:execution-time}).
+8.2--9.8 hours for the three \DatasetsCommonsEs{} variants,
+and 24.8--30.9 hours for the three \DatasetsEqBenchEs{} variants (Section~\ref{sec:execution-time}).
 Despite the relatively high runtime cost,
 Pareto analysis (Section~\ref{sec:execution-efficiency}) shows
 that combining low search budget \ToolEvoSuite{} generation and \ToolTeralizer{} generalization
