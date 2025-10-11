@@ -216,7 +216,7 @@ Therefore, overall test suite execution time increases,
 on average, by at least 149.56~ms per jqwik test
 that is added during the generalization process,
 even if no new test inputs are exercised
-and the added tests are compensated for by removed JUnit tests.
+and the added generalized tests are compensated by removed original tests.
 Since these runtime increases are inherent to the use of jqwik,
 they are orthogonal to our specific generalization approach.
 Any manual or automated transformation of JUnit tests
