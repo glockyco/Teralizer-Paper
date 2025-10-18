@@ -1,21 +1,19 @@
 \begin{table}[H]
-  \caption{Filtering results of the extended dataset for tests, assertions, and generalizations.}
+  \caption{Filtering results for \VariantImprovedC{} in the RepoReapers projects.}
   \label{tab:exclusions-filtering-extended}
   \begin{tabular}{lllrrrr}
     \toprule
-    Variant & Type & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Defer} & \multicolumn{1}{c}{Reject} \\
+    Level & Filter Name & Total & \multicolumn{1}{c}{Accept} & \multicolumn{1}{c}{Defer} & \multicolumn{1}{c}{Reject} \\
     \midrule
-    \VariantShared{} & Test & NonPassingTest & 74,332 & 65,579\; (88.2\%) & - & 8,753\; (11.8\%) \\
-    \VariantShared{} & Test & TestType & 74,332 & 65,052\; (87.5\%) & - & 9,280\; (12.5\%) \\
-    \VariantShared{} & Test & NoAssertions & 56,853 & 33,390\; (58.7\%) & - & 23,463\; (41.3\%) \\
+    Test & NonPassingTest & 74,332 & 65,579\; (88.2\%) & - & 8,753\; (11.8\%) \\
+    Test & TestType & 74,332 & 65,052\; (87.5\%) & - & 9,280\; (12.5\%) \\
+    Test & NoAssertions & 56,853 & 33,390\; (58.7\%) & - & 23,463\; (41.3\%) \\
     \midrule
-    \VariantShared{} & Assertion & AssertionType & 122,166 & 92,996\; (76.1\%) & - & 29,170\; (23.9\%) \\
-    \VariantShared{} & Assertion & ExcludedTest & 122,166 & 101,519\; (83.1\%) & - & 20,647\; (16.9\%) \\
-    \VariantShared{} & Assertion & MissingValue & 122,166 & 51,430\; (42.1\%) & - & 70,736\; (57.9\%) \\
-    \VariantShared{} & Assertion & ParameterType & 122,166 & 5,393\; (\phantom{0}4.4\%) & 56,484\; (46.2\%) & 60,289\; (49.4\%) \\
-    \VariantShared{} & Assertion & ReturnType & 122,166 & 11,650\; (\phantom{0}9.5\%) & 70,736\; (57.9\%) & 39,780\; (32.6\%) \\
-    \midrule
-    \VariantImprovedC{} & Generalization & NonPassingTest & 229 & 206\; (90.0\%) & - & 23\; (10.0\%) \\
+    Assertion & AssertionType & 122,166 & 92,996\; (76.1\%) & - & 29,170\; (23.9\%) \\
+    Assertion & ExcludedTest & 122,166 & 101,519\; (83.1\%) & - & 20,647\; (16.9\%) \\
+    Assertion & MissingValue & 122,166 & 51,430\; (42.1\%) & - & 70,736\; (57.9\%) \\
+    Assertion & ParameterType & 122,166 & 5,393\; (\phantom{0}4.4\%) & 56,484\; (46.2\%) & 60,289\; (49.4\%) \\
+    Assertion & ReturnType & 122,166 & 11,650\; (\phantom{0}9.5\%) & 70,736\; (57.9\%) & 39,780\; (32.6\%) \\
     \bottomrule
   \end{tabular}
 \end{table}

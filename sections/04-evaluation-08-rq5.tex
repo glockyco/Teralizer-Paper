@@ -56,7 +56,7 @@ Throughout the remainder of this section,
 we provide detailed descriptions of the different failure causes
 responsible for these exclusions (Table~\ref{tab:exclusions-filtering}).
 
-\input{tables/tab-exclusions-summary}
+\input{tables/tab-exclusions-breakdown}
 
 \paragraph{Test-Level Filtering}
 
@@ -287,8 +287,9 @@ from dependency resolution through final mutation testing.
 This evaluation identifies which barriers are internal versus external to \ToolTeralizer{},
 and which ones require engineering effort versus research advances to resolve.
 
-\input{tables/tab-processing-failures-per-stage}
-\input{tables/tab-processing-failure-causes}
+\input{tables/tab-processing-failures}
+% \input{tables/tab-processing-failures-per-stage}
+% \input{tables/tab-processing-failure-causes}
 
 \paragraph{Processing Pipeline Failures}
 
@@ -344,6 +345,16 @@ whereas the extended dataset includes all methods regardless of return type.
 AssertionType exclusions reach 23.9\% compared to 2.6\%,
 demonstrating the larger diversity of assertions used in real-world tests.
 
+% | Category                     | Count  | Where It Appears |
+% |------------------------------|--------|------------------|
+% | Included                     | 33,390 | Included column  |
+% | Filtering (REJECT decisions) | 40,602 | Filtering column |
+% | Before filtering             | 7,502  | Failures column  |
+% | TestAnalysisTask failures    | 321    | Failures column  |
+% | Filtering exceptions         | 19     | Failures column  |
+% | Total                        | 81,834 | Total column     |
+
+\input{tables/tab-exclusions-breakdown-extended.tex}
 \input{tables/tab-exclusions-filtering-extended}
 
 These filtering patterns suggest targeted improvement strategies.
