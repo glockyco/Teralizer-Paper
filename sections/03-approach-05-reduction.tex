@@ -57,7 +57,7 @@ Beyond filtering generalized tests, \ToolTeralizer{} identifies original tests
 that can be removed without loss of test suite effectiveness.
 An original test is removable when all of its assertions
 have been successfully generalized into property-based tests.
-For tests containing a single assertion, successful generalization means
+For tests containing a single assertion, successful generalization ensures that
 the property-based test validates that assertion across the entire input partition,
 making the original single-input validation redundant.
 For tests containing multiple assertions, removal requires that
