@@ -50,7 +50,7 @@ As previously described in Section~\ref{sec:three-variant-design},
 using \VariantInitial{} as a shared starting point for all three generalization strategies
 not only reduces the runtime costs of the evaluation
 but also enables a fairer comparison across strategies.
-This is because it avoids non-deterministic failures such as \texttt{OutOfMemoryError}s
+This is because it avoids non-deterministic Stage 1--3 failures such as \texttt{OutOfMemoryError}s
 from affecting one generalized test suite variant more strongly than another.
 The used \tries{} settings of 10, 50, and 200 were selected based on our own testing
 to demonstrate the scaling behavior of higher \tries{} settings
