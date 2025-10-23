@@ -109,6 +109,17 @@
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{xcolor}
+
+\newcommand{\rqanswerbox}[2]{%
+  \par\medskip\noindent
+  \setlength{\fboxsep}{8pt}%
+  \fcolorbox{gray!50}{gray!10}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+      \textbf{Answer to RQ#1:} #2%
+    }%
+  }%
+}
 
 \newcommand{\ToolTeralizer}{\textsc{Teralizer}}
 
