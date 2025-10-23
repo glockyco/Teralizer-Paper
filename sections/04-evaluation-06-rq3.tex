@@ -59,7 +59,7 @@ and 3 (0.4\%) for the \DatasetCommonsDev{} project.
 This is because more of the tests that are created by \VariantNaiveC{}
 are excluded due to \texttt{Too\-Many\-Filter\-Misses\-Exception}s and, therefore,
 not retained in the final test suite
-(as evaluated in Section~\ref{sec:filtering-eval}).
+(as evaluated in Section~\ref{sec:limitations-eval}).
 Furthermore, the number of added tests is much smaller
 than the total number of generalized tests that are created and evaluated by \ToolTeralizer{}
 for both \VariantNaiveC{} as well as \VariantImprovedC{}
@@ -308,7 +308,7 @@ until a valid set of inputs is identified
 \VariantImproved{} variants are less affected by this
 because they already consider (some) input constraints
 during initial input value generation
-(as described in Section~\ref{sec:improved-generalization}).
+(as described in Section~\ref{sec:three-variant-design}).
 As a result, fewer inputs need to be discarded and regenerated,
 which lessens the overall runtime impact of \VariantImproved{} generalization
 despite the more involved input value generation process.

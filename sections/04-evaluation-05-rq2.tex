@@ -51,7 +51,7 @@ Even though both \VariantNaive{} and \VariantImproved{}
 achieve better generalization outcomes for simpler constraints,
 more complex constraints have a stronger detrimental effect on \VariantNaive{},
 which produces 2-2.5$\times$ as many \texttt{TooManyFilterMissesExceptions} as \VariantImproved{},
-as discussed in more detail in Section~\ref{sec:filtering-eval}.
+as discussed in more detail in Section~\ref{sec:limitations-eval}.
 
 Constraint utilization rates show large differences across project types.
 \DatasetsEqBenchEs{} achieve 47--70\% mean constraint utilization for detected mutants,
@@ -79,7 +79,7 @@ that overapproximate the actual partition boundaries.
 As a result, fewer partition boundaries are accurately identified,
 and the number of generated inputs that need to be excluded during filtering increases.
 Nevertheless, constraint utilization still reduces \texttt{TooManyFilterMissesException} failures
-relative to \VariantNaive{} (Section~\ref{sec:filtering-eval}), which
+relative to \VariantNaive{} (Section~\ref{sec:limitations-eval}), which
 enables \VariantImproved{} variants to achieve overall higher mutation detection rates
 than \VariantNaive{} in 7 of 9 cases
 despite its current \texttt{Math} mutation detection disadvantage.
