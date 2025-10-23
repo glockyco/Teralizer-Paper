@@ -87,7 +87,7 @@ Second, utility methods extracted from Apache Commons projects
 offer a middle ground between controlled and real-world scenarios.
 Here, we can directly compare \ToolEvoSuite{}-generated and developer-written tests
 on the same codebase, partially isolating the influence of test architecture and quality on generalization outcomes.
-Finally, 1,160 real-world Java projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers},
+Finally, 632 real-world Java projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers},
 with their existing developer-written tests, expose the full complexity of practical application conditions.
 This progression from controlled to real-world conditions highlights
 the achievable fault-detection improvements
@@ -101,8 +101,8 @@ In contrast, generalization of developer-written tests for Apache Commons utilit
 shows minimal improvement (0.05--0.07 percentage points from a baseline of 80.35\%).
 These mature tests have already detected most of the faults targeted by automated generalization.
 Beyond mutation detection results,
-our analysis of 1,160 real-world projects reveals practical applicability barriers:
-only 0.9\% of projects successfully complete the full generalization pipeline.
+our analysis of 632 real-world projects reveals practical applicability barriers:
+only 1.7\% of projects successfully complete the full generalization pipeline.
 Failures are primarily caused by 
 fundamental type support limitations of symbolic analysis
 as well as static analysis and constraint encoding limitations
@@ -125,10 +125,10 @@ under conditions suitable for current symbolic analysis.
 
 \item \textbf{Empirical dataset:}
 We provide a dataset characterizing test structure
-and generalizability across 1,160+ Java projects,
+and generalizability across 630+ Java projects,
 covering assertion patterns (types, frequencies, per-test distributions),
 specification complexity metrics (operation counts, constraint utilization),
-and detailed filtering outcomes explaining why 99.1\% of real-world generalizations fail.
+and detailed filtering outcomes explaining why 98.3\% of real-world generalizations fail.
 
 \item \textbf{Analysis of applicability challenges:}
 We analyze barriers to practical test generalization,
