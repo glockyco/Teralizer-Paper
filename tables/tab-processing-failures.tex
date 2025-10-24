@@ -1,48 +1,48 @@
-\begin{table}[htbp]
+\begin{table}
 \caption{%
-    Processing failures by stage and cause for the \VariantImprovedC{} generalization strategy in RepoReapers projects.
-    Internal failures are caused by configured resource limits
+    Project-level exclusions by stage and cause for the \VariantImprovedC{} generalization strategy in RepoReapers projects.
+    Internal causes are due to configured resource limits
     or current limitations of \ToolTeralizer{}.
-    External failures are caused by \ToolTeralizer{}'s dependencies
+    External causes are due to \ToolTeralizer{}'s dependencies
     (i.e., JUnit, Spoon, \ToolJPF{} / \ToolSPF{}, \ToolJacoco{}, and \ToolPit{}).
-    Mixed failures are influenced by both internal as well as external factors.
+    Mixed causes are influenced by both internal as well as external factors.
 }
 \label{tab:processing-failures}
 \centering
 \begin{tabular}{llr}
 \toprule
-Type & Cause of Failure & Count \\
+Type & Cause of Project-level Exclusion & Count \\
 \midrule
-\multicolumn{3}{l}{\textit{\makebox[16em][l]{Stage 1 + 2 - Project Analysis:} 632 projects\quad{}130 pass\quad{}502 fail\quad{}20.6\% pass rate}} \\
+\multicolumn{3}{l}{\textit{\makebox[15em][l]{Stage 1 + 2 - Project Analysis:} 632 projects\quad{}130 inclusions\quad{}502 exclusions\quad{}20.6\% inclusion rate}} \\
 \midrule
-Internal & all assertions excluded (filter rejections) & 255 \\
-Internal & all tests excluded (filter rejections) & 129 \\
+Internal & all assertions excluded due to filter rejections & 255 \\
+Internal & all tests excluded due to filter rejections and failures & 129 \\
 Internal & timeout exceeded (60 seconds per project) & 48 \\
 Internal & JUnit reports not found & 31 \\
 Internal & compilation outputs not found & 18 \\
 External & JUnit execution error during test execution & 13 \\
 External & Spoon execution error during test analysis & 8 \\
 \midrule
-\multicolumn{3}{l}{\textit{\makebox[16em][l]{Stage 3 - Specification Extraction:} 130 projects\quad{}117 pass\quad{}\phantom{0}13 fail\quad{}90.0\% pass rate}} \\
+\multicolumn{3}{l}{\textit{\makebox[15em][l]{Stage 3 - Specification Extraction:} 130 projects\quad{}117 inclusions\quad{}\phantom{0}13 exclusions\quad{}90.0\% inclusion rate}} \\
 \midrule
-Mixed & all assertions excluded (\ToolSPF{} errors, \ToolTeralizer{} errors, resource limits exceeded) & 11 \\
+Mixed & all assertions excluded due to earlier filter rejections and new failures & 11 \\
 External & Spoon execution error during test instrumentation & 1 \\
 Internal & timeout exceeded (60 seconds per test method) & 1 \\
 \midrule
-\multicolumn{3}{l}{\textit{\makebox[16em][l]{Stage 4 - Generalized Test Creation:} 117 projects\quad{}114 pass\quad{}\phantom{00}3 fail\quad{}97.4\% pass rate}} \\
+\multicolumn{3}{l}{\textit{\makebox[15em][l]{Stage 4 - Generalized Test Creation:} 117 projects\quad{}114 inclusions\quad{}\phantom{00}3 exclusions\quad{}97.4\% inclusion rate}} \\
 \midrule
-Internal & all generalizations excluded (filter rejections) & 3 \\
+Internal & all generalizations excluded due to filter rejections and failures & 3 \\
 \midrule
-\multicolumn{3}{l}{\textit{\makebox[16em][l]{Stage 5 - Test Suite Reduction:} 114 projects\quad{}\phantom{0}11 pass\quad{}103 fail\quad{}\phantom{0}9.6\% pass rate}} \\
+\multicolumn{3}{l}{\textit{\makebox[15em][l]{Stage 5 - Test Suite Reduction:} 114 projects\quad{}\phantom{0}11 inclusions\quad{}103 exclusions\quad{}\phantom{0}9.6\% inclusion rate}} \\
 \midrule
 Internal & JaCoCo outputs not found & 40 \\
-Internal & timeout exceeded (60 seconds per project) & 40 \\
+Internal & timeout exceeded (60 seconds per test suite variant) & 40 \\
 External & \ToolPit{} execution error during mutation testing & 16 \\
 Internal & \ToolPit{} reports not found & 4 \\
 Internal & failed to process \ToolPit{} reports & 2 \\
 External & JaCoCo execution error during coverage collection & 1 \\
 \midrule
-\multicolumn{3}{l}{\textit{\makebox[16em][l]{Overall:} 632 projects\quad{}\phantom{0}11 pass\quad{}621 fail\quad{}\phantom{0}1.7\% pass rate}} \\
+\multicolumn{3}{l}{\textit{\makebox[15em][l]{Overall:} 632 projects\quad{}\phantom{0}11 inclusions\quad{}621 exclusions\quad{}\phantom{0}1.7\% inclusion rate}} \\
 \bottomrule
 \end{tabular}
 \end{table}
