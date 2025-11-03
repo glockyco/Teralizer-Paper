@@ -109,7 +109,7 @@ when exploring all possible paths~\cite{baldoni_2018_survey,cadar_2013_symbolic}
 single-path analysis omits backtracking and constraint solving,
 recording conditions only along the executed path.
 This focused approach is well suited to test generalization:
-existing tests already identify the behaviors of interest
+existing tests identify the behaviors of interest
 and provide validated oracles for those behaviors.
 The analysis thus extracts path-exact specifications
 without the computational overhead of exploring alternative branches.
@@ -132,7 +132,7 @@ First, imprecise specifications (as with complex types) prevent generalization e
 since we cannot create meaningful property-based tests without accurate models.
 Second, even with precise specifications (as with non-linear numeric constraints),
 test generalization succeeds but the resulting tests may fail during execution
-when PBT frameworks cannot efficiently produce inputs satisfying complex constraints.
+when PBT frameworks cannot produce inputs satisfying complex constraints.
 This input generation difficulty represents a fundamental computational challenge
 that frameworks cannot overcome through filtering or constraint encoding~\cite{claessen_2000_quickcheck,link_2022_jqwik}.
 Thus, while test generalization can theoretically handle any accurately modeled behavior,

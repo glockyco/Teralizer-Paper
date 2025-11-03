@@ -14,7 +14,7 @@ In RQ5, we first present results for the primary
 evaluation dataset, i.e., for the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
 to establish a baseline under controlled conditions
 that align with current tool capabilities
-(as previously explained in Section~\ref{sec:experimental-framework}).
+(as explained in Section~\ref{sec:experimental-framework}).
 In RQ6, we then present the results under real-world conditions, i.e., for the RepoReapers projects,
 which reveal additional challenges that emerge in practical application scenarios.
 
@@ -77,7 +77,7 @@ operating on 21,532 remaining tests from the original 23,246.
 From this subset, a total of 2,226 tests are rejected by the filter
 because they do not directly contain any assertions in the test method.
 In \ToolEvoSuite{}-generated test suites, all \texttt{NoAssertions} exclusions
-are genuinely assertion-free tests that simply pass if no exception occurs during test execution.
+are genuinely assertion-free tests that pass if no exception occurs during test execution.
 In contrast, 69 of 80 \texttt{NoAssertions} exclusions (86.3\%) in the developer-written
 \DatasetCommonsDev{} test suite are false positives: these tests
 contain assertions in helper methods called from the test method.

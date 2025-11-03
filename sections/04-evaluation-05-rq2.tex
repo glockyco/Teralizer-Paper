@@ -10,7 +10,7 @@ outperforming \VariantNaive{} in 7 of 9 cases.
 To provide a more thorough understanding of these contrasting results, we examine
 how constraint complexity differs between project types and
 what the underlying mechanisms are that explain how complexity affects mutation detection differences.
-As described in more detail in Section~\ref{sec:constraint-encoding},
+As described in Section~\ref{sec:constraint-encoding},
 the current implementation of \ToolTeralizer{}'s \VariantImproved{} variants
 only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
 More complex constraints are not encoded
@@ -27,7 +27,7 @@ to reach each mutant along a specific execution path.
 We measure model complexity through operation count (total operators)
 and constraint count (individual boolean conditions),
 while tracking which percentage of constraints \VariantImproved{} can encode
-for use during input generation versus enforce through post-generation filtering.
+during input generation versus enforce through post-generation filtering.
 For instance, consider \texttt{(((a < 0) \&\& (a == (b + 1))) \&\& c)}.
 This model contains three constraints:
 \texttt{a < 0}, \texttt{a == (b + 1)}, and~\texttt{c}.

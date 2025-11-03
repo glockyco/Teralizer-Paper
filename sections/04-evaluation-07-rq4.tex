@@ -1,4 +1,4 @@
-\subsection{RQ4: How efficient is test generalization compared to extended test generation?}
+\subsection{RQ4: How efficient is test generalization compared to test generation?}
 \label{sec:runtime-eval}
 
 We measured \ToolTeralizer{}'s runtime across the seven generalization strategies
@@ -98,7 +98,7 @@ and in the presence of more complex input constraints (Section~\ref{sec:test-sui
 Thus, mutation testing represents more than 99\%
 of the total runtime cost of Stage 5 across all projects and generalization variants,
 and an average of 55.2\% of the full generalization pipeline.
-The small remainder of the the Stage 5 runtime costs falls to
+The small remainder of the Stage 5 runtime costs falls to
 collection of test coverage reports as well as processing
 of coverage and mutation reports to identify and exclude non-contributing tests.
 
@@ -145,13 +145,13 @@ due to their comparatively low runtime cost.
 on the other hand, falls outside the Pareto frontier with a 
 detection rate of 51.6\% and a runtime cost of 55,075 seconds.
 In the runtime dimension,
-this result is most strongly dominated by 1-second \ToolEvoSuite{} generation
+this result is dominated by 1-second \ToolEvoSuite{} generation
 combined with \VariantNaiveB{} generalization
 (Pareto point \#5 in Table~\ref{tab:pareto-eqbench}),
 which achieves 51.7\% detection in 37,532 seconds,
 i.e., 0.1 percentage points higher detection with 31.9\% lower runtime cost.
 In the mutation detection dimension,
-the result is most strongly dominated by 10-second \ToolEvoSuite{} generation
+the result is dominated by 10-second \ToolEvoSuite{} generation
 combined with \VariantImprovedC{} generalization (Pareto point~\#9),
 which produces a 53.8\% detection result in 48,269 seconds, i.e.,
 a detection improvement of 2.2 percentage points achieved in 12.4\% less runtime.
