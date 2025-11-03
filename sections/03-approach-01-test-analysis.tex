@@ -3,7 +3,7 @@
 
 To transform unit tests into property-based tests, we must first identify which tests and assertions
 are suitable candidates for generalization.
-Not all tests reach this standard: real test suites frequently contain tests without assertions,
+Not all tests reach this standard: real test suites commonly contain tests without assertions,
 operations on complex data structures that resist symbolic analysis, or even failing tests.
 Generalizable tests must contain explicit assertions that capture input-output relationships,
 operate on data types that symbolic analysis can model accurately, and pass reliably.
