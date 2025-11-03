@@ -60,7 +60,8 @@ a property-based test instead verifies \texttt{sqrt(x) * sqrt(x) = x}
 across hundreds of randomly generated non-negative values.
 PBT frameworks comprise three key components.
 \emph{Generators} produce inputs according to specified constraints, such as \texttt{x >= 0}.
-\emph{Properties} express invariants that must hold for all generated inputs, such as \texttt{abs(x) == x}.
+\emph{Properties} express invariants that must hold for all generated inputs,
+such as \texttt{abs(x) == x} for non-negative \texttt{x}.
 \emph{Shrinking} minimizes failing inputs to simplify debugging,
 such as reducing a failing input from 776837 to 1.
 This generative approach distinguishes PBT from parameterized testing,
