@@ -57,7 +57,7 @@ Furthermore, the isolation prevents unintended side-effects on developer-written
 Input parameters are provided by supplier classes rather than individual parameter annotations
 to enable encoding of constraints that reference multiple parameters.
 Only the generalized assertion is preserved in the generalized test method.
-Other assertions must be removed because they might validate methods
+Other assertions are removed because they might validate methods
 that consume outputs from the generalized MUT
 and fail when those outputs differ from the original test's values.
 Non-generalizable parameters (strings, arrays, and other objects)
