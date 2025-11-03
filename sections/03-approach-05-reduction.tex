@@ -16,7 +16,8 @@ To address these inefficiencies,
 \ToolTeralizer{} performs test suite reduction
 as the final stage of the generalization pipeline,
 using mutation testing to measure each test's contribution to fault detection
-and retaining only those tests that strengthen the test suite's effectiveness.
+and retaining only those original and generalized tests
+that strengthen the test suite's effectiveness.
 
 \ToolTeralizer{} evaluates fault detection capability
 using the \texttt{DEFAULTS} group of mutation operators
@@ -49,13 +50,13 @@ that catch mutants not detected by the original test suite.
 The selection criterion is straightforward:
 retain only generalized tests that detect at least one mutant
 not caught by the original test suite.
-This ensures that every generalized test in the final suite
+This ensures that every generalized test in the final test suite
 contributes unique fault detection capability,
 while those that only detect already-caught mutants are excluded as redundant.
 
 Beyond filtering generalized tests, \ToolTeralizer{} identifies original tests
 that can be removed without loss of test suite effectiveness.
-An original test is removable when all of its assertions
+An original test is removable if all of its assertions
 have been successfully generalized into property-based tests.
 For tests containing a single assertion, successful generalization ensures that
 the property-based test validates that assertion across the entire input partition,
@@ -67,7 +68,7 @@ If any assertion cannot be generalized
 the original test must be retained to preserve that validation.
 The final test suite of each variant
 combines the retained generalized tests
-with the necessary original tests.
+with the retained original tests.
 
 \begin{table}[t]
   \caption{Mutation operators included in \ToolPit{}'s DEFAULTS group.}
