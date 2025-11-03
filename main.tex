@@ -250,30 +250,29 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Unit tests validate single input-output pairs, leaving most inputs along the same execution path untested.
-Property-based testing can address this by generating multiple inputs satisfying properties,
-but requires significant manual effort to create generators and specifications.
+Conventional unit tests validate single input-output pairs, leaving most inputs of an execution path untested.
+Property-based testing can address this shortcoming by generating multiple inputs satisfying properties,
+However, property-based testing requires significant manual effort to define properties and their constraints.
 We propose a semantics-based approach that automatically transforms
-conventional unit tests into property-based tests by extracting path-exact specifications
-directly from implementations via single-path symbolic analysis.
+conventional unit tests into property-based tests by extracting specifications
+from implementations via single-path symbolic analysis.
 We demonstrate this approach through \ToolTeralizer{}, a prototype implementation for Java
 that transforms JUnit tests into property-based \ToolJqwik{} tests.
 Unlike prior work that generalizes from input-output examples,
 we derive specifications from program semantics.
 
 Systematic evaluation across three progressively challenging datasets
-establishes both the potential and boundaries of semantics-based test generalization.
+identifies current capabilities and limitations of semantics-based test generalization.
 On \ToolEvoSuite{}-generated tests, mutation scores improve by 1--4 percentage points,
-while mature developer-written tests show minimal gains (0.05--0.07 percentage points).
+while mature developer-written tests show minimal benefit (0.05--0.07 percentage points).
 Analysis of 632 real-world Java projects quantifies applicability barriers:
-only 0.9\% successfully complete the pipeline, with failures primarily caused by assertion-to-method mapping issues,
+only 1.7\% successfully complete the generalization pipeline,
+with failures primarily caused by assertion-to-method mapping issues,
 type support limitations, and constraint encoding challenges.
 We distinguish addressable engineering barriers from fundamental research challenges,
 providing a comprehensive dataset characterizing test generalizability patterns.
 
-These results demonstrate feasibility under favorable conditions while identifying
-current limitations, providing a foundation for future advances.
-Replication package available at \url{[URL]}.
+Artifacts available at \url{[TODO: URL]}.
 \end{abstract}
 
 %%
