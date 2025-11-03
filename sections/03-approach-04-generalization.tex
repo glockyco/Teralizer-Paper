@@ -25,18 +25,18 @@ and Section~\ref{sec:constraint-encoding} provides further details on the constr
 \label{sec:transformation-pipeline}
 
 For each generalizable assertion with a successfully extracted input/output specification,
-\ToolTeralizer{} creates a new test class containing a single property-based test
-based on the corresponding conventional unit test.
+\ToolTeralizer{} creates a new test class containing a single property-based test.
 Listing~\ref{lst:generalized-test} shows the result of this transformation
 for our running example's \textit{good performance} case.
 Compared to the original test shown in Listing~\ref{lst:original-test},
-the new property-based test replaces the \texttt{@Test} annotation with \texttt{@Property}
+the new property-based test
+(i)~replaces the \texttt{@Test} annotation with \texttt{@Property}
 to specify both an input supplier and the number of test executions,
-adds a \texttt{TestParams} parameter
+(ii)~adds a \texttt{TestParams} parameter
 to the method signature to receive generated inputs,
-substitutes hardcoded MUT arguments in \texttt{calculate(1500, 1000)}
+(iii)~substitutes hardcoded MUT arguments in \texttt{calculate(1500, 1000)}
 to produce the new MUT call \texttt{calculate(\_p\_.sales, \_p\_.target)},
-and replaces the concrete expected value \texttt{75} with the oracle call \texttt{calculateExpected(\_p\_)}
+and (iv)~replaces the concrete expected value \texttt{75} with the oracle call \texttt{calculateExpected(\_p\_)}
 which uses the extracted output specification
 to calculate a matching output for each generated input (see Listing~\ref{lst:java-output-encoding}).
 The \texttt{TestParams} class shown in Listing~\ref{lst:test-params-class}
@@ -49,7 +49,7 @@ Several contributing factors influence the design of the created property-based 
 Instead of directly modifying existing test classes,
 \ToolTeralizer{} creates one new test class per assertion
 to isolate generalization effects.
-This is relevant for mutation testing.
+This is relevant for mutation testing:
 \ToolPit{} requires a green test suite and only supports class-level test exclusion,
 so a single failing generalized assertion
 could otherwise prevent all tests in the same class from being evaluated.
@@ -193,10 +193,7 @@ the generated supplier enforces the constraint \texttt{sales >= target}
 via the call \texttt{between(target, Integer.MAX\_VALUE)}.
 This partial encoding of constraints
 increases the likelihood that a valid input is selected before filtering
-by reducing the size of the input space from which values can be chosen.
-% Section~\ref{sec:constraint-encoding} details the algorithm that determines
-% which constraints are encoded during this constraint-aware input generation
-% and which are left for filtering.
+by reducing the size of the input space from which values are chosen.
 
 {
 \begin{genericfloat}[tbph]
@@ -323,7 +320,7 @@ ensuring all generated inputs satisfy the complete specification.
 Even though this partial encoding of input constraints
 cannot fully eliminate \texttt{TooManyFilterMissesException}s for all cases,
 it reduces their prevalence by constraining
-the input space from which generated inputs can be selected.
+the space from which inputs can be selected.
 An additional benefit that the constraint-aware input generation approach provides
 is that it enables \ToolJqwik{}'s \texttt{Arbitraries}
 to more reliably produce inputs at the boundaries of input partitions.
@@ -333,8 +330,8 @@ boundaries of this input partition. Thus,
 the used \texttt{Arbitraries} produce assumed boundary values such
 as \texttt{Integer.MIN\_VALUE}, \texttt{Integer.MAX\_VALUE - 1}, etc.
 While these are quickly excluded by filtering, coverage of the true
-boundary values such as 0, 1, 999, and 1000 is now left up to chance.
-In contrast, both boundaries of this example would be exactly encoded
+boundary values such as 0, 1, 999, and 1000 is then left up to chance.
+In contrast, both boundaries of this example are exactly encoded
 in \texttt{Arbitraries} calls of the \VariantImproved{} variant,
 enabling them to reliably produce the true boundary values.
 We deliberately avoid full constraint solving for input generation
