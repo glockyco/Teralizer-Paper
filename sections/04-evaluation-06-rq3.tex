@@ -243,10 +243,9 @@ Similarly, execution time of \VariantImproved{} tests
 is 189.17~ms (+26.5\%) longer with 10 \tries{},
 246.85~ms (+65.1\%) longer with 50 \tries{},
 and 395.26~ms (+164.3\%) longer with 200 \tries{}.
-While overall runtime increases
-get larger as \texttt{tries} increase,
-runtime increases per \texttt{try}
-get smaller as \texttt{tries} increase.
+While overall runtime increases as \texttt{tries} increase,
+the runtime cost per \texttt{try}
+decreases as \texttt{tries} increase.
 More specifically, \VariantNaive{} variants
 show per-\texttt{try} increases
 of 28.61~ms / 6.97~ms / 5.68~ms at 10 / 50 / 200 \tries{}.
@@ -262,15 +261,19 @@ which is beyond the scope of this evaluation.
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
-  \caption{Runtime comparison between original test runtime and generalized test runtime. The runtime differences measure how much longer each generalized test takes to execute (per try) compared to the corresponding original test.}
+  \caption{
+    Runtime comparison between original and generalized tests.
+    The runtime differences measure how much longer generalized tests take to execute, on average, compared to corresponding original tests.
+    We show the difference per test (left) and per try (right).
+  }
   \Description{Two bar charts comparing runtime overhead of generalized tests.
-  Left chart shows mean runtime difference in milliseconds between original and generalized tests.
+  The left chart shows the mean runtime difference in milliseconds between original and generalized tests.
   BASELINE adds 149.56ms overhead.
   NAIVE variants show increasing overhead with more tries:
   286.13ms (10 tries), 348.56ms (50 tries), 1136.21ms (200 tries).
   IMPROVED variants show lower overhead:
   189.17ms (10 tries), 246.85ms (50 tries), 395.26ms (200 tries).
-  Right chart shows mean runtime difference per try in milliseconds.
+  The right chart shows the mean runtime difference per try in milliseconds.
   BASELINE shows 149.56ms per try.
   NAIVE variants show decreasing per-try cost:
   28.61ms (10 tries), 6.97ms (50 tries), 5.68ms (200 tries).
