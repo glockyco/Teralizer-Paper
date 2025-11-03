@@ -72,7 +72,7 @@ uses \texttt{@Property} to indicate property-based testing,
 and validates that \texttt{assertEquals(x, abs(x))} holds for all generated values.
 When this test executes, \ToolJqwik{} generates hundreds of non-negative integers,
 including edge cases like 0, 1, and \texttt{Integer.MAX\_VALUE},
-and verifies the property holds for each.
+and verifies that the property holds for each.
 If a failure occurs, the framework's shrinking algorithm automatically reduces
 the failing input to its minimal form, simplifying debugging.
 
