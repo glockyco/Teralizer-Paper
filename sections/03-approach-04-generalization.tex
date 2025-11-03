@@ -313,11 +313,11 @@ This ensures each parameter depends only on previously generated ones.
 For example, given \texttt{a >= b \&\& b >= a} with \texttt{a} at index 0 and \texttt{b} at index 1,
 the algorithm adds both \texttt{b <= a} (rewritten from \texttt{a >= b})
 and \texttt{b >= a} to parameter \texttt{b}, while \texttt{a} remains unconstrained.
-During generation (lines 11-22), the algorithm selects the strictest applicable bounds:
+During generation (lines 11-24), the algorithm selects the strictest applicable bounds:
 equality constraints take precedence, followed by the highest lower bound and lowest upper bound.
 Thus, \texttt{a} generates freely,
 while \texttt{b} generates from interval \texttt{[a, a]}, effectively encoding \texttt{a == b}.
-Finally, line 23 applies filtering for non-encodable constraints,
+Finally, line 25 applies filtering for non-encodable constraints,
 ensuring all generated inputs satisfy the complete specification.
 
 Even though this partial encoding of input constraints
