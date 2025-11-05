@@ -233,13 +233,14 @@ and 10.0\% encounter null pointer exceptions.
 Only 18.3\% of failures are genuine assertion failures
 where tests execute to completion but produce incorrect results.
 
-The \texttt{TestType} filter increases from 0.8\% to 12.5\% rejection.
-In the RepoReapers projects, this filter exclusively rejects tests without @Test annotations,
-specifically those following JUnit 3's method naming convention
-(method names starting with ``test'').
-All 9,277 real-world rejections occur in 70 projects
-that contain legacy JUnit 3 test methods,
-with no @ParameterizedTest or other JUnit 5 annotation rejections observed.
+The \texttt{TestType} filter rejections increase
+from 0.8\% under controlled conditions to 12.5\% in real-world projects.
+Under controlled conditions,
+all rejections are @ParameterizedTest annotations in \DatasetCommonsDev{}.
+In contrast, all 9,277 RepoReapers rejections are legacy JUnit 3 test methods
+that use the JUnit 3 naming convention (method names starting with ``test'')
+instead of @Test annotations,
+occurring across 70 different RepoReapers projects.
 
 \paragraph{Assertion-level Exclusions}
 
