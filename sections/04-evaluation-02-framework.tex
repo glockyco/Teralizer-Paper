@@ -101,7 +101,8 @@ Using Sourcegraph's code search\footnote{\url{https://sourcegraph.com/search}},
 we identified public static methods with numeric or boolean parameters and return values ---
 the types currently supported by \ToolTeralizer{}'s specification extraction
 (search queries are available in our replication package~\cite{replicationpackage}).
-This yielded 247 classes from 106 source files,
+This yielded 247 matching classes across 17 Apache Commons projects
+(commons-math, commons-numbers, commons-lang, etc.),
 including all transitively called methods and dependencies
 to ensure compilation (19,709 LOC total).
 From this baseline, we created four dataset variants:
