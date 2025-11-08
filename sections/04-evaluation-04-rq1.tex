@@ -211,7 +211,7 @@ This strong representation of \texttt{Math} mutations
 is primarly due to the focus on numeric computations in these datasets.
 The next most commonly occurring mutations are 
 \texttt{Conditionals\-Boundary} and \texttt{Remove\-Conditional\-Order\-Else}
-mutations, each of which accounts for 11.0\% of total mutants
+mutations, each of which accounts for 10.99\% of total mutants
 (both operators are applied at the same source code locations).
 In contrast, the least common operators, i.e., \texttt{Increments} (0.52\%),
 \texttt{Boolean\-False\-ReturnVals} (0.24\%),
@@ -227,27 +227,27 @@ than improvements to less commonly occurring mutation types.
 \VariantInitial{} detection rates reveal a clear pattern: return value mutations
 (i.e., \texttt{Primitive\-Returns}, \texttt{Boolean\-True\-Return\-Vals},
 \texttt{Boolean\-False\-Return\-Vals}, and \texttt{Empty\-Object\-Return\-Vals})
-are caught in the large majority of cases (87.9--98.8\% detection),
+are caught in the large majority of cases (87.87--98.77\% detection),
 while behavioral mutations prove more elusive.
-For example, \texttt{VoidMethodCall} mutations achieve a detection rate of only 25.0\%
+For example, \texttt{VoidMethodCall} mutations achieve a detection rate of only 24.96\%
 because removing void method calls typically affects only internal state
 or produces side effects that are rarely verified by existing assertions.
 Because these cases often require new assertions to be added to achieve detection rate improvements,
 they are largely beyond the current capabilities of \ToolTeralizer{}.
 In contrast, \VariantInitial{} detection rates of
-27.7\% for \texttt{ConditionalsBoundary} mutations,
-61.1\% for \texttt{RemoveConditionalOrderElse},
-and 58.8\% for \texttt{RemoveConditionalEqualElse}
-do highlight opportunities for automated improvement.
+27.68\% for \texttt{ConditionalsBoundary} mutations,
+61.08\% for \texttt{RemoveConditionalOrderElse},
+and 58.80\% for \texttt{RemoveConditionalEqualElse}
+highlight opportunities for automated improvement.
 After all, all three mutations
 affect partition boundaries,
 which is exactly where \VariantImproved{} generalization
 aims to generate additional test inputs.
 
 \VariantNaiveC{} achieves its largest improvements on
-\texttt{Math} (4.0~percentage points),
-\texttt{RemoveConditionalEqualElse} (2.1~percentage points),
-and \texttt{InvertNegs} (1.7~percentage points).
+\texttt{Math} (+3.99\%),
+\texttt{RemoveConditionalEqualElse} (+2.07\%),
+and \texttt{Invert\-Negs} (+1.70\%).
 The success with \texttt{RemoveConditionalEqualElse} stems from
 testing diverse inputs that trigger both branches of equality checks,
 exposing mutations that force false branches.
@@ -258,7 +258,7 @@ coincidentally produce correct results for any individual value.
 In contrast, 4 of 5 return value mutators show zero improvement:
 \texttt{Null\-Return\-Vals}, \texttt{Boolean\-True\-Return\-Vals},
 \texttt{Boolean\-False\-ReturnVals}, and \texttt{EmptyObjectReturnVals}.
-These already achieve high detection rates in the \VariantInitial{} variant (87.9--98.8\%)
+These already achieve high detection rates in the \VariantInitial{} variant (87.87--98.77\%)
 because return value mutations often directly violate test assertions,
 leaving little room for improvement through input variation.
 Increasing detection rates beyond this high starting point
@@ -270,10 +270,10 @@ through constraint-aware input generation.
 Comparing the two variants across all 12 mutation operators:
 \VariantImprovedC{} outperforms \VariantNaiveC{} for 7 operators,
 achieves the same detection rate for 4 operators (the zero-improvement return value mutations),
-and underperforms for only 1 operator (\texttt{Math}).
+and underperforms for only 1 operator~(\texttt{Math}).
 The largest advantage is observed for \texttt{Conditionals\-Boundary} detection,
-where \VariantImprovedC{} achieves 2.5 percentage points improvement
-compared to \VariantNaiveC{}'s 1.2 percentage points.
+where \VariantImprovedC{} achieves a 2.55\% detection rate improvement
+compared to \VariantNaiveC{}'s 1.21\%.
 These results confirm that the constraint-aware input generation strategy
 followed by \VariantImproved{} variants achieves its intended purpose.
 Furthermore, the slightly higher detection rates for several other mutators
@@ -282,8 +282,8 @@ for some mutators that do not directly modify partition boundaries.
 
 The \texttt{Math} mutation results highlight the inherent trade-off
 in boundary versus non-boundary testing:
-\VariantImprovedC{} achieves 3.4 percentage points improvement
-compared to \VariantNaiveC{}'s 4.0 percentage points.
+\VariantImprovedC{} achieves a 3.37\% detection rate improvement
+compared to \VariantNaiveC{}'s 3.99\%.
 The \VariantImprovedC{} variant achieves smaller improvements here
 because constraint-aware input generation produces less diverse arithmetic inputs,
 concentrating on boundary values rather than exploring the full numeric range
