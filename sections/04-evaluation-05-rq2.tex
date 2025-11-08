@@ -74,25 +74,28 @@ because the focus on boundary testing detracts from testing of intermediate valu
 As a result, detection rates for the very common \texttt{Math} mutations decrease,
 causing overall detection rates to go down despite detection rates for most other mutants increasing.
 
-\DatasetsCommonsEs{} present a different scenario.
-Complex constraints reduce utilization to 25--47\%,
-causing \VariantImproved{} variants to generate inputs from broader ranges
+\DatasetsCommonsEs{} projects present a different scenario.
+Complex constraints reduce \VariantImproved{}'s constraint utilization to 25--47\%,
+causing generalized tests to generate inputs from broader ranges
 that overapproximate the actual partition boundaries.
 As a result, fewer partition boundaries are accurately identified,
 and the number of generated inputs that need to be excluded during filtering increases.
 Nevertheless, constraint utilization still reduces \texttt{TooManyFilterMissesException} failures
 relative to \VariantNaive{} (Section~\ref{sec:limitations-eval}), which
-enables \VariantImproved{} variants to achieve overall higher mutation detection rates
+enables \VariantImproved{} variants to achieve higher mutation detection rates
 than \VariantNaive{} in 7 of 9 cases
-despite its current \texttt{Math} mutation detection disadvantage.
+despite its \texttt{Math} mutation detection disadvantage.
 
 Three paths emerge to further enhance \VariantImproved{}'s effectiveness.
 First, the \texttt{Math} mutation trade-off can be addressed through
 higher \tries{} settings or balanced generation strategies
 that maintain boundary detection advantages while improving arithmetic coverage.
-Second, extending constraint support to handle more complex constraints
+Second, extending \ToolTeralizer{}'s constraint encoding support
+to handle more complex constraints
 would further increase utilization rates,
 thus enabling more effective constraint-aware input generation.
+However, encoding of non-boundary constraints would require custom input generators
+that are more capable than those provided by jqwik.
 Third, adaptive strategies could select generation approaches based on
 measured constraint complexity and mutation distribution,
 applying constraint-aware generation where it provides the largest benefit.
