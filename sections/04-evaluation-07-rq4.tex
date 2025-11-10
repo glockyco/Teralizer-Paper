@@ -32,19 +32,25 @@ and Stage~4 (generalized test creation) requires 5--178 seconds (0.2--2.8\%).
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
-  \caption{Teralizer runtimes per project, processing stage, and generalization strategy. Stages 1--3 are \VariantShared{} stages that are only executed once. Stages 4 and 5 are executed once per generalization strategy, i.e., \VariantBaseline{}, \VariantNaives{}, and \VariantImproveds{}.}
-  \Description{Grouped bar chart showing runtime breakdown across processing stages for seven projects.
-  Y-axis shows runtime in seconds (up to 40000).
-  X-axis groups bars by processing stage:
-  Original Validation, Specification Extraction, Initial Validation,
-  Test Transformation, and Generalization Validation.
-  Each group contains bars for different variants (SHARED, BASELINE, NAIVE with 10/50/200 tries,
-  and IMPROVED with 10/50/200 tries) shown in different colors.
-  Bar heights show runtime with values labeled above each bar.
-  Generalization Validation stage shows the highest runtimes (up to 35.5k seconds),
-  while Test Transformation shows minimal runtime (5-173 seconds).
-  Pattern reveals validation stages dominate total runtime,
-  particularly for higher tries settings.}
+  \caption{
+    Teralizer runtimes per project, processing stage, and generalization strategy.
+    Stages 1--3 are \VariantShared{} stages that are only executed once.
+    Stages 4 and 5 are executed once per generalization strategy,
+    i.e., \VariantBaseline{}, \VariantNaives{}, and \VariantImproveds{}.
+  }
+  \Description{
+    Grouped bar chart showing runtime breakdown across processing stages
+    for the seven projects (3x eqbench-es-*, 3x commons-utils-es-*, 1x commons-utils-dev).
+    Y-axis shows runtime in seconds.
+    X-axis groups bars by processing stage:
+    Stage 1+2, Stage 3, Stage 4, and Stage 5.
+    Each group contains bars for different variants (SHARED, BASELINE, NAIVE with 10/50/200 tries,
+    and IMPROVED with 10/50/200 tries) shown in different colors.
+    Bar heights show runtime with values labeled above each bar.
+    Stage 5 shows the highest runtimes (up to 35.5k seconds).
+    Pattern reveals mutation testing dominates total runtime,
+    particularly for higher tries settings.
+  }
   \label{fig:teralizer-runtimes}
 \end{figure}
 
