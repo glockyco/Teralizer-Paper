@@ -315,4 +315,13 @@ confirming that limited \tries{} constrain arithmetic diversity
 only when boundary testing consumes most attempts.
 Full results for all variants are available in our replication package~\cite{replicationpackage}.
 
-\rqanswerbox{1}{TODO}
+\rqanswerbox{1}{
+  Test generalization improves mutation detection across all evaluated projects,
+  achieving absolute improvements of 1--4 percentage points depending on project type and generalization strategy.
+  \DatasetsEqBenchEs{} projects show the largest improvements (1.2--3.9pp, or 2.4--8.2\% relative increase).
+  \DatasetsCommonsEs{} improves by 0.82--1.33pp (1.4--2.2\% relative increase)
+  and \DatasetCommonsDev{} shows minimal improvement (0.05--0.07pp) due to its high baseline detection rate of 80.4\%.
+  Effectiveness varies by mutation operator:
+  constraint-aware generation (\VariantImproved{}) excels at detecting boundary-related mutations like \texttt{ConditionalsBoundary} (+2.55pp),
+  while random generation (\VariantNaive{}) performs better on \texttt{Math} mutations (+3.99pp vs +3.37pp) due to greater arithmetic diversity.
+}
