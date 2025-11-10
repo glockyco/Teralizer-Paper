@@ -17,9 +17,9 @@ Type & Cause of Project-level Exclusion & Count \\
 \midrule
 Internal & all assertions excluded due to filter rejections & 255 \\
 Internal & all tests excluded due to filter rejections and failures & 129 \\
-Internal & timeout exceeded (60 seconds per project) & 48 \\
-Internal & JUnit reports not found & 31 \\
-Internal & compilation outputs not found & 18 \\
+Internal & timeout exceeded (60 seconds per test suite) & 48 \\
+Mixed & JUnit reports not found & 31 \\
+Mixed & compilation outputs not found & 18 \\
 External & JUnit execution error during test execution & 13 \\
 External & Spoon execution error during test analysis & 8 \\
 \midrule
@@ -35,7 +35,7 @@ Internal & all generalizations excluded due to filter rejections and failures & 
 \midrule
 \multicolumn{3}{l}{\textit{\makebox[15em][l]{Stage 5 - Test Suite Reduction:} 114 projects\quad{}\phantom{0}11 inclusions\quad{}103 exclusions\quad{}\phantom{0}9.6\% inclusion rate}} \\
 \midrule
-Internal & JaCoCo outputs not found & 40 \\
+Mixed & JaCoCo outputs not found & 40 \\
 Internal & timeout exceeded (60 seconds per test suite variant) & 40 \\
 External & \ToolPit{} execution error during mutation testing & 16 \\
 Internal & \ToolPit{} reports not found & 4 \\
