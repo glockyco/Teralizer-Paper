@@ -68,12 +68,12 @@ This generative approach distinguishes PBT from parameterized testing,
 which commonly relies on a predefined set of developer-supplied inputs.
 
 For example, the property-based test in Figure~\ref{fig:regression-detection}
-uses \texttt{@Property} to indicate property-based testing,
-\texttt{@Int(min=0)} to constrain input generation to non-negative integers,
-and validates that \texttt{assertEquals(x, abs(x))} holds for all generated values.
+uses \texttt{@Property} to indicate property-based testing
+and \texttt{@Int(min=0)} to constrain input generation to non-negative integers.
+It then validates that \texttt{assertEquals(x, abs(x))} holds for all generated values.
 When this test executes, \ToolJqwik{} generates hundreds of non-negative integers,
 including edge cases like 0, 1, and \texttt{Integer.MAX\_VALUE},
-and verifies that the property holds for each.
+and checks that the property holds for each one.
 If a failure occurs, the framework's shrinking algorithm automatically reduces
 the failing input to its minimal form, simplifying debugging.
 
