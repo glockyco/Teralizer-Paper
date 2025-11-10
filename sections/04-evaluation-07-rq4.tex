@@ -19,15 +19,16 @@ in several configurations.
 \subsubsection{Execution Time of \ToolTeralizer{}}
 \label{sec:execution-time}
 
-Runtime distribution across processing stages reveals
+Our evaluation of runtime requirements across the five processing stages reveals
 that test suite reduction via mutation testing
-dominates overall computational cost of \ToolTeralizer{}'s processing pipeline.
-Figure~\ref{fig:teralizer-runtimes} shows
-Stage~5 (test suite reduction) consuming 2,637--42,860 seconds (69.9--96.8\% of total processing time)
+dominates the overall computational cost of \ToolTeralizer{}'s processing pipeline.
+More specifically, Figure~\ref{fig:teralizer-runtimes} shows
+that Stage~5 (test suite reduction) consumes 1,110--35,538 seconds
+(59.1--95.7\% of total processing time)
 across projects and generalization strategies.
-In contrast, Stages 1 + 2~(project analysis) require only 82--453 seconds (3.9--6.0\%),
-Stage~3 (specification extraction) requires 60--2,776 seconds (4.1--47.8\%),
-and Stage~4 (generalized test creation) requires 5--178 seconds (0.2--2.8\%).
+In contrast, Stages~1~+~2 (project analysis) require only 82--453 seconds (1.2--6.5\%),
+Stage~3 (specification extraction) requires 60--2,776 seconds (1.5--36.4\%),
+and Stage~4 (generalized test creation) requires 5--178 seconds (0.1--2.3\%).
 
 \begin{figure}
   \centering
@@ -58,9 +59,9 @@ and Stage~4 (generalized test creation) requires 5--178 seconds (0.2--2.8\%).
 
 The first four processing stages complete efficiently
 despite containing the core generalization logic.
-Project analysis (Stage 1 + 2) executes the \VariantOriginal{} test suite (61--411s)
+Project analysis (Stage 1 + 2) executes the \VariantOriginal{} test suite
 and performs simple analyses on the corresponding JUnit reports and test code,
-both of which create only minimal overhead beyond the test suite execution (20--42s).
+both of which create only minimal overhead beyond the test suite execution.
 Specification extraction (Stage 3) uses \ToolSPF{}
 to concretely execute tests using single-path symbolic analysis,
 extracting path conditions and symbolic outputs
@@ -85,15 +86,14 @@ and replacing expected values in assertions
 \paragraph{Stage 5 Runtimes}
 
 Test suite reduction costs are substantially larger
-than the costs of the preceding generalization stages
-due to the high runtime cost of mutation testing.
-For example, on the \VariantOriginal{} test suite
-without any added property-based tests,
-mutation testing requires 6--10$\times$ as much runtime (618--3,469 seconds)
-as execution of the \VariantOriginal{} test suite without mutation testing (mean: 1833s vs. 221s).
+than the costs of the preceeding generalization stages
+due to the high runtime cost of mutation testing
+for both the \VariantOriginal{} as well as the generalized test suites.
+In our evaluation, mutation testing of the \VariantOriginal{} test suite takes,
+on average, 8$\times$ as much runtime
+as \VariantOriginal{} test suite execution without mutation testing (mean:~1,833s vs. 221s).
 Mutation testing of the generalized test suites has even higher
-runtime requirements (626--23,847 seconds per variant, mean: 4,351s)
-than for the \VariantOriginal{} ones (mean ratio: 2.4$\times$).
+runtime requirements (mean:~4,351s).
 This is for largely the same reasons
 that individual property-based \ToolJqwik{} tests
 take longer to execute than conventional JUnit tests:
@@ -103,7 +103,7 @@ which occur more often for \VariantNaive{} variants
 and in the presence of more complex input constraints (Section~\ref{sec:test-suite-execution-time}).
 Thus, mutation testing represents more than 99\%
 of the total runtime cost of Stage 5 across all projects and generalization variants,
-and an average of 55.2\% of the full generalization pipeline.
+and an average of 82.9\% of the full generalization pipeline.
 The small remainder of the Stage 5 runtime costs falls to
 collection of test coverage reports as well as processing
 of coverage and mutation reports to identify and exclude non-contributing tests.
