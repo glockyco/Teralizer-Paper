@@ -233,4 +233,16 @@ This increases the mutation detection rate and runtime advantage that
 because the more sophisticated input value generation avoids
 \texttt{TooManyFilterMissesException}s.
 
-\rqanswerbox{4}{TODO}
+\rqanswerbox{4}{
+  Test generalization requires a substantial one-time investment (3.4--30.9 hours per project)
+  which is primarily due to Stage~5 mutation testing for test suite reduction (59.1--95.7\% of total time).
+  Reduction is necessary to filter 21,478 candidate generalizations down to 1,555 retained tests,
+  thus avoiding ongoing test suite execution overhead.
+  Despite the high processing costs, Pareto analysis shows that
+  combining short \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
+  achieves better detection-to-runtime ratios than longer \ToolEvoSuite{} generation alone
+  for multiple evaluated configurations.
+  This stems from complementary optimization targets:
+  \ToolEvoSuite{} optimizes for breadth (coverage),
+  while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
+}
