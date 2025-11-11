@@ -347,4 +347,15 @@ not only holds the potential to increase detection rates
 (as suggested in Section~\ref{sec:constraint-complexity-eval})
 but could also reduce the runtime cost of generalized tests at the same time.
 
-\rqanswerbox{3}{TODO}
+\rqanswerbox{3}{
+  Generalization consistently increases test suite LOC and runtime,
+  whereas test count changes are highly dependent on test architecture.
+  \ToolEvoSuite{}-generated test suites see near-complete compensation via test suite reduction (1,549 tests added, 1,541 removed).
+  Developer-written tests resist compensation due to multi-assertion architectures (6 added, 0 removed).
+  LOC increases by 4.9--58.7\% due to explicit constraint encoding and test isolation.
+  \VariantImproved{} shows larger increases than \VariantNaive{} because of its more sophisticated input generation logic.
+  Runtime increases by 9.4--2,651.5\% across projects and \tries{} settings,
+  reflecting property-based testing overhead, i.e., jqwik framework cost plus increased number of tested inputs.
+  \VariantNaive{} shows larger runtime increases than \VariantImproved{}
+  because random generation requires more filter-and-regenerate cycles to satisfy constraints.
+}
