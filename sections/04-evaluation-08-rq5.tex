@@ -20,17 +20,16 @@ there are two different types of causes
 based on which \ToolTeralizer{} may exclude individual tests, assertions or generalizations
 from further processing:
 filtering and failures.
-Filtering excludes cases that are beyond the current capabilities of \ToolTeralizer{}
+Filtering preemptively excludes cases that are beyond the current capabilities of \ToolTeralizer{}
 to focus on suitable generalization candidates.
-Test-level filtering primarily occurs
-during Stage~1 of the processing pipeline,
+Test-level filtering primarily occurs during Stage~1,
 assertion-level filtering during Stages~1 and 2,
 and generalization-level filtering during Stage~4.
 Even though a single filter rejection is enough
 to exclude a given test, assertion or generalization,
 \ToolTeralizer{} generally collects responses from all
 applicable filters to enable a more robust analysis of filtering causes.
-Despite proactive filtering,
+Despite preemptive filtering,
 some processing attempts fail due to runtime exceptions,
 prompting \ToolTeralizer{} to exclude the corresponding
 test, assertion or generalization from further processing once such an exception occurs.
