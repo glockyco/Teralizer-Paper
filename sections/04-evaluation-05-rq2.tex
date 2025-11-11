@@ -100,4 +100,18 @@ Third, adaptive strategies could select generation approaches based on
 measured constraint complexity and mutation distribution,
 applying constraint-aware generation where it provides the largest benefit.
 
-\rqanswerbox{2}{TODO}
+\rqanswerbox{2}{
+  Both input generation strategies perform better on simpler constraints,
+  but \VariantNaive{}'s effectiveness degrades more strongly as constraint complexity increases.
+  On \DatasetsEqBenchEs{} projects with simpler constraints,
+  \VariantNaive{} outperforms \VariantImproved{}
+  because random generation satisfies many constraints by chance,
+  while \VariantImproved{}'s boundary focus limits arithmetic diversity within the available \tries{},
+  thus reducing \texttt{Math} mutation detection rates.
+  On \DatasetsCommonsEs{} projects with more complex constraints,
+  \VariantNaive{} generates substantially more inputs that violate constraints,
+  causing more \texttt{TooManyFilterMissesException} failures.
+  \VariantImproved{}'s constraint-aware generation reduces these failures,
+  enabling it to outperform \VariantNaive{} in 7 of 9 cases despite its \texttt{Math} mutation disadvantage.
+  Balancing boundary and non-boundary testing could combine the advantages of both strategies.
+}
