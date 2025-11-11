@@ -16,20 +16,6 @@ that combining low search budget \ToolEvoSuite{} generation with \ToolTeralizer{
 achieved better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets
 in several configurations.
 
-\subsubsection{Execution Time of \ToolTeralizer{}}
-\label{sec:execution-time}
-
-Our evaluation of runtime requirements across the five processing stages reveals
-that test suite reduction via mutation testing
-dominates the overall computational cost of \ToolTeralizer{}'s processing pipeline.
-More specifically, Figure~\ref{fig:teralizer-runtimes} shows
-that Stage~5 (test suite reduction) consumes 1,110--35,538 seconds
-(59.1--95.7\% of total processing time)
-across projects and generalization strategies.
-In contrast, Stages~1~+~2 (project analysis) require only 82--453 seconds (1.2--6.5\%),
-Stage~3 (specification extraction) requires 60--2,776 seconds (1.5--36.4\%),
-and Stage~4 (generalized test creation) requires 5--178 seconds (0.1--2.3\%).
-
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
@@ -54,6 +40,20 @@ and Stage~4 (generalized test creation) requires 5--178 seconds (0.1--2.3\%).
   }
   \label{fig:teralizer-runtimes}
 \end{figure}
+
+\subsubsection{Execution Time of \ToolTeralizer{}}
+\label{sec:execution-time}
+
+Our evaluation of runtime requirements across the five processing stages reveals
+that test suite reduction via mutation testing
+dominates the overall computational cost of \ToolTeralizer{}'s processing pipeline.
+More specifically, Figure~\ref{fig:teralizer-runtimes} shows
+that Stage~5 (test suite reduction) consumes 1,110--35,538 seconds
+(59.1--95.7\% of total processing time)
+across projects and generalization strategies.
+In contrast, Stages~1~+~2 (project analysis) require only 82--453 seconds (1.2--6.5\%),
+Stage~3 (specification extraction) requires 60--2,776 seconds (1.5--36.4\%),
+and Stage~4 (generalized test creation) requires 5--178 seconds (0.1--2.3\%).
 
 \paragraph{Stage 1--4 Runtimes}
 
@@ -130,6 +130,36 @@ that identify likely-beneficial candidates without full mutation testing.
 \subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
 \label{sec:execution-efficiency}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
+  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
+  \Description{Two scatter plots showing Pareto efficiency analysis.
+  Left panel shows eqbench project, right panel shows commons-utils project.
+  X-axis shows runtime in seconds, Y-axis shows mutation detection percentage.
+  Blue circles represent EvoSuite-only configurations,
+  red X marks show EvoSuite + NAIVE combinations,
+  green triangles show EvoSuite + IMPROVED combinations.
+  Dashed black line connects Pareto-optimal configurations numbered 1-14 (eqbench) and 1-11 (commons-utils).
+  For eqbench, points show detection rates from 48% to 56% with runtimes from 30000 to 90000 seconds.
+  For commons-utils, points show detection rates from 56.5% to 59.5% with runtimes from 5000 to 20000 seconds.
+  Pareto frontier demonstrates that combining EvoSuite with Teralizer
+  can achieve better detection-to-runtime ratios than increasing EvoSuite search budgets alone.}
+  \label{fig:teralizer-efficiency}
+\end{figure}
+
+\begin{table}
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-eqbench}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-commons}
+  \end{minipage}
+\end{table}
+
 Our evaluation results show that combining \ToolEvoSuite{}'s test generation with \ToolTeralizer{}'s test generalization
 can achieve better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets.
 This efficiency gain stems from their complementary optimization targets:
@@ -164,36 +194,6 @@ a detection improvement of 2.2 percentage points achieved in 12.4\% less runtime
 Increasing the runtime beyond this comparison point achieves even higher
 detection rates in the generalized test suites
 that further extend the Pareto frontier (Pareto points \#10--\#14).
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
-  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
-  \Description{Two scatter plots showing Pareto efficiency analysis.
-  Left panel shows eqbench project, right panel shows commons-utils project.
-  X-axis shows runtime in seconds, Y-axis shows mutation detection percentage.
-  Blue circles represent EvoSuite-only configurations,
-  red X marks show EvoSuite + NAIVE combinations,
-  green triangles show EvoSuite + IMPROVED combinations.
-  Dashed black line connects Pareto-optimal configurations numbered 1-14 (eqbench) and 1-11 (commons-utils).
-  For eqbench, points show detection rates from 48% to 56% with runtimes from 30000 to 90000 seconds.
-  For commons-utils, points show detection rates from 56.5% to 59.5% with runtimes from 5000 to 20000 seconds.
-  Pareto frontier demonstrates that combining EvoSuite with Teralizer
-  can achieve better detection-to-runtime ratios than increasing EvoSuite search budgets alone.}
-  \label{fig:teralizer-efficiency}
-\end{figure}
-
-\begin{table}
-  \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \input{tables/tab-pareto-eqbench}
-  \end{minipage}
-  \hfill
-  \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \input{tables/tab-pareto-commons}
-  \end{minipage}
-\end{table}
 
 Efficiency improvements of \ToolEvoSuite{} + \ToolTeralizer{} combinations
 over \ToolEvoSuite{} search budget increases

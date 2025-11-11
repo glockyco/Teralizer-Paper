@@ -18,8 +18,6 @@ in the initial input value generation of the \VariantImproved{} property-based t
 but are still enforced during input value filtering,
 which takes place after initial input value generation.
 
-\input{tables/tab-mutation-detection-comparison}
-
 Table~\ref{tab:mutation-detection-comparison} shows the model properties
 of mutants that are (not) detected by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
 Models represent the constraints that inputs must satisfy
@@ -39,6 +37,8 @@ Thus, \VariantImproved{} uses 2 of 3 total constraints for input value generatio
 and the model contains 5 operators:
 \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
 %With these metrics established, we are ready to examine the observed results.
+
+\input{tables/tab-mutation-detection-comparison}
 
 Undetected mutants have more complex models than detected ones
 across all evaluated projects.

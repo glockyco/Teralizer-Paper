@@ -222,8 +222,6 @@ improvements to \texttt{Math} detection rates
 have proportionally larger impact on overall mutation scores
 than improvements to less commonly occurring mutation types.
 
-\input{tables/tab-detections-per-mutator}
-
 \VariantInitial{} detection rates reveal a clear pattern: return value mutations
 (i.e., \texttt{Primitive\-Returns}, \texttt{Boolean\-True\-Return\-Vals},
 \texttt{Boolean\-False\-Return\-Vals}, and \texttt{Empty\-Object\-Return\-Vals})
@@ -243,6 +241,8 @@ After all, all three mutations
 affect partition boundaries,
 which is exactly where \VariantImproved{} generalization
 aims to generate additional test inputs.
+
+\input{tables/tab-detections-per-mutator}
 
 \VariantNaiveC{} achieves its largest improvements on
 \texttt{Math} (+3.99\%),
