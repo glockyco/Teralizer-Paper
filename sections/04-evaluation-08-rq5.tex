@@ -255,4 +255,20 @@ can exceed this limit when specifications contain
 numerous complex constraints,
 necessitating preemptive exclusion of the largest specifications.
 
-\rqanswerbox{5}{TODO}
+\rqanswerbox{5}{
+  Of 28,923 identified assertions,
+  9,881--13,836 (34.2--47.8\%) are successfully generalized
+  to passing property-based tests across generalization strategies.
+  The largest number of exclusions occurs at the assertion level,
+  primarily due to static analysis limitations in identifying tested methods (24.7\%)
+  and the presence of parameter types that cannot be accurately modeled by current symbolic analysis (15.4\%).
+  Specification extraction failures due to \ToolSPF{} errors and exceeded analysis limits
+  exclude 5.3\% and 4.7\% of assertions, respectively.
+  Test-level filtering excludes 5.5\% of assertions due to non-passing \VariantOriginal{} tests.
+  \VariantNaive{} generalized tests pass in 71.4--77.6\% of cases,
+  with failures primarily due to \texttt{TooManyFilterMissesException}s (16.1--21.7\%)
+  and inaccurate specifications in the presence of
+  loops and interprocedural control flow in tests (6.0--6.6\%).
+  \VariantImproved{} increases pass rates to 83.8--85.2\%
+  by reducing filter misses by 46.5--58.4\% through constraint-aware input generation.
+}
