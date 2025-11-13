@@ -89,6 +89,9 @@ only examines the top-level test method,
 which causes it to miss these delegated assertion calls
 (as described in Section~\ref{sec:test-assertion-analysis}).
 
+\input{tables/tab-exclusions-breakdown}
+\input{tables/tab-exclusions-filtering}
+
 \paragraph{Assertion-level Exclusions}
 
 Across the 28,923 identified assertions within the primary evaluation dataset,
@@ -159,9 +162,6 @@ does not support such methods because \ToolSPF{}
 does not report any symbolic outputs
 (i.e., symbolic representations of return values)
 for them. Consequently, no input-output specification can be inferred.
-
-\input{tables/tab-exclusions-breakdown}
-\input{tables/tab-exclusions-filtering}
 
 \paragraph{Generalization-level Exclusions}
 
