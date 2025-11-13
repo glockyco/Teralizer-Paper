@@ -321,4 +321,17 @@ non-standard project structures
 and resource constraints
 (timeout exclusions affect 14.1\% of projects across all stages).
 
-\rqanswerbox{6}{TODO}
+\rqanswerbox{6}{
+  Fully automated generalization of real-world test suites encounters significant challenges.
+  Only 206 of 122,153 assertions (0.2\%) are successfully generalized
+  (compared to 40.1\% under controlled conditions)
+  and only 11 of 632 projects (1.7\%) complete all processing stages.
+  The core generalization mechanism operates reliably when applicable:
+  generalization-level success rates are comparable (86.2\% real-world vs 83.8\% controlled),
+  and projects that pass early filtering proceed successfully through specification extraction (90.0\%) and generalized test creation (97.4\%).
+  However, three primary barriers prevent higher success rates of the generalization pipeline:
+  limited type and assertion pattern support causes 99.4\% of assertions to be filtered before reaching test generation
+  (e.g., \texttt{MissingValue}: 57.9\%, \texttt{ParameterType}: 49.4\%, \texttt{ReturnType}: 32.6\%),
+  non-standard project structures prevent output detection in 14.7\% of projects,
+  and mutation testing timeouts cause 14.1\% of projects to be excluded.
+}
