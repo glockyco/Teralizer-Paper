@@ -101,8 +101,8 @@ Stage~3 (specification extraction) excludes 13 projects (10.0\%)
 due to \ToolSPF{} execution errors, \ToolTeralizer{} errors, or exceeded resource limits
 (detailed in Section~\ref{sec:test-assertion-generalization-exclusions-extended}).
 One external failure represents a Spoon execution error during test instrumentation,
-and one internal failure occurs due to an exceeded specification extraction timeout
-(60 seconds per test method).
+and one internal failure occurs due to a test suite execution timeout
+(60 seconds per \VariantInitial{} test suite).
 %
 Stage~4 (generalized test creation) shows the lowest failure rate in the pipeline:
 only 3 of 117 projects (2.6\%) are excluded,
@@ -121,7 +121,7 @@ excluding 103 of 114 projects that reach this stage (90.4\%).
 Unlike Stage~1 + 2 failures that are primarily caused by proactive filtering
 of unsuitable tests and assertions,
 Stage~5 failures stem mainly from failures to detect required coverage and mutation testing reports,
-exceeded timeouts (60 seconds per project), and external tool failures.
+exceeded timeouts (300 seconds per test suite variant), and external tool failures.
 
 In total, output detection failures affect 44 projects (38.6\% of stage input).
 \ToolJacoco{} reports in non-standard locations cause 40 of these exclusions,
@@ -131,7 +131,7 @@ further supporting the observation that real-world projects organize build artif
 than \ToolTeralizer{}'s current output detection heuristics accommodate.
 
 All 40 projects that are excluded due to exceeded runtime limits
-already reach the configured timeout (60 seconds per test suite variant)
+already reach the configured timeout (300 seconds per test suite variant)
 when performing mutation testing for the \VariantOriginal{} test suite.
 No additional exclusions occur during mutation testing of the test suite
 created by the \VariantImprovedC{} generalization strategy.
