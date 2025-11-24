@@ -12,9 +12,9 @@ evaluating the practical applicability of the approach
 and identifying which barriers prevent fully automated generalization.
 
 Section~\ref{sec:project-level-exclusions-extended} examines project-level exclusions
-that prevent entire projects from completing the generalization pipeline,
-categorizing exclusion causes by stage and identifying whether they stem from
-\ToolTeralizer{}'s internal design decisions or external tool limitations.
+that prevent entire projects from completing the generalization pipeline.
+We list exclusion causes by stage and identify whether they primarily stem from
+\ToolTeralizer{}'s internal design decisions and evaluation setup or external tool limitations.
 Section~\ref{sec:test-assertion-generalization-exclusions-extended} then examines
 test, assertion, and generalization exclusions,
 distinguishing between filtering-based and failure-based exclusions
@@ -65,9 +65,10 @@ Project analysis excludes 502 of 632 projects (79.4\%),
 with the primary failure mode being complete absence of suitable generalization candidates.
 Cases where all assertions are excluded affect 255 projects (40.3\% of stage input),
 while all tests being excluded affects 129 projects (20.4\%).
-For assertion exclusions, all 255 projects result from filter rejections,
-indicating these projects contain only assertion patterns
-currently unsupported by \ToolTeralizer{}
+For assertion exclusions, all 255 result from filter rejections,
+indicating that these projects contain only assertion patterns
+that are currently unsupported by \ToolTeralizer{}
+or beyond the current capabilities of the underlying symbolic analysis performed by \ToolSPF{}
 (detailed in Section~\ref{sec:test-assertion-generalization-exclusions-extended}).
 For test exclusions, 116 projects (89.9\% of the 129) stem from filter rejections,
 6 projects (4.7\%) from failures during test analysis (e.g., missing test report files),
