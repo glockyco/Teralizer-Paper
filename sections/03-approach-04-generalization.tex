@@ -182,7 +182,7 @@ in the presence of restrictive input constraints.
 For example, an input specification \texttt{a == b \&\& b == c}
 is highly unlikely to be satisfied by three randomly assigned values
 for \texttt{a}, \texttt{b}, and \texttt{c}, causing \ToolJqwik{}
-to throw a \texttt{TooManyFilterMissesException} after too many
+to throw a \texttt{Too\-Many\-Filter\-Misses\-Exception} after too many
 failed input generation attempts.
 This, in turn, prompts \ToolTeralizer{}
 to exclude the property-based test from the final test suite.
@@ -318,7 +318,7 @@ Finally, line 25 applies filtering for non-encodable constraints,
 ensuring all generated inputs satisfy the complete specification.
 
 Even though this partial encoding of input constraints
-cannot fully eliminate \texttt{TooManyFilterMissesException}s for all cases,
+cannot fully eliminate \texttt{Too\-Many\-Filter\-Misses\-Exceptions} for all cases,
 it reduces their prevalence by constraining
 the space from which inputs can be selected.
 An additional benefit that the constraint-aware input generation approach provides

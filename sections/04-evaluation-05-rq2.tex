@@ -52,7 +52,7 @@ with undetected mutants having 1.0--2.5$\times$ more constraints.
 Even though both \VariantNaive{} and \VariantImproved{}
 achieve better generalization outcomes for simpler constraints,
 more complex constraints have a stronger detrimental effect on \VariantNaive{},
-which produces 2-2.5$\times$ as many \texttt{TooManyFilterMissesExceptions} as \VariantImproved{},
+which produces 2-2.5$\times$ as many \texttt{Too\-Many\-Filter\-Misses\-Exceptions} as \VariantImproved{},
 as discussed in more detail in Section~\ref{sec:limitations-eval}.
 
 Constraint utilization rates show large differences across project types.
@@ -80,7 +80,7 @@ causing generalized tests to generate inputs from broader ranges
 that overapproximate the actual partition boundaries.
 As a result, fewer partition boundaries are accurately identified,
 and the number of generated inputs that need to be excluded during filtering increases.
-Nevertheless, constraint utilization still reduces \texttt{TooManyFilterMissesException} failures
+Nevertheless, constraint utilization still reduces \texttt{Too\-Many\-Filter\-Misses\-Exception} failures
 relative to \VariantNaive{} (Section~\ref{sec:limitations-eval}), which
 enables \VariantImproved{} variants to achieve higher mutation detection rates
 than \VariantNaive{} in 7 of 9 cases
@@ -110,7 +110,7 @@ applying constraint-aware generation where it provides the largest benefit.
   thus reducing \texttt{Math} mutation detection rates.
   On \DatasetsCommonsEs{} projects with more complex constraints,
   \VariantNaive{} generates substantially more inputs that violate constraints,
-  causing more \texttt{TooManyFilterMissesException} failures.
+  causing more \texttt{Too\-Many\-Filter\-Misses\-Exception} failures.
   \VariantImproved{}'s constraint-aware generation reduces these failures,
   enabling it to outperform \VariantNaive{} in 7 of 9 cases despite its \texttt{Math} mutation disadvantage.
   Balancing boundary and non-boundary testing could combine the advantages of both strategies.
