@@ -92,3 +92,44 @@ This effect is particularly pronounced at lower \tries{} settings
 where \VariantImprovedA{} noticeably underperforms
 all other generalization strategies
 (Figure~\ref{fig:mutation-detection-results}, rows 1--3).
+
+\subsection{When and Why Generalization Fails}
+\label{sec:when-it-fails}
+
+Fully automated generalization fails
+for the vast majority of evaluated real-world projects.
+Overall, only 1.7\% of these projects (11 of 632)
+successfully pass the full processing pipeline
+(Table~\ref{tab:processing-failures})
+and only 0.2\% of assertions (206 of 122,153)
+are successfully generalized
+(Table~\ref{tab:exclusions-breakdown-extended}).
+Exclusions occur primarily during processing of
+Stage~1~+~2 (project analysis, 79.4\% exclusion rate)
+as well as Stage 5 (test suite reduction, 90.4\% exclusion rate).
+In contrast, processing of Stage~3 (specification extraction) and 4 (generalized test creation)
+succeeds in most cases, showing exclusion rates of only 10.0\% and 2.6\%, respectively.
+These results indicate that the core generalization mechanism operates reliably 
+when suitable generalization candidates are encountered.
+However, early filtering for such candidates
+and late-stage identification of generalizations that
+improve overall test suite effectiveness
+reflect significant barriers to practical adoption.
+
+Broadly speaking, there are three high-level causes
+that explain the high exclusion rates we observe
+when evaluating fully automated test generalization via \ToolTeralizer{} in real-world projects.
+First, \ToolTeralizer{} is a research prototype,
+which correspondingly limits the scope of its current capabilities.
+Second, extracting accurate specifications for generalization
+of test oracles is a fundamentally non-trivial problem,
+even more so when moving beyond the domain of pure functions and numeric-focused programs.
+Third, factors such as execution errors in \ToolTeralizer{}'s dependencies,
+timeouts enforced for evaluation purposes,
+and test failures in original test suites
+are beyond the direct control of the generalization mechanism itself,
+but still increase the number of unsuccessful generalization attempts. 
+Throughout the rest of this section,
+we describe how these three high-level causes affect generalization outcomes.
+This summary of failure causes then serves as the basis for discussion of future improvements
+in Section~\ref{sec:how-to-improve}.
