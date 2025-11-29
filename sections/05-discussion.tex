@@ -223,3 +223,37 @@ since assertion-to-MUT mapping is only attempted for supported assertions,
 other rejection causes such as type limitations shadow
 an unknown portion of mapping failures
 that would be revealed if type and assertion support were improved.
+
+\paragraph{Dependencies and Environment}
+
+Beyond implementation limitations and specification extraction challenges,
+generalization success rates are also affected by
+execution errors in \ToolTeralizer{}'s dependencies
+as well as environmental factors such as enforced resource limits.
+These factors are beyond the direct control of the generalization approach itself,
+but nevertheless account for 128 direct project-level exclusions (20.3\% of projects).
+Furthermore, they contribute to 
+129 test-related exclusions (20.4\%)
+and 266 assertion-related exclusions (42.1\%),
+albeit to a comparatively small degree.
+The 128 project-level exclusions are caused by 89 timeouts
+(Table~\ref{tab:processing-failures}, rows \#3, \#10, and \#13)
+and 39 dependency errors
+(Table~\ref{tab:processing-failures}, rows \#6, \#7, \#9, \#12, and \#14).
+The 129 test-related exclusions are affected by
+\texttt{NonPassingTest} rejections
+(11.8\% of tests, Table~\ref{tab:exclusions-filtering-extended}),
+and the 266 assertion-related exclusions are affected by
+\texttt{ExcludedTest} rejections (16.9\% of assertions),
+\texttt{MissingValue} rejections (57.9\%,
+33\% of which are cases where Spoon
+is unable to resolve the declaration of an identified MUT,
+as explained in Section~\ref{par:real-world-assertion-exclusions}),
+and failures during \ToolSPF{} execution (0.3\%).
+\ToolSPF{} failures are underrepresented
+because filtering excludes most assertions before processing
+reaches the specification extraction stage.
+Among the 1093 assertions that reach \ToolSPF{},
+382 (34.9\%) fail due to \ToolSPF{} errors
+and enforced resource limits
+(Table~\ref{tab:exclusions-breakdown-extended}).
