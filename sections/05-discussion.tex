@@ -133,3 +133,42 @@ Throughout the rest of this section,
 we describe how these three high-level causes affect generalization outcomes.
 This summary of failure causes then serves as the basis for discussion of future improvements
 in Section~\ref{sec:how-to-improve}.
+
+\paragraph{Implementation Limitations}
+
+There are four limiting factors in our current prototype
+that are implementation specific rather than fundamental:
+(i)~it only supports JUnit 4 and JUnit 5 tests and assertions,
+(ii)~it only supports generalization of tests that contain at least one assertion,
+(iii)~it only performs intraprocedural static analysis within test methods to detect assertions,
+and (iv)~it only supports projects that use default output directories and formats
+for compilation outputs, JUnit reports, JaCoCo reports, and PIT reports.
+Limitation (iv) directly causes
+95 project-level exclusions (15.0\% of projects)
+due to output detection and processing failures
+(Table~\ref{tab:processing-failures}, rows \#4, \#5, \#15, \#16, and \#17).
+Limitations (i)--(iii) contribute to the exclusion of
+129 projects (20.4\%) for which all tests are excluded
+(Table~\ref{tab:processing-failures}, row~\#2)
+and 266 projects (42.1\%) for which all assertions are excluded
+(Table~\ref{tab:processing-failures}, rows \#1 and \#8).
+
+While the exact degree of influence
+on the 129 test- and 266 assertion-related exclusions
+is difficult to quantify precisely
+(because both are also affected by the other two high-level factors),
+filter rejections provide at least an approximate measure.
+Limitation (i) causes all 12.5\% of \texttt{TestType} rejections
+(Table~\ref{tab:exclusions-filtering-extended})
+because these tests use JUnit~3.
+Furthermore, limitation (ii) causes all true positive \texttt{NoAssertions} rejections
+and (i)+(iii) cause all false positive \texttt{NoAssertions} rejections,
+together accounting for the exclusion of 41.3\% of tests
+(Table~\ref{tab:exclusions-filtering-extended}).
+Thus, limitations (i)--(iii) have comparatively high impact
+on the 129 test-related exclusions
+--- the only other test-excluding factor is 11.8\% \texttt{NonPassingTest} rejections.
+In contrast, their influence on the 266 assertion-related exclusions is comparatively low,
+contributing only to 16.9\% \texttt{ExcludedTest} rejections
+--- the lowest rate among all assertion-level filters
+(Table~\ref{tab:exclusions-filtering-extended}).
