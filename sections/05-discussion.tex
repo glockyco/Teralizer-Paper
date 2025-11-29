@@ -172,3 +172,53 @@ In contrast, their influence on the 266 assertion-related exclusions is comparat
 contributing only to 16.9\% \texttt{ExcludedTest} rejections
 --- the lowest rate among all assertion-level filters
 (Table~\ref{tab:exclusions-filtering-extended}).
+
+\paragraph{Specification Extraction Challenges}
+
+Whereas implementation limitations primarily cause
+direct project-level and test-related exclusions,
+specification extraction challenges account for the majority
+of the 266 assertion-related exclusions (42.1\% of projects)
+as well as all 3 (0.5\%) generalization-related exclusions
+(Table~\ref{tab:processing-failures}, rows \#1, \#8, and \#11).
+The largest portion of these exclusions are due to 
+type limitations of the underlying symbolic analysis performed by \ToolSPF{},
+which is used by \ToolTeralizer{} to extract specifications for oracle generalization
+(Sections~\ref{sec:specification-extraction} and \ref{sec:generalized-test-creation}).
+A smaller portion is due to the simplifying assumption that
+each assertion can be generalized by extracting the input-output specification
+of the last method call that was executed before the assertion
+(Section~\ref{sec:tested-method-identification}).
+
+To quantify the impact of type limitations, notice that they are responsible for 
+the following assertion filter rejections listed in Table~\ref{tab:exclusions-filtering-extended}:
+all \texttt{ParameterType} rejections (49.4\% rejection rate),
+all \texttt{ReturnType} rejections (32.6\%),
+most \texttt{AssertionType} rejections (23.9\%),
+and many \texttt{MissingValue} rejections (57.9\%).
+\texttt{AssertionType} is type-related because
+many unsupported assertions are for non-primitive types
+(\texttt{assert(Not)Null}, \texttt{assert(Not)Same}, \texttt{assertArrayEquals}, etc.).
+\texttt{MissingValue} rejections are type-related
+because they are a superset of \texttt{AssertionType} rejections.
+\texttt{Parameter\-Type} and \texttt{ReturnType} rejections
+are directly enforced due to type limitations.
+Furthermore, the exclusion rates relative to the subset of cases for which type information
+is available are even higher than overall rejection rates suggest. Of 65,676 cases with parameter type information,
+60,283 (91.8\%) are rejected by the \texttt{ParameterType} filter.
+Similarly, 39,780 of 51,425 cases (77.4\%) with return type information
+are rejected by the \texttt{ReturnType} filter.
+
+Exclusions due to the 1:1 assertion-to-MUT mapping assumption
+show a smaller impact on overall exclusion rates.
+Specifically, this assumption causes the subset of \texttt{MissingValue} rejections
+that occur when no MUT can be identified for a given assertion.
+As explained in Section~\ref{par:real-world-assertion-exclusions},
+this subset accounts for 26\% of \texttt{MissingValue} rejections,
+which in turn reject 57.9\% of identified assertions ---
+thus contributing rejection votes for approximately 15\% of all assertions.
+However, this figure likely understates the assumption's true impact:
+since assertion-to-MUT mapping is only attempted for supported assertions,
+other rejection causes such as type limitations shadow
+an unknown portion of mapping failures
+that would be revealed if type and assertion support were improved.
