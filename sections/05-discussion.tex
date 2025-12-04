@@ -445,3 +445,55 @@ to replace multiple original tests covering the same input partition
 with a single property-based test,
 thus reducing overall test count
 instead of only compensating for added tests.
+
+\subsubsection{Deployment Strategies}
+
+Our results position semantics-based test generalization
+for targeted deployment during new unit test development
+or as a post-processing step for generated tests in numeric-heavy domains.
+Because generalization success depends not only on domain characteristics
+but also on program and test architecture,
+developers who are interested in adopting automated test generalization tools 
+such as \ToolTeralizer{} in their own projects can improve generalization outcomes
+through their implementation choices:
+
+\begin{enumerate}
+  \item Following a more functional programming style that emphasizes pure functions
+    reduces assertion-to-MUT mapping failures
+    (57.9\% \texttt{MissingValue} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+  \item Placing assertions directly in test methods rather than delegating to helper methods
+    reduces assertion detection failures due to current interprocedural analysis
+    (41.3\% \texttt{NoAssertions} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+  \item Favoring supported assertions such as \texttt{assertEquals}
+    over unsupported ones such as \texttt{assertThat} where this is feasible
+    reduces assertion type exclusions
+    (23.9\% \texttt{AssertionType} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+  \item Ensuring a green original test suite by addressing flaky tests and missing dependencies
+    avoids exclusions due to failing tests
+    (11.8\% \texttt{NonPassingTest} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+  \item Using standard project structures and build output locations for test reports and coverage data
+    reduces output detection failures
+    (14.7\% project exclusions, Table~\ref{tab:processing-failures}).
+\end{enumerate}
+
+Beyond these factors,
+test smells~\cite{garousi_2018_test_smells,van_deursen_2001_refactoring,meszaros_2007_xunit}
+represent another dimension that affects generalizability.
+For example, \emph{Eager Test}
+(where tests invoke multiple production methods)
+complicates assertion-to-method mapping
+(Section~\ref{sec:tested-method-identification})
+and \emph{Conditional Test Logic}
+(where tests contain loops or other conditionals)
+can lead to inaccurate specifications
+due to \ToolTeralizer{}'s limited loop handling
+(Section~\ref{par:generalization-level-exclusions}).
+Thus, a promising direction for future work
+is developing automated transformation approaches
+that refactor test code to improve generalizability
+before applying tools like \ToolTeralizer{}.
+Such transformations could build on
+testability transformation techniques~\cite{harman_2004_testability},
+which modify programs to improve amenability to test generation,
+and recent advances in automated test smell detection~\cite{peruma_2020_tsdetect}
+and refactoring~\cite{martins_2024_catalog,xuan_2016_brefactoring}.
