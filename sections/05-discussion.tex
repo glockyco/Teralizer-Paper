@@ -383,3 +383,65 @@ or coverage-guided property-based testing~\cite{lampropoulos_2019_fuzzchick}
 could more effectively generate inputs satisfying complex constraints
 than \ToolJqwik{}'s primarily random generation,
 albeit at increased computational cost.
+
+\subsubsection{Improving Efficiency}
+
+Efficiency improvements could be implemented along the following three dimensions:
+(i)~tool runtime, which determines processing cost during generalization,
+(ii)~test suite runtime, which determines execution cost after generalization,
+and (iii)~test suite size, which primarily affects maintenance overhead.
+
+\paragraph{Tool Runtime}
+
+Processing costs are dominated by mutation testing,
+which consumes 59.1--95.7\% of total pipeline runtime
+(Figure~\ref{fig:teralizer-runtimes}).
+However, not all mutation operators benefit equally from generalization:
+\texttt{Math}, \texttt{ConditionalsBoundary}, and \texttt{RemoveConditionalEqualElse}
+show the largest detection improvements
+(Table~\ref{tab:detections-per-mutator}),
+while return value mutations show near-zero improvement
+from their high baseline detection rates.
+Focusing mutation testing on operators where generalization provides
+the most benefit would reduce runtime costs.
+Furthermore, lightweight heuristics based on constraint complexity
+or assertion patterns could
+identify unlikely-beneficial candidates before mutation testing,
+reducing processing time at the cost of potentially missing some improvements.
+Incremental processing that targets only newly-added or modified tests
+would avoid repeated analysis of stable code in continuous integration settings.
+Arcmutate~\cite{arcmutate_2024}, a commercial extension of \ToolPit{},
+offers an accelerator plugin that could further reduce processing costs.
+
+\paragraph{Test Suite Runtime}
+
+Test suite runtime increases caused by generalization stem primarily from \ToolJqwik{} framework overhead
+(approximately 150ms per test, Figure~\ref{fig:test-runtime-differences})
+and filter-and-regenerate cycles when inputs violate constraints.
+\VariantImproved{} reduces filter miss rates by 46.5--58.4\%
+compared to \VariantNaive{} (Section~\ref{sec:limitations-eval}),
+directly improving execution cost per successfully generated test input from 28.61ms to 18.92ms at 10~\tries{}
+and from 5.68ms to 1.98ms at 200~\tries{} (Figure~\ref{fig:test-runtime-differences}).
+Better constraint encoding would further reduce filter-and-regenerate cycles
+by enabling more inputs to be generated directly rather than requiring filtering.
+Additionally, \ToolJqwik{}~2 plans parallelization support~\cite{link_2024_jqwik2},
+which could reduce test suite execution time
+by distributing property-based test execution across multiple cores.
+
+\paragraph{Test Suite Size}
+
+Observed LOC increases of 4.9--58.7\% across projects
+(Table~\ref{tab:lines-per-project})
+have two primary causes:
+explicit constraint encoding in generalized test code
+and structural duplication from test isolation
+(Section~\ref{sec:test-suite-line-count}).
+Abstracting constraint encoding in a library
+could help reduce this overhead,
+and tighter integration of generalized tests into original test classes
+would eliminate duplication from copied imports, setup methods, and helper functions.
+Beyond LOC, test suite reduction could be extended
+to replace multiple original tests covering the same input partition
+with a single property-based test,
+thus reducing overall test count
+instead of only compensating for added tests.
