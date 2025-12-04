@@ -257,3 +257,76 @@ Among the 1093 assertions that reach \ToolSPF{},
 382 (34.9\%) fail due to \ToolSPF{} errors
 and enforced resource limits
 (Table~\ref{tab:exclusions-breakdown-extended}).
+
+\subsection{Directions for Future Improvements}
+\label{sec:how-to-improve}
+
+Based on our findings, three complementary directions emerge for future improvements of semantics-based test generalization:
+(i) expanding applicability to handle more projects, tests, and assertions,
+(ii) improving effectiveness when generalization does apply,
+and (iii) improving efficiency in terms of generalization runtime
+as well as size and runtime of the generalized test suite.
+The following subsections discuss specific opportunities in each direction,
+distinguishing between engineering improvements
+that can can be achieved through additional implementation effort
+and research challenges requiring advances in underlying techniques.
+
+\subsubsection{Improving Applicability}
+
+The primary barrier to real-world adoption is limited applicability:
+99.4\% of real-world assertions are excluded before reaching generalized test creation
+(Table~\ref{tab:exclusions-breakdown-extended}).
+Three categories of improvements could noticeably expand
+the subset of projects, tests, and assertions that are amenable to generalization.
+
+\paragraph{Type Support}
+
+Type limitations cause the largest portion of assertion-level exclusions.
+Among assertions where type information is available,
+type-based rejection rates reach
+91.8\% for cases with known parameter types
+and 77.4\% for cases with known return types
+(Section~\ref{par:specification-extraction-challenges}).
+Expanding type support remains a fundamental research
+challenge~\cite{amadini_2021_string_survey,zhong_2021_arrays,chen_2024_z3noodler,chocholaty_2025_z3noodler,sun_2024_cgs}:
+precise constraint modeling for strings, collections, and custom objects
+requires advances in symbolic analysis beyond current capabilities.
+Furthermore, type limitations shadow other issues:
+as type support improves,
+additional limitations in assertion-to-MUT mapping and general assertion support
+would become visible, enabling more in-depth analysis and targeted improvement of these causes.
+
+\paragraph{Static Analysis}
+
+The \texttt{NoAssertions} and \texttt{TestType} filters
+reject 41.3\% and 12.5\% of tests, respectively
+(Section~\ref{par:implementation-limitations}).
+Both are addressable through engineering improvements:
+interprocedural analysis that tracks assertion calls through the call graph
+would recover tests where assertions exist in helper methods.
+Tests that genuinely lack assertions could be modeled as implicit ``does not throw'' checks,
+thus eliminating the current need to exclude tests without assertions
+due to a lack of validated oracles.
+Adding support for JUnit~3, TestNG,
+and assertion libraries such as AssertJ, Hamcrest, and Truth
+would recover further rejections by the \texttt{TestType} and \texttt{NoAssertions} filters.
+
+\paragraph{Project Structure and Environment}
+
+Output detection failures exclude 14.7\% of projects
+(Table~\ref{tab:processing-failures}).
+Configurable output paths or improved search heuristics
+would recover these projects without changing the core approach.
+%
+Timeouts exclude 14.1\% of projects across processing stages
+(Table~\ref{tab:processing-failures}).
+While increased limits could reduce these exclusions,
+diminishing returns are apparent: 
+doubling of all timeouts
+recovered only 2 of 89 timed-out projects in our internal testing,
+increasing the number of successfully processed real-world projects from 11 to 13.
+\ToolSPF{} execution errors account for 51.4\% of specification extraction failures
+under controlled settings (Section~\ref{sec:limitations-eval}),
+many due to missing models for native methods.
+Contributing such models to \ToolSPF{} would reduce these failures
+without any other changes in the approach.
