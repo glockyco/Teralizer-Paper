@@ -330,3 +330,55 @@ under controlled settings (Section~\ref{sec:limitations-eval}),
 many due to missing models for native methods.
 Contributing such models to \ToolSPF{} would reduce these failures
 without any other changes in the approach.
+
+\subsubsection{Improving Effectiveness}
+
+When generalization does apply, effectiveness depends on
+the generation of inputs that thoroughly cover the valid input space.
+Two factors influence this:
+(i)~the generation strategy,
+which determines whether inputs are sampled randomly (\VariantNaive{})
+or specifically target input partition boundaries (\VariantImproved{}),
+and (ii)~constraint encoding,
+which determines how much of the extracted specification can be used to guide generation.
+
+\paragraph{Generation Strategies}
+
+Constraint-aware input generation used by \VariantImproved{}
+increases detection rate improvements of boundary-related mutations
+such as \texttt{ConditionalsBoundary} compared to \VariantNaive{} (+2.55pp vs.\ +1.21pp,
+Section~\ref{sec:detection-rates-per-mutator}).
+However, focusing too much on boundaries limits arithmetic diversity
+within available \tries{}.
+This negatively affects detection rate improvements of \texttt{Math} mutations,
+particularly at lower \tries{} settings (Section~\ref{sec:constraint-complexity-eval}).
+To improve detection rates without increasing \tries{},
+more balanced generation strategies can be developed
+that use heuristics based on constraint complexity or other source code properties
+to better balance boundary vs.\ non-boundary testing,
+thus utilizing the benefits of both random and boundary-focused
+generation where each provides the largest benefit.
+
+\paragraph{Constraint Encoding}
+
+Average constraint utilization per project ranges from 11\% to 69\%
+in controlled settings
+(Table~\ref{tab:mutation-detection-comparison}).
+This is because \ToolTeralizer{}'s \VariantImproved{} generalization strategy
+only encodes simple in-/equalities on variables and constants,
+whereas compound terms such as \texttt{a == (b + 1)}
+are enforced through filtering (Section~\ref{sec:constraint-encoding}).
+Extending constraint encoding support would enable more precise boundary testing
+while reducing \texttt{TooManyFilterMissesException}s
+that affect 5.7--6.0\% of \DatasetsEqBenchEs{} generalizations,
+14.9--15.7\% of \DatasetsCommonsEs{} generalizations,
+and 11.5--14.2\% of \DatasetCommonsDev{} generalizations
+(Section~\ref{sec:limitations-eval}).
+However, as constraint complexity increases,
+generating valid inputs becomes increasingly difficult.
+Techniques such as SMT-based constraint solving~\cite{de_moura_2008_z3,ringer_2017_iorek},
+targeted property-based testing~\cite{loscher_2017_targeted},
+or coverage-guided property-based testing~\cite{lampropoulos_2019_fuzzchick}
+could more effectively generate inputs satisfying complex constraints
+than \ToolJqwik{}'s primarily random generation,
+albeit at increased computational cost.
