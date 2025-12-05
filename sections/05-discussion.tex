@@ -500,3 +500,72 @@ testability transformation techniques~\cite{harman_2004_testability},
 which modify programs to improve amenability to test generation,
 and recent advances in automated test smell detection~\cite{peruma_2020_tsdetect}
 and refactoring~\cite{martins_2024_catalog,xuan_2016_brefactoring}.
+
+\subsection{Threats to Validity}
+\label{sec:threats-to-validity}
+
+\paragraph{Construct Validity}
+
+We use mutation score as a proxy for fault detection capability.
+Fundamentally, this use of mutation testing
+rests on two hypotheses:
+the competent programmer hypothesis,
+which assumes that real faults are often
+only small deviations from correct programs,
+and the coupling effect,
+which suggests that tests which detect simple faults
+will also generally detect more complex faults~\cite{demillo_1978_hints}.
+Empirical studies validated the coupling effect~\cite{offutt_1992_coupling},
+and subsequent work demonstrated that mutation scores correlate
+with real fault detection~\cite{just_2014_mutants,papadakis_2018_correlation}.
+Furthermore, surveys confirm the use
+of mutation testing as a standard evaluation technique
+in software testing research~\cite{jia_2011_analysis,papadakis_2019_mutation}.
+%
+While our use of \ToolPit{}'s \texttt{DEFAULTS} set of mutation operators
+may not represent all fault types,
+\texttt{DEFAULTS} is explicitly recommended by
+\ToolPit{} as a stable set of operators
+that minimizes equivalent mutants and avoids subsumption
+~\cite{coles_2021_less_is_more, coles_pit_mutators}.
+
+\paragraph{Internal Validity}
+
+Our experiments use single runs per configuration.
+While additional runs would produce more robust results,
+we already observe consistent effectiveness and efficiency trends across projects
+and configuration settings with our current setup,
+even though precise magnitudes of effects vary slightly.
+%
+Evaluation of higher \tries{} settings
+and longer timeouts could provide further evidence of observed scaling behaviors.
+However, we empirically determined
+these settings to provide a reasonable trade-off between
+resource requirements and result quality. Scaling trends
+and diminishing returns are already apparent throughout the evaluation,
+and doubled timeout settings recovered only 2 of 89 timed-out
+projects in our internal testing.
+
+\paragraph{External Validity}
+Our implementation targets Java~5--8 with JUnit~4/5 and Maven or Gradle builds.
+While the core approach is programming language-agnostic and could be
+implemented for other languages and ecosystems
+(e.g., using KLEE~\cite{cadar_2008_klee}
+with RapidCheck~\cite{rapidcheck_2025} for~C/C++,
+or CrossHair~\cite{crosshair_2025}
+with Hypothesis~\cite{maciver_2019_hypothesis} for Python),
+observed results might differ
+due to inherent language differences
+and different maturity of available tools.
+%
+Our evaluation of potential benefits
+emphasizes projects that match current
+symbolic analysis capabilities,
+particularly regarding type support and corresponding
+limitations of generalizable assertion types.
+As type support improves,
+applicability of semantics-based test generalization
+would directly benefit, though results
+that can be achieved for non-numeric types might
+differ from those we observed during generalization
+of primarily numeric-focused programs.
