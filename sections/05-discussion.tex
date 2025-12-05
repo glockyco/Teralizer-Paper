@@ -401,10 +401,10 @@ which consumes 59.1--95.7\% of total pipeline runtime
 (Figure~\ref{fig:teralizer-runtimes}).
 However, not all mutation operators benefit equally from generalization:
 \texttt{Math}, \texttt{ConditionalsBoundary}, and \texttt{RemoveConditionalEqualElse}
-show the largest detection improvements
-(Table~\ref{tab:detections-per-mutator}),
+show the largest detection improvements,
 while return value mutations show near-zero improvement
-from their high baseline detection rates.
+from their high baseline detection rates
+(Table~\ref{tab:detections-per-mutator}).
 Focusing mutation testing on operators where generalization provides
 the most benefit would reduce runtime costs.
 Furthermore, lightweight heuristics based on constraint complexity
@@ -423,7 +423,7 @@ Test suite runtime increases caused by generalization stem primarily from \ToolJ
 and filter-and-regenerate cycles when inputs violate constraints.
 \VariantImproved{} reduces filter miss rates by 46.5--58.4\%
 compared to \VariantNaive{} (Section~\ref{sec:limitations-eval}),
-directly improving execution cost per successfully generated test input from 28.61ms to 18.92ms at 10~\tries{}
+which reduces execution cost per successfully generated test input from 28.61ms to 18.92ms at 10~\tries{}
 and from 5.68ms to 1.98ms at 200~\tries{} (Figure~\ref{fig:test-runtime-differences}).
 Better constraint encoding would further reduce filter-and-regenerate cycles
 by enabling more inputs to be generated directly rather than requiring filtering.
@@ -484,7 +484,7 @@ test smells~\cite{garousi_2018_test_smells,van_deursen_2001_refactoring,meszaros
 represent another dimension that affects generalizability.
 For example, \emph{Eager Test}
 (where tests invoke multiple production methods)
-complicates assertion-to-method mapping
+complicates assertion-to-MUT mapping
 (Section~\ref{sec:tested-method-identification})
 and \emph{Conditional Test Logic}
 (where tests contain loops or other conditionals)
