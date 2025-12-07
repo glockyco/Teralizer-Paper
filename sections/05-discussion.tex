@@ -436,18 +436,21 @@ by distributing property-based test execution across multiple cores.
 Observed LOC increases of 4.9--58.7\% across projects
 (Table~\ref{tab:lines-per-project})
 have two primary causes:
-explicit constraint encoding in generalized test code
+explicit constraint encoding in generalized tests
 and structural duplication from test isolation
 (Section~\ref{sec:test-suite-line-count}).
 Abstracting constraint encoding in a library
-could help reduce this overhead,
+could reduce this overhead,
 and tighter integration of generalized tests into original test classes
-would eliminate duplication from copied imports, setup methods, and helper functions.
-Beyond LOC, test suite reduction could be extended
-to replace multiple original tests covering the same input partition
+would avoid duplication from copied imports and helper methods.
+Test suite reduction could also be extended
+to replace multiple original tests that cover the same partition
 with a single property-based test,
-thus reducing overall test count
-instead of only compensating for added tests.
+thus reducing test count instead of only compensating for added tests.
+This mirrors the idea of test suite reduction via
+parameterization~\cite{tsukamoto_2018_autoput,azamnouri_2021_compressing},
+but would use semantics-based analysis rather than syntactic clone detection
+to identify mergeable tests.
 
 \subsubsection{Deployment Strategies}
 
