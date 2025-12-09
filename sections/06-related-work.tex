@@ -8,7 +8,7 @@ This section reviews prior approaches to test generalization
 discusses research approaches and directions that could
 improve specification inference capabilities of our current prototype,
 (Section~\ref{sec:rw-inference})
-and explores synergies with related techniques as well as adoption considerations
+and explores synergies with related techniques as well as developer perspectives
 (Section~\ref{sec:rw-synergies}).
 
 \subsection{Test Generalization}
@@ -88,5 +88,45 @@ SpecGen~\cite{ma_2025_specgen} uses conversational prompting
 with mutation-based refinement to generate specifications from source code,
 while ClassInvGen~\cite{sun_2025_classinvgen} co-evolves class invariants with test inputs.
 
-\subsection{Synergies and Adoption}
+\subsection{Synergies and Developer Perspective}
 \label{sec:rw-synergies}
+
+% Paragraph 1: Synergies with test generation and oracle inference
+Test generalization builds on existing tests and their assertions,
+creating natural synergies with techniques that produce or enrich them.
+Test generation tools such as
+\ToolEvoSuite{}~\cite{fraser_2011_evosuite}, Randoop~\cite{pacheco_2007_randoop},
+and UTBot~\cite{utbot_2024_sbft}
+produce complete unit tests through search-based, random, and hybrid approaches,
+while DSpot~\cite{danglot_2019_dspot} amplifies existing tests to cover additional branches.
+Oracle inference techniques ---
+whether regression-based~\cite{fraser_2015_oracle}
+or neural~\cite{dinella_2022_toga,hossain_2024_togll,primbs_2025_assert5} ---
+add assertions to tests that lack them.
+Both expand the pool of tests available for generalization.
+RQ4 demonstrates this combination:
+pairing \ToolEvoSuite{}'s generation with \ToolTeralizer{}'s generalization
+achieves higher mutation scores at lower runtimes than test generation alone.
+However, generated tests and inferred oracles
+risk overfitting the implementation
+rather than capturing intended specifications~\cite{barr_2015_oracle},
+and this risk carries through to any subsequent generalization.
+
+% Paragraph 2: Developer perspective and PBT barriers
+For use cases beyond fully automated pipelines,
+developer interaction with generalized tests becomes relevant.
+Studies of test amplification show that developers filter and edit amplified tests extensively
+before adding them to their test suites~\cite{wessel_2024_shaken,brandt_2022_developer}.
+By making minimal structural changes
+--- parameterizing inputs and expected values
+while preserving the original test logic ---
+test generalization may reduce friction
+compared to approaches that generate entirely new test code.
+However, property-based testing introduces its own complexity:
+moving from example-based to property-based thinking
+requires a conceptual shift that can be difficult for developers~\cite{goldstein_2024_pbt_practice,hughes_2016_experiences}.
+Thus, generator constraints and generalized oracles that replace concrete values
+must be presented appropriately for developers to understand and trust them.
+Improving understandability of generalized tests therefore represents a research direction
+that must be tackled to support use cases
+beyond fully automated testing scenarios.
