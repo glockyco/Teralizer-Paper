@@ -49,5 +49,44 @@ from individual input-output examples.
 \subsection{Specification Inference}
 \label{sec:rw-inference}
 
+% Paragraph 1: Type support advances for symbolic analysis
+Type support limitations fundamentally constrain
+specification extraction through single-path symbolic analysis,
+as discussed in Sections~\ref{sec:specification-extraction},
+\ref{sec:limitations-eval-extended}, and~\ref{sec:when-it-fails}.
+These limitations stem from our reliance on \ToolSPF{}~\cite{pasareanu_2013_symbolic},
+a symbolic execution tool designed for path exploration.
+Because full symbolic execution requires constraint solving
+to determine path feasibility,
+SPF only encodes constraints for types with adequate solver support.
+Extending solver capabilities remains an active research area,
+with recent work showing improvements for
+string constraints~\cite{chen_2024_z3noodler,lotz_2025_s2s,chen_2025_ostrich2},
+heap-allocated structures~\cite{copia_2022_lissa,copia_2023_pli,braione_2016_jbse},
+arrays~\cite{niemetz_2023_bitwuzla},
+and floating-point arithmetic~\cite{yang_2025_floating_point}.
+As solver support improves and symbolic execution tools
+correspondingly extend their constraint encoding,
+semantics-based test generalization would also benefit.
+
+% Paragraph 2: Alternative specification inference
+Alternative approaches to specification inference
+largely avoid type support limitations inherent to symbolic analysis,
+but infer general specifications that describe overall method behavior
+rather than path-exact constraints, which would complicate oracle generalization.
+Houdini~\cite{flanagan_2001_houdini} pioneered template-based inference,
+generating candidate annotations and using verification to filter them.
+Daikon~\cite{ernst_2007_daikon} introduced dynamic invariant detection from execution traces.
+More recent tools target specific specification types:
+EvoSpex~\cite{molina_2023_evospex} uses evolutionary search to infer postconditions,
+SpecFuzzer~\cite{molina_2022_specfuzzer} combines grammar-based fuzzing with mutation analysis
+for class specifications,
+and PreCA~\cite{menguy_2022_preca} employs constraint acquisition~\cite{bessiere_2017_constraint_acquisition}
+to infer preconditions from input-output observations.
+LLM-based techniques offer yet another path:
+SpecGen~\cite{ma_2025_specgen} uses conversational prompting
+with mutation-based refinement to generate specifications from source code,
+while ClassInvGen~\cite{sun_2025_classinvgen} co-evolves class invariants with test inputs.
+
 \subsection{Synergies and Adoption}
 \label{sec:rw-synergies}
