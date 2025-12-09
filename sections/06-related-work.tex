@@ -2,11 +2,11 @@
 \label{sec:related-work}
 
 Our work draws on ideas from test amplification and symbolic analysis
-to automate transformation of conventional unit tests to property-based tests.
+to automate the transformation from conventional unit tests to property-based tests.
 This section reviews prior approaches to test generalization
 (Section~\ref{sec:rw-generalization}),
 discusses research approaches and directions that could
-improve specification inference capabilities of our current prototype,
+improve specification inference capabilities of our current prototype
 (Section~\ref{sec:rw-inference})
 and explores synergies with related techniques as well as developer perspectives
 (Section~\ref{sec:rw-synergies}).
@@ -29,7 +29,7 @@ that hold across ranges of inputs
 rather than specific input-output examples
 used in conventional unit tests (CUTs).
 \citeauthor{thummalapenta_2011_retrofitting}~\cite{thummalapenta_2011_retrofitting}
-demonstrated manual strategies for retrofitting of CUTs to PUTs.
+demonstrated manual strategies for retrofitting CUTs to PUTs.
 
 \citeauthor{fraser_2011_generating_put}~\cite{fraser_2011_generating_put}
 automated generation of PUTs from CUTs, but use tests without existing assertions
@@ -73,7 +73,7 @@ semantics-based test generalization would also benefit.
 Alternative approaches to specification inference
 largely avoid type support limitations inherent to symbolic analysis,
 but infer general specifications that describe overall method behavior
-rather than path-exact constraints, which would complicate oracle generalization.
+rather than path-exact constraints, which complicates oracle generalization.
 Houdini~\cite{flanagan_2001_houdini} pioneered template-based inference,
 generating candidate annotations and using verification to filter them.
 Daikon~\cite{ernst_2007_daikon} introduced dynamic invariant detection from execution traces.
@@ -86,7 +86,7 @@ to infer preconditions from input-output observations.
 LLM-based techniques offer yet another path:
 SpecGen~\cite{ma_2025_specgen} uses conversational prompting
 with mutation-based refinement to generate specifications from source code,
-while ClassInvGen~\cite{sun_2025_classinvgen} co-evolves class invariants with test inputs.
+whereas ClassInvGen~\cite{sun_2025_classinvgen} co-evolves class invariants with test inputs.
 
 \subsection{Synergies and Developer Perspective}
 \label{sec:rw-synergies}
@@ -128,5 +128,5 @@ requires a conceptual shift that can be difficult for developers~\cite{goldstein
 Thus, generator constraints and generalized oracles that replace concrete values
 must be presented appropriately for developers to understand and trust them.
 Improving understandability of generalized tests therefore represents a research direction
-that must be tackled to support use cases
-beyond fully automated testing scenarios.
+that must be tackled to better support use cases
+outside of fully automated testing scenarios.
