@@ -39,6 +39,8 @@ However, it often causes generated PUTs to overfit the implementation~\cite{fras
 because the lack of validated oracles 
 makes it difficult to distinguish
 intentional behavior from incidental state changes or outputs.
+PROZE~\cite{tiwari_2024_proze} uses runtime inputs and outputs to transform CUTs to PUTs
+but does not generalize beyond observed values.
 JARVIS~\cite{peleg_2018_jarvis} introduced automated CUT-to-PBT transformation
 using black-box analysis with predefined abstraction templates,
 which produces overapproximations that require multiple related tests to constrain.
