@@ -1,121 +1,35 @@
 \section{Conclusions}
 \label{sec:conclusions}
 
-We have presented \ToolTeralizer{},
-a semantics-based approach for automated transformation
-of conventional unit tests into property-based tests.
-Our work demonstrates the feasibility of semantics-based test generalization
-while systematically mapping the boundaries between current capabilities
-and broader practical applicability.
+This paper introduced a semantics-based approach
+for automated test generalization,
+using specifications extracted through single-path symbolic analysis
+to transform conventional unit tests into property-based tests.
+We implemented this approach in a prototype tool called \ToolTeralizer{}.
+Under controlled conditions matching current symbolic analysis capabilities,
+\ToolTeralizer{} achieves mutation score improvements of 1--4 percentage points
+compared to \ToolEvoSuite{}-generated baselines.
+However, our systematic evaluation across 630+ real-world Java projects
+from the RepoReapers dataset
+reveals substantial barriers to fully automated generalization under real-world conditions:
+only 1.7\% of projects complete the processing pipeline,
+and 98.3\% of assertions are excluded before reaching generalized test creation.
+By analyzing these exclusions in detail,
+we distinguish engineering limitations of our prototype
+from fundamental research challenges in specification extraction,
+providing concrete guidance for advancing the field.
 
-\subsection{Summary of Contributions}
-
-This research makes four key contributions to the testing community:
-
-\textbf{Semantics-based test generalization.}
-Unlike prior approaches such as JARVIS that generalize from examples using predefined abstraction templates,
-\ToolTeralizer{} extracts path-exact specifications
-directly from the implementation through single-path symbolic analysis.
-Our evaluation shows consistent mutation score improvements:
-3--4 percentage points on \DatasetsEqBenchEs{} projects
-and 1--2 percentage points on \DatasetsCommonsEs{} projects,
-showing that semantics-based generalization achieves measurable improvements
-with stronger effects on automatically-generated tests.
-% Data source: mutation-detection-figure-data.csv
-
-\textbf{Comprehensive empirical dataset characterizing test generalizability.}
-Beyond demonstrating feasibility, our analysis produces
-a systematic characterization of which test structures and program types
-support semantics-based generalization.
-The three-tier evaluation design reveals success rates from 50\% under controlled conditions
-to 0.9\% in practical application,
-with detailed metrics on filtering outcomes and failure causes.
-This dataset, available in our replication package, provides
-the community with empirical foundations for future research.
-
-\textbf{Systematic mapping of applicability barriers.}
-Our analysis distinguishes between fundamental research challenges
-and engineering barriers that could be addressed through implementation effort.
-Type support limitations stem from the difficulty of representing and solving constraints over non-numeric types,
-while method resolution failures (24.7--57.9\% of exclusions)
-represent addressable engineering challenges.
-This mapping provides concrete guidance for prioritizing future improvements.
-
-\textbf{Open implementation and replication package.}
-We provide a complete implementation of our approach
-along with comprehensive experimental data and analysis scripts.
-This enables both reproduction of our results
-and extension to additional domains,
-supporting continued research in automated test generalization.
-
-\subsection{Key Empirical Findings}
-
-Our evaluation reveals several unexpected patterns
-that challenge conventional assumptions about property-based testing.
-Most notably, random input generation outperforms constraint-aware generation
-for Math mutations (59\% of all mutants),
-while the opposite holds for boundary-related mutations.
-This finding suggests that effective property-based testing requires
-a portfolio of generation strategies rather than sophisticated single approaches.
-
-The contrast between automatically-generated and developer-written tests
-illuminates design trade-offs in test construction.
-While \ToolEvoSuite{}'s single-assertion-per-test structure enables
-near-complete test replacement after generalization,
-developer tests' multi-assertion structure blocks such consolidation
-despite successful individual assertion generalization.
-This reveals a tension between test maintainability and amenability to automated analysis.
-
-Runtime analysis shows that the generalization approach itself is efficient,
-consuming less than 10\% of total processing time.
-The dominant cost comes from validation through mutation testing,
-suggesting that selective application to high-value tests
-could achieve most benefits at substantially reduced computational cost.
-
-\subsection{Implications for Testing Practice}
-
-Our results have several implications for testing research and practice.
-Test generation tools could consider future generalizability
-when designing test architectures,
-potentially creating more modular tests that facilitate later enhancement.
-The demonstrated efficiency of staged approaches
-(quick initial generation followed by selective generalization)
-suggests alternatives to monolithic extended test generation.
-
-For practitioners, our findings establish realistic expectations:
-test generalization is most effective for automatically-generated test suites
-on numeric computations, with diminishing returns on mature developer test suites.
-The 0.9\% success rate on real-world projects reflects current implementation limitations
-rather than fundamental impossibility,
-pointing toward specific engineering improvements that could enhance practical applicability.
-
-\subsection{Future Research Directions}
-
-Several research directions emerge from our analysis.
-The mutation-type-specific effectiveness of generation strategies
-suggests investigating adaptive property-based testing frameworks
-that select generation approaches based on code characteristics.
-The test architecture insights point toward automated refactoring techniques
-that could decompose multi-assertion tests to enable generalization
-while preserving consolidated versions for maintenance.
-
-The systematic barrier analysis identifies clear engineering priorities:
-enhanced method resolution for complex inheritance patterns,
-runtime optimization through parallelization and commercial acceleration tools,
-and exploration of test suite reduction through partition equivalence analysis.
-Each of these represents concrete improvement opportunities
-with measurable impact on practical applicability.
-
-Looking beyond our current scope,
-extending generalization to richer data types remains
-a fundamental research challenge requiring advances in symbolic reasoning about complex data structures.
-The integration of machine learning approaches for constraint satisfaction
-could address the high failure rates we observe for complex constraints,
-while alternative specification extraction techniques
-might enable generalization beyond the numeric domain.
-
-The test generalization problem space, as characterized by our systematic evaluation,
-provides a foundation for continued research in automated testing enhancement.
-Our open implementation and comprehensive dataset
-enable the community to build upon these initial findings,
-working toward more broadly applicable automated test improvement techniques.
+The primary barrier to fully automated generalization is limited type support in existing symbolic analysis tools and approaches:
+current tools cannot precisely encode constraints for strings, collections, and objects,
+causing the majority of assertion-level exclusions.
+As symbolic analysis improves to support additional types,
+semantics-based test generalization would directly benefit.
+In contrast, many other limitations of \ToolTeralizer{}
+are addressable through engineering improvements
+without requiring research advances:
+interprocedural analysis would recover assertions in helper methods,
+broader framework support would reduce test-level exclusions,
+and extended constraint encoding in generated tests would improve effectiveness and efficiency
+by reducing filter-and-regenerate cycles.
+Our complete implementation and replication package
+is publicly available to support reproduction and extension of this work~\cite{replicationpackage}.
