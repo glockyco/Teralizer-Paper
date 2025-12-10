@@ -1,8 +1,9 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Conventional unit tests validate software behavior by checking specific input-output pairs,
-but leave most inputs along the same execution path untested~\cite{orso_2014_software,ammann_2016_intro,myers_2011_art}.
+Conventional unit tests validate software behavior
+by checking specific input-output pairs~\cite{orso_2014_software,ammann_2016_intro,myers_2011_art},
+but leave most inputs along the same execution path untested.
 Property-based testing~\cite{claessen_2000_quickcheck,hughes_2007_quickcheck} instead generates many inputs
 and checks whether specified properties hold across executions.
 For example, a unit test verifying that \texttt{abs(0)} returns \texttt{0} would 
