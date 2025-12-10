@@ -101,11 +101,10 @@ Test generation tools such as
 and UTBot~\cite{utbot_2024_sbft}
 produce complete unit tests through search-based, random, and hybrid approaches,
 while DSpot~\cite{danglot_2019_dspot} amplifies existing tests to cover additional branches.
-Oracle inference techniques ---
-whether regression-based~\cite{fraser_2015_oracle}
-or neural~\cite{dinella_2022_toga,hossain_2024_togll,primbs_2025_assert5} ---
+Oracle inference techniques such as
+TOGA~\cite{dinella_2022_toga}, TOGLL~\cite{hossain_2024_togll}, and AsserT5~\cite{primbs_2025_assert5}
 add assertions to tests that lack them.
-Both expand the pool of tests available for generalization.
+All of these expand the pool of available generalization candidates.
 RQ4 demonstrates this combination:
 pairing \ToolEvoSuite{}'s generation with \ToolTeralizer{}'s generalization
 achieves higher mutation scores at lower runtimes than test generation alone.
