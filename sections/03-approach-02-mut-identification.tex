@@ -2,10 +2,8 @@
 \label{sec:tested-method-identification}
 
 After identifying generalizable tests and assertions,
-the next step in the generalization pipeline
-is to identify which implementation methods are validated by the tests.
+the next step is to identify which implementation methods are validated by the tests.
 These methods under test (MUT) serve as targets for subsequent specification extraction.
-The challenges encountered in this pipeline stage are twofold.
 First, we must distinguish test setup code
 from code that exercises and validates the MUT
 to be able to restrict specification extraction
@@ -26,8 +24,7 @@ Consider the \texttt{testCalculate} method in Listing~\ref{lst:original-test}.
 To identify MUT calls in this method,
 \ToolTeralizer{} uses Spoon to first get the \texttt{actual}
 arguments that are passed into each assertion.
-In our example, all three assertions are \texttt{assertEquals} calls with two integer parameters,
-matching the method signature \texttt{static void assertEquals(int expected, int actual)}.
+In our example, all three assertions are \texttt{static void assertEquals(int expected, int actual)} calls.
 \ToolTeralizer{} thus identifies \texttt{b1}, \texttt{b2}, and \texttt{b3}
 as the \texttt{actual} arguments of the three assertions.
 Since all three arguments are local variables,
@@ -61,7 +58,7 @@ following the heuristic that the last call typically triggers the expected excep
 
 Similar to test and assertion filtering,
 \ToolTeralizer{} applies three filters to exclude MUTs that
-are not viable candidates for generalization:
+are unsuitable for generalization:
 \texttt{MissingValue}, \texttt{ParameterType}, and \texttt{ReturnType}.
 The \texttt{MissingValue} filter rejects cases where
 \ToolTeralizer{} cannot identify a MUT for a given assertion
@@ -73,12 +70,10 @@ and MUTs within inheritance hierarchies that Spoon cannot resolve.
 The \texttt{ParameterType} and \texttt{ReturnType} filters reject MUTs
 that use unsupported types for all of the MUT's parameters or return values.
 While methods with mixed parameter types can be partially generalized
-(numeric and boolean parameters become input parameters for property-based tests
-while other parameters remain unchanged),
+(numeric and boolean parameters become test inputs; others remain unchanged),
 \ToolSPF{} cannot extract complete constraints
-for parameters and return values that are strings, arrays, or objects.
-This limitation to numeric and boolean types
-aligns with current symbolic analysis capabilities
+for strings, arrays, and objects.
+This limitation aligns with current symbolic analysis capabilities
 discussed in Section~\ref{sec:symbolic-analysis}.
-Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended} evaluate
-how often all filtering-based exclusions occur.
+Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended}
+evaluate the exclusion rates of all filters.
