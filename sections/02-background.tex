@@ -107,21 +107,20 @@ recording conditions only along the executed path.
 This focused approach is well suited to test generalization:
 existing tests identify the behaviors of interest
 and provide validated oracles for those behaviors.
-The analysis thus extracts path-exact specifications
-without the computational overhead of exploring alternative branches.
 
-The precision of extracted specifications depends strongly on the types of
-values involved. Linear integer constraints (e.g., $x > 0$,
-$y \leq 2 \cdot x$) are well supported by symbolic execution tools such as
-Symbolic PathFinder (SPF) for Java~\cite{pasareanu_2013_symbolic} and KLEE for
-C~\cite{cadar_2008_klee},
-which can both record exact conditions and solve them efficiently. Non-linear
-arithmetic and floating-point operations are more problematic: although tools can still
-represent them precisely through symbolic formulas, constraint solving quickly becomes computationally intractable,
+The precision of extracted specifications depends strongly
+on the data types of the involved variables.
+Linear integer constraints (e.g., $x > 0$, $y \leq 2 \cdot x$)
+are well supported by symbolic execution tools such as
+Symbolic PathFinder (SPF) for Java~\cite{pasareanu_2013_symbolic}
+and KLEE for C~\cite{cadar_2008_klee}.
+Non-linear arithmetic and floating-point operations are more problematic:
+while tools can still represent them precisely,
+constraint solving quickly becomes computationally intractable,
 leading to timeouts~\cite{de_moura_2008_z3}. Strings,
-arrays, and complex objects pose the greatest practical barrier: symbolic representations
-typically lose precision or become overly abstract, limiting their usefulness
-for specification extraction~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
+arrays, and complex objects pose the greatest practical barrier:
+symbolic representations typically lose precision or become overly abstract,
+limiting their usefulness for specification extraction~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
 
 These limitations affect test generalization at two distinct stages.
 First, imprecise specifications (as with complex types) prevent generalization entirely
