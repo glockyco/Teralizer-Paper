@@ -85,16 +85,15 @@ void testCalculate() {
 }
 
 We illustrate our approach with a running example.
-Listing~\ref{lst:bonus-method} shows a bonus calculation method with three distinct execution paths
+Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
 for exceptional, good, and bad performance.
 Listing~\ref{lst:original-test} shows a typical unit test that validates this method
 by testing one representative input for each performance level.
-While this test detects regressions that affect these three specific inputs,
+While the test detects regressions that affect these three inputs,
 it misses regressions that affect other inputs within the same partitions.
-Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target},
-replacing the non-strict inequality with a strict inequality.
-Despite the change, the test still passes because all three tested inputs still follow the same execution paths.
-However, all boundary cases where \texttt{sales = 2 * target} now incorrectly
+Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target}.
+Despite the change, the test still passes because the tested inputs still follow the same execution paths.
+However, boundary cases where \texttt{sales = 2 * target} now
 return the good performance bonus instead of the exceptional performance bonus.
 To detect such subtle regressions, \ToolTeralizer{} automatically transforms existing
 unit tests into property-based tests that encode the intended behavior
@@ -111,7 +110,6 @@ used by the target project and injects necessary dependencies including
 \ToolPit{}~\cite{coles_2016_pit} for mutation testing,
 and \ToolJacoco{}~\cite{jacoco} for coverage tracking,
 thus ensuring full automation without the need for manual preprocessing steps.
-All changes that \ToolTeralizer{} applies are easily reversible via an integrated cleanup task.
 
 The following subsections detail each stage of the main generalization process as implemented in \ToolTeralizer{}.
 Section~\ref{sec:test-assertion-analysis} explains test and assertion analysis.
