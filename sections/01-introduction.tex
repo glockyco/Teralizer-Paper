@@ -6,9 +6,9 @@ by checking specific input-output pairs~\cite{orso_2014_software,ammann_2016_int
 but leave most inputs along the same execution path untested.
 Property-based testing~\cite{claessen_2000_quickcheck,hughes_2007_quickcheck} instead generates many inputs
 and checks whether specified properties hold across executions.
-For example, as shown in Figure~\ref{fig:regression-detection},
+For example, given the $abs$ method in Figure~\ref{fig:regression-detection},
 a unit test which asserts that $abs(0)$ returns $0$ would 
-still pass after an erroneous change from \texttt{x >= 0} to \texttt{x == 0}, 
+still pass after an changing \texttt{x >= 0} to \texttt{x == 0}, 
 whereas a property-based test which asserts $abs(x) = x$ for $x \geq 0$ 
 would expose this regression.
 Industrial experience reports suggest that property-based testing 
@@ -67,9 +67,9 @@ relying on predefined abstraction templates that yield overapproximations.
 In contrast, our white-box approach leverages both static and dynamic program analysis
 to extract exact specifications for the execution paths exercised by the original tests.
 
-We implement this approach in \ToolTeralizer{}, a prototype tool for Java
+We implemented this approach in \ToolTeralizer{}, a prototype tool for Java
 that transforms JUnit tests into property-based \ToolJqwik{} \cite{link_2022_jqwik} tests.
-\ToolTeralizer{} follows a five-stage pipeline:
+\ToolTeralizer{} employs a five-stage pipeline:
 (1)~analyzing tests and their assertions regarding suitability for generalization,
 (2)~identifying tested methods through data flow analysis,
 (3)~extracting specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
@@ -81,35 +81,37 @@ becomes the property $abs(x) = x$,
 valid for all non-negative values of $x$.
 
 To evaluate the potential and limitations of semantics-based test generalization,
-we apply \ToolTeralizer{} to three complementary datasets.
+we applied \ToolTeralizer{} to three complementary datasets.
 First, the \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled settings
 with numeric-focused programs well-suited for symbolic analysis.
-Because \DatasetEqBench{} lacks test suites, we generate tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
+Because \DatasetEqBench{} lacks test suites, we generated tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
 Second, utility methods extracted from Apache Commons projects
 offer a middle ground between controlled and real-world scenarios.
-Here, we can directly compare \ToolEvoSuite{}-generated and developer-written tests
+Here, we directly compared \ToolEvoSuite{}-generated and developer-written tests
 on the same codebase, partially isolating the influence of test architecture and quality on generalization outcomes.
-Finally, 632 real-world Java projects from the RepoReapers dataset~\cite{munaiah_2017_reporeapers},
-with their existing developer-written tests, expose the full complexity of practical application conditions.
+Finally, we applied \ToolTeralizer{} to 632 real-world Java projects with developer-written tests
+from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
+to expose the full complexity of practical application scenarios.
 This progression from controlled to real-world conditions highlights
 the achievable fault-detection improvements
 as well as the theoretical and practical limitations of the proposed approach.
 
 Our evaluation shows modest yet consistent improvements under controlled conditions.
-On \ToolEvoSuite{}-generated tests, mutation scores increase by 1--4 percentage points:
+On \ToolEvoSuite{}-generated tests, mutation scores increased by 1--4 percentage points:
 from 48--52\% to 52--55\% on \DatasetEqBench{},
 and from 57--58\% to 58--59\% on Apache Commons utilities.
 In contrast, generalization of developer-written tests for Apache Commons utilities
-shows minimal improvement (0.05--0.07 percentage points from a baseline of 80.35\%).
-These mature tests have already detected most of the faults targeted by automated generalization.
-Beyond mutation detection results,
-our analysis of 632 real-world projects reveals practical applicability barriers:
-only 1.7\% of projects successfully complete the full generalization pipeline.
-Failures are primarily caused by 
-fundamental type support limitations of symbolic analysis
+showed minimal improvement of 0.05--0.07 percentage points from a baseline of 80.35\%.
+This shows that the tests of these projects already detected most of the faults targeted by automated generalization.
+Beyond mutation detection improvements,
+the results from the RepoReapers projects revealed practical applicability barriers:
+% our analysis of 632 real-world projects reveals practical applicability barriers:
+only 1.7\% of projects successfully completed the full generalization pipeline.
+Failures primarily occurred due to 
+type support limitations of symbolic analysis
 as well as static analysis limitations
 of our current implementation of \ToolTeralizer{}.
-To provide a clear roadmap for future work,
+To provide a roadmap for future work,
 we classify these failures into
 those that can be resolved through additional engineering effort
 and those that represent deeper research challenges in specification extraction and encoding.
@@ -119,18 +121,17 @@ This paper makes the following contributions:
 \begin{enumerate}
 \item \textbf{Semantics-based test generalization:}
 We introduce an automated approach for transforming unit tests into property-based tests
-via semantics-based specification extraction,
-analyzing both test code and implementation code to derive path-exact specifications.
-Our prototype implementation called \ToolTeralizer{} demonstrates feasibility for Java projects,
-achieving mutation score improvements of 1--4 percentage points
-under conditions suitable for current symbolic analysis.
+through the use of path-exact specifications extracted via symbolic analysis.
+Our prototype implementation called \ToolTeralizer{}
+currently supports test generalization for Java projects
+and achieves mutation score improvements of 1--4 percentage points
+under conditions suitable for symbolic analysis.
 
-\item \textbf{Empirical dataset:}
-We provide a dataset characterizing test structure
-and generalizability across 630+ Java projects,
-covering assertion patterns (types, frequencies, per-test distributions),
-specification complexity metrics (operation counts, constraint utilization),
-and detailed filtering outcomes explaining why 98.3\% of real-world generalizations fail.
+% \item \textbf{Empirical dataset:}
+% We provide a dataset that characterizes test generalizability across 630+ Java projects,
+% covering assertion patterns (types, frequencies, per-test distributions),
+% specification complexity metrics (operation counts, constraint utilization),
+% and filtering outcomes that explain why 98.3\% of real-world generalizations fail.
 
 \item \textbf{Analysis of applicability challenges:}
 We analyze barriers to practical test generalization,
@@ -139,9 +140,10 @@ distinguishing addressable engineering limitations
 from fundamental research challenges (e.g., constraint encoding for non-numeric types),
 and provide concrete guidance for advancing the field.
 
-\item \textbf{Open implementation and replication package:}
-We release a complete implementation and comprehensive replication package
-with all experimental data, enabling reproduction and extension of our work.
+\item \textbf{Replication package:}
+Our replication package~\cite{replicationpackage} contains the source code of \ToolTeralizer{},
+all datasets and scripts used for the evaluation, and the results,
+thus enabling reproduction and extension of our work.
 \end{enumerate}
 
 The paper is organized as follows.
@@ -150,7 +152,6 @@ Section~\ref{sec:approach} presents \ToolTeralizer{}'s five-stage pipeline.
 Section~\ref{sec:evaluation} evaluates our approach through six research questions,
 covering mutation score improvements, impact on test suite size and execution time,
 runtime requirements, and causes of unsuccessful generalizations.
-Section~\ref{sec:discussion} discusses the results, their implications, and threats to validity.
-Section~\ref{sec:related-work} positions our work within the broader testing literature.
-Finally, Section~\ref{sec:conclusions} summarizes contributions and outlines directions for future research.
-Our implementation and full replication package, including all experimental data and analysis scripts, is publicly available~\cite{replicationpackage}.
+Section~\ref{sec:discussion} discusses the results, directions for future work, and threats to validity.
+Section~\ref{sec:related-work} positions our work within the broader testing literature,
+and Section~\ref{sec:conclusions} concludes the paper.
