@@ -8,8 +8,8 @@ operations on complex data structures that resist symbolic analysis, or even fai
 Generalizable tests must contain explicit assertions that capture input-output relationships,
 operate on data types that symbolic analysis can model accurately, and pass reliably.
 This stage builds a database of tests and assertions that meet these criteria,
-filtering out those that lack the necessary prerequisites for transformation into property-based tests.
-By filtering unsuitable candidates early in the processing pipeline,
+filtering out unsuitable candidates.
+By filtering early in the processing pipeline,
 we avoid spending computational resources on unviable generalization attempts
 and systematically track how prevalent different barriers to generalization are in practice.
 
@@ -21,8 +21,7 @@ to extract source code locations, test annotations, used assertions, involved da
 and various other structural information relevant for the generalization
 (full data available in our replication package~\cite{replicationpackage}).
 Based on the collected information, \ToolTeralizer{} applies filtering heuristics
-to exclude tests and assertions that are unsuitable for generalization,
-causing these tests and assertions to be skipped during subsequent processing steps.
+to exclude unsuitable tests and assertions from further processing.
 
 Tests need to pass three filters:
 \texttt{TestType}, \texttt{NonPassingTest}, and \texttt{NoAssertions}.
@@ -31,10 +30,8 @@ such as \texttt{@ParameterizedTest}s that would require special handling not cur
 or \texttt{@RepeatedTest}s that indicate non-deterministic behavior incompatible
 with symbolic analysis-based specification extraction (as described in Section~\ref{sec:symbolic-analysis}).
 The \texttt{NonPassingTest} and \texttt{NoAssertions} filters both address the absence of validated oracles.
-Failing tests do not reflect intended behavior,
-so no property that encodes intended behavior can be inferred from them.
-Similarly, tests without assertions lack explicit oracles,
-preventing extraction of output specifications that match developer intent.
+Failing tests do not reflect intended behavior, so no specification can be inferred from them.
+Similarly, tests without assertions lack explicit oracles.
 Assertions might be missing for two reasons:
 (i) the test validates only that execution completes without crashing
 or (ii) assertions are present but are contained in helper methods
@@ -50,11 +47,10 @@ Individual assertions within suitable tests require further analysis to determin
 \texttt{assertFalse}, and \texttt{assertThrows} from both JUnit 4 and JUnit 5.
 These assertions capture computational relationships that symbolic analysis can model.
 The \texttt{AssertionType} filter excludes unsupported assertions such as reference equality checks 
-(\texttt{assertSame}, \texttt{assertNull}) that validate object identity rather than computational properties,
+(\texttt{assertSame}, \texttt{assertNull})
 and structural comparisons (\texttt{assertArrayEquals}, \texttt{assertInstanceOf})
-that operate on complex data structures current symbolic execution cannot accurately model.
-The \texttt{ExcludedTest} filter maintains consistency by excluding assertions from tests
-already filtered at the test level.
+that operate on data types current symbolic execution cannot accurately model.
+The \texttt{ExcludedTest} filter excludes assertions from tests already filtered at the test level.
 These filters produce a refined database of potentially generalizable assertions,
 annotated with the type information, arguments, and source locations
 required for the next stage to identify which methods each assertion validates.
