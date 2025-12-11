@@ -7,7 +7,7 @@ rather than single input-output pairs.
 Figure~\ref{fig:generalization} provides a high-level overview of this transformation:
 the original test with hardcoded values (left) becomes a property-based test (right)
 where inputs are automatically generated to satisfy pre-defined constraints
-and expected values are encoded as expressions that hold for all inputs from the corresponding input partitions.
+and expected values are encoded as expressions that hold for all inputs from the corresponding input partition.
 Thus, the transformation preserves the developer-provided oracles encoded in assertions
 while generalizing from concrete values to symbolic specifications.
 
@@ -31,41 +31,39 @@ for our running example's \textit{good performance} case.
 Compared to the original test shown in Listing~\ref{lst:original-test},
 the new property-based test
 (i)~replaces the \texttt{@Test} annotation with \texttt{@Property}
-to specify both an input supplier and the number of test executions,
-(ii)~adds a \texttt{TestParams} parameter
-to the method signature to receive generated inputs,
+to specify an input supplier and execution count,
+(ii)~adds a \texttt{TestParams} parameter to receive generated inputs,
 (iii)~substitutes hardcoded MUT arguments in \texttt{calculate(1500, 1000)}
 to produce the new MUT call \texttt{calculate(\_p\_.sales, \_p\_.target)},
 and (iv)~replaces the concrete expected value \texttt{75} with the oracle call \texttt{calculateExpected(\_p\_)}
-which uses the extracted output specification
-to calculate a matching output for each generated input (see Listing~\ref{lst:java-output-encoding}).
+which calculates expected outputs from the extracted specification (see Listing~\ref{lst:java-output-encoding}).
 The \texttt{TestParams} class shown in Listing~\ref{lst:test-params-class}
 encapsulates the generated sales and target values,
-while the supplier implementation in Listing~\ref{lst:baseline-supplier}
+while the \texttt{BaselineSupplier} in Listing~\ref{lst:baseline-supplier}
 demonstrates how the \VariantBaseline{} variant provides input values for these parameters
 by wrapping the concrete values extracted during \ToolSPF{} execution of the original test.
 
-Several contributing factors influence the design of the created property-based test classes.
+Several factors influence the design of the created property-based test classes.
 Instead of directly modifying existing test classes,
 \ToolTeralizer{} creates one new test class per assertion
 to isolate generalization effects.
 This is relevant for mutation testing:
-\ToolPit{} requires a green test suite and only supports class-level test exclusion,
+\ToolPit{} requires a green test suite and only supports class-level exclusion,
 so a single failing generalized assertion
 could otherwise prevent all tests in the same class from being evaluated.
 Furthermore, the isolation prevents unintended side-effects on developer-written code.
-Input parameters are provided by supplier classes rather than individual parameter annotations
+Input parameters are provided by supplier classes rather than parameter annotations
 to enable encoding of constraints that reference multiple parameters.
-Only the generalized assertion is preserved in the generalized test method.
-Other assertions are removed because they might validate methods
+Only the generalized assertion is preserved ---
+other assertions are removed because they might validate methods
 that consume outputs from the generalized MUT
 and fail when those outputs differ from the original test's values.
-Non-generalizable parameters (strings, arrays, and other objects)
-retain their original concrete input values
+Non-generalizable parameters (strings, arrays, objects)
+retain their concrete input values
 because current symbolic analysis techniques
-cannot extract complete constraints for these types.
-This enables partial generalization to be applied even if
-some of the required parameters cannot be generalized.
+cannot extract complete constraints for them.
+This enables partial generalization when
+some parameters cannot be generalized.
 
 {
 \begin{genericfloat}[tbph]
