@@ -3,17 +3,16 @@
 
 The specification extraction stage takes
 the MUT-to-assertion mappings from tested method identification
-as its input and produces input/output specifications for every MUT as its output.
-Each input/output specification captures two elements:
+and produces input/output specifications for every MUT.
+Each specification captures two elements:
 the path condition that describes which inputs
 follow the same execution path through the MUT as the test,
 and the symbolic output expression that describes expected results
 for any input satisfying the path condition.
-Our current implementation of \ToolTeralizer{}
-extracts specifications through a two-step process:
-first instrumenting tests to create controlled entry points for symbolic analysis,
+\ToolTeralizer{} extracts specifications through a two-step process:
+first instrumenting tests to create entry points for symbolic analysis,
 then executing them with \ToolSPFLong{} (\ToolSPF{}) in constraint collection mode.
-In this mode, \ToolSPF{} follows the test's concrete execution path
+In this mode, \ToolSPF{} follows the test's execution path
 while maintaining symbolic representations,
 extracting path-exact specifications without exploring alternative paths.
 
@@ -25,14 +24,13 @@ In our running example,
 the \texttt{Instrumented} test class 
 for the \textit{good performance} MUT call
 (Listing~\ref{lst:instrumented-test})
-wraps the original \texttt{c.calculate(1500, 1000)} call
-in a new \texttt{wrapper} method that marks the starting point for symbolic analysis
-while preserving the behavior of the original test.
+wraps the \texttt{c.calculate(1500, 1000)} call
+in a \texttt{wrapper} method that marks the starting point for symbolic analysis.
 The \texttt{Driver} class (Listing~\ref{lst:instrumented-test})
 provides the entry point for \ToolSPF{}.
-It first instantiates the instrumented test class,
-then runs any setup code in methods annotated with one of JUnit's \texttt{@Before} annotations,
-and finally executes the targeted test method \texttt{testCalculate}.
+It instantiates the instrumented test class,
+runs setup code in methods annotated with \texttt{@Before},
+and executes the targeted test method \texttt{testCalculate}.
 The \ToolSPF{} configuration (Listing~\ref{lst:jpf-config})
 sets up symbolic analysis of the \texttt{wrapper} method,
 registers a custom \texttt{TestGeneralizationListener} for specification extraction,
@@ -108,9 +106,7 @@ bad performance:
 \end{genericfloat}
 }
 
-The second step, symbolic analysis, executes these artifacts with \ToolSPF{},
-which follows the test's concrete execution path
-while maintaining symbolic representations of the wrapper method's numeric parameters.
+The second step, symbolic analysis, executes these artifacts with \ToolSPF{}.
 For the \textit{good performance} case with concrete inputs (1500, 1000),
 the first if condition \texttt{sales / 2 >= target}
 in the \texttt{calculate} method (see Listing~\ref{lst:bonus-method})
@@ -143,4 +139,4 @@ and a function call depth limit of 100 (Listing~\ref{lst:jpf-config}).
 We empirically determined these settings to provide
 a reasonable trade-off between resource consumption and result quality.
 Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended} show
-how often all of the mentioned causes lead to exclusions in our evaluation.
+how often the mentioned causes lead to exclusions in our evaluation.
