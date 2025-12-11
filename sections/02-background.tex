@@ -53,9 +53,7 @@ Property-based testing (PBT), pioneered by QuickCheck for Haskell~\cite{claessen
 and now available through frameworks like ScalaCheck for Scala~\cite{nilsson_2014_scalacheck},
 Hypothesis for Python~\cite{maciver_2019_hypothesis}, and \ToolJqwik{} for Java~\cite{link_2022_jqwik},
 validates specifications over entire input partitions rather than single test cases.
-Where a conventional test might verify \texttt{sqrt(4)} returns \texttt{2},
-a property-based test instead verifies \texttt{sqrt(x) * sqrt(x) = x}
-across hundreds of randomly generated non-negative values.
+%
 PBT frameworks comprise three key components.
 \emph{Generators} produce inputs according to specified constraints, such as \texttt{x >= 0}.
 \emph{Properties} express invariants that must hold for all generated inputs,
@@ -77,16 +75,16 @@ the failing input to its minimal form, simplifying debugging.
 
 The combination of constrained generation and property checking
 enables thorough exploration of input spaces,
-revealing edge cases and boundary conditions
+revealing edge cases
 that developers might not explicitly consider~\cite{hughes_2016_experiences,maciver_2019_hypothesis}.
-However, adoption of property-based testing remains limited in practice~\cite{goldstein_2024_pbt_practice}.
-Creating effective property-based tests requires identifying appropriate properties,
+However, adoption of property-based testing remains limited~\cite{goldstein_2024_pbt_practice}.
+Creating property-based tests requires identifying appropriate properties,
 defining input generators with suitable constraints,
 and translating example-based assertions into general specifications: a conceptual shift
-that creates significant adoption barriers~\cite{barr_2015_oracle,tillmann_2005_parameterized}.
-Nevertheless, conventional unit tests already encode behavioral properties implicitly:
-a test verifying \texttt{abs(0) = 0} reflects the property \texttt{abs(x) = x} for non-negative inputs,
-but validates it only for a single case.
+that can be difficult for developers~\cite{barr_2015_oracle,tillmann_2005_parameterized}
+even though conventional unit tests already encode behavioral properties implicitly:
+an assertion \texttt{abs(0) = 0} reflects the property \texttt{abs(x) = x} for \texttt{x >= 0}
+but validates it only for a single input.
 
 \subsection{Symbolic Analysis for Specification Extraction}
 \label{sec:symbolic-analysis}
