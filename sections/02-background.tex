@@ -16,11 +16,8 @@ for assessing the effectiveness of generalized tests.
 \subsection{Test Amplification and Generalization}
 \label{sec:test-amplification}
 
-Test amplification exploits knowledge embedded in existing test cases
-(e.g., meaningful input data and expected outputs encoded as assertions)
-to automatically enhance manually written tests. Going beyond simply
-maximizing coverage, amplification techniques target diverse engineering goals,
-such as improving regression detection or refining fault localization~\cite{danglot_2019_snowballing}.
+Test amplification uses knowledge embedded in implementations and tests of software projects
+to automatically enhance the projects' test suites.
 \citeauthor{danglot_2019_snowballing}'s taxonomy~\cite{danglot_2019_snowballing}
 distinguishes four categories of amplification:
 AMP\textsubscript{add} creates new tests from existing ones,
@@ -31,24 +28,23 @@ and AMP\textsubscript{mod} modifies test structure or assertions to generalize b
 Test generalization belongs to the AMP\textsubscript{mod} category. 
 It transforms tests from validating individual input-output pairs
 to validating properties across entire input partitions.
-For example, a test verifying that \texttt{abs(0)} returns \texttt{0}
-validates this relationship for only one input,
-missing mutations that preserve behavior at that point but violate the general property.
-A mutation changing \texttt{x >= 0} to \texttt{x == 0}
-still passes the original test but fails for positive inputs (Figure~\ref{fig:regression-detection}).
-Generalizing such tests requires extracting path-exact specifications
-that capture program behavior across input partitions
-while preserving the oracles developers have encoded in their assertions.
+For example, a test which asserts that \texttt{abs(0)} returns \texttt{0}
+validates \texttt{abs} for only a single input-output pair,
+missing regressions that preserve the behavior at that point
+but violate the general property \texttt{abs(x) = x}
+which should hold when \texttt{x >= 0}
+(Figure~\ref{fig:regression-detection}).
+Since this property is implicitly encoded in the original test,
+we can automatically transform the test
+into a corresponding property-based test (Figure~\ref{fig:generalization}).
 
-A central challenge in all test amplification approaches is the oracle problem:
+A central challenge in test amplification approaches is the oracle problem:
 determining expected outputs for new test inputs~\cite{barr_2015_oracle}.
 Existing tests provide validated oracles for their specific execution paths,
 encoding developer knowledge about expected behavior.
 Other execution paths lack equally trustworthy oracles,
 making it difficult to distinguish intentional behavior
 from incidental state changes or outputs.
-This constraint fundamentally shapes how different amplification techniques
-approach the generation of new test inputs and their corresponding assertions.
 
 \subsection{Property-Based Testing as Target Representation}
 \label{sec:property-based-testing}
