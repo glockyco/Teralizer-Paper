@@ -6,10 +6,11 @@ by checking specific input-output pairs~\cite{orso_2014_software,ammann_2016_int
 but leave most inputs along the same execution path untested.
 Property-based testing~\cite{claessen_2000_quickcheck,hughes_2007_quickcheck} instead generates many inputs
 and checks whether specified properties hold across executions.
-For example, a unit test verifying that \texttt{abs(0)} returns \texttt{0} would 
+For example, as shown in Figure~\ref{fig:regression-detection},
+a unit test which asserts that \texttt{abs(0)} returns \texttt{0} would 
 still pass after an erroneous change from \texttt{x >= 0} to \texttt{x == 0}, 
-whereas a property-based test asserting \texttt{abs(x) = x} for non-negative \texttt{x} 
-would expose this regression (Figure~\ref{fig:regression-detection}).
+whereas a property-based test which asserts \texttt{abs(x) = x} for non-negative \texttt{x} 
+would expose this regression.
 Industrial experience reports suggest that property-based testing 
 often uncovers edge cases and boundary conditions missed by unit tests~\cite{hughes_2016_experiences,goldstein_2024_pbt_practice}.
 Adoption, however, remains limited because writing property-based tests 
@@ -63,7 +64,7 @@ To our knowledge, JARVIS~\cite{peleg_2018_jarvis} is the only prior work
 that automatically generalizes unit tests into property-based tests.
 However, JARVIS infers properties from input-output examples based solely on test code,
 relying on predefined abstraction templates that yield overapproximations.
-In contrast, our white-box approach leverages dynamic program analysis
+In contrast, our white-box approach leverages both static and dynamic program analysis
 to extract exact specifications for the execution paths exercised by the original tests.
 
 We implement this approach in \ToolTeralizer{}, a prototype tool for Java
@@ -106,7 +107,7 @@ our analysis of 632 real-world projects reveals practical applicability barriers
 only 1.7\% of projects successfully complete the full generalization pipeline.
 Failures are primarily caused by 
 fundamental type support limitations of symbolic analysis
-as well as static analysis and constraint encoding limitations
+as well as static analysis limitations
 of our current implementation of \ToolTeralizer{}.
 To provide a clear roadmap for future work,
 we classify these failures into
@@ -135,7 +136,7 @@ and detailed filtering outcomes explaining why 98.3\% of real-world generalizati
 We analyze barriers to practical test generalization,
 distinguishing addressable engineering limitations
 (e.g., identifying tested methods in complex control flow, detecting assertions in helper methods)
-from fundamental research challenges (e.g., constraint solving for non-numeric types),
+from fundamental research challenges (e.g., constraint encoding for non-numeric types),
 and provide concrete guidance for advancing the field.
 
 \item \textbf{Open implementation and replication package:}
