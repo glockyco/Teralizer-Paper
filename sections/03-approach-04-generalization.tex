@@ -127,72 +127,6 @@ class TestParams {
 \subsubsection{Three-Variant Design}
 \label{sec:three-variant-design}
 
-\ToolTeralizer{} creates three variants of each property-based test
-that differ only in their input generation strategies.
-This design allows us to isolate
-and measure distinct aspects of test generalization:
-pure framework overhead (\VariantBaseline{}),
-benefits from testing additional inputs (\VariantNaive{}),
-and improvements through constraint-aware input generation (\VariantImproved{}).
-To reduce evaluation costs of this multi-variant approach,
-\ToolTeralizer{} shares common analysis stages across all three variants.
-Test and assertion analysis, tested method identification, and specification extraction
-execute only once per test, with their results reused for each generalization strategy.
-This architecture ensures fair comparison
-while avoiding redundant computation --- all three generalization strategies work from identical specifications
-and analysis results, eliminating confounding factors
-such as variation in analysis time or non-deterministic failures from \texttt{OutOfMemoryError}s.
-
-The \textbf{\VariantBaseline{}} variant uses only the original test's input values
-to isolate the overhead of the property-based testing framework.
-As shown in Listing~\ref{lst:baseline-supplier} for the \textit{good performance} case,
-the supplier returns \texttt{Arbitraries.just(new TestParams(1500, 1000))},
-providing exactly the same inputs as the original test.
-This enables us to quantify the infrastructure cost of property-based testing,
-i.e., test orchestration, parameter injection, and \ToolJqwik{}'s execution machinery,
-without the cost of additional input generation and repeated test execution.
-By establishing this baseline overhead,
-we can isolate the cost of input generation in \VariantNaive{} and \VariantImproved{}.
-Any runtime beyond \VariantBaseline{} is attributable to generation and filtering strategies
-rather than basic property-based testing infrastructure.
-
-The \textbf{\VariantNaive{}} variant adds random input generation combined with post-generation filtering
-to demonstrate the benefits of testing additional inputs beyond the original ones.
-As shown in Listing~\ref{lst:naive-supplier},
-\ToolTeralizer{} uses \ToolJqwik{}'s \texttt{Arbitraries} classes
-to generate random integer values for \texttt{sales} and \texttt{target},
-then applies the \texttt{satisfiesInputSpec} filter shown in Listing~\ref{lst:java-input-encoding}
-to retain only values that match the constraints encoded in the extracted input specification
-\texttt{sales / 2 < target \&\& sales >= target}
-which we previously showed in Listing~\ref{lst:extracted-specs}.
-To ensure that created property-based tests
-always cover at least the same mutants as the corresponding original tests,
-all \VariantNaive{} and \VariantImproved{} suppliers
-contain additional code that always selects the original inputs
-as the first set of inputs exercised by the property-based tests.
-The implementation of this logic is straightforward,
-but is excluded from the listings for brevity.
-
-The \textbf{\VariantImproved{}} variant implements
-a constraint-aware input generation strategy
-to address the limitations of purely random input selection
-in the presence of restrictive input constraints.
-For example, an input specification \texttt{a == b \&\& b == c}
-is highly unlikely to be satisfied by three randomly assigned values
-for \texttt{a}, \texttt{b}, and \texttt{c}, causing \ToolJqwik{}
-to throw a \texttt{Too\-Many\-Filter\-Misses\-Exception} after too many
-failed input generation attempts.
-This, in turn, prompts \ToolTeralizer{}
-to exclude the property-based test from the final test suite.
-To address this limitation,
-the \VariantImproved{} variant encodes some constraints directly in the input supplier.
-For example, as Listing~\ref{lst:improved-supplier} shows for the \textit{good performance} case,
-the generated supplier enforces the constraint \texttt{sales >= target}
-via the call \texttt{between(target, Integer.MAX\_VALUE)}.
-This partial encoding of constraints
-increases the likelihood that a valid input is selected before filtering
-by reducing the size of the input space from which values are chosen.
-
 {
 \begin{genericfloat}[tbph]
 \newpage{}
@@ -244,11 +178,75 @@ class ImprovedSupplier {
 \end{genericfloat}
 }
 
+\ToolTeralizer{} creates three variants of each property-based test
+that differ only in their input generation strategies.
+This design allows us to isolate
+and measure distinct aspects of test generalization:
+pure framework overhead (\VariantBaseline{}),
+benefits from testing additional inputs (\VariantNaive{}),
+and improvements from constraint-aware input generation (\VariantImproved{}).
+To reduce evaluation costs,
+\ToolTeralizer{} shares common analysis stages across all three variants.
+Test and assertion analysis, tested method identification, and specification extraction
+execute only once per test, with their results reused for each generalization strategy.
+This architecture ensures fair comparison
+while avoiding redundant computation --- all three generalization strategies work from identical specifications
+and analysis results, eliminating confounding factors
+such as variation in analysis time or non-deterministic failures from \texttt{OutOfMemoryError}s.
+
+The \textbf{\VariantBaseline{}} variant uses only the original test's input values
+to isolate the overhead of the property-based testing framework.
+As shown in Listing~\ref{lst:baseline-supplier} for the \textit{good performance} case,
+the supplier returns \texttt{Arbitraries.just(new TestParams(1500, 1000))},
+providing exactly the same inputs as the original test.
+This enables us to quantify the infrastructure cost of property-based testing,
+i.e., test orchestration, parameter injection, and \ToolJqwik{}'s execution machinery,
+without the cost of additional input generation and repeated test execution.
+By establishing this baseline overhead,
+we can isolate the cost of input generation in \VariantNaive{} and \VariantImproved{}.
+Any runtime beyond \VariantBaseline{} is attributable to generation and filtering strategies
+rather than basic property-based testing infrastructure.
+
+The \textbf{\VariantNaive{}} variant adds random input generation combined with post-generation filtering
+to demonstrate the benefits of testing additional inputs beyond the original ones.
+As shown in Listing~\ref{lst:naive-supplier},
+\ToolTeralizer{} uses \ToolJqwik{}'s \texttt{Arbitraries} classes
+to generate random integer values for \texttt{sales} and \texttt{target},
+then applies the \texttt{satisfiesInputSpec} filter shown in Listing~\ref{lst:java-input-encoding}
+to retain only values that match the constraints encoded in the extracted input specification
+\texttt{sales / 2 < target \&\& sales >= target}
+which we previously showed in Listing~\ref{lst:extracted-specs}.
+To ensure that created property-based tests
+always cover at least the same mutants as the corresponding original tests,
+all \VariantNaive{} and \VariantImproved{} suppliers
+contain additional code that always selects the original inputs
+as the first set of inputs exercised by the property-based tests.
+The implementation of this logic is straightforward,
+but is excluded from the listings for brevity.
+
+The \textbf{\VariantImproved{}} variant implements
+a constraint-aware input generation strategy
+to address the limitations of purely random input selection
+in the presence of restrictive input constraints.
+For example, \texttt{a == b \&\& b == c}
+is unlikely to be satisfied by randomly assigned \texttt{a}, \texttt{b}, and \texttt{c}, causing \ToolJqwik{}
+to throw a \texttt{Too\-Many\-Filter\-Misses\-Exception} after too many
+failed input generation attempts.
+This, in turn, prompts \ToolTeralizer{}
+to exclude the property-based test from the test suite.
+To address this limitation,
+the \VariantImproved{} variant encodes some constraints directly in the input supplier.
+For example, as Listing~\ref{lst:improved-supplier} shows for the \textit{good performance} case,
+the generated supplier enforces the constraint \texttt{sales >= target}
+via the call \texttt{between(target, Integer.MAX\_VALUE)}.
+This partial encoding of constraints
+increases the likelihood that a valid input is selected before filtering
+by reducing the size of the input space from which values are chosen.
+
 \subsubsection{Constraint-Aware Generation}
 \label{sec:constraint-encoding}
 
-In the current implementation of \ToolTeralizer{},
-the constraint-aware input generation strategy
+The constraint-aware input generation strategy
 used by the \VariantImproved{} variant
 encodes simple equality and inequality constraints
 such as \texttt{x == y}, \texttt{x < 10}, or \texttt{y >= x}
@@ -258,7 +256,7 @@ but are enforced during filtering.
 For example, the input constraint \texttt{sales / 2 < target}
 is not represented in the input generation code of the \texttt{ImprovedSupplier}
 shown in Listing~\ref{lst:improved-supplier}.
-However, any generated inputs that do not satisfy this constraint
+However, generated inputs that violate this constraint
 are still rejected by the \texttt{filter(this::satisfiesInputSpec)} call.
 This ensures that even if input constraints can only be partially encoded,
 all exercised input values are guaranteed to satisfy the complete input specification.
@@ -315,17 +313,17 @@ while \texttt{b} generates from interval \texttt{[a, a]}, effectively encoding \
 Finally, line 25 applies filtering for non-encodable constraints,
 ensuring all generated inputs satisfy the complete specification.
 
-Even though this partial encoding of input constraints
-cannot fully eliminate \texttt{Too\-Many\-Filter\-Misses\-Exceptions} for all cases,
+While this partial constraint encoding
+cannot eliminate all \texttt{Too\-Many\-Filter\-Misses\-Exceptions},
 it reduces their prevalence by constraining
 the space from which inputs can be selected.
-An additional benefit that the constraint-aware input generation approach provides
-is that it enables \ToolJqwik{}'s \texttt{Arbitraries}
+Additionally, constraint-aware input generation
+enables \ToolJqwik{}'s \texttt{Arbitraries}
 to more reliably produce inputs at the boundaries of input partitions.
 For example, consider \texttt{x >= 0 \&\& x <= 1000}.
 In the \VariantNaive{} variant, \ToolJqwik{} has no knowledge of the true
 boundaries of this input partition. Thus,
-the used \texttt{Arbitraries} produce assumed boundary values such
+the used \texttt{Arbitraries} produce boundary values such
 as \texttt{Integer.MIN\_VALUE}, \texttt{Integer.MAX\_VALUE - 1}, etc.
 While these are quickly excluded by filtering, coverage of the true
 boundary values such as 0, 1, 999, and 1000 is then left up to chance.
