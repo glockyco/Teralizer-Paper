@@ -7,9 +7,9 @@ but leave most inputs along the same execution path untested.
 Property-based testing~\cite{claessen_2000_quickcheck,hughes_2007_quickcheck} instead generates many inputs
 and checks whether specified properties hold across executions.
 For example, as shown in Figure~\ref{fig:regression-detection},
-a unit test which asserts that \texttt{abs(0)} returns \texttt{0} would 
+a unit test which asserts that $abs(0)$ returns $0$ would 
 still pass after an erroneous change from \texttt{x >= 0} to \texttt{x == 0}, 
-whereas a property-based test which asserts \texttt{abs(x) = x} for non-negative \texttt{x} 
+whereas a property-based test which asserts $abs(x) = x$ for $x \geq 0$ 
 would expose this regression.
 Industrial experience reports suggest that property-based testing 
 often uncovers edge cases and boundary conditions missed by unit tests~\cite{hughes_2016_experiences,goldstein_2024_pbt_practice}.
@@ -76,9 +76,9 @@ that transforms JUnit tests into property-based \ToolJqwik{} \cite{link_2022_jqw
 (4)~creating generalized property-based tests, and
 (5)~filtering generalized tests to retain only those that improve fault detection capability.
 Figure~\ref{fig:generalization} illustrates the effects of this transformation,
-showing how a simple equality assertion \texttt{abs(0) = 0}
-becomes the property \texttt{abs(x) = x},
-valid for all non-negative values of \texttt{x}.
+showing how a simple equality assertion $abs(0) = 0$
+becomes the property $abs(x) = x$,
+valid for all non-negative values of $x$.
 
 To evaluate the potential and limitations of semantics-based test generalization,
 we apply \ToolTeralizer{} to three complementary datasets.

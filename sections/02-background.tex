@@ -28,11 +28,11 @@ and AMP\textsubscript{mod} modifies test structure or assertions to generalize b
 Test generalization belongs to the AMP\textsubscript{mod} category. 
 It transforms tests from validating individual input-output pairs
 to validating properties across entire input partitions.
-For example, a test which asserts that \texttt{abs(0)} returns \texttt{0}
-validates \texttt{abs} for only a single input-output pair,
+For example, a test which asserts that $abs(0)$ returns $0$
+validates $abs$ for only a single input-output pair,
 missing regressions that preserve the behavior at that point
-but violate the general property \texttt{abs(x) = x}
-which should hold when \texttt{x >= 0}
+but violate the general property $abs(x) = x$
+which should hold when $x \geq 0$
 (Figure~\ref{fig:regression-detection}).
 Since this property is implicitly encoded in the original test,
 we can automatically transform the test
@@ -55,11 +55,11 @@ Hypothesis for Python~\cite{maciver_2019_hypothesis}, and \ToolJqwik{} for Java~
 validates specifications over entire input partitions rather than single test cases.
 %
 PBT frameworks comprise three key components.
-\emph{Generators} produce inputs according to specified constraints, such as \texttt{x >= 0}.
+\emph{Generators} produce inputs according to specified constraints, such as $x \geq 0$.
 \emph{Properties} express invariants that must hold for all generated inputs,
-such as \texttt{abs(x) == x} for non-negative \texttt{x}.
+such as $abs(x) = x$ for non-negative $x$.
 \emph{Shrinking} minimizes failing inputs to simplify debugging,
-such as reducing a failing input from 776837 to 1.
+such as reducing a failing input from 776,837 to 1.
 This generative approach distinguishes PBT from parameterized testing,
 which commonly relies on a predefined set of developer-supplied inputs.
 
@@ -83,7 +83,7 @@ defining input generators with suitable constraints,
 and translating example-based assertions into general specifications: a conceptual shift
 that can be difficult for developers~\cite{barr_2015_oracle,tillmann_2005_parameterized}
 even though conventional unit tests already encode behavioral properties implicitly:
-an assertion \texttt{abs(0) = 0} reflects the property \texttt{abs(x) = x} for \texttt{x >= 0}
+an assertion $abs(0) = 0$ reflects the property $abs(x) = x$ for $x \geq 0$
 but validates it only for a single input.
 
 \subsection{Symbolic Analysis for Specification Extraction}
@@ -93,8 +93,8 @@ Automating the transformation from conventional tests into property-based specif
 requires extracting two elements:
 the \emph{path condition} that characterizes inputs following the same execution path,
 and the \emph{symbolic output expression} that computes expected results for those inputs.
-For example, the \texttt{abs(0)} test in Figure~\ref{fig:generalization} yields
-the path condition \texttt{x >= 0} and the symbolic output \texttt{x}.
+For example, the $abs(0)$ test in Figure~\ref{fig:generalization} yields
+the path condition $x \geq 0$ and the symbolic output $x$.
 These path-exact specifications enable property-based tests that validate behavior
 across entire input partitions while preserving the original test's semantics.
 
@@ -111,8 +111,8 @@ The analysis thus extracts path-exact specifications
 without the computational overhead of exploring alternative branches.
 
 The precision of extracted specifications depends strongly on the types of
-values involved. Linear integer constraints (e.g., \texttt{x > 0},
-\texttt{y <= 2*x}) are well supported by symbolic execution tools such as
+values involved. Linear integer constraints (e.g., $x > 0$,
+$y \leq 2 \cdot x$) are well supported by symbolic execution tools such as
 Symbolic PathFinder (SPF) for Java~\cite{pasareanu_2013_symbolic} and KLEE for
 C~\cite{cadar_2008_klee},
 which can both record exact conditions and solve them efficiently. Non-linear
@@ -166,7 +166,7 @@ which is calculated as the proportion of mutants the test suite detects ("kills"
 provides a quantitative measure that correlates with real fault detection capability~\cite{just_2014_mutants,papadakis_2019_mutation}.
 
 The limitations of single-input tests become clear through mutation analysis.
-A unit test verifying \texttt{abs(0) = 0}
+A unit test verifying $abs(0) = 0$
 cannot kill a mutant changing \texttt{x >= 0} to \texttt{x == 0},
 because the test's single input still satisfies the mutated condition.
 A property-based test
