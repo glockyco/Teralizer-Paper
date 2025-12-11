@@ -2,13 +2,15 @@
 \label{sec:background}
 
 This section provides the technical foundations for semantics-based test generalization.
-We first situate our work within the broader landscape of test amplification,
-distinguishing generalization from other enhancement strategies.
-We then introduce property-based testing as our target representation,
+Section~\ref{sec:test-amplification} situates our work
+within the test amplification landscape.
+Section~\ref{sec:property-based-testing}
+introduces property-based testing as our target representation,
 highlighting its ability to validate entire input partitions rather than single test cases.
-Next, we describe single-path symbolic analysis,
-the key technique for extracting path-exact specifications from existing test executions.
-Finally, we present mutation testing as our evaluation methodology
+Section~\ref{sec:symbolic-analysis} describes single-path symbolic analysis,
+the technique we use to extract path-exact specifications from existing test executions.
+Finally, Section~\ref{sec:mutation-testing}
+presents mutation testing as our evaluation methodology
 for assessing the effectiveness of generalized tests.
 
 \subsection{Test Amplification and Generalization}
