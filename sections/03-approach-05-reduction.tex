@@ -5,8 +5,7 @@ Not all generalized tests provide value to the test suite.
 Despite covering many more inputs than the original tests,
 some property-based tests only detect the same faults
 as the conventional unit tests from which they were created.
-Thus, these generalized tests
-increase runtime costs of overall test suite execution
+Thus, these tests increase test suite size and runtime
 but do not provide any tangible benefits in exchange for this.
 Similarly, successful generalization may render some original tests redundant.
 This is because tests created by all three of \ToolTeralizer{}'s generalization variants
@@ -19,7 +18,7 @@ using mutation testing to measure each test's contribution to fault detection
 and retaining only those original and generalized tests
 that strengthen the test suite's effectiveness.
 
-\begin{table}[b]
+\begin{table}[tbph]
   \caption{Mutation operators included in \ToolPit{}'s DEFAULTS group.}
   \label{tab:pit-mutators}
   \begin{tabular}{l l l l}
@@ -52,9 +51,6 @@ using the \texttt{DEFAULTS} group of mutation operators
 provided by \ToolPit{}~\cite{coles_2016_pit}.
 This group provides a stable set of operators that minimize equivalent mutants
 and avoid subsumption~\cite{coles_2021_less_is_more, coles_pit_mutators}.
-Thus, the group excludes mutations
-that would be redundant or trivially detected,
-ensuring that each generated mutant represents a meaningful potential fault.
 The full set of 12 mutation operators from the \texttt{DEFAULTS} group
 is listed in Table~\ref{tab:pit-mutators}.
 Each row in the table shows the name of the mutator,
@@ -84,9 +80,8 @@ while those that only detect already-caught mutants are excluded as redundant.
 
 Beyond filtering generalized tests, \ToolTeralizer{} identifies original tests
 that can be removed without loss of test suite effectiveness.
-An original test is removable if all of its assertions
-have been successfully generalized into property-based tests.
-For tests containing a single assertion, successful generalization ensures that
+An original test is removable if property-based tests were successfully created for all of its assertions.
+For tests containing a single assertion, generalization ensures that
 the property-based test validates that assertion across the entire input partition,
 making the original single-input validation redundant.
 For tests containing multiple assertions, removal requires that
