@@ -1,23 +1,19 @@
 \subsection{RQ1: How much does test generalization improve the mutation score of existing unit test suites?}
 \label{sec:primary-effects-eval}
 
-Mutation testing provides a rigorous measure of test effectiveness
-by evaluating a test suite's ability to detect deliberately introduced faults.
-For \ToolTeralizer{}, mutation scores reveal whether testing additional inputs
-within existing execution paths achieves the intended improvement in fault detection capabilities.
-%Section~\ref{sec:included-mutants} first establishes which tests and mutants are included in the evaluation,
-%revealing systematic differences between generated and developer-written test suites that influence generalization outcomes.
-Section~\ref{sec:overall-detection-rates} quantifies detection improvements
-across projects and variants,
-demonstrating that generalization improves mutation scores
-for \DatasetsEqBenchEs{} and \DatasetsCommons{} projects, albeit to different degrees.
-Section~\ref{sec:detection-rates-per-mutator} dissects these improvements by mutation operator,
-uncovering how much detection of different mutants benefits from generalization.
-% Finally, Section~\ref{sec:boundary-detection-effectiveness} provides a
-% detailed analysis of the \VariantImproved{} generalization variant,
-% demonstrating that its effectiveness correlates with constraint complexity,
-% i.e., projects with more complex input constraints show greater improvements
-% from constraint-aware input generation.
+Mutation testing provides a rigorous effectiveness measure
+by evaluating a test suite's ability to detect
+deliberately introduced faults (Section~\ref{sec:mutation-testing}).
+For \ToolTeralizer{}, it reveals whether testing additional inputs
+for existing execution paths achieves the intended improvement in fault detection capabilities.
+We use mutation score rather than parameter value coverage~\cite{sampath_2008_prioritizing}
+--- the metric employed by JARVIS~\cite{peleg_2018_jarvis} ---
+because mutation testing is a stronger proxy
+for fault detection capability.
+Direct comparison with JARVIS is not possible
+as its implementation is not publicly available.
+Section~\ref{sec:overall-detection-rates} quantifies detection improvements across projects,
+and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutation operator.
 
 % \subsubsection{Included Mutants}
 % \label{sec:included-mutants}
