@@ -4,16 +4,17 @@
 We measured \ToolTeralizer{}'s runtime across the seven generalization strategies
 to assess viability compared to existing automated testing tools.
 Since no existing, publicly available tools perform automated test generalization from unit tests to property-based tests,
-we compared efficiency against \ToolEvoSuite{}~\cite{fraser_2011_evosuite}, the established test generation tool.
-\VariantShared{} processing stages (i.e., Stages 1--3) were executed only once per project by \ToolTeralizer{}
-and collected specifications were then reused across all seven generalization strategies.
-Processing required a total time of 3.4 hours for \DatasetCommonsDev{},
-8.2 / 9.1 / 9.8 /  hours for the three \DatasetsCommonsEs{} variants,
-and 24.8 / 28.3 / 30.9 hours for the three \DatasetsEqBenchEs{} variants (Section~\ref{sec:execution-time}).
+we compared efficiency against \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
+\VariantShared{} processing stages (i.e., Stages~1--3)
+were executed only once per project by \ToolTeralizer{},
+with specifications reused across all seven generalization strategies.
+Processing took 3.4 hours for \DatasetCommonsDev{},
+8.2 / 9.1 / 9.8 /  hours for the \DatasetsCommonsEs{} variants,
+and 24.8 / 28.3 / 30.9 hours for the \DatasetsEqBenchEs{} variants (Section~\ref{sec:execution-time}).
 Despite the relatively high runtime cost,
 Pareto analysis (Section~\ref{sec:execution-efficiency}) shows
 that combining low search budget \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
-achieved better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets
+achieves better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets
 in several configurations.
 
 \begin{figure}
