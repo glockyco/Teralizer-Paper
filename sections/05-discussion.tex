@@ -54,11 +54,11 @@ Generalization increases mutation scores by 1.2--3.9 percentage points in \Datas
 and by 0.82--1.33 percentage points in \DatasetsCommonsEs{} projects
 compared to \ToolEvoSuite{}-generated baselines (Figure~\ref{fig:mutation-detection-results}).
 Beyond effectiveness, generalization offers competitive efficiency when combined with test generation,
-optimizing complementary dimensions where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
+where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
 and \ToolTeralizer{} achieves depth through partition-based input generation within already-covered test execution paths.
 For example, 1-second \ToolEvoSuite{} generation combined with \VariantNaiveB{} generalization
-achieves 51.7\% detection in 37,532 seconds, thus outperforming 60-second generation alone
-which achieves 51.6\% detection in 55,075 seconds (Figure~\ref{fig:teralizer-efficiency}).
+achieves 51.7\% mutation detection rate in 37,532 seconds, thus outperforming 60-second generation alone
+which achieves 51.6\% mutation detection rate in 55,075 seconds (Figure~\ref{fig:teralizer-efficiency}).
 
 Outcomes vary based on constraint complexity and
 original test suite effectiveness of the target projects.
