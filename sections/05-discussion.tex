@@ -457,8 +457,8 @@ or as a post-processing step for generated tests in numeric-heavy domains.
 Because generalization success depends not only on domain characteristics
 but also on program and test architecture,
 developers who are interested in adopting automated test generalization tools 
-such as \ToolTeralizer{} in their own projects can improve generalization outcomes
-through their implementation choices:
+such as \ToolTeralizer{} can improve generalization outcomes
+through their implementation choices independent of further test generalization advances:
 
 \begin{enumerate}
   \item Following a more functional programming style that emphasizes pure functions
@@ -491,7 +491,7 @@ and \emph{Conditional Test Logic}
 can lead to inaccurate specifications
 due to \ToolTeralizer{}'s limited loop handling
 (Section~\ref{par:generalization-level-exclusions}).
-Thus, a promising direction for future work
+Thus, another direction for future work
 is developing automated transformation approaches
 that refactor test code to improve generalizability
 before applying tools like \ToolTeralizer{}.
