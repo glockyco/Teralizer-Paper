@@ -9,10 +9,10 @@ However, \DatasetsCommonsEs{} projects show \VariantImproved{}
 outperforming \VariantNaive{} in 7 of 9 cases.
 To provide a more thorough understanding of these contrasting results, we examine
 how constraint complexity differs between project types and
-what the underlying mechanisms are that explain how complexity affects mutation detection differences.
+how it affects \VariantNaive{} versus \VariantImproved{}.
 As described in Section~\ref{sec:constraint-encoding},
-\ToolTeralizer{}'s current implementation of the \VariantImproved{} generalization strategy
-only considers simple in-/equalities on numeric and boolean variables or constants during input value generation.
+the \VariantImproved{} generalization strategy
+encodes simple in-/equalities on numeric and boolean variables or constants during input value generation.
 More complex constraints are not encoded
 in the initial input value generation of the \VariantImproved{} property-based tests
 but are still enforced during input value filtering,
@@ -46,7 +46,7 @@ Operation counts for undetected mutants are 1.2--3$\times$ higher:
 \DatasetsEqBenchEs{} projects show mean counts of
 218--231 operations for undetected mutants
 versus 138--147 operations for detected mutants,
-while \DatasetsCommonsEs{} exhibit even larger gaps with 389--507 versus 290--468 operations.
+while \DatasetsCommonsEs{} show even larger gaps with 389--507 versus 290--468 operations.
 Constraint counts follow similar patterns,
 with undetected mutants having 1.0--2.5$\times$ more constraints.
 Even though both \VariantNaive{} and \VariantImproved{}
