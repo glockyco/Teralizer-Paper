@@ -78,20 +78,6 @@ and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutat
 \subsubsection{Overall Mutation Detection Rates}
 \label{sec:overall-detection-rates}
 
-Generalization improves mutation detection across all
-\DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
-though the degree of improvement varies by project type
-(Figure~\ref{fig:mutation-detection-results}).
-\DatasetsEqBenchEs{} projects (rows 1--3 in the figure) show the largest improvements:
-detection rates increase from 48.1--51.6\% to 49.5--55.0\%
-across different \tries{} and generalization strategies,
-representing absolute improvements of 1.2--3.9 percentage points
-(2.4--8.2\% relative increase).
-\DatasetsCommonsEs{} projects (rows 4--6) improve by 0.82--1.33 percentage points
-(1.4--2.3\% relative increase),
-while \DatasetCommonsDev{} (row 7) improves by only 0.05--0.07 percentage points
-from its 80.4\% baseline.
-
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
@@ -110,6 +96,20 @@ from its 80.4\% baseline.
   Color legend at top: INITIAL (blue), NAIVE Variants (orange), IMPROVED Variants (green).}
   \label{fig:mutation-detection-results}
 \end{figure}
+
+Generalization improves mutation detection across all
+\DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
+though the degree of improvement varies by project type
+(Figure~\ref{fig:mutation-detection-results}).
+\DatasetsEqBenchEs{} projects (rows 1--3 in the figure) show the largest improvements:
+detection rates increase from 48.1--51.6\% to 49.5--55.0\%
+across different \tries{} and generalization strategies,
+representing absolute improvements of 1.2--3.9 percentage points
+(2.4--8.2\% relative increase).
+\DatasetsCommonsEs{} projects (rows 4--6) improve by 0.82--1.33 percentage points
+(1.4--2.3\% relative increase),
+while \DatasetCommonsDev{} (row 7) improves by only 0.05--0.07 percentage points
+from its 80.4\% baseline.
 
 Two factors strongly affect generalization improvements:
 initial test suite strength and input constraint complexity.
