@@ -9,22 +9,30 @@ We implemented this approach in a prototype tool called \ToolTeralizer{}.
 Under controlled conditions matching current symbolic analysis capabilities,
 \ToolTeralizer{} achieves mutation score improvements of 1--4 percentage points
 compared to \ToolEvoSuite{}-generated baselines.
-However, our systematic evaluation across 630+ real-world Java projects
-from the RepoReapers dataset
-reveals substantial barriers to fully automated generalization under real-world conditions:
+Pareto analysis further showed that combining short test generation with test generalization
+can outperform longer generation alone. For example,
+1-second generation plus generalization
+achieves a higher mutation score on \DatasetEqBench{}
+than 60-second generation (51.7\% vs 51.6\%)
+while requiring 32\% less total runtime.
+
+However, our evaluation across 632 real-world Java projects
+from the RepoReapers dataset reveals substantial barriers
+to fully automated generalization under real-world conditions:
 only 1.7\% of projects complete the processing pipeline,
 and 98.3\% of assertions are excluded before reaching generalized test creation.
 By analyzing these exclusions in detail,
-we distinguish engineering limitations of our prototype
+we distinguish implementation limitations of our prototype
 from fundamental research challenges in specification extraction,
 providing concrete guidance for advancing the field.
-
-The primary barrier to fully automated generalization is limited type support in existing symbolic analysis tools and approaches:
+The primary barrier to fully automated generalization
+is limited type support in existing symbolic analysis tools and approaches:
 current tools cannot precisely encode constraints for strings, arrays, and objects,
 causing the majority of assertion-level exclusions.
+
 As symbolic analysis improves to support additional types,
 semantics-based test generalization would directly benefit.
-In contrast, many other limitations of \ToolTeralizer{}
+Other limitations of \ToolTeralizer{}
 are addressable through engineering improvements
 without requiring research advances:
 interprocedural analysis would recover assertions in helper methods,
