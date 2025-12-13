@@ -98,18 +98,15 @@ two characteristics inherent to \ToolTeralizer{}'s current implementation.
 
 \input{tables/tab-lines-per-project}
 
-First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests.
-More specifically, each generalized test defines input ranges matching extracted constraints by
-translating input specifications into Java code for a custom \ToolJqwik{} \texttt{Arbitrary}
+First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests
 (as described in Section~\ref{sec:three-variant-design}).
-As a result, the LOC impact scales with both parameter count and constraint complexity.
+As a result, the LOC impact scales with parameter count and constraint complexity.
 \VariantImproved{} variants also show higher per-test LOC as a consequence of this mechanism 
 because of their more sophisticated input generation logic.
 For example, \DatasetCommonsDev{}'s three generalized tests require
 36 additional LOC with \VariantImprovedC{} compared to \VariantNaiveC{}
 (9,018 vs.\ 8,982 total LOC).
-Methods with multiple parameters amplify this effect,
-as each parameter requires its own constraint encoding logic in \VariantImproved{} tests.
+Methods with multiple parameters amplify this effect.
 
 Second, test isolation creates structural duplication.
 \ToolTeralizer{} creates new test classes for each generalized method,
@@ -119,35 +116,33 @@ This architectural choice prioritizes safety over LOC efficiency,
 preventing unintended interactions between generalized and original tests
 while avoiding potential side effects on developer-written code.
 
-The duplication overhead varies significantly between \ToolEvoSuite{}-generated and developer-written tests.
-\DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects show similar LOC overhead per generalization
+The duplication overhead differs significantly between \ToolEvoSuite{}-generated and developer-written tests.
+\DatasetsEqBenchEs{} and \DatasetsCommonsEs{}  projectocts show similar overhead
 (66-67 vs 62-63 LOC per added test, respectively),
-reflecting the structural uniformity of \ToolEvoSuite{}-generated tests.
-In contrast, \DatasetCommonsDev{} shows substantially higher duplication overhead
+reflecting the uniformity of \ToolEvoSuite{}-generated tests.
+In contrast, \DatasetCommonsDev{} shows substantially higher overhead
 (140 LOC per added test).
 This is because developer-written tests contain more shared setup code
 as well as multi-assertion architectures that hinder compensation through test removals.
-The higher percentage increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
+The higher increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
 stem primarily from the retained generalized tests representing a larger fraction of the original test suite
 in \DatasetsEqBenchEs{} (3.5-4.4\%) compared to \DatasetsCommonsEs{} (2.2-2.8\%).
 The smaller difference between \VariantNaive{} and \VariantImproved{}
-LOC increases in \DatasetsCommonsEs{} projects compared to \DatasetsEqBenchEs{} projects
-likely reflects \VariantImproved{}'s lower constraint utilization on more complex specifications
+in \DatasetsCommonsEs{} compared to \DatasetsEqBenchEs{}
+likely reflects \VariantImproved{}'s lower constraint utilization 
 (28.5\% for \DatasetsCommonsEs{} vs.\ 54.7\% for \DatasetsEqBenchEs{}).
 
 Both overhead sources represent implementation choices rather than inherent limitations.
-Integration of generalized methods into original test classes would reduce duplication,
-while constraint specification libraries could abstract input value generator details.
 The primary reason \ToolTeralizer{} avoids in-place transformation of tests
 is to keep changes isolated,
-preventing unintended adverse effects on developer-written code
-and mutation testing (as discussed in Section~\ref{sec:transformation-pipeline}).
+preventing adverse effects on developer-written code
+and mutation testing (Section~\ref{sec:transformation-pipeline}).
 Similarly, constraint encoding logic could be extracted to a library
 that abstracts implementation details.
-In the test code of the target projects, only minor changes would remain then:
+Only minor changes would remain then in the generalized test code:
 modified test annotations, parameterized inputs, and generalized assertions.
-As a result, such optimizations could reduce the current LOC increases
-while preserving generalization's mutation detection benefits.
+The overall impact on test suite LOC would, therefore, be reduced
+while preserving the mutation detection benefits.
 We leave these improvements for future work.
 
 \subsubsection{Execution Time of the Test Suite}
