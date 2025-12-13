@@ -72,22 +72,12 @@ for these projects.
 The \DatasetCommonsDev{} project sees less compensation success:
 none of the tests for which generalizations are added can be removed.
 This is because an \VariantOriginal{} test can only be removed
-if generalized tests are created for all assertions in the test.
+if generalized tests are created for all assertions in the test
+(Section~\ref{sec:test-suite-reduction}).
 In projects with \ToolEvoSuite{}-generated tests,
 this requirement is generally satisfied because most tests only contain a single assertion.
 However, this requirement is more difficult to satisfy for \DatasetCommonsDev{} 
 because the developer-written tests often contain multiple assertions.
-
-The observed compensation patterns reveal how test architecture shapes generalization outcomes.
-Projects containing mostly focused, single-assertion tests enable near-complete compensation,
-while multi-assertion test suites resist such consolidation.
-In future work, we plan to explore opportunities
-for generalization to decrease overall test suite size.
-This can be achieved
-by replacing multiple \VariantOriginal{} tests
-that cover the same input partition
-with a single property-based test that covers the same partition instead.
-For further discussion of this idea, see Section~\ref{sec:discussion}.
 
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
