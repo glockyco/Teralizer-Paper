@@ -12,26 +12,18 @@ it also affects test suite characteristics in several ways:
 \end{enumerate}
 
 Section~\ref{sec:test-suite-test-count} reveals how test architecture determines
-whether added generalized tests can be compensated by original test removals,
-explaining why \ToolEvoSuite{}-generated test suites achieve near-complete compensation
-while the developer-written test suite in \DatasetCommonsDev{} does not allow for any test removals at all.
+whether added generalized tests can be compensated by original test removals.
 Section~\ref{sec:test-suite-line-count} documents
-how current constraint encoding and test isolation implementations increase lines of code in the test suite,
-suggesting that the introduction of constraint abstraction libraries
-as well as tighter integration of generalized tests into the original test suite
-could reduce this overhead.
+how \ToolTeralizer{}'s constraint encoding and test isolation increase lines of code in the test suite.
 Section~\ref{sec:test-suite-execution-time} analyzes runtime patterns,
-showing that costs stem primarily from property-based testing overhead and \tries{} repetition,
-but could be at least partially alleviated
-through test suite reduction and improved support for more complex input constraints.
-
-Throughout the result presentation, we focus primarily on the results
-of the \VariantNaiveC{} and \VariantImprovedC{} test suite generalization variants
+showing that costs stem primarily from property-based testing overhead and \tries{} repetition.
+We focus on the results
+of \VariantNaiveC{} and \VariantImprovedC{}
 as they best represent the current capabilities of \ToolTeralizer{}.
-The results for variants with fewer \tries{} follow similar trends
-albeit with correspondingly smaller effects
-on the measured test suite characteristics.
-Full results for all generalization variants
+The results for variants with fewer \tries{} follow similar trends,
+albeit with overall smaller effects
+on the measured metrics.
+Full results for all variants
 are available in our replication package~\cite{replicationpackage}.
 
 \subsubsection{Number of Tests in the Test Suite}
