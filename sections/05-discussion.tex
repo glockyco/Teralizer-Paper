@@ -116,14 +116,12 @@ and late-stage identification of generalizations that
 improve overall test suite effectiveness
 reflect significant barriers to practical adoption.
 
-Broadly speaking, there are three high-level causes
-that explain the high exclusion rates we observe
-when evaluating fully automated test generalization via \ToolTeralizer{} in real-world projects.
+We identify three high-level causes that explain the high exclusion.
 First, \ToolTeralizer{} is a research prototype,
 which correspondingly limits the scope of its current capabilities.
 Second, extracting accurate specifications for generalization
 of test oracles is a fundamentally non-trivial problem,
-even more so when moving beyond the domain of pure functions and numeric-focused programs.
+even more so when moving beyond the domain of pure functions and numerical programs.
 Third, factors such as execution errors in \ToolTeralizer{}'s dependencies,
 timeouts enforced for evaluation purposes,
 and test failures in original test suites
@@ -131,14 +129,13 @@ are beyond the direct control of the generalization mechanism itself,
 but still increase the number of unsuccessful generalization attempts. 
 Throughout the rest of this section,
 we describe how these three high-level causes affect generalization outcomes.
-This summary of failure causes then serves as the basis for discussion of future improvements
-in Section~\ref{sec:how-to-improve}.
+This summary of failure causes then serves as the basis
+for the discussion of future improvements in Section~\ref{sec:how-to-improve}.
 
 \paragraph{Implementation Limitations}
 \label{par:implementation-limitations}
 
-There are four limiting factors in our current prototype
-that are implementation specific rather than fundamental:
+There are four limiting factors in the current implementation of our prototype:
 (i)~it only supports JUnit 4 and JUnit 5 tests and assertions,
 (ii)~it only supports generalization of tests that contain at least one assertion,
 (iii)~it only performs intraprocedural static analysis within test methods to detect assertions,
@@ -154,7 +151,7 @@ Limitations (i)--(iii) contribute to the exclusion of
 and 266 projects (42.1\%) for which all assertions are excluded
 (Table~\ref{tab:processing-failures}, rows \#1 and \#8).
 
-While the exact degree of influence
+While the exact impact
 on the 129 test- and 266 assertion-related exclusions
 is difficult to quantify precisely
 (because both are also affected by the other two high-level factors),
@@ -169,7 +166,7 @@ together accounting for the exclusion of 41.3\% of tests
 Thus, limitations (i)--(iii) have comparatively high impact
 on the 129 test-related exclusions
 --- the only other test-excluding factor is 11.8\% \texttt{NonPassingTest} rejections.
-In contrast, their influence on the 266 assertion-related exclusions is comparatively low,
+In contrast, their impact on the 266 assertion-related exclusions is comparatively low,
 contributing only to 16.9\% \texttt{ExcludedTest} rejections
 --- the lowest rate among all assertion-level filters
 (Table~\ref{tab:exclusions-filtering-extended}).
@@ -188,7 +185,7 @@ type limitations of the underlying symbolic analysis performed by \ToolSPF{}
 (discussed in Section~\ref{sec:symbolic-analysis}),
 which is used by \ToolTeralizer{} to extract specifications for oracle generalization
 (Sections~\ref{sec:specification-extraction} and \ref{sec:generalized-test-creation}).
-A smaller portion is due to the simplifying assumption that
+A smaller portion is due to the assumption that
 each assertion can be generalized by extracting the input-output specification
 of the last method call that was executed before the assertion
 (Section~\ref{sec:tested-method-identification}).
@@ -571,4 +568,4 @@ applicability of semantics-based test generalization
 would directly benefit, though results
 that can be achieved for non-numeric types might
 differ from those we observed during generalization
-of primarily numeric-focused programs.
+of primarily numerical programs.
