@@ -45,9 +45,9 @@ in several configurations.
 \subsubsection{Execution Time of \ToolTeralizer{}}
 \label{sec:execution-time}
 
-Our evaluation of runtime requirements across the five processing stages reveals
+Our runtime evaluation results reveal
 that test suite reduction via mutation testing
-dominates the overall computational cost of \ToolTeralizer{}'s processing pipeline.
+dominates the overall runtime cost of \ToolTeralizer{}.
 More specifically, Figure~\ref{fig:teralizer-runtimes} shows
 that Stage~5 (test suite reduction) consumes 1,110--35,538 seconds
 (59.1--95.7\% of total processing time)
@@ -61,33 +61,29 @@ and Stage~4 (generalized test creation) requires 5--178 seconds (0.1--2.3\%).
 The first four processing stages complete efficiently
 despite containing the core generalization logic.
 Project analysis (Stage 1 + 2) executes the \VariantOriginal{} test suite
-and performs simple analyses on the corresponding JUnit reports and test code,
+and performs simple analyses on the JUnit reports and test code,
 both of which create only minimal overhead beyond the test suite execution.
 Specification extraction (Stage 3) uses \ToolSPF{}
-to concretely execute tests using single-path symbolic analysis,
-extracting path conditions and symbolic outputs
-without requiring any constraint solving calls
+to concretely execute tests using single-path symbolic analysis
 (Section~\ref{sec:specification-extraction}).
 While this introduces some overhead
-because the JVM implementation of \ToolJPF / \ToolSPF{}
+because \ToolJPF / \ToolSPF{}
 is less optimized than production-ready JVMs
-(\ToolJPF{} itself runs inside of a host JVM process \cite{pasareanu_2013_symbolic}),
-the cost is comparatively small, representing a one-time cost
-of, on average, ca.\ 5$\times$ the runtime of an \VariantOriginal{} test suite execution (mean: 1020s vs. 221s).
-Generalized test creation cost (Stage 4) is even smaller at a one-time runtime cost
+(\ToolJPF{} itself runs inside a host JVM \cite{pasareanu_2013_symbolic}),
+the cost is comparatively small at, on average, ca.\ 5$\times$ the runtime of an \VariantOriginal{} test suite execution (mean: 1020s vs. 221s).
+Generalized test creation cost (Stage 4) is even smaller at a one-time cost
 of 5--177 seconds per variant.
-The reason for this low cost is that test creation
+This is because test creation
 only performs syntactic replacements, e.g.,
 converting JUnit annotations to \ToolJqwik{} ones,
 wrapping input constraint encodings in \texttt{TestParameters} classes,
 and replacing expected values in assertions
 (Section~\ref{sec:generalized-test-creation}).
-%Consequently, Stages~1--4 offer comparatively little opportunity for runtime improvements.
 
 \paragraph{Stage 5 Runtimes}
 
 Test suite reduction costs are substantially larger
-than the costs of the preceeding generalization stages
+than the costs of the preceeding stages
 due to the high runtime cost of mutation testing
 for both the \VariantOriginal{} as well as the generalized test suites.
 In our evaluation, mutation testing of the \VariantOriginal{} test suite takes,
@@ -96,8 +92,8 @@ as \VariantOriginal{} test suite execution without mutation testing (mean:~1,833
 Mutation testing of the generalized test suites has even higher
 runtime requirements (mean:~4,351s).
 This is for largely the same reasons
-that individual property-based \ToolJqwik{} tests
-take longer to execute than conventional JUnit tests:
+that \ToolJqwik{} tests
+take longer to execute than JUnit tests:
 \ToolJqwik{} overhead, larger number of tested inputs,
 as well as filter-and-regenerate cycles
 which occur more often for \VariantNaive{} variants
@@ -105,28 +101,29 @@ and in the presence of more complex input constraints (Section~\ref{sec:test-sui
 Thus, mutation testing represents more than 99\%
 of the total runtime cost of Stage 5 across all projects and generalization variants,
 and an average of 82.9\% of the full generalization pipeline.
-The small remainder of the Stage 5 runtime costs falls to
-collection of test coverage reports as well as processing
-of coverage and mutation reports to identify and exclude non-contributing tests.
+The small remainder of the Stage 5 runtime costs falls to the
+collection of coverage reports as well as processing
+of coverage and mutation reports to exclude non-contributing tests.
 
-While it is possible to reduce the one-time cost of generalization by skipping test suite reduction,
-this would cause considerable increases to the execution times of the generalized test suites.
-After all, the primary purpose of the test suite reduction stage
-is to identify and remove generalized tests that do not improve overall fault detection capability,
+While test suite reduction could be skipped to reduce the one-time cost of generalization,
+this would significantly increase the execution times of the generalized test suites.
+After all, the primary purpose of test suite reduction
+is to remove generalized tests that do not improve fault detection,
 thus avoiding the high runtime cost
 associated with property-based test execution (Section~\ref{sec:test-suite-execution-time}).
 In our evaluation, this filtering reduces the number of retained generalized tests
-from a total of 21,478 to 1,555 across all projects and test suite variants
+from 21,478 to 1,555 across all projects and test suite variants
 (Section~\ref{sec:test-suite-test-count}),
 thus demonstrating the impact
-that filtering based on mutation scores has on the size and runtime of the generalized test suites.
+that filtering has on the size and runtime of the generalized test suites.
 Even though there is a non-negligible one-time cost associated with this,
 that cost amortizes over time compared to a longer-running test suite
 that incurs further costs with every test suite execution.
-Future optimization efforts could focus on validation efficiency
+Future optimization efforts could target filter efficiency
 through faster mutation testing approaches
 or lightweight pre-filtering heuristics
-that identify likely-beneficial candidates without full mutation testing.
+that identify likely-beneficial candidates
+without full mutation testing.
 
 \subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
 \label{sec:execution-efficiency}
