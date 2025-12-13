@@ -166,19 +166,14 @@ Runtime increases are primarily affected by the following factors:
   \item the complexity of input partition constraints.
 \end{enumerate}
 
-In the following paragraphs,
-we discuss how each of the above factors
-influences overall test suite execution times
-and how these factors interact with each other.
-
 \input{tables/tab-runtime-per-project}
 
 \paragraph{Added and Removed Tests}
 
 Execution of conventional JUnit tests has a lower runtime cost
-than execution of corresponding property-based jqwik tests.
-More specifically, individual property-based tests
-created with the \VariantBaseline{} generalization variant 
+than execution of corresponding jqwik tests.
+More specifically, property-based tests
+created with the \VariantBaseline{} generalization strategy 
 take, on average, 149.56 milliseconds (ms) longer to execute
 than the corresponding \VariantOriginal{} tests
 (as shown in Figure~\ref{fig:test-runtime-differences})
@@ -191,7 +186,7 @@ which have a mean execution time of only 3.6~ms. % 0.0035570506476290337
 % AND g.is_included;
 Therefore, overall test suite execution time increases,
 on average, by at least 149.56~ms per jqwik test
-that is added during the generalization process,
+that is added during generalization,
 even if no new test inputs are exercised
 and the added generalized tests are compensated by removed original tests.
 Since these runtime increases are inherent to the use of jqwik,
@@ -201,7 +196,7 @@ to jqwik tests incurs the same runtime overhead,
 and this overhead can only be reduced
 if fewer jqwik tests are created
 (e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
-or if the runtime performance of jqwik is improved.
+or if the performance of jqwik is improved.
 
 \paragraph{Number of \tries{}}
 
@@ -261,35 +256,32 @@ which is beyond the scope of this evaluation.
 
 \paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
 
-Runtime increases were larger
-for \VariantNaive{} than for \VariantImproved{}
-when comparing the same tests.
+Runtime increases are generally larger
+for \VariantNaive{} than for \VariantImproved{}.
 For example, \VariantNaiveC{} and \VariantImprovedC{}
 both generalize the same three tests of \DatasetCommonsDev{}
 (see Table~\ref{tab:tests-per-project}).
 Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
-generalization with \VariantNaiveC{}
-increases overall test suite runtime by 4.54 seconds
-(+57.1\% compared to \VariantOriginal{}).
-\VariantImprovedC{}, on the other hand,
-only increases runtime by 0.74 seconds (+9.4\%).
-The more pronounced runtime impact of \VariantNaive{} variants is caused by 
-the input value generation approach used by these variants.
+\VariantNaiveC{} increases test suite runtime by 4.54 seconds
+(+57.1\% compared to \VariantOriginal{})
+whereas \VariantImprovedC{} only increases runtime by 0.74 seconds (+9.4\%).
+% The larger increase of \VariantNaive{} variants is caused by 
+% their input value generation approach.
 As described in Section~\ref{sec:three-variant-design},
 \VariantNaive{} generalization selects inputs for test execution
 by first randomly generating inputs
 that match the parameter types of the tested method,
-and then discarding any inputs that do not satisfy the input specification.
-Especially for cases with restrictive input specifications (e.g., \texttt{a~==~b~\&\&~b~==~c}),
+and then filtering any inputs that do not satisfy the input specification.
+Especially for cases with restrictive constraints (e.g., \texttt{a~==~b~\&\&~b~==~c}),
 this causes a large runtime overhead
-because many discard-and-regenerate cycles are required
+because many filter-and-regenerate cycles are required
 until a valid set of inputs is identified
 (or \ToolJqwik{} aborts the process due to \texttt{Too\-Many\-Filter\-Misses\-Exceptions}).
 \VariantImproved{} variants are less affected by this
 because they already consider (some) input constraints
 during initial input value generation
 (as described in Section~\ref{sec:three-variant-design}).
-As a result, fewer inputs need to be discarded and regenerated,
+As a result, fewer inputs need to be filtered and regenerated,
 which lessens the overall runtime impact of \VariantImproved{} generalization
 despite the more involved input value generation process.
 
@@ -300,7 +292,7 @@ required runtime also increases.
 This is because more complex constraints
 cause more filter-and-regenerate cycles to occur
 during execution of property-based tests.
-While \VariantNaive{} generalization
+While \VariantNaive{}
 is more strongly affected by this than \VariantImproved{}
 because it does not consider any constraints during value generation
 (as discussed in the previous paragraph),
@@ -319,10 +311,10 @@ than in \DatasetCommonsA{},
 and fewer of these constraints
 can be used during input value generation
 (mean: 42.9\% vs.\ 61.5\%, median: 80\% vs.\ 100\%).
-This indicates that better support for more complex input constraints
-not only holds the potential to increase detection rates
+This suggests that improving support for complex input constraints
+would not only increase detection rates
 (as suggested in Section~\ref{sec:constraint-complexity-eval})
-but could also reduce the runtime cost of generalized tests at the same time.
+but could also reduce the runtime cost of generalized tests.
 
 \rqanswerbox{3}{
   Test generalization consistently increases test suite LOC and runtime,
