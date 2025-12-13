@@ -111,7 +111,7 @@ from its 80.4\% baseline.
   \label{fig:mutation-detection-results}
 \end{figure}
 
-In general, two factors strongly affect achievable generalization improvements:
+Two factors strongly affect generalization improvements:
 initial test suite strength and input constraint complexity.
 \DatasetsEqBenchEs{} projects offer the most suitable conditions for generalization.
 This is because EvoSuite-generated tests leave more room for enhancement
@@ -126,9 +126,8 @@ while they also start from EvoSuite-generated tests,
 the \DatasetsCommons{} methods involve more complex input specifications,
 making it harder to generate inputs that satisfy these input constraints.
 \DatasetCommonsDev{} faces both challenges:
-the mature developer-written test suite already achieves 80.4\% detection
-through years of refinement of these widely-used libraries,
-and it shares the same complex constraint characteristics as other \DatasetsCommons{} variants.
+the mature developer-written tests already achieve 80.4\% detection
+and share the same complex constraints as other \DatasetsCommons{} variants.
 This leaves little opportunity for automated improvement.
 
 Comparing the relative effectiveness of \VariantNaive{} and \VariantImproved{}
@@ -139,14 +138,12 @@ with gaps ranging from 0.17--1.21 percentage points.
 This advantage is most pronounced with limited \tries{}:
 \VariantNaiveA{} achieves 50.67--53.97\% detection rate
 while \VariantImprovedA{} reaches only 49.46--52.86\%.
-In contrast, \DatasetsCommonsEs{} projects (rows 4--6) show \VariantImproved{}
-outperforming \VariantNaive{} in 7 of 9 comparisons,
-with \VariantImprovedC{} detecting 57.97--59.45\% of mutants
-compared to \VariantNaiveC{}'s 58.00--59.32\%.
+In contrast, \DatasetsCommonsEs{} (rows 4--6) shows \VariantImproved{}
+outperforming \VariantNaive{} in 7 of 9 comparisons.
 These opposite results reflect the following patterns:
-\VariantNaive{}'s better performance on \texttt{Math} mutations (59.1\% of all mutants)
-versus \VariantImproved{}'s better detection of most other mutation types
-as well as more effective handling of complex constraints.
+\VariantNaive{} performs better on \texttt{Math} mutations (59.1\% of all mutants)
+while \VariantImproved{} better detects most other mutation types
+and more effectively handles more complex constraints.
 In \DatasetsEqBenchEs{}, the high prevalence of \texttt{Math} mutations
 and low constraint complexity favor \VariantNaive{},
 while in \DatasetsCommonsEs{}, \VariantImproved{}'s
@@ -154,10 +151,10 @@ advantages on other mutations and constraint handling overcome
 its \texttt{Math} mutant detection disadvantage.
 We investigate the mechanisms behind these results in further detail in
 Sections~\ref{sec:detection-rates-per-mutator} and \ref{sec:constraint-complexity-eval}.
-\DatasetCommonsDev{} shows no meaningful differences between approaches,
-with all variants achieving approximately 80.4\% detection.
+% \DatasetCommonsDev{} shows no meaningful differences between approaches,
+% with all variants achieving approximately 80.4\% detection.
 
-Higher \tries{} settings showed improved detection rates with diminishing returns.
+Higher \tries{} settings improve detection rates, albeit with diminishing returns.
 The increase from 10 to 50 \tries{} typically produces larger gains
 than increasing from 50 to 200 \tries{}.
 One notable exception to this pattern appears in \VariantImproved{} variants with only 10 \tries{}:
@@ -178,27 +175,20 @@ Combining short test generation with subsequent generalization
 can outperform longer test generation alone.
 On \DatasetsEqBenchEs{} projects,
 1-second \ToolEvoSuite{} generation followed by \VariantNaiveC{} generalization
-achieves 52.0\% detection (last orange bar in row 1),
+achieves 52.0\% mutation detection rate (last orange bar in row 1),
 surpassing 60-second generation alone (51.6\%, blue bar in row 3).
-Similarly on \DatasetsCommonsEs{},
-10-second generation plus \VariantNaiveC{} reaches 58.5\% (last orange bar in row 5)
+Similarly, on \DatasetsCommonsEs{},
+10-second generation plus \VariantNaiveC{} generalization
+reaches 58.5\% (last orange bar in row 5)
 versus 58.1\% for 60-second generation (blue bar in row 6).
-These comparisons demonstrate that generalization can effectively compensate for reduced generation time.
-Section~\ref{sec:execution-efficiency} analyzes the efficiency trade-offs
+Section~\ref{sec:execution-efficiency} investigates the efficiency trade-offs
 between different combinations of \ToolEvoSuite{} timeouts and \ToolTeralizer{} \tries{}
 in further detail through Pareto front analysis.
-
-% The reported improvements are based on single runs per project configuration.
-% While property-based test generation includes randomness that could produce variation across runs,
-% the consistent patterns across projects suggest the observed trends are robust.
-% Multiple runs would strengthen confidence in the precise magnitude of improvements
-% (a limitation we discuss in Section~\ref{sec:threats-to-validity}).
 
 \subsubsection{Mutation Detection Rates per Mutator}
 \label{sec:detection-rates-per-mutator}
 
-Generalization effectiveness varies significantly across mutation operators,
-revealing which fault types benefit most from additional test inputs
+Generalization effectiveness varies significantly across mutation operators
 (Table~\ref{tab:detections-per-mutator}).
 The \texttt{Math} mutation operator dominates the mutation landscape
 in \DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
@@ -218,16 +208,16 @@ improvements to \texttt{Math} detection rates
 have proportionally larger impact on overall mutation scores
 than improvements to less commonly occurring mutation types.
 
-\VariantInitial{} detection rates reveal a clear pattern: return value mutations
+\VariantInitial{} detection rates show a clear pattern: return value mutants
 (i.e., \texttt{Primitive\-Returns}, \texttt{Boolean\-True\-Return\-Vals},
 \texttt{Boolean\-False\-Return\-Vals}, and \texttt{Empty\-Object\-Return\-Vals})
-are caught in the large majority of cases (87.87--98.77\% detection),
-while behavioral mutations prove more elusive.
+are killed in a large majority of cases (87.87--98.77\% detection),
+while behavioral mutants are more elusive.
 For example, \texttt{VoidMethodCall} mutations achieve a detection rate of only 24.96\%
 because removing void method calls typically affects only internal state
 or produces side effects that are rarely verified by existing assertions.
 Because these cases often require new assertions to be added to achieve detection rate improvements,
-they are largely beyond the current capabilities of \ToolTeralizer{}.
+they are largely beyond the intended capabilities of \ToolTeralizer{}.
 In contrast, \VariantInitial{} detection rates of
 27.68\% for \texttt{ConditionalsBoundary} mutations,
 61.08\% for \texttt{RemoveConditionalOrderElse},
@@ -235,23 +225,22 @@ and 58.80\% for \texttt{RemoveConditionalEqualElse}
 highlight opportunities for automated improvement.
 After all, all three mutations
 affect partition boundaries,
-which is exactly where \VariantImproved{} generalization
+which is where \VariantImproved{} generalization
 aims to generate additional test inputs.
 
 \input{tables/tab-detections-per-mutator}
 
-\VariantNaiveC{} achieves its largest improvements on
+\VariantNaiveC{} achieves the largest improvements on
 \texttt{Math} (+3.99\%),
 \texttt{RemoveConditionalEqualElse} (+2.07\%),
 and \texttt{Invert\-Negs} (+1.70\%).
-The success with \texttt{RemoveConditionalEqualElse} stems from
-testing diverse inputs that trigger both branches of equality checks,
+\texttt{RemoveConditionalEqualElse} detection improves because the created property-based tests
+cover diverse inputs that trigger both branches of equality checks,
 exposing mutations that force false branches.
-\texttt{Math} mutation detection similarly benefits from a more diverse
-range of tested input values because arithmetic operations often produce
-different results across input ranges, exposing mutations that might
-coincidentally produce correct results for any individual value.
-In contrast, 4 of 5 return value mutators show zero improvement:
+\texttt{Math} detection similarly benefits from a more diverse
+range of tested inputs because arithmetic operations often produce
+different results across input ranges.
+In contrast, 4 of 5 return value mutators show no improvement:
 \texttt{Null\-Return\-Vals}, \texttt{Boolean\-True\-Return\-Vals},
 \texttt{Boolean\-False\-ReturnVals}, and \texttt{EmptyObjectReturnVals}.
 These already achieve high detection rates in the \VariantInitial{} variant (87.87--98.77\%)
@@ -267,42 +256,38 @@ Comparing the two variants across all 12 mutation operators:
 \VariantImprovedC{} outperforms \VariantNaiveC{} for 7 operators,
 achieves the same detection rate for 4 operators (the zero-improvement return value mutations),
 and underperforms for only 1 operator~(\texttt{Math}).
-The largest advantage is observed for \texttt{Conditionals\-Boundary} detection,
-where \VariantImprovedC{} achieves a 2.55\% detection rate improvement
-compared to \VariantNaiveC{}'s 1.21\%.
-These results confirm that the constraint-aware input generation strategy
-followed by \VariantImproved{} variants achieves its intended purpose.
+The largest advantage is observed for \texttt{Conditionals\-Boundary} detection.
+Here, \VariantImprovedC{} achieves a 2.55\% detection rate improvement
+compared to \VariantNaiveC{}'s 1.21\%,
+which confirms that constraint-aware input generation achieves its intended purpose.
 Furthermore, the slightly higher detection rates for several other mutators
-suggest that testing at partition boundaries may also provide slight benefits
-for some mutators that do not directly modify partition boundaries.
+suggest that testing at partition boundaries may also benefit
+some mutators that do not directly modify boundary constraints.
 
-The \texttt{Math} mutation results highlight the inherent trade-off
+The \texttt{Math} mutation results highlight the trade-off
 in boundary versus non-boundary testing:
 \VariantImprovedC{} achieves a 3.37\% detection rate improvement
 compared to \VariantNaiveC{}'s 3.99\%.
 The \VariantImprovedC{} variant achieves smaller improvements here
 because constraint-aware input generation produces less diverse arithmetic inputs,
-concentrating on boundary values rather than exploring the full numeric range
+concentrating on boundary values rather than exploring the full input range
 where arithmetic mutations might create more varied outputs.
 Given that \texttt{Math} mutations comprise 59.1\% of all mutants,
 this difference significantly impacts overall mutation scores.
-To counteract these detrimental effects,
+To counteract these effects,
 \VariantImproved{} variants could use higher \tries{} settings
-to maintain non-boundary input coverage of \VariantNaive{}
-while adding additional boundary coverage.
-Alternatively, more sophisticated input selection strategies
-could be used to achieve a better balance between
-boundary and non-boundary testing even at lower \tries{} settings,
+to maintain the same non-boundary coverage as \VariantNaive{}.
+Alternatively, more sophisticated input selection strategies could be used
+to better balance boundary and non-boundary testing
+even at lower \tries{} settings,
 thus avoiding the runtime cost of higher \tries{}.
 
 Results for the 10 and 50 \tries{} variants of \VariantNaive{} and \VariantImproved{}
 generally follow the same trends as those for the listed variants with 200 \tries{},
-albeit with correspondingly smaller detection rate improvements over \VariantInitial{}.
-For example, \VariantImprovedA{} achieves expected results for most mutation operators,
-including its characteristic advantage for \texttt{ConditionalsBoundary} mutations (2.0\% vs 0.9\% for \VariantNaiveA{}).
+albeit with smaller detection rate improvements over \VariantInitial{}.
 The exception is \texttt{Math} mutation detection,
 where \VariantImprovedA{} achieves only 1.1\% improvement compared to 2.8\% for \VariantNaiveA{}.
-Given that \texttt{Math} mutations comprise 59.1\% of all mutants,
+Since \texttt{Math} mutations comprise 59.1\% of all mutants,
 this explains the low overall detection rate of \VariantImprovedA{} on \DatasetsEqBenchEs{} projects
 observed in rows 1--3 of Figure~\ref{fig:mutation-detection-results}.
 With 50 \tries{}, the \texttt{Math} detection gap is noticeably smaller
