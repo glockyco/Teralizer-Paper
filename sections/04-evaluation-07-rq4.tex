@@ -3,19 +3,17 @@
 
 We measured \ToolTeralizer{}'s runtime across the seven generalization strategies
 to assess viability compared to existing automated testing tools.
-Since no existing, publicly available tools perform automated test generalization from unit tests to property-based tests,
+Since no existing, publicly available tools perform automated test generalization,
 we compared efficiency against \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
-\VariantShared{} processing stages (i.e., Stages~1--3)
-were executed only once per project by \ToolTeralizer{},
-with specifications reused across all seven generalization strategies.
+\VariantShared{} processing stages (Stages~1--3)
+were executed only once per project,
+with specifications reused across generalization strategies.
 Processing took 3.4 hours for \DatasetCommonsDev{},
 8.2 / 9.1 / 9.8 /  hours for the \DatasetsCommonsEs{} variants,
 and 24.8 / 28.3 / 30.9 hours for the \DatasetsEqBenchEs{} variants (Section~\ref{sec:execution-time}).
-Despite the relatively high runtime cost,
 Pareto analysis (Section~\ref{sec:execution-efficiency}) shows
 that combining low search budget \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
-achieves better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets
-in several configurations.
+can achieve better detection-to-runtime ratios than simply running \ToolEvoSuite{} with higher search budgets.
 
 \begin{figure}
   \centering
@@ -84,24 +82,23 @@ and replacing expected values in assertions
 
 Test suite reduction costs are substantially larger
 than the costs of the preceeding stages
-due to the high runtime cost of mutation testing
-for both the \VariantOriginal{} as well as the generalized test suites.
-In our evaluation, mutation testing of the \VariantOriginal{} test suite takes,
-on average, 8$\times$ as much runtime
+due to the high runtime cost of mutation testing.
+Mutation testing of the \VariantOriginal{} test suite takes,
+on average, 8$\times$ as long
 as \VariantOriginal{} test suite execution without mutation testing (mean:~1,833s vs. 221s).
 Mutation testing of the generalized test suites has even higher
-runtime requirements (mean:~4,351s).
-This is for largely the same reasons
+runtime requirements (mean:~4,351s),
+which is for largely the same reasons
 that \ToolJqwik{} tests
 take longer to execute than JUnit tests:
 \ToolJqwik{} overhead, larger number of tested inputs,
 as well as filter-and-regenerate cycles
 which occur more often for \VariantNaive{} variants
 and in the presence of more complex input constraints (Section~\ref{sec:test-suite-execution-time}).
-Thus, mutation testing represents more than 99\%
-of the total runtime cost of Stage 5 across all projects and generalization variants,
+Thus, mutation testing consumes more than 99\%
+of Stage 5 runtimes across projects and generalization variants,
 and an average of 82.9\% of the full generalization pipeline.
-The small remainder of the Stage 5 runtime costs falls to the
+The small remainder of Stage 5 runtimes falls to the
 collection of coverage reports as well as processing
 of coverage and mutation reports to exclude non-contributing tests.
 
@@ -128,9 +125,17 @@ without full mutation testing.
 \subsubsection{Efficiency of \ToolTeralizer{} vs.\ \ToolEvoSuite{}}
 \label{sec:execution-efficiency}
 
-\begin{figure}
+Our evaluation results show that combining \ToolEvoSuite{}'s test generation with \ToolTeralizer{}'s test generalization
+can achieve better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets.
+Figure~\ref{fig:teralizer-efficiency} identifies which tool configurations
+provide the best detection-to-runtime trade-offs through Pareto analysis.
+Configurations on the frontier represent optimal choices:
+for any given runtime budget, they achieve the highest detection rate.
+Configurations outside the frontier are dominated by the Pareto-optimal points.
+
+\begin{figure}[b]
   \centering
-  \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
+  \includegraphics[width=.9\textwidth]{figures/fig_teralizer_efficiency}
   \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
   \Description{Two scatter plots showing Pareto efficiency analysis.
   Left panel shows eqbench project, right panel shows commons-utils project.
@@ -146,50 +151,25 @@ without full mutation testing.
   \label{fig:teralizer-efficiency}
 \end{figure}
 
-\begin{table}
-  \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \input{tables/tab-pareto-eqbench}
-  \end{minipage}
-  \hfill
-  \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \input{tables/tab-pareto-commons}
-  \end{minipage}
-\end{table}
-
-Our evaluation results show that combining \ToolEvoSuite{}'s test generation with \ToolTeralizer{}'s test generalization
-can achieve better detection-to-runtime ratios than simply increasing \ToolEvoSuite{} search budgets.
-This efficiency gain stems from their complementary optimization targets:
-\ToolEvoSuite{} optimizes primarily for breadth (increasing coverage)~\cite{fraser_2011_evosuite},
-while \ToolTeralizer{} optimizes exclusively for depth (testing discovered paths thoroughly).
-Figure~\ref{fig:teralizer-efficiency} identifies which tool configurations
-provide the best detection-to-runtime trade-offs through Pareto analysis.
-Configurations on the frontier represent optimal choices:
-for any given runtime budget, they achieve the highest possible detection rate.
-Configurations outside the frontier are suboptimal,
-i.e., dominated by the Pareto-optimal points,
-because the Pareto points achieve higher mutation detection rates in less time.
-
-For example, for the \DatasetsEqBenchEs{} projects,
-only 2 of 3 \ToolEvoSuite{} search budget settings are Pareto optimal
+For the \DatasetsEqBenchEs{} projects,
+2 of 3 \ToolEvoSuite{} search budget settings are Pareto optimal
 (Pareto points \#1 and \#2 in Table~\ref{tab:pareto-eqbench})
 due to their comparatively low runtime cost.
-\ToolEvoSuite{} generation with a 60 seconds per-class search budget,
-on the other hand, falls outside the Pareto frontier with a 
+\ToolEvoSuite{} generation with a 60 seconds per-class search budget
+falls outside the Pareto frontier with a 
 detection rate of 51.6\% and a runtime cost of 55,075 seconds.
 In the runtime dimension,
-this result is dominated by 1-second \ToolEvoSuite{} generation
+it is dominated by 1-second \ToolEvoSuite{} generation
 combined with \VariantNaiveB{} generalization
 (Pareto point \#5 in Table~\ref{tab:pareto-eqbench}),
 which achieves 51.7\% detection in 37,532 seconds,
-i.e., 0.1 percentage points higher detection with 31.9\% lower runtime cost.
+i.e., 0.1 percentage points higher detection with 31.9\% lower runtime.
 In the mutation detection dimension,
-the result is dominated by 10-second \ToolEvoSuite{} generation
-combined with \VariantImprovedC{} generalization (Pareto point~\#9),
-which produces a 53.8\% detection result in 48,269 seconds, i.e.,
+it is dominated by 10-second \ToolEvoSuite{} generation
+with \VariantImprovedC{} generalization (Pareto point~\#9),
+which reaches a 53.8\% detection rate in 48,269 seconds, i.e.,
 a detection improvement of 2.2 percentage points achieved in 12.4\% less runtime.
-Increasing the runtime beyond this comparison point achieves even higher
+Increasing the runtime beyond this comparison point achieves higher
 detection rates in the generalized test suites
 that further extend the Pareto frontier (Pareto points \#10--\#14).
 
@@ -212,19 +192,31 @@ before reaching a plateau at around
 1.0--1.3 percentage points above the corresponding \ToolEvoSuite{} results
 (Section~\ref{sec:primary-effects-eval}.)
 
-Comparing \VariantNaive{} to \VariantImproved{},
-we find that both variants produce
-6 Pareto optimal results from their 9 evaluated configurations
+\begin{table}
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-eqbench}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \input{tables/tab-pareto-commons}
+  \end{minipage}
+\end{table}
+
+\VariantNaive{} and \VariantImproved{}
+both produce
+6 Pareto points from their 9 evaluated configurations
 for the \DatasetsEqBenchEs{} project
 (3 \ToolEvoSuite{} search budgets, each combined with 3 \tries{} settings).
-For the \DatasetsCommonsEs{} projects,
+For \DatasetsCommonsEs{},
 \VariantImproved{} has 7 of 9 of results on the Pareto frontier,
-compared to only 1 of 9 results produced by \VariantNaive{}.
+compared to 1 of 9 results of \VariantNaive{}.
 The underlying causes were previously discussed in RQ2 and RQ3
 (Section~\ref{sec:constraint-complexity-eval} and Section~\ref{sec:ancillary-effects-eval}):
-less complex constraints in the \DatasetsEqBenchEs{} project
-favor \VariantNaive{}, thus enabling it to be competitive with
-\VariantImproved{} despite its less sophisticated input generation approach.
+less complex constraints in \DatasetsEqBenchEs{}
+favor \VariantNaive{}, enabling it to be competitive with
+\VariantImproved{} despite its simpler input generation approach.
 In contrast, constraints are more complex for the \DatasetsCommonsEs{} projects.
 This increases the mutation detection rate and runtime advantage that
 \VariantImproved{} has over \VariantNaive{}
