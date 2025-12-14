@@ -1,6 +1,6 @@
 \begin{figure}[bph]
   \centering
-  \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
+  \includegraphics[width=.96\linewidth]{figures/fig_approach.drawio}
   \caption{Overview of Teralizer's test generalization process.}
   \Description{System architecture diagram showing Teralizer's five-stage pipeline.
   Input (left): Java Project box containing Implementation and Test Suite components.
@@ -18,17 +18,16 @@
 \section{Approach}
 \label{sec:approach}
 
-This section presents our semantics-based approach for automated test generalization,
-which transforms conventional unit tests into property-based tests
-by analyzing both test and implementation code.
-While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
-they traditionally require manual specification of constraints and properties,
-a barrier that limits adoption in practice~\cite{goldstein_2024_pbt_practice}.
-Our approach automates this transformation by extracting path-exact specifications
-through single-path symbolic analysis of existing test executions.
-We implement this approach in \ToolTeralizer{}, a prototype tool for Java
-that demonstrates the feasibility of semantics-based test generalization.
-
+This section presents our semantics-based approach for automated test generalization.
+% which transforms conventional unit tests into property-based tests
+% by analyzing both test and implementation code.
+% While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
+% they traditionally require manual specification of constraints and properties,
+% a barrier that limits adoption in practice~\cite{goldstein_2024_pbt_practice}.
+% Our approach automates this transformation by extracting path-exact specifications
+% through single-path symbolic analysis of existing test executions.
+We implemented this approach in \ToolTeralizer{}, a prototype tool for Java.
+%
 As shown in Figure~\ref{fig:approach-overview}, our approach follows a five-stage pipeline
 that takes the implementation and test code of a software project as input
 and produces generalized property-based tests as output:
@@ -36,20 +35,20 @@ and produces generalized property-based tests as output:
 (2)~tested method identification maps assertions to the methods that they validate through data flow analysis,
 (3)~specification extraction recovers input/output specifications from the tested methods through single-path symbolic analysis,
 (4)~generalized test creation produces property-based tests with three input generation strategies (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}),
-and (5)~test suite reduction filters generalized tests to retain only those that measurably improve the mutation score of the overall test suite.
+and (5)~test suite reduction filters tests to retain only those that measurably improve the mutation score of the test suite.
 
 We illustrate our approach with a running example.
 Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
 for exceptional, good, and bad performance.
-Listing~\ref{lst:original-test} shows a typical unit test that validates this method
-by testing one representative input for each performance level.
+Listing~\ref{lst:original-test} shows a typical unit test
+that tests one input for each performance level.
 While the test detects regressions that affect these three inputs,
-it misses regressions that affect other inputs within the same partitions.
+it misses regressions that affect other inputs in the same partitions.
 Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target}.
-Despite the change, the test still passes because the tested inputs still follow the same execution paths.
-However, boundary cases where \texttt{sales = 2 * target} now
+Despite the change, the test still passes,
+but boundary cases where \texttt{sales = 2 * target} now
 return the good performance bonus instead of the exceptional performance bonus.
-To detect such subtle regressions, \ToolTeralizer{} automatically transforms existing
+To detect such subtle regressions, \ToolTeralizer{} transforms existing
 unit tests into property-based tests that encode the intended behavior
 for all inputs in the covered input partitions.
 
