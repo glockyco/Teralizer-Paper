@@ -262,25 +262,23 @@ Nevertheless, as shown in Table~\ref{tab:runtime-per-project},
 \VariantNaiveC{} increases test suite runtime by 4.54 seconds
 (+57.1\% compared to \VariantOriginal{})
 whereas \VariantImprovedC{} only increases runtime by 0.74 seconds (+9.4\%).
-% The larger increase of \VariantNaive{} variants is caused by 
-% their input value generation approach.
 As described in Section~\ref{sec:three-variant-design},
-\VariantNaive{} generalization selects inputs for test execution
-by first randomly generating inputs
-that match the parameter types of the tested method,
-and then filtering any inputs that do not satisfy the input specification.
+\VariantNaive{} selects inputs
+by first randomly generating values
+that match the parameter types of the MUT,
+and then filtering any values that do not satisfy the input specification.
 Especially for cases with restrictive constraints (e.g., \texttt{a~==~b~\&\&~b~==~c}),
 this causes a large runtime overhead
 because many filter-and-regenerate cycles are required
-until a valid set of inputs is identified
-(or \ToolJqwik{} aborts the process due to \texttt{Too\-Many\-Filter\-Misses\-Exceptions}).
+until valid inputs are identified
+(or \ToolJqwik{} throws a \texttt{Too\-Many\-Filter\-Misses\-Exception}).
 \VariantImproved{} variants are less affected by this
-because they already consider (some) input constraints
-during initial input value generation
-(as described in Section~\ref{sec:three-variant-design}).
+because they encode (some) input constraints
+during input generation
+(Section~\ref{sec:three-variant-design}).
 As a result, fewer inputs need to be filtered and regenerated,
-which lessens the overall runtime impact of \VariantImproved{} generalization
-despite the more involved input value generation process.
+which lessens the runtime impact of \VariantImproved{} generalization
+despite its more involved input generation process.
 
 \paragraph{Complexity of Constraints}
 
