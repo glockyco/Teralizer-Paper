@@ -4,16 +4,13 @@
 While RQ1--4 demonstrate that \ToolTeralizer{} can improve mutation detection rates
 and operate within practical time constraints,
 our evaluation also revealed that many generalization attempts do not succeed.
-RQ5 investigates the causes of unsuccessful generalizations
-to identify potential directions for future work. 
-We first present the results for the primary
+In RQ5, we first present the results for the primary
 evaluation dataset, i.e., for the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
 to establish a baseline under controlled conditions
 that align with current tool capabilities
 (as explained in Section~\ref{sec:experimental-framework}).
-In RQ6, we then present the results under real-world conditions, i.e., for the RepoReapers projects,
-which reveal additional challenges that arise
-when attempting to fully automate the generalization of test suites in real-world projects.
+In RQ6, we then investigate the results for the RepoReapers projects
+to better understand real-world applicability challenges.
 
 As explained in Section~\ref{sec:approach},
 there are two different types of causes
@@ -22,26 +19,21 @@ from further processing:
 filtering and failures.
 Filtering preemptively excludes cases that are beyond the current capabilities of \ToolTeralizer{}
 to focus on suitable generalization candidates.
-Test-level filtering primarily occurs during Stage~1,
-assertion-level filtering during Stages~1 and 2,
-and generalization-level filtering during Stage~4.
 Even though a single filter rejection is enough
 to exclude a given test, assertion or generalization,
 \ToolTeralizer{} generally collects responses from all
 applicable filters to enable a more robust analysis of filtering causes.
 Despite preemptive filtering,
-some processing attempts fail due to runtime exceptions,
+some processing attempts fail due to exceptions that are thrown at runtime,
 prompting \ToolTeralizer{} to exclude the corresponding
 test, assertion or generalization from further processing once such an exception occurs.
 
 Table~\ref{tab:exclusions-breakdown}
 quantifies inclusion and exclusion rates
 of tests, assertion, and generalizations
-across our primary evaluation dataset
 while distinguishing between
 filtering-based and failure-based exclusions.
 A more fine-grained overview of filtering results
-that includes total counts of accepts, defers, and rejects
 is shown in Table~\ref{tab:exclusions-filtering}.
 Filters that defer do not cast a vote
 because they have insufficient information to make an accept or reject decision.
@@ -49,7 +41,7 @@ because they have insufficient information to make an accept or reject decision.
 \paragraph{Test-level Exclusions}
 
 Overall, 19,306 of 23,246 \VariantOriginal{} tests (83.1\%)
-across all variants of the primary evaluation dataset remain included (Table~\ref{tab:exclusions-breakdown}).
+across all variants of the primary evaluation dataset remain included.
 Filtering excludes 3,933 tests (16.9\%) due to filter rejections.
 The largest number of tests is rejected by the \texttt{NoAssertions} filter~(10.3\% of tests rejected),
 followed by the \texttt{NonPassingTest} filter~(6.6\%)
@@ -77,7 +69,7 @@ The \texttt{NoAssertions} filter operates on
 21,532 tests that remain 
 after exclusions due to test-level failures (7 tests)
 and rejections by the preceeding filters (1527 + 180 tests).
-From this subset, 2,226 tests are rejected by this filter
+From this subset, 2,226 tests are rejected
 because they do not directly contain any assertions in the test method.
 In \ToolEvoSuite{}-generated test suites, all \texttt{NoAssertions} exclusions
 are genuinely assertion-free tests that pass if no exception occurs during test execution.
@@ -96,8 +88,7 @@ which causes it to miss these delegated assertion calls
 \label{par:assertion-level-exclusions}
 
 Across the 28,923 identified assertions within the primary evaluation dataset,
-a total of 13,836~(47.8\%) are included and 15,087~(52.2\%) are excluded
-(Table~\ref{tab:exclusions-breakdown}).
+a total of 13,836~(47.8\%) are included and 15,087~(52.2\%) are excluded.
 Of these exclusions, 12,092 are the result of filtering rejections
 whereas 2,995 stem from failures during specification extraction via \ToolSPF{}.
 
@@ -105,33 +96,29 @@ Causes for the 2,995 assertion-level failures include \ToolSPF{} errors, \ToolTe
 and exceeded analysis limits.
 %(timeout, specification size limit, depth limit, etc.).
 SPF exceptions constitute 51.4\% of failures (1,540 assertions).
-They occur primarily because of missing models for native methods
+They occur primarily due to missing models for native methods
 in the current implementation of \ToolSPF{}
 and, to a lesser extent,
-because of implementation bugs in \ToolSPF{}/\ToolJPF{}.
+due to implementation bugs in \ToolSPF{}/\ToolJPF{}.
 Exceeded analysis limits account for 45.3\%
-of failed specification extractions (1,358 assertions).
-For example, 790 (26.4\%) \ToolSPF{} runs are interrupted
-after exceeding the configured maximum specification size,
-and 524 (17.5\%) runs exceed the configured maximum depth limit
+of failures (1,358 assertions):
+790 (26.4\%) \ToolSPF{} runs are interrupted
+after exceeding the maximum specification size,
+and 524 (17.5\%) runs exceed the maximum depth limit
 (Listing~\ref{lst:jpf-config}).
 Both of these aim to avoid timeouts and memory exhaustion
 in the presence of complex control flows or complex constraints.
 Further failures are due to timeouts (0.9\%, 28 assertions)
 and out-of-memory errors (0.5\%, 16 assertions)
-which evade preemptive detection via the two preceding measures.
-Exceptions due to null pointer dereferences
-represent the remaining 3.2\% of failures (97 assertions).
+which evade preemptive detection via the two preceeding measures.
+NullPointerExceptions represent the remaining 3.2\% of failures (97 assertions).
 
 A total of 5.5\% of identified assertions (1,597) are rejected by the \texttt{ExcludedTest} filter
 because they belong to tests that are already excluded at the test level.
 This cascading effect ensures consistency across processing stages.
 
-Another 2.6\% of assertions (743) are rejected by the \texttt{AssertionType} filter
-because \ToolTeralizer{}
-does not offer generalization support for them
-(Section~\ref{sec:test-assertion-analysis}).
-Specifically, excluded assertions comprise
+Another 2.6\% of assertions (743) are rejected by the \texttt{AssertionType} filter.
+Excluded assertions comprise
 reference equality checks (assertSame: 142, assertNotSame: 79),
 null checks (assertNull: 124, assertNotNull: 86),
 array comparisons (assertArrayEquals: 207),
@@ -139,8 +126,7 @@ inequality assertions (assertNotEquals: 54),
 type checks (assertInstanceOf: 18),
 and explicit failures (fail: 33).
 These assertions largely involve data types
-that are not supported by \ToolTeralizer{}'s
-current specification extraction.
+that are not supported by current symbolic analysis.
 
 The \texttt{MissingValue} filter excludes 24.7\% of assertions.
 A rejection occurs when \ToolTeralizer{}'s static analysis
@@ -150,7 +136,7 @@ resolved by Spoon (Section~\ref{sec:tested-method-identification}).
 Missing values also cause \texttt{ParameterType} and \texttt{VoidReturnType} filters to defer.
 
 The \texttt{ParameterType} filter rejects 15.4\% of assertions
-if none of the tested method's parameters
+where none of the tested method's parameters
 have generalizable types (numeric or boolean).
 Deferral numbers are lower than \texttt{MissingValue} rejections
 because, in some cases, \ToolTeralizer{} can infer parameter types from the call site
@@ -158,11 +144,8 @@ of the MUT even if the full method declaration cannot be resolved.
 
 Finally, the \texttt{VoidReturnType} filter rejects 3 assertions
 for tested methods with void return types.
-The current implementation of \ToolTeralizer{}
-does not support such methods because \ToolSPF{}
-does not report any symbolic outputs
-(i.e., symbolic representations of return values)
-for them. Consequently, no input-output specification can be inferred.
+The current implementation of \ToolTeralizer{} does not support such methods
+because no output specification can be inferred for them.
 
 \paragraph{Generalization-level Exclusions}
 \label{par:generalization-level-exclusions}
@@ -172,9 +155,7 @@ are due to \texttt{Non\-Passing\-Test} rejections.
 \VariantBaseline{} generalizations are affected by such rejections
 in 0.2\% of cases (22 of 13,836 generalized tests).
 This low rejection rate indicates
-that the transformation to property-based \ToolJqwik{} tests
-is largely successful in producing compilable code
-that matches the behavior of the original JUnit tests.
+that the transformation to \ToolJqwik{} tests is largely successful.
 The 22 test failures that force \texttt{NonPassingTest} to reject
 occur for tests in the \DatasetCommonsDev{} project
 that call MUTs or assertions within a loop.
@@ -193,11 +174,11 @@ which occur
 2,233 times (16.1\%) for \VariantNaiveA{},
 2,938 (21.2\%) for \VariantNaiveB{},
 and 3,005 (21.7\%) for \VariantNaiveC{}.
-These exceptions are thrown by \ToolJqwik{}
-if it cannot generate inputs that satisfy path constraints within its retry limit.
-Prevalence of these exceptions increases with higher \tries{} values
-as \VariantNaive{} input generation struggles to produce valid inputs,
-especially for more complex path constraints
+These occur when \ToolJqwik{}
+cannot generate valid inputs within its retry limit.
+Prevalence increases with higher \tries{}
+as \VariantNaive{} struggles to produce enough valid inputs,
+especially for more complex constraints
 (Section~\ref{sec:constraint-complexity-eval}).
 The remaining filtering-based exclusions occur due to 
 inaccurate input/output specifications which cause exceptions
@@ -206,12 +187,12 @@ or general test execution (\texttt{ArithmeticException}, 99 / 99 / 99 exclusions
 Underlying causes include
 (i) assertions in loops,
 (ii) assertions in transitively called methods,
-(iii) tested methods called within loops,
+(iii) MUT calls within loops,
 and (iv) implicit preconditions.
 While (i)--(iii) are limitations of \ToolTeralizer{},
 (iv)~can indicate unintended behavior in the \VariantOriginal{} tests
 such as potential divisions by 0 or under-/overflows that evade detection
-by the \VariantOriginal{} tests but are identified by the generalized tests created by \ToolTeralizer{}.
+by the \VariantOriginal{} tests but are identified by the tests created by \ToolTeralizer{}.
 
 \VariantImproved{} generalization strategies
 reduce overall exclusion rates from filtering-based rejections
@@ -233,18 +214,17 @@ and for \VariantNaiveC{} vs.\ \VariantImprovedC{} from 918 to 942 ($+$2.6\%).
 Project-specific patterns show how test characteristics
 and constraint complexity affect generalization success.
 Developer-written tests in \DatasetCommonsDev{}
-exhibit 11.5--14.2\% \texttt{Too\-Many\-Filter\-Misses\-Exception} rates
+exhibit 11.5--14.2\% \texttt{Too\-Many\-Filter\-Misses\-Exception}s
 and 24.7--25.7\% from inaccurate specifications.
-\ToolEvoSuite{}-generated tests in \DatasetsCommonsEs{} projects show 14.9--15.7\% and 12.7--15.3\%, respectively,
-while \ToolEvoSuite{}-generated tests in \DatasetsEqBenchEs{} projects show 5.7--6.0\% and 1.3\%.
-The 2$\times$ higher inaccurate specification failures
-in developer-written \DatasetCommonsDev{} tests
-compared to \ToolEvoSuite{}-generated \DatasetsCommonsEs{} tests
-reflects differences in test construction:
+\ToolEvoSuite{}-generated tests in \DatasetsCommonsEs{} show 14.9--15.7\% and 12.7--15.3\%, respectively,
+while \ToolEvoSuite{}-generated tests in \DatasetsEqBenchEs{} show 5.7--6.0\% and 1.3\%.
+The 2$\times$ higher inaccurate specification rate
+in \DatasetCommonsDev{} compared to \DatasetsCommonsEs{}
+reflects test construction differences:
 \ToolEvoSuite{}-generated tests avoid loops and do not invoke assertions through helper methods,
-while examined developer-written tests commonly use both patterns.
-The higher rates in \ToolEvoSuite{}-generated \DatasetsCommonsEs{} tests
-compared to \ToolEvoSuite{}-generated \DatasetsEqBenchEs{} tests --- despite identical test construction
+while the developer-written tests commonly use both patterns.
+The higher rates in \DatasetsCommonsEs{} tests
+compared to \DatasetsEqBenchEs{} tests --- despite identical test construction
 patterns --- reflects the impact of constraint complexity (Section~\ref{sec:constraint-complexity-eval}).
 
 Beyond filter rejections, \VariantNaive{} and \VariantImproved{} generalization strategies
