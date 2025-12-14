@@ -82,42 +82,39 @@ because the developer-written tests often contain multiple assertions.
 \subsubsection{Lines of Code in the Test Suite}
 \label{sec:test-suite-line-count}
 
-While test counts remain relatively stable through the test suite reduction mechanism,
+While test counts remain relatively stable due to test suite reduction,
 lines of code (LOC) increase across all projects and generalization variants.
 Table~\ref{tab:lines-per-project} shows increases of
-31.5--58.7\% for \DatasetsEqBenchEs{} projects,
-18.8--29.9\% for \DatasetsCommonsEs{} projects,
+31.5--58.7\% for \DatasetsEqBenchEs{},
+18.8--29.9\% for \DatasetsCommonsEs{},
 and 4.9--5.3\% for \DatasetCommonsDev{}.
 These increases correlate with the number of added tests
 rather than net test count changes.
-For example, for the \DatasetEqBenchA{} project,
-\VariantNaiveC{} adds 177 generalized tests and removes all 177 corresponding original tests.
+For example, \VariantNaiveC{} adds 177 generalized tests to \DatasetEqBenchA{}
+and removes all 177 corresponding original tests.
 However, the added tests increase test suite size by 11,780 LOC while the removed tests reduce LOC by only 1,127.
-This asymmetry between added and removed LOC stems from
-two characteristics inherent to \ToolTeralizer{}'s current implementation.
-
-\input{tables/tab-lines-per-project}
-
+This asymmetry stems from
+two characteristics of \ToolTeralizer{}'s current implementation.
 First, \ToolTeralizer{} encodes constraints explicitly in the source code of the created property-based tests
-(as described in Section~\ref{sec:three-variant-design}).
+(Section~\ref{sec:three-variant-design}).
 As a result, the LOC impact scales with parameter count and constraint complexity.
-\VariantImproved{} variants also show higher per-test LOC as a consequence of this mechanism 
+\VariantImproved{} variants also show higher per-test LOC
 because of their more sophisticated input generation logic.
 For example, \DatasetCommonsDev{}'s three generalized tests require
 36 additional LOC with \VariantImprovedC{} compared to \VariantNaiveC{}
 (9,018 vs.\ 8,982 total LOC).
-Methods with multiple parameters amplify this effect.
-
-Second, test isolation creates structural duplication.
+Second, test isolation creates duplication.
 \ToolTeralizer{} creates new test classes for each generalized method,
 copying imports, setup/teardown methods, helper functions, class fields, etc.
-from original test classes (as described in Section~\ref{sec:transformation-pipeline}).
-This architectural choice prioritizes safety over LOC efficiency,
-preventing unintended interactions between generalized and original tests
-while avoiding potential side effects on developer-written code.
+from original tests (Section~\ref{sec:transformation-pipeline}).
+This prioritizes safety over LOC efficiency,
+avoiding unintended interactions between generalized and original tests.
+
+\input{tables/tab-lines-per-project}
+
 
 The duplication overhead differs significantly between \ToolEvoSuite{}-generated and developer-written tests.
-\DatasetsEqBenchEs{} and \DatasetsCommonsEs{}  projectocts show similar overhead
+\DatasetsEqBenchEs{} and \DatasetsCommonsEs{}  projects show similar overhead
 (66-67 vs 62-63 LOC per added test, respectively),
 reflecting the uniformity of \ToolEvoSuite{}-generated tests.
 In contrast, \DatasetCommonsDev{} shows substantially higher overhead
