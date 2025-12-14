@@ -1,22 +1,22 @@
 \subsection{RQ2: How does constraint complexity affect random versus constraint-aware input generation?}
 \label{sec:constraint-complexity-eval}
 
-As previously discussed in Section~\ref{sec:overall-detection-rates},
-\VariantNaive{} test suite variants
-outperform \VariantImproved{}
-on \DatasetsEqBenchEs{} projects.
+As discussed in Section~\ref{sec:overall-detection-rates},
+\VariantNaive{} outperforms \VariantImproved{} on \DatasetsEqBenchEs{} projects.
 However, \DatasetsCommonsEs{} projects show \VariantImproved{}
 outperforming \VariantNaive{} in 7 of 9 cases.
-To provide a more thorough understanding of these contrasting results, we examine
-how constraint complexity differs between project types and
+To better understand these contrasting results, RQ2 examines
+how constraint complexity differs across projects and
 how it affects \VariantNaive{} versus \VariantImproved{}.
 As described in Section~\ref{sec:constraint-encoding},
-the \VariantImproved{} generalization strategy
-encodes simple in-/equalities on numeric and boolean variables or constants during input value generation.
+\VariantImproved{} tests
+encode simple in-/equalities on numeric and boolean variables or constants
+during input value generation.
 More complex constraints are not encoded
-in the initial input value generation of the \VariantImproved{} property-based tests
-but are still enforced during input value filtering,
-which takes place after initial input value generation.
+during \VariantImproved{} input generation
+--- and no constraints are encoded by \VariantNaive{} ---
+but are still enforced during input filtering
+which takes place after input generation.
 
 Table~\ref{tab:mutation-detection-comparison} shows the model properties
 of mutants that are (not) detected by \ToolTeralizer{}'s \VariantImprovedC{} generalization variant.
@@ -36,7 +36,6 @@ because it contains the compound term \texttt{b + 1}.
 Thus, \VariantImproved{} uses 2 of 3 total constraints for input value generation (66.7\% utilization),
 and the model contains 5 operators:
 \texttt{<}, \texttt{\&\&}, \texttt{==}, \texttt{+}, and another \texttt{\&\&}.
-%With these metrics established, we are ready to examine the observed results.
 
 \input{tables/tab-mutation-detection-comparison}
 
@@ -65,11 +64,11 @@ that match \VariantImproved{}'s encoding capabilities.
 and mathematical functions that are not modeled by \ToolTeralizer{},
 reducing the percentage of constraints that can guide input generation.
 
-These utilization differences explain the contrasting performance between project types.
-In the \DatasetsEqBenchEs{} projects, simple constraints enable effective boundary targeting for \VariantImproved{} variants,
-yet these same simple constraints make random generation followed by \VariantNaive{} variants viable.
-In fact, the higher constraint utilization even has detrimental effects
-on the overall detection rates of \VariantImproved{} variants for these projects
+These utilization differences explain the contrasting detection results.
+In \DatasetsEqBenchEs{}, simple constraints enable effective boundary targeting for \VariantImproved{},
+yet these same simple constraints make \VariantNaive{}'s random generation viable.
+The higher constraint utilization even has detrimental effects
+on \VariantImproved{} detection rates
 because the focus on boundary testing detracts from testing of intermediate values.
 As a result, detection rates for the very common \texttt{Math} mutations decrease,
 causing overall detection rates to go down despite detection rates for most other mutants increasing.
@@ -77,7 +76,7 @@ causing overall detection rates to go down despite detection rates for most othe
 \DatasetsCommonsEs{} projects present a different scenario.
 Complex constraints reduce \VariantImproved{}'s constraint utilization to 25--47\%,
 causing generalized tests to generate inputs from broader ranges
-that overapproximate the actual partition boundaries.
+that overapproximate the true partition boundaries.
 As a result, fewer partition boundaries are accurately identified,
 and the number of generated inputs that need to be excluded during filtering increases.
 Nevertheless, constraint utilization still reduces \texttt{Too\-Many\-Filter\-Misses\-Exception} failures
