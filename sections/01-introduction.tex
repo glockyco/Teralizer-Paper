@@ -8,7 +8,7 @@ Property-based testing~\cite{claessen_2000_quickcheck,hughes_2007_quickcheck} in
 and checks whether specified properties hold across executions.
 For example, given the $abs$ method in Figure~\ref{fig:regression-detection},
 a unit test which asserts that $abs(0)$ returns $0$ would 
-still pass after an changing \texttt{x >= 0} to \texttt{x == 0}, 
+still pass after changing \texttt{x >= 0} to \texttt{x == 0}, 
 whereas a property-based test which asserts $abs(x) = x$ for $x \geq 0$ 
 would expose this regression.
 Industrial experience reports suggest that property-based testing 
@@ -16,7 +16,7 @@ often uncovers edge cases and boundary conditions missed by unit tests~\cite{hug
 Adoption, however, remains limited because writing property-based tests 
 requires manual effort to define both input constraints and suitable properties,
 a task practitioners find challenging~\cite{goldstein_2024_pbt_practice}.
-This motivates research into automated transformation approaches
+This motivates research into transformation approaches
 that automatically generalize existing unit tests by deriving properties from program semantics.
 
 \begin{figure}[t]
@@ -68,7 +68,7 @@ In contrast, our white-box approach leverages both static and dynamic program an
 to extract exact specifications for the execution paths exercised by the original tests.
 
 We implemented this approach in \ToolTeralizer{}, a prototype tool for Java
-that transforms JUnit tests into property-based \ToolJqwik{} \cite{link_2022_jqwik} tests.
+that transforms JUnit tests into property-based \ToolJqwik{}~\cite{link_2022_jqwik} tests.
 \ToolTeralizer{} employs a five-stage pipeline:
 (1)~analyzing tests and their assertions regarding suitability for generalization,
 (2)~identifying tested methods through data flow analysis,
