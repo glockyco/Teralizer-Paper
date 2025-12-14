@@ -1,24 +1,15 @@
 \subsection{RQ6: What are the causes of unsuccessful generalization attempts under real-world conditions?}
 \label{sec:limitations-eval-extended}
 
-RQ5 established the causes of unsuccessful generalizations
-under controlled conditions where projects were selected to align with \ToolTeralizer{}'s capabilities.
-Real-world application, however, faces projects with testing practices and code patterns
-that may introduce challenges beyond those observed in controlled settings.
-This research question examines how \ToolTeralizer{} performs
-on 632 real-world Java projects from the RepoReapers dataset
-(Section~\ref{sec:experimental-framework}),
-evaluating the practical applicability of the approach
-and identifying which barriers prevent fully automated generalization.
-
-Section~\ref{sec:project-level-exclusions-extended} examines project-level exclusions
-that prevent entire projects from completing the generalization pipeline.
-We list exclusion causes by stage and identify whether they primarily stem from
-\ToolTeralizer{}'s internal design decisions and evaluation setup or external tool limitations.
+RQ5 established exclusion causes under controlled conditions.
+RQ6 now examines how \ToolTeralizer{} performs
+on 632 Java projects from the RepoReapers dataset
+(Section~\ref{sec:experimental-framework})
+to identify generalization barriers in real-world projects.
+Section~\ref{sec:project-level-exclusions-extended} examines project-level exclusions.
 Section~\ref{sec:test-assertion-generalization-exclusions-extended} then examines
 test, assertion, and generalization exclusions,
-distinguishing between filtering-based and failure-based exclusions
-and comparing exclusion rates to controlled settings.
+comparing exclusion rates to controlled settings.
 Full project-level exclusions and
 partial test, assertion and generalization exclusions are interconnected:
 when filtering or failures exclude all tests, assertions, or generalizations in a project,
@@ -194,9 +185,6 @@ Since most exclusions occur in the \VariantShared{} processing stages,
 differences across generalization strategies are minor.
 Full results are available in our replication package~\cite{replicationpackage}.
 
-\input{tables/tab-exclusions-breakdown-extended}
-\input{tables/tab-exclusions-filtering-extended}
-
 \paragraph{Test-level Exclusions}
 \label{par:real-world-test-exclusions}
 
@@ -217,6 +205,9 @@ tests that are rejected by the \texttt{NoAssertions} filter but actually contain
 which \ToolTeralizer{}'s interprocedural static analysis does not detect.
 Given that RepoReapers exclusively contains developer-written tests,
 these rejections are likely to contain a high rate of false positives as well.
+
+\input{tables/tab-exclusions-breakdown-extended}
+\input{tables/tab-exclusions-filtering-extended}
 
 The \texttt{NonPassingTest} filter rejects 11.8\% of real-world tests
 compared to the 6.6\% rejection rate under controlled conditions.
