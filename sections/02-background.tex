@@ -49,19 +49,19 @@ from incidental state changes or outputs.
 \subsection{Property-Based Testing as Target Representation}
 \label{sec:property-based-testing}
 
-Property-based testing (PBT), pioneered by QuickCheck for Haskell~\cite{claessen_2000_quickcheck}
-and now available through frameworks like ScalaCheck for Scala~\cite{nilsson_2014_scalacheck},
-Hypothesis for Python~\cite{maciver_2019_hypothesis}, and \ToolJqwik{} for Java~\cite{link_2022_jqwik},
-validates specifications over entire input partitions rather than single test cases.
+Property-based testing (PBT) --- pioneered by QuickCheck for Haskell~\cite{claessen_2000_quickcheck}
+and now available via, e.g., ScalaCheck for Scala~\cite{nilsson_2014_scalacheck},
+Hypothesis for Python~\cite{maciver_2019_hypothesis}, and \ToolJqwik{} for Java~\cite{link_2022_jqwik} ---
+validates specifications over input partitions rather than single inputs.
 %
 PBT frameworks comprise three key components.
 \emph{Generators} produce inputs according to specified constraints, such as $x \geq 0$.
 \emph{Properties} express invariants that must hold for all generated inputs,
 such as $abs(x) = x$ for non-negative $x$.
 \emph{Shrinking} minimizes failing inputs to simplify debugging,
-such as reducing a failing input from 776,837 to 1.
+such as reducing the input 776,837 to 1.
 This generative approach distinguishes PBT from parameterized testing,
-which commonly relies on a predefined set of developer-supplied inputs.
+which commonly relies on predefined inputs.
 
 For example, the property-based test in Figure~\ref{fig:regression-detection}
 uses \texttt{@Property} to indicate property-based testing
