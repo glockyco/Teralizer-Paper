@@ -1,7 +1,4 @@
-\section{Approach}
-\label{sec:approach}
-
-\begin{figure}[b]
+\begin{figure}[bph]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_approach.drawio}
   \caption{Overview of Teralizer's test generalization process.}
@@ -17,6 +14,9 @@
   Thick arrows connect input to Teralizer and Teralizer to output.}
   \label{fig:approach-overview}
 \end{figure}
+
+\section{Approach}
+\label{sec:approach}
 
 This section presents our semantics-based approach for automated test generalization,
 which transforms conventional unit tests into property-based tests
@@ -37,6 +37,21 @@ and produces generalized property-based tests as output:
 (3)~specification extraction recovers input/output specifications from the tested methods through single-path symbolic analysis,
 (4)~generalized test creation produces property-based tests with three input generation strategies (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}),
 and (5)~test suite reduction filters generalized tests to retain only those that measurably improve the mutation score of the overall test suite.
+
+We illustrate our approach with a running example.
+Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
+for exceptional, good, and bad performance.
+Listing~\ref{lst:original-test} shows a typical unit test that validates this method
+by testing one representative input for each performance level.
+While the test detects regressions that affect these three inputs,
+it misses regressions that affect other inputs within the same partitions.
+Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target}.
+Despite the change, the test still passes because the tested inputs still follow the same execution paths.
+However, boundary cases where \texttt{sales = 2 * target} now
+return the good performance bonus instead of the exceptional performance bonus.
+To detect such subtle regressions, \ToolTeralizer{} automatically transforms existing
+unit tests into property-based tests that encode the intended behavior
+for all inputs in the covered input partitions.
 
 {
 \begin{genericfloat}[tbph]
@@ -83,21 +98,6 @@ void testCalculate() {
 \end{minipage}
 \end{genericfloat}
 }
-
-We illustrate our approach with a running example.
-Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
-for exceptional, good, and bad performance.
-Listing~\ref{lst:original-test} shows a typical unit test that validates this method
-by testing one representative input for each performance level.
-While the test detects regressions that affect these three inputs,
-it misses regressions that affect other inputs within the same partitions.
-Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target}.
-Despite the change, the test still passes because the tested inputs still follow the same execution paths.
-However, boundary cases where \texttt{sales = 2 * target} now
-return the good performance bonus instead of the exceptional performance bonus.
-To detect such subtle regressions, \ToolTeralizer{} automatically transforms existing
-unit tests into property-based tests that encode the intended behavior
-for all inputs in the covered input partitions.
 
 While the underlying generalization approach is independent of
 specific programming languages or project environments,
