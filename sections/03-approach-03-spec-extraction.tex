@@ -37,7 +37,7 @@ registers a custom \texttt{TestGeneralizationListener} for specification extract
 and configures relevant resource limits.
 
 {
-\begin{genericfloat}[tbph]
+\begin{genericfloat}[b]
 \newpage{}
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
@@ -61,7 +61,6 @@ public class Instrumented {
     int b2 = this.wrapper(c, 1500, 1000);
     ...
   }
-
   int wrapper(
     BonusCalculator c, int sales, int target
   ) {
@@ -84,7 +83,6 @@ listener=teralizer.jpf.TestGeneralizationListener
 teralizer.max_execution_time=60.0
 teralizer.max_path_condition_size=100000
 search.depth_limit=100
-
 ...
 \end{lstlisting}
 
@@ -110,9 +108,10 @@ The second step, symbolic analysis, executes these artifacts with \ToolSPF{}.
 For the \textit{good performance} case with concrete inputs (1500, 1000),
 the first if condition \texttt{sales / 2 >= target}
 in the \texttt{calculate} method (see Listing~\ref{lst:bonus-method})
-evaluates to false (i.e., 1500 / 2 is \textit{not} greater than or equal to 1000),
+evaluates to false, %(i.e., 1500 / 2 is \textit{not} greater than or equal to 1000),
 so \ToolSPF{} records the negated constraint \texttt{sales / 2 < target}.
-The second if condition \texttt{sales >= target} evaluates to true (i.e., 1500 \textit{is} greater than or equal to 1000),
+The second if condition \texttt{sales >= target} evaluates to true,
+%(i.e., 1500 \textit{is} greater than or equal to 1000),
 adding \texttt{sales >= target} to the accumulated path condition.
 When the wrapper method returns, our custom \texttt{TestGeneralizationListener}
 captures the complete path condition
