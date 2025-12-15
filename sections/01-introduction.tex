@@ -51,7 +51,7 @@ that automatically generalize existing unit tests by deriving properties from pr
 \end{figure}
 
 We propose a semantics-based approach for automated test generalization
-that analyzes both test code and implementation code
+that analyzes both test and implementation code
 to derive path-exact specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic}.
 Our method determines which inputs follow the same execution path as existing tests
 and transforms unit tests into property-based tests
@@ -59,7 +59,7 @@ that validate the same assertions across entire input partitions.
 Because specifications are extracted directly from program semantics,
 the resulting properties are exact for each execution path
 and preserve the developer-provided oracles encoded in assertions.
-This enables thorough testing within those validated behaviors.
+%This enables thorough testing within those validated behaviors.
 To our knowledge, JARVIS~\cite{peleg_2018_jarvis} is the only prior work
 that automatically generalizes unit tests into property-based tests.
 However, JARVIS infers properties from input-output examples based solely on test code,
@@ -80,40 +80,39 @@ showing how a simple equality assertion $abs(0) = 0$
 becomes the property $abs(x) = x$,
 valid for all non-negative values of $x$.
 
-To evaluate the potential and limitations of semantics-based test generalization,
+To evaluate our approach,
 we applied \ToolTeralizer{} to three complementary datasets.
-First, the \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled settings
+The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled settings
 with numeric-focused programs well-suited for symbolic analysis.
 Because \DatasetEqBench{} lacks test suites, we generated tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
-Second, utility methods extracted from Apache Commons projects
+Utility methods extracted from Apache Commons projects
 offer a middle ground between controlled and real-world scenarios.
 Here, we directly compared \ToolEvoSuite{}-generated and developer-written tests
-on the same codebase, partially isolating the influence of test architecture and quality on generalization outcomes.
+on the same codebase, partially isolating the influence of test architecture on generalization outcomes.
 Finally, we applied \ToolTeralizer{} to 632 real-world Java projects with developer-written tests
 from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
 to expose the full complexity of practical application scenarios.
 This progression from controlled to real-world conditions highlights
-the achievable fault-detection improvements
-as well as the theoretical and practical limitations of the proposed approach.
+both the potential and limitations of semantics-based test generalization.
 
 Our evaluation shows modest yet consistent improvements under controlled conditions.
 On \ToolEvoSuite{}-generated tests, mutation scores increased by 1--4 percentage points:
 from 48--52\% to 52--55\% on \DatasetEqBench{},
 and from 57--58\% to 58--59\% on Apache Commons utilities.
 In contrast, generalization of developer-written tests for Apache Commons utilities
-showed minimal improvement of 0.05--0.07 percentage points from a baseline of 80.35\%.
-This shows that the tests of these projects already detected most of the faults targeted by automated generalization.
-Beyond mutation detection improvements,
-the results from the RepoReapers projects revealed practical applicability barriers:
+showed only 0.05--0.07 percentage points improvement from a baseline of 80.35\%.
+% This shows that the tests of these projects already detected most of the faults targeted by automated generalization.
+%Beyond mutation detection improvements,
+Results from the RepoReapers projects revealed practical applicability barriers:
 % our analysis of 632 real-world projects reveals practical applicability barriers:
-only 1.7\% of projects successfully completed the full generalization pipeline.
+only 1.7\% of projects successfully completed the generalization pipeline.
 Failures primarily occurred due to 
 type support limitations of symbolic analysis
 as well as static analysis limitations
-of our current implementation of \ToolTeralizer{}.
+of our prototype.
 To provide a roadmap for future work,
-we classify these failures into
-those that can be resolved through additional engineering effort
+we classified these failures into
+those that can be resolved through engineering effort
 and those that represent deeper research challenges in specification extraction and encoding.
 
 This paper makes the following contributions:
@@ -134,9 +133,9 @@ under conditions suitable for symbolic analysis.
 % and filtering outcomes that explain why 98.3\% of real-world generalizations fail.
 
 \item \textbf{Analysis of applicability challenges:}
-We analyze barriers to practical test generalization,
-distinguishing addressable engineering limitations
-(e.g., identifying tested methods in complex control flow, detecting assertions in helper methods)
+We analyze test generalization barriers,
+distinguishing engineering limitations
+(e.g., identifying tested methods in complex control flow)
 from fundamental research challenges (e.g., constraint encoding for non-numeric types),
 and provide concrete guidance for advancing the field.
 

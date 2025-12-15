@@ -1,4 +1,4 @@
-\begin{figure}[bph]
+\begin{figure}[tbph]
   \centering
   \includegraphics[width=.96\linewidth]{figures/fig_approach.drawio}
   \caption{Overview of Teralizer's test generalization process.}
@@ -53,7 +53,7 @@ unit tests into property-based tests that encode the intended behavior
 for all inputs in the covered input partitions.
 
 {
-\begin{genericfloat}[tbph]
+\begin{genericfloat}[b]
 \newpage{}
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
@@ -110,7 +110,7 @@ used by the target project and injects necessary dependencies including
 and \ToolJacoco{}~\cite{jacoco} for coverage tracking,
 thus ensuring full automation without the need for manual preprocessing steps.
 
-The following subsections detail each stage of the main generalization process as implemented in \ToolTeralizer{}.
+The following subsections detail each stage of the generalization process as implemented in \ToolTeralizer{}.
 Section~\ref{sec:test-assertion-analysis} explains test and assertion analysis.
 Section~\ref{sec:tested-method-identification} describes tested method identification.
 Section~\ref{sec:specification-extraction} presents input/output specification extraction

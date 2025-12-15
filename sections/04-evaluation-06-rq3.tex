@@ -163,8 +163,6 @@ Runtime increases are primarily affected by the following factors:
   \item the complexity of input partition constraints.
 \end{enumerate}
 
-\input{tables/tab-runtime-per-project}
-
 \paragraph{Added and Removed Tests}
 
 Execution of conventional JUnit tests has a lower runtime cost
@@ -227,9 +225,11 @@ would require a more thorough microbenchmarking setup
 that properly accounts for confounding factors such as JVM warmup,
 which is beyond the scope of this evaluation.
 
+\input{tables/tab-runtime-per-project}
+
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{figures/fig_test_runtime_differences}
+  \includegraphics[width=.95\linewidth]{figures/fig_test_runtime_differences}
   \caption{
     Runtime comparison between original and generalized tests.
     The runtime differences measure how much longer generalized tests take to execute, on average, compared to corresponding original tests.

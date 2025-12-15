@@ -5,10 +5,9 @@ This section provides the technical foundations for semantics-based test general
 Section~\ref{sec:test-amplification} situates our work
 within the test amplification landscape.
 Section~\ref{sec:property-based-testing}
-introduces property-based testing as our target representation,
-highlighting its ability to validate entire input partitions rather than single test cases.
+introduces property-based testing as our target representation.
 Section~\ref{sec:symbolic-analysis} describes single-path symbolic analysis,
-the technique we use to extract path-exact specifications from existing test executions.
+the technique we use specifications extraction.
 Finally, Section~\ref{sec:mutation-testing}
 presents mutation testing as our evaluation methodology
 for assessing the effectiveness of generalized tests.
@@ -24,7 +23,7 @@ AMP\textsubscript{add} creates new tests from existing ones,
 AMP\textsubscript{change} targets specific program modifications,
 AMP\textsubscript{exec} varies execution conditions,
 and AMP\textsubscript{mod} modifies test structure or assertions to generalize behavior.
-
+%
 Test generalization belongs to the AMP\textsubscript{mod} category. 
 It transforms tests from validating individual input-output pairs
 to validating properties across entire input partitions.
@@ -37,7 +36,7 @@ which should hold when $x \geq 0$
 Since this property is implicitly encoded in the original test,
 we can automatically transform the test
 into a corresponding property-based test (Figure~\ref{fig:generalization}).
-
+%
 A central challenge in test amplification approaches is the oracle problem:
 determining expected outputs for new test inputs~\cite{barr_2015_oracle}.
 Existing tests provide validated oracles for their specific execution paths,

@@ -1,12 +1,13 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-Test generalization strengthens the mutation scores of existing test suites
-by exploring additional inputs within already-covered execution paths.
-Our approach automates the transformation from
-conventional unit tests to property-based tests, reducing the manual effort
-required to perform such a transformation.
-We empirically evaluate the potential and limitations of semantics-based test generalization
+% Test generalization strengthens the mutation scores of existing test suites
+% by exploring additional inputs within already-covered execution paths.
+% Our approach automates the transformation from conventional unit tests
+% to property-based tests, thereby reducing the manual effort
+% that would otherwise be required to perform such a transformation.
+We evaluate the benefits, costs, and limitations
+of semantics-based test generalization
 through six research questions:
 
 \begin{itemize}
@@ -18,13 +19,13 @@ through six research questions:
   \item \textbf{RQ6:} What are the causes of unsuccessful generalization attempts under real-world conditions?
 \end{itemize}
 
-These questions progress from measuring direct effects to understanding practical constraints.
-RQ1 establishes effectiveness through mutation score improvements.
-RQ2 explores how constraint complexity affects mutation score improvements of \VariantNaive{} and \VariantImproved{}.
-RQ3 quantifies effects on test suite size and execution time.
-RQ4 examines the runtime cost and efficiency of test generalization compared to test generation via \ToolEvoSuite{}.
-RQ5 and RQ6 analyze failure cases to identify current limitations and guide future improvements.
+% These questions progress from measuring direct effects to understanding practical constraints.
+% RQ1 establishes effectiveness through mutation score improvements.
+% RQ2 explores how constraint complexity affects mutation score improvements of \VariantNaive{} and \VariantImproved{}.
+% RQ3 quantifies effects on test suite size and execution time.
+% RQ4 examines the runtime cost and efficiency of test generalization compared to test generation via \ToolEvoSuite{}.
+% RQ5 and RQ6 analyze failure cases to identify current limitations and guide future improvements.
 Section~\ref{sec:experimental-framework} describes our experimental setup and methodology.
 Sections~\ref{sec:primary-effects-eval}--\ref{sec:limitations-eval-extended} present results.
 All experiments were run on a MacBook Air (M2, 24~GB RAM) with default JVM settings.
-All collected data is available in our replication package~\cite{replicationpackage}.
+All data is available in our replication package~\cite{replicationpackage}.

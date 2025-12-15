@@ -12,13 +12,13 @@ Second, when a test validates multiple MUTs,
 we must determine which MUT call corresponds to each assertion
 so we can replace the expected value used in the assertion
 with the right output specification when creating the corresponding generalized test.
-Our current implementation of \ToolTeralizer{} achieves this
+\ToolTeralizer{} achieves this
 through static analysis based on Spoon~\cite{pawlak_2016_spoon}
 that traces output values validated by assertions
 back to the method calls that produced them.
-As a result, \ToolTeralizer{} collects descriptions of
-identified MUTs (source code locations, method signatures, etc.)
-as well as mappings that connect each MUT call to a corresponding assertion.
+% As a result, \ToolTeralizer{} collects descriptions of
+% identified MUTs (source code locations, method signatures, etc.)
+% as well as mappings that connect each MUT call to a corresponding assertion.
 
 Consider the \texttt{testCalculate} method in Listing~\ref{lst:original-test}.
 To identify MUT calls in this method,
@@ -32,22 +32,21 @@ Since all three arguments are local variables,
 For example, for \texttt{b1}, Spoon identifies \texttt{int b1 = c.calculate(2500, 1000)} as the definition.
 Since the right side of the assignment is a method call,
 \ToolTeralizer{} marks it as a MUT call, storing a description of the method
-as well as a mapping to the corresponding \texttt{assertEquals(250, b1)} call in its database.
+as well as a mapping to the corresponding \texttt{assertEquals(250, b1)} call.
 Processing \texttt{b2} and \texttt{b3} similarly identifies
 \texttt{c.calculate(1500, 1000)} and \texttt{c.calculate(500, 1000)}
 as the MUT calls for the second and third assertions.
 
 Processing for other assertion types and code structures follows similar patterns.
-\ToolTeralizer{} always identifies the assertion argument
-that represents the (output of the) MUT call
-as its first processing step.
+\ToolTeralizer{} first identifies the assertion argument
+that represents the (output of the) MUT call.
 If the argument is a method call,
 \ToolTeralizer{} directly marks it as a MUT call.
 Otherwise, \ToolTeralizer{} aims to identify
-a corresponding method call from the argument.
-For example, for local variables,
+a MUT call from the argument.
+For local variables,
 it traces them back to their definition
-using the simple static data flow analysis based on Spoon
+using the simple data flow analysis based on Spoon
 we described in the previous paragraph.
 For lambda expressions, which are commonly used
 as the \texttt{executable} argument of 
@@ -56,24 +55,23 @@ assertions,
 \ToolTeralizer{} instead marks the last method call within the lambda expression as the MUT call,
 following the heuristic that the last call typically triggers the expected exception.
 
-Similar to test and assertion filtering,
-\ToolTeralizer{} applies three filters to exclude MUTs that
-are unsuitable for generalization:
+\ToolTeralizer{} applies three filters
+to exclude unsuitable MUTs:
 \texttt{MissingValue}, \texttt{ParameterType}, and \texttt{ReturnType}.
 The \texttt{MissingValue} filter rejects cases where
-\ToolTeralizer{} cannot identify a MUT for a given assertion
-or cannot extract the full method signature for an identified MUT.
+\ToolTeralizer{} cannot identify a MUT for an assertion
+or cannot extract a method signature for an identified MUT.
 Common causes for this include
 reversed \texttt{expected} and \texttt{actual} arguments (e.g., \texttt{assertEquals(abs(0), 0)}),
 validation of object fields set as side effects rather than return values (e.g., \texttt{assertEquals(3, a.length)}),
-and MUTs within inheritance hierarchies that Spoon cannot resolve.
+and MUTs in inheritance hierarchies that Spoon cannot resolve.
 The \texttt{ParameterType} and \texttt{ReturnType} filters reject MUTs
 that use unsupported types for all of the MUT's parameters or return values.
 While methods with mixed parameter types can be partially generalized
 (numeric and boolean parameters become test inputs; others remain unchanged),
 \ToolSPF{} cannot extract complete constraints
 for strings, arrays, and objects.
-This limitation aligns with current symbolic analysis capabilities
+This is due to symbolic analysis limitations
 discussed in Section~\ref{sec:symbolic-analysis}.
 Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended}
 evaluate the exclusion rates of all filters.

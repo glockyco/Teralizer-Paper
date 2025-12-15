@@ -1,17 +1,17 @@
 \subsection{Test and Assertion Analysis}
 \label{sec:test-assertion-analysis}
 
-To transform unit tests into property-based tests, we must first identify which tests and assertions
-are suitable candidates for generalization.
-Not all tests reach this standard: real test suites commonly contain tests without assertions,
-operations on complex data structures that resist symbolic analysis, or even failing tests.
-Generalizable tests must contain explicit assertions that capture input-output relationships,
-operate on data types that symbolic analysis can model accurately, and pass reliably.
-This stage builds a database of tests and assertions that meet these criteria,
-filtering out unsuitable candidates.
-By filtering early in the processing pipeline,
-we avoid spending computational resources on unviable generalization attempts
-and systematically track how prevalent different barriers to generalization are in practice.
+% To transform unit tests into property-based tests, we must first identify which tests and assertions
+% are suitable candidates for generalization.
+% Not all tests reach this standard: real test suites commonly contain tests without assertions,
+% operations on complex data structures that resist symbolic analysis, or even failing tests.
+% Generalizable tests must contain explicit assertions that capture input-output relationships,
+% operate on data types that symbolic analysis can model accurately, and pass reliably.
+% This stage builds a database of tests and assertions that meet these criteria,
+% filtering out unsuitable candidates.
+% By filtering early in the processing pipeline,
+% we avoid spending computational resources on unviable generalization attempts
+% and systematically track how prevalent different barriers to generalization are in practice.
 
 To identify generalization candidates, \ToolTeralizer{} collects descriptions of all tests and assertions in the codebase.
 First, it executes the original test suite to generate JUnit XML reports.
@@ -51,6 +51,6 @@ The \texttt{AssertionType} filter excludes unsupported assertions such as refere
 and structural comparisons (\texttt{assertArrayEquals}, \texttt{assertInstanceOf})
 that operate on data types current symbolic execution cannot accurately model.
 The \texttt{ExcludedTest} filter excludes assertions from tests already filtered at the test level.
-These filters produce a refined database of potentially generalizable assertions,
-annotated with the type information, arguments, and source locations
-required for the next stage to identify which methods each assertion validates.
+% These filters produce a database of potentially generalizable assertions,
+% annotated with the type information, arguments, and source locations.
+%required for the next stage to identify which methods each assertion validates.

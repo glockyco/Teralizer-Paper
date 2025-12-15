@@ -1,29 +1,28 @@
 \section{Discussion}
 \label{sec:discussion}
 
-Our evaluation results demonstrate that
+Our evaluation shows that
 semantics-based test generalization via symbolic analysis
 is viable but currently constrained to
 specific application environments and test architectures.
-Under controlled conditions that match current tool capabilities,
-\ToolTeralizer{} successfully generalizes 40.1\% of assertions (RQ5)
-and improves mutation detection by 1--4 percentage points (RQ1).
-As a post-processing step for generated tests,
-generalization offers competitive efficiency.
-For example, combining 1-second \ToolEvoSuite{} generation with \ToolTeralizer{}'s generalization
-achieves comparable mutation detection to 60-second generation alone
+Under controlled conditions that match current capabilities,
+\ToolTeralizer{} successfully generealized 40.1\% of assertions (RQ5)
+and improved mutation detection by 1--4 percentage points (RQ1).
+As post-processing for generated tests,
+generalization offers competitive efficiency:
+combining 1-second \ToolEvoSuite{} generation with \ToolTeralizer{}'s generalization
+achieved comparable mutation detection to 60-second generation
 while reducing processing time by 31.9\% (RQ4).
-However, fully automated generalization of real-world projects
+Generalization of real-world projects
 faces substantial barriers (RQ6):
-only 0.6\% of assertions pass early analysis and filtering stages
+only 0.6\% of assertions passed analysis and filtering stages
 (versus 47.8\% under controlled conditions),
-only 0.2\% of assertions successfully generalize,
-and only 1.7\% of real-world projects complete the processing pipeline.
+only 0.2\% of assertions successfully generalized,
+and only 1.7\% of real-world projects completed the processing pipeline.
 This section discusses when and why generalization succeeds (Section~\ref{sec:when-it-works}),
 when and why it fails (Section~\ref{sec:when-it-fails}),
 and how future research and engineering efforts
-can further improve the effectiveness, efficiency, and applicability
-of semantics-based test generalization approaches (Section~\ref{sec:how-to-improve}).
+can improve generalization effectiveness, efficiency, and applicability (Section~\ref{sec:how-to-improve}).
 
 \subsection{When and Why Generalization Succeeds}
 \label{sec:when-it-works}
@@ -45,14 +44,14 @@ without complex setup logic, loops, or interprocedural control flow.
 % reliable static analysis for identifying tested methods
 % and extracting path-exact specifications through \ToolSPF{}'s single-path symbolic analysis.
 
-When the described conditions are satisfied,
+When these conditions are satisfied,
 \ToolTeralizer{} achieves moderate mutation score improvements at reasonable runtime cost.
-Generalization increases mutation scores by 1.2--3.9 percentage points in \DatasetsEqBenchEs{} projects
-and by 0.82--1.33 percentage points in \DatasetsCommonsEs{} projects
+Mutation scores increased by 1.2--3.9 percentage points in \DatasetsEqBenchEs{}
+and by 0.82--1.33 percentage points in \DatasetsCommonsEs{}
 compared to \ToolEvoSuite{}-generated baselines (Figure~\ref{fig:mutation-detection-results}).
-Beyond effectiveness, generalization offers competitive efficiency when combined with test generation,
-where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
-and \ToolTeralizer{} achieves depth through partition-based input generation within already-covered test execution paths.
+Beyond effectiveness, generalization offers competitive efficiency when combined with test generation.
+% where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
+% and \ToolTeralizer{} achieves depth through partition-based input generation within already-covered test execution paths.
 For example, 1-second \ToolEvoSuite{} generation combined with \VariantNaiveB{} generalization
 achieves 51.7\% mutation detection rate in 37,532 seconds, thus outperforming 60-second generation alone
 which achieves 51.6\% mutation detection rate in 55,075 seconds (Figure~\ref{fig:teralizer-efficiency}).
@@ -93,7 +92,7 @@ all other generalization strategies
 \subsection{When and Why Generalization Fails}
 \label{sec:when-it-fails}
 
-As shown by RQ6, generalization fails
+As shown by RQ6, generalization failed
 for the vast majority of evaluated real-world projects
 (Section~\ref{sec:limitations-eval-extended}).
 We identify three high-level causes that explain these high exclusion rates.
@@ -206,15 +205,14 @@ that would be revealed if type and assertion support were improved.
 \paragraph{Dependencies and Environment}
 \label{par:environmental-issues}
 
-Generalization success rates are also affected by
+Generalization success is also affected by
 execution errors in \ToolTeralizer{}'s dependencies
-as well as environmental factors such as enforced resource limits.
-These factors are beyond the control of the generalization approach itself
-but still account for 128 direct project-level exclusions (20.3\% of projects).
+and environmental factors such as resource limits.
+These factors are beyond the control of the generalization approach
+but account for 128 direct project-level exclusions (20.3\% of projects).
 Furthermore, they contribute to 
 129 test-related exclusions (20.4\%)
-and 266 assertion-related exclusions (42.1\%),
-albeit to a comparatively small degree.
+and 266 assertion-related exclusions (42.1\%).
 The 128 project-level exclusions are caused by 89 timeouts
 (Table~\ref{tab:processing-failures}, rows \#3, \#10, and \#13)
 and 39 dependency errors
@@ -227,11 +225,11 @@ and the 266 assertion-related exclusions are affected by
 \texttt{MissingValue} rejections (57.9\%,
 33\% of which are cases where Spoon
 is unable to resolve the declaration of an identified MUT,
-as explained in Section~\ref{par:real-world-assertion-exclusions}),
-and failures during \ToolSPF{} execution (0.3\%).
+see Section~\ref{par:real-world-assertion-exclusions}),
+and \ToolSPF{} execution failures (0.3\%).
 \ToolSPF{} failures are underrepresented
 because most assertions are excluded before
-the specification extraction stage.
+specification extraction.
 Among the 1093 assertions that reach \ToolSPF{},
 382 (34.9\%) fail due to \ToolSPF{} errors
 and enforced resource limits
@@ -363,30 +361,22 @@ Efficiency improvements could be implemented along the following three dimension
 (ii)~test suite runtime, which determines execution cost after generalization,
 and (iii)~test suite size, which primarily affects maintenance overhead.
 
-\paragraph{Tool Runtime}
-
+\textit{Tool Runtime.}
 Processing costs are dominated by mutation testing,
 which consumes 59.1--95.7\% of total pipeline runtime
 (Figure~\ref{fig:teralizer-runtimes}).
-However, not all mutation operators benefit equally from generalization:
-\texttt{Math}, \texttt{ConditionalsBoundary}, and \texttt{RemoveConditionalEqualElse}
-show the largest detection improvements,
-while return value mutations show near-zero improvement
-from their high baseline detection rates
+However, not all mutation operators benefit equally from generalization
 (Table~\ref{tab:detections-per-mutator}).
-Focusing mutation testing on operators where generalization provides
-the most benefit would reduce runtime costs.
-Furthermore, lightweight heuristics based on constraint complexity
-or assertion patterns could
-identify unlikely-beneficial candidates before mutation testing,
-reducing processing time at the cost of potentially missing some improvements.
+Focusing on operators that benefit the most from generalization
+and using lightweight heuristics based on constraint complexity
+or assertion patterns to identify unlikely-beneficial candidates before mutation testing
+could reduce processing time at the cost of potentially missing some improvements.
 Incremental processing that targets only newly-added or modified tests
 would avoid repeated analysis of stable code in continuous integration settings.
 Arcmutate~\cite{arcmutate_2024}, a commercial extension of \ToolPit{},
 offers an accelerator plugin that could further reduce processing costs.
 
-\paragraph{Test Suite Runtime}
-
+\textit{Test Suite Runtime.}
 Test suite runtime increases caused by generalization stem primarily from \ToolJqwik{} framework overhead
 (approximately 150ms per test, Figure~\ref{fig:test-runtime-differences})
 and filter-and-regenerate cycles when inputs violate constraints.
@@ -400,8 +390,7 @@ Additionally, \ToolJqwik{}~2 plans parallelization support~\cite{link_2024_jqwik
 which could reduce test suite execution time
 by distributing property-based test execution across multiple cores.
 
-\paragraph{Test Suite Size}
-
+\textit{Test Suite Size.}
 Observed LOC increases of 4.9--58.7\% across projects
 (Table~\ref{tab:lines-per-project})
 have two primary causes:

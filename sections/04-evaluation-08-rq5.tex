@@ -81,9 +81,6 @@ only examines the top-level test method,
 which causes it to miss these delegated assertion calls
 (as described in Section~\ref{sec:test-assertion-analysis}).
 
-\input{tables/tab-exclusions-breakdown}
-\input{tables/tab-exclusions-filtering}
-
 \paragraph{Assertion-level Exclusions}
 \label{par:assertion-level-exclusions}
 
@@ -147,6 +144,9 @@ for tested methods with void return types.
 The current implementation of \ToolTeralizer{} does not support such methods
 because no output specification can be inferred for them.
 
+\input{tables/tab-exclusions-breakdown}
+\input{tables/tab-exclusions-filtering}
+
 \paragraph{Generalization-level Exclusions}
 \label{par:generalization-level-exclusions}
 
@@ -167,20 +167,17 @@ with the concrete input value of the
 first loop iteration, which commonly causes later loop iterations
 to fail with an \texttt{AssertionError}.
 
-\VariantNaive{} generalizations
-show 3,061--3,923 (22.1--28.4\%) filtering-based exclusions.
-The primary failure cause is \texttt{Too\-Many\-Filter\-Misses\-Exceptions},
-which occur
-2,233 times (16.1\%) for \VariantNaiveA{},
+\VariantNaive{}
+shows 3,061--3,923 (22.1--28.4\%) filtering-based exclusions.
+The primary cause is \texttt{Too\-Many\-Filter\-Misses\-Exceptions},
+which occur 2,233 times (16.1\%) for \VariantNaiveA{},
 2,938 (21.2\%) for \VariantNaiveB{},
 and 3,005 (21.7\%) for \VariantNaiveC{}.
-These occur when \ToolJqwik{}
-cannot generate valid inputs within its retry limit.
 Prevalence increases with higher \tries{}
 as \VariantNaive{} struggles to produce enough valid inputs,
 especially for more complex constraints
 (Section~\ref{sec:constraint-complexity-eval}).
-The remaining filtering-based exclusions occur due to 
+The remaining filtering-based exclusions are due to 
 inaccurate input/output specifications which cause exceptions
 during assertion checking (\texttt{AssertionFailedError}, 729 / 803 / 819 exclusions by \textsc{Naive$_{10/50/200}$})
 or general test execution (\texttt{ArithmeticException}, 99 / 99 / 99 exclusions).
@@ -190,9 +187,9 @@ Underlying causes include
 (iii) MUT calls within loops,
 and (iv) implicit preconditions.
 While (i)--(iii) are limitations of \ToolTeralizer{},
-(iv)~can indicate unintended behavior in the \VariantOriginal{} tests
+(iv)~can indicate unintended behavior
 such as potential divisions by 0 or under-/overflows that evade detection
-by the \VariantOriginal{} tests but are identified by the tests created by \ToolTeralizer{}.
+by the \VariantOriginal{} tests but are identified by the generalized tests.
 
 \VariantImproved{} generalization strategies
 reduce overall exclusion rates from filtering-based rejections
@@ -227,24 +224,23 @@ The higher rates in \DatasetsCommonsEs{} tests
 compared to \DatasetsEqBenchEs{} tests --- despite identical test construction
 patterns --- reflects the impact of constraint complexity (Section~\ref{sec:constraint-complexity-eval}).
 
-Beyond filter rejections, \VariantNaive{} and \VariantImproved{} generalization strategies
-fail 32 generalization attempts
-to avoid Java's ``code too large'' compilation error.
+Beyond filter rejections, \VariantNaive{} and \VariantImproved{}
+fail 32 generalizations
+to avoid ``code too large'' errors.
 This error occurs when a method's bytecode exceeds 64KB,
 Java's hard limit for method size.
-Generated property-based tests with large input/output specifications
-can exceed this limit when specifications contain
-numerous complex constraints,
+Generalized tests can exceed this limit
+when specifications contain many complex constraints,
 necessitating preemptive exclusion of the largest specifications.
 
 \rqanswerbox{5}{
   Of 28,923 identified assertions,
   9,881--13,836 (34.2--47.8\%) are successfully generalized
-  to passing property-based tests across generalization strategies.
-  The largest number of exclusions occurs at the assertion level,
+  across the three strategies.
+  Most exclusions occur at the assertion level,
   primarily due to static analysis limitations in identifying tested methods (24.7\%)
   and the presence of parameter types that cannot be accurately modeled by current symbolic analysis (15.4\%).
-  Specification extraction failures due to \ToolSPF{} errors and exceeded analysis limits
+  \ToolSPF{} errors and exceeded analysis limits
   exclude 5.3\% and 4.7\% of assertions, respectively.
   Test-level filtering excludes 5.5\% of assertions due to non-passing \VariantOriginal{} tests.
   \VariantNaive{} generalized tests pass in 71.4--77.6\% of cases,

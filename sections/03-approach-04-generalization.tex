@@ -1,19 +1,18 @@
 \subsection{Generalized Test Creation}
 \label{sec:generalized-test-creation}
 
-The generalized test creation stage transforms conventional JUnit tests
-into property-based \ToolJqwik{} tests that validate behavior across entire input partitions
-rather than single input-output pairs.
+The generalized test creation stage transforms original JUnit tests
+into property-based \ToolJqwik{} tests.
 Figure~\ref{fig:generalization} provides a high-level overview of this transformation:
 the original test with hardcoded values (left) becomes a property-based test (right)
-where inputs are automatically generated to satisfy pre-defined constraints
-and expected values are encoded as expressions that hold for all inputs from the corresponding input partition.
-Thus, the transformation preserves the developer-provided oracles encoded in assertions
+where inputs are automatically generated to satisfy constraints
+and expected values are encoded as expressions that hold for all inputs from the input partition.
+This preserves the developer-provided oracles encoded in assertions
 while generalizing from concrete values to symbolic specifications.
-
+%
 To be able to systematically evaluate the costs and benefits of test generalization,
-\ToolTeralizer{} creates three variants of each property-based test
-which differ in their input generation strategies.
+\ToolTeralizer{} creates three variants of each property-based test.
+%which differ in their input generation strategies.
 The \VariantBaseline{} variant tests only the original inputs to measure framework overhead.
 The \VariantNaive{} variant adds random input generation to explore the input space,
 and the \VariantImproved{} variant incorporates constraint-aware generation to favor values at the boundaries of input partitions.
@@ -43,8 +42,8 @@ while the \texttt{BaselineSupplier} in Listing~\ref{lst:baseline-supplier}
 demonstrates how the \VariantBaseline{} variant provides input values for these parameters
 by wrapping the concrete values extracted during \ToolSPF{} execution of the original test.
 
-Several factors influence the design of the created property-based test classes.
-Instead of directly modifying existing test classes,
+Several factors influence the design of the created classes.
+Instead of modifying existing classes,
 \ToolTeralizer{} creates one new test class per assertion
 to isolate generalization effects.
 This is relevant for mutation testing:
@@ -59,9 +58,9 @@ other assertions are removed because they might validate methods
 that consume outputs from the generalized MUT
 and fail when those outputs differ from the original test's values.
 Non-generalizable parameters (strings, arrays, objects)
-retain their concrete input values
-because current symbolic analysis techniques
-cannot extract complete constraints for them.
+retain their concrete input values.
+%because current symbolic analysis techniques
+%cannot extract complete constraints for them.
 This enables partial generalization when
 some parameters cannot be generalized.
 
@@ -127,8 +126,54 @@ class TestParams {
 \subsubsection{Three-Variant Design}
 \label{sec:three-variant-design}
 
+\ToolTeralizer{} creates three variants of each property-based test
+that differ only in their input generation strategies.
+This design allows us to isolate
+and measure distinct aspects of test generalization:
+pure framework overhead (\VariantBaseline{}),
+benefits from testing additional inputs (\VariantNaive{}),
+and improvements from constraint-aware input generation (\VariantImproved{}).
+To reduce evaluation costs,
+\ToolTeralizer{} shares common analysis stages across all three variants.
+Test and assertion analysis, tested method identification, and specification extraction
+execute only once per test, with their results reused for each generalization strategy.
+This architecture ensures fair comparison
+while avoiding redundant computation --- all three generalization strategies work from identical specifications
+and analysis results, eliminating confounding factors
+such as variation in analysis time or non-deterministic failures from \texttt{OutOfMemoryError}s.
+
+The \textbf{\VariantBaseline{}} variant uses only the original test's input values
+to isolate the overhead of the property-based testing framework.
+As shown in Listing~\ref{lst:baseline-supplier} for the \textit{good performance} case,
+the supplier returns \texttt{Arbitraries.just(new TestParams(1500, 1000))},
+providing exactly the same inputs as the original test.
+This enables us to quantify the infrastructure cost of property-based testing,
+i.e., test orchestration, parameter injection, and \ToolJqwik{}'s execution machinery,
+without the cost of additional input generation and repeated test execution.
+By establishing this baseline overhead,
+we can isolate the cost of input generation in \VariantNaive{} and \VariantImproved{}.
+Any runtime beyond \VariantBaseline{} is attributable to generation and filtering strategies
+rather than basic property-based testing infrastructure.
+
+The \textbf{\VariantNaive{}} variant adds random input generation combined with post-generation filtering
+to demonstrate the benefits of testing additional inputs beyond the original ones.
+As shown in Listing~\ref{lst:naive-supplier},
+\ToolTeralizer{} uses \ToolJqwik{}'s \texttt{Arbitraries} classes
+to generate random integer values for \texttt{sales} and \texttt{target},
+then applies the \texttt{satisfiesInputSpec} filter shown in Listing~\ref{lst:java-input-encoding}
+to retain only values that match the constraints encoded in the extracted input specification
+\texttt{sales / 2 < target \&\& sales >= target}
+which we previously showed in Listing~\ref{lst:extracted-specs}.
+To ensure that created property-based tests
+always cover at least the same mutants as the corresponding original tests,
+all \VariantNaive{} and \VariantImproved{} suppliers
+contain additional code that always selects the original inputs
+as the first set of inputs exercised by the property-based tests.
+The implementation of this logic is straightforward,
+but is excluded from the listings for brevity.
+
 {
-\begin{genericfloat}[tbph]
+\begin{genericfloat}[t]
 \newpage{}
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
@@ -177,52 +222,6 @@ class ImprovedSupplier {
 \end{minipage}
 \end{genericfloat}
 }
-
-\ToolTeralizer{} creates three variants of each property-based test
-that differ only in their input generation strategies.
-This design allows us to isolate
-and measure distinct aspects of test generalization:
-pure framework overhead (\VariantBaseline{}),
-benefits from testing additional inputs (\VariantNaive{}),
-and improvements from constraint-aware input generation (\VariantImproved{}).
-To reduce evaluation costs,
-\ToolTeralizer{} shares common analysis stages across all three variants.
-Test and assertion analysis, tested method identification, and specification extraction
-execute only once per test, with their results reused for each generalization strategy.
-This architecture ensures fair comparison
-while avoiding redundant computation --- all three generalization strategies work from identical specifications
-and analysis results, eliminating confounding factors
-such as variation in analysis time or non-deterministic failures from \texttt{OutOfMemoryError}s.
-
-The \textbf{\VariantBaseline{}} variant uses only the original test's input values
-to isolate the overhead of the property-based testing framework.
-As shown in Listing~\ref{lst:baseline-supplier} for the \textit{good performance} case,
-the supplier returns \texttt{Arbitraries.just(new TestParams(1500, 1000))},
-providing exactly the same inputs as the original test.
-This enables us to quantify the infrastructure cost of property-based testing,
-i.e., test orchestration, parameter injection, and \ToolJqwik{}'s execution machinery,
-without the cost of additional input generation and repeated test execution.
-By establishing this baseline overhead,
-we can isolate the cost of input generation in \VariantNaive{} and \VariantImproved{}.
-Any runtime beyond \VariantBaseline{} is attributable to generation and filtering strategies
-rather than basic property-based testing infrastructure.
-
-The \textbf{\VariantNaive{}} variant adds random input generation combined with post-generation filtering
-to demonstrate the benefits of testing additional inputs beyond the original ones.
-As shown in Listing~\ref{lst:naive-supplier},
-\ToolTeralizer{} uses \ToolJqwik{}'s \texttt{Arbitraries} classes
-to generate random integer values for \texttt{sales} and \texttt{target},
-then applies the \texttt{satisfiesInputSpec} filter shown in Listing~\ref{lst:java-input-encoding}
-to retain only values that match the constraints encoded in the extracted input specification
-\texttt{sales / 2 < target \&\& sales >= target}
-which we previously showed in Listing~\ref{lst:extracted-specs}.
-To ensure that created property-based tests
-always cover at least the same mutants as the corresponding original tests,
-all \VariantNaive{} and \VariantImproved{} suppliers
-contain additional code that always selects the original inputs
-as the first set of inputs exercised by the property-based tests.
-The implementation of this logic is straightforward,
-but is excluded from the listings for brevity.
 
 The \textbf{\VariantImproved{}} variant implements
 a constraint-aware input generation strategy
@@ -296,22 +295,22 @@ all exercised input values are guaranteed to satisfy the complete input specific
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm~\ref{alg:constraint-encoding} shows how \ToolTeralizer{} determines
-which constraints to encode for each parameter.
-The algorithm first assigns indices based on parameter order (line 1),
+Algorithm~\ref{alg:constraint-encoding} shows
+the input generation logic.
+It first assigns indices based on parameter order (line 1),
 then processes each encodable constraint (lines 2-10) to handle circular dependencies:
 constraints are only added to the parameter with the higher index,
 with constraint directions rewritten as needed.
 This ensures each parameter depends only on previously generated ones.
 For example, given \texttt{a >= b \&\& b >= a} with \texttt{a} at index 0 and \texttt{b} at index 1,
-the algorithm adds both \texttt{b <= a} (rewritten from \texttt{a >= b})
+we add \texttt{b <= a} (rewritten from \texttt{a >= b})
 and \texttt{b >= a} to parameter \texttt{b}, while \texttt{a} remains unconstrained.
 During generation (lines 11-24), the algorithm selects the strictest applicable bounds:
 equality constraints take precedence, followed by the highest lower bound and lowest upper bound.
 Thus, \texttt{a} generates freely,
 while \texttt{b} generates from interval \texttt{[a, a]}, effectively encoding \texttt{a == b}.
-Finally, line 25 applies filtering for non-encodable constraints,
-ensuring all generated inputs satisfy the complete specification.
+Line 25 applies filtering for non-encodable constraints,
+ensuring all inputs satisfy the full specification.
 
 While this partial constraint encoding
 cannot eliminate all \texttt{Too\-Many\-Filter\-Misses\-Exceptions},
@@ -322,8 +321,8 @@ enables \ToolJqwik{}'s \texttt{Arbitraries}
 to more reliably produce inputs at the boundaries of input partitions.
 For example, consider \texttt{x >= 0 \&\& x <= 1000}.
 In the \VariantNaive{} variant, \ToolJqwik{} has no knowledge of the true
-boundaries of this input partition. Thus,
-the used \texttt{Arbitraries} produce boundary values such
+partition boundaries. Thus,
+the used \texttt{Arbitraries} produce assumed boundary values such
 as \texttt{Integer.MIN\_VALUE}, \texttt{Integer.MAX\_VALUE - 1}, etc.
 While these are quickly excluded by filtering, coverage of the true
 boundary values such as 0, 1, 999, and 1000 is then left up to chance.

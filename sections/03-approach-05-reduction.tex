@@ -1,10 +1,8 @@
 \subsection{Test Suite Reduction}
 \label{sec:test-suite-reduction}
 
-Not all generalized tests provide value to the test suite.
 Despite covering many more inputs than the original tests,
-some property-based tests only detect the same faults
-as the conventional unit tests from which they were created.
+some property-based tests do not detect any additional faults.
 Thus, these tests increase test suite size and runtime
 but do not provide any tangible benefits in exchange for this.
 Similarly, successful generalization may render some original tests redundant.
@@ -18,7 +16,7 @@ using mutation testing to measure each test's contribution to fault detection
 and retaining only those original and generalized tests
 that strengthen the test suite's effectiveness.
 
-\begin{table}[tbph]
+\begin{table}[t]
   \caption{Mutation operators included in \ToolPit{}'s DEFAULTS group.}
   \label{tab:pit-mutators}
   \begin{tabular}{l l l l}
@@ -51,11 +49,11 @@ using the \texttt{DEFAULTS} group of mutation operators
 provided by \ToolPit{}~\cite{coles_2016_pit}.
 This group provides a stable set of operators that minimize equivalent mutants
 and avoid subsumption~\cite{coles_2021_less_is_more, coles_pit_mutators}.
-The full set of 12 mutation operators from the \texttt{DEFAULTS} group
+The full set of operators
 is listed in Table~\ref{tab:pit-mutators}.
-Each row in the table shows the name of the mutator,
+Each row shows the name of the mutator,
 a short description of its behavior,
-and an example that shows a source code representation
+and a source code representation
 of the mutator's effects.
 The operators can be roughly categorized by the type of mutation they produce.
 The first subgroup modifies arithmetic operations.

@@ -206,9 +206,6 @@ which \ToolTeralizer{}'s interprocedural static analysis does not detect.
 Given that RepoReapers exclusively contains developer-written tests,
 these rejections are likely to contain a high rate of false positives as well.
 
-\input{tables/tab-exclusions-breakdown-extended}
-\input{tables/tab-exclusions-filtering-extended}
-
 The \texttt{NonPassingTest} filter rejects 11.8\% of real-world tests
 compared to the 6.6\% rejection rate under controlled conditions.
 As explained in Section~\ref{sec:limitations-eval},
@@ -277,6 +274,8 @@ Among methods with known return types (42.1\% of all assertions),
 and 0.7\% return other types (char, arrays, void).
 This contrasts with controlled conditions where 98.3\% of methods returned numeric and boolean types.
 
+\input{tables/tab-exclusions-breakdown-extended}
+\input{tables/tab-exclusions-filtering-extended}
 
 The \texttt{AssertionType} filter rejects 23.9\% of real-world assertions
 versus 2.6\% under controlled conditions.
@@ -323,10 +322,10 @@ and resource constraints
   and only 11 of 632 projects (1.7\%) complete all processing stages.
   The core generalization mechanism operates reliably when applicable:
   generalization-level success rates are comparable (86.2\% real-world vs 83.8\% controlled),
-  and projects that pass early filtering proceed successfully through specification extraction (90.0\%) and generalized test creation (97.4\%).
-  However, three primary barriers prevent higher success rates of the generalization pipeline:
-  limited type and assertion pattern support causes 99.4\% of assertions to be filtered before reaching test generation
+  and projects that pass early filtering also complete specification extraction (90.0\%) and generalized test creation (97.4\%).
+  However, three barriers prevent higher overall success rates:
+  limited type and assertion support causes 99.4\% of assertions to be filtered
   (e.g., \texttt{MissingValue}: 57.9\%, \texttt{ParameterType}: 49.4\%, \texttt{ReturnType}: 32.6\%),
   non-standard project structures prevent output detection in 14.7\% of projects,
-  and execution timeouts cause 14.1\% of projects to be excluded.
+  and execution timeouts exclude 14.1\% of projects.
 }
