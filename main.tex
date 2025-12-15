@@ -262,12 +262,12 @@ Unlike prior work that generalizes from input-output examples,
 we derive specifications from program semantics.
 
 We applied \ToolTeralizer{} to three progressively challenging datasets to evaluate our approach.
-On \ToolEvoSuite{}-generated tests for EqBench and Apache Commons utitilties, 
+On \ToolEvoSuite{}-generated tests for EqBench and Apache Commons utilities, 
 mutation scores improve by 1--4 percentage points.
-Mature developer-written test from Apache Commons utilities show only 0.05--0.07 percentage points improvement.
+Mature developer-written tests from Apache Commons utilities show only 0.05--0.07 percentage points improvement.
 Test generalization in 632 real-world Java projects from RepoReapers highlights applicability barriers:
 only 1.7\% complete the generalization pipeline,
-with failures primarily caused by type support limitations of symbolic analysis
+with failures caused primarily by type support limitations of symbolic analysis
 and static analysis limitations of our prototype.
 We distinguish addressable engineering barriers from fundamental research challenges,
 providing a comprehensive dataset characterizing test generalizability patterns.
