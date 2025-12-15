@@ -112,18 +112,17 @@ avoiding unintended interactions between generalized and original tests.
 
 \input{tables/tab-lines-per-project}
 
-
 The duplication overhead differs significantly between \ToolEvoSuite{}-generated and developer-written tests.
 \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects show similar overhead
-(66-67 vs 62-63 LOC per added test, respectively),
+(66--67 vs 62--63 LOC per added test, respectively),
 reflecting the uniformity of \ToolEvoSuite{}-generated tests.
 In contrast, \DatasetCommonsDev{} shows substantially higher overhead
 (140 LOC per added test).
 This is because developer-written tests contain more shared setup code
 as well as multi-assertion architectures that hinder compensation through test removals.
-The higher increases observed in \DatasetsEqBenchEs{} projects (31-59\%) compared to \DatasetsCommonsEs{} projects (19-30\%)
+The higher increases observed in \DatasetsEqBenchEs{} projects (31--59\%) compared to \DatasetsCommonsEs{} projects (19--30\%)
 stem primarily from the retained generalized tests representing a larger fraction of the original test suite
-in \DatasetsEqBenchEs{} (3.5-4.4\%) compared to \DatasetsCommonsEs{} (2.2-2.8\%).
+in \DatasetsEqBenchEs{} (3.5--4.4\%) compared to \DatasetsCommonsEs{} (2.2--2.8\%).
 The smaller difference between \VariantNaive{} and \VariantImproved{}
 in \DatasetsCommonsEs{} compared to \DatasetsEqBenchEs{}
 likely reflects \VariantImproved{}'s lower constraint utilization 
