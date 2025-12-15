@@ -78,11 +78,11 @@ some parameters cannot be generalized.
 void testCalculate(TestParams _p_) {
   BonusCalculator c = new BonusCalculator();
   // exceptional performance:
-  int b1 = c. calculate(2500, 1000);
+  int b1 = c.calculate(2500, 1000);
   // good performance:
   int b2 = c.calculate(_p_.sales, _p_.target);
   // bad performance:
-  int b3 = c. calculate(500, 1000);
+  int b3 = c.calculate(500, 1000);
   assertEquals(calculateExpected(_p_), b2);
 }
 \end{lstlisting}
