@@ -16,34 +16,6 @@ using mutation testing to measure each test's contribution to fault detection
 and retaining only those original and generalized tests
 that strengthen the test suite's effectiveness.
 
-\begin{table}[t]
-  \caption{Mutation operators included in \ToolPit{}'s DEFAULTS group.}
-  \label{tab:pit-mutators}
-  \begin{tabular}{l l l l}
-    \toprule
-    &&\multicolumn{2}{l}{Example} \\
-    \cmidrule{3-4}
-    Mutator & Description  & Before & After\\
-    \midrule
-    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
-    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
-    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
-    \midrule
-    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
-    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
-    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
-    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
-    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
-    \midrule
-    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
-    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
-    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
-    \midrule
-    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
 \ToolTeralizer{} evaluates fault detection capability
 using the \texttt{DEFAULTS} group of mutation operators
 provided by \ToolPit{}~\cite{coles_2016_pit}.
@@ -90,3 +62,31 @@ the original test must be retained to preserve that validation.
 The final test suite of each variant
 combines the retained generalized tests
 with the retained original tests.
+
+\begin{table}[t]
+  \caption{Mutation operators included in \ToolPit{}'s DEFAULTS group.}
+  \label{tab:pit-mutators}
+  \begin{tabular}{l l l l}
+    \toprule
+    &&\multicolumn{2}{l}{Example} \\
+    \cmidrule{3-4}
+    Mutator & Description  & Before & After\\
+    \midrule
+    Math                       & Replaces arithmetic operations            & \texttt{x + y}       & \texttt{x - y} \\
+    Increments                 & Replaces increment/decrement              & \texttt{i++}         & \texttt{i{-}{-}} \\
+    InvertNegs                 & Inverts negation of variables             & \texttt{return -x}   & \texttt{return x} \\
+    \midrule
+    BooleanTrueReturnVals      & Returns \texttt{true} for booleans        & \texttt{return b}    & \texttt{return true} \\
+    BooleanFalseReturnVals     & Returns \texttt{false} for booleans       & \texttt{return b}    & \texttt{return false} \\
+    PrimitiveReturns           & Returns \texttt{0} for numeric primitives & \texttt{return a}    & \texttt{return 0} \\
+    EmptyObjectReturnVals      & Returns empty for strings                 & \texttt{return s}    & \texttt{return ""} \\
+    NullReturnVals             & Returns \texttt{null} for objects         & \texttt{return o}    & \texttt{return null} \\
+    \midrule
+    RemoveConditionalEqualElse & Forces else for equality checks           & \texttt{if (a == b)} & \texttt{if (false)} \\
+    RemoveConditionalOrderElse & Forces else for inequality checks         & \texttt{if (a < b)}  & \texttt{if (false)} \\
+    ConditionalsBoundary       & Changes boundary of inequalities          & \texttt{if (a < b)}  & \texttt{if (a <= b)} \\
+    \midrule
+    VoidMethodCall             & Removes void method calls                 & \texttt{foo(...)}    & \texttt{/* removed */} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
