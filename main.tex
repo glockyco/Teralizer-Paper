@@ -256,23 +256,24 @@ However, property-based testing requires significant manual effort to define pro
 We propose a semantics-based approach that automatically transforms
 conventional unit tests into property-based tests by extracting specifications
 from implementations via single-path symbolic analysis.
-We demonstrate this approach through \ToolTeralizer{}, a prototype implementation for Java
-that transforms JUnit tests into property-based \ToolJqwik{} tests.
+We demonstrate this approach through Teralizer, a prototype implementation for Java
+that transforms JUnit tests into property-based jqwik tests.
 Unlike prior work that generalizes from input-output examples,
-we derive specifications from program semantics.
+Teralizer derives specifications from program semantics.
 
-We applied \ToolTeralizer{} to three progressively challenging datasets to evaluate our approach.
-On \ToolEvoSuite{}-generated tests for \DatasetEqBench{} and Apache Commons utilities, 
-mutation scores improved by 1--4 percentage points.
-Mature developer-written tests from Apache Commons utilities showed only 0.05--0.07 percentage points improvement.
-Results for 632 real-world Java projects from RepoReapers highlight applicability barriers:
-only 1.7\% completed the generalization pipeline,
-with failures caused primarily by type support limitations of symbolic analysis
-and static analysis limitations of our prototype.
-We distinguish addressable engineering barriers from fundamental research challenges
-and provide a comprehensive dataset that characterizes test generalizability patterns.
+We applied Teralizer to three progressively challenging datasets to evaluate our approach.
+On EvoSuite-generated tests for EqBench and Apache Commons utilities,
+Teralizer improved mutation scores by 1--4 percentage points.
+In contrast, generalization of mature developer-written tests from Apache Commons utilities
+showed only 0.05--0.07 percentage points improvement.
+A detailed analysis of the results from 632 real-world Java projects from RepoReapers
+highlights several applicability barriers of Teralizer:
+only 1.7\% of projects completed the generalization pipeline,
+with the majority of failures caused by type support limitations in symbolic analysis and static analysis limitations in our prototype.
+Based on the results, we provide a roadmap for future work, distinguishing addressable engineering limitations
+from fundamental research challenges that need to be tackled to advance the field of test generalization.
 
-Artifacts available at \url{https://zenodo.org/records/XXXXXXX}.
+Artifacts available at: \url{https://doi.org/10.5281/zenodo.17950381}
 \end{abstract}
 
 %%
