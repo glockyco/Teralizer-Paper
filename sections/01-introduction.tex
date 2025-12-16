@@ -118,31 +118,10 @@ and those that represent deeper research challenges in specification extraction 
 This paper makes the following contributions:
 
 \begin{enumerate}
-\item \textbf{Semantics-based test generalization:}
-We introduce an automated approach for transforming unit tests into property-based tests
-through the use of path-exact specifications extracted via symbolic analysis.
-Our prototype implementation called \ToolTeralizer{}
-currently supports test generalization for Java projects
-and achieves mutation score improvements of 1--4 percentage points
-under conditions suitable for symbolic analysis.
-
-% \item \textbf{Empirical dataset:}
-% We provide a dataset that characterizes test generalizability across 630+ Java projects,
-% covering assertion patterns (types, frequencies, per-test distributions),
-% specification complexity metrics (operation counts, constraint utilization),
-% and filtering outcomes that explain why 98.3\% of real-world generalizations fail.
-
-\item \textbf{Analysis of applicability challenges:}
-We analyze test generalization barriers,
-distinguishing engineering limitations
-(e.g., identifying tested methods in complex control flow)
-from fundamental research challenges (e.g., constraint encoding for non-numeric types),
-and provide concrete guidance for advancing the field.
-
-\item \textbf{Replication package:}
-Our replication package~\cite{replicationpackage} contains the source code of \ToolTeralizer{},
-all datasets and scripts used for the evaluation, and the results,
-thus enabling reproduction and extension of our work.
+\item A \textbf{semantics-based test generalization approach} that extracts specifications via symbolic analysis to transform conventional unit tests into property-based tests.
+\item A comprehensive \textbf{empirical evaluation} across three complementary datasets, demonstrating 1--4 percentage point mutation score improvements under controlled conditions.
+\item A systematic \textbf{analysis of applicability barriers}, distinguishing addressable engineering limitations from fundamental research challenges in specification extraction and encoding.
+\item An \textbf{open implementation and replication package} \cite{replicationpackage}, enabling reproduction and extension of our results.
 \end{enumerate}
 
 The paper is organized as follows.
