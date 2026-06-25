@@ -347,3 +347,8 @@ Temporary Items
 # End of https://www.toptal.com/developers/gitignore/api/macos,latex
 
 main.pdf
+
+# Local machine state
+.omp/plugins/
+.claude/settings.local.json
+.venv/

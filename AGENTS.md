@@ -32,8 +32,8 @@ CI runs `latexmk` on **both** remotes — GitLab (`.gitlab-ci.yml`, internal AAU
 - Abstract: 200–250 words.
 - Don't open a sentence/paragraph with a bare `Table X`/`Figure Y`; integrate the reference.
 - Bibliography: use `skill://searching-literature`, `skill://retrieving-paper-pdfs`, and
-  `skill://formatting-bibtex-entries` (from the installed `writing-skills` plugin) for finding,
-  acquiring, and formatting `main.bib` entries.
+  `skill://formatting-bibtex-entries` for finding, acquiring, and formatting `main.bib`
+  entries.
 
 ## Quality bars (self-check before yielding written prose)
 - Every contribution claimed in the introduction maps to a results/evaluation subsection.
