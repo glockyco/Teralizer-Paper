@@ -6,7 +6,7 @@ Property-Based Tests" (ACM `acmart`, TOSEM, options `[manuscript,screen,review]`
 ## Structure
 - `main.tex` — entry point; sections live in `sections/` (`\input{sections/<name>}`).
 - `figures/`, `tables/` — assets (`\includegraphics{figures/<f>}`, `\input{tables/<f>}`); vector/PDF preferred.
-- `data/` — CSV sources backing every number in the paper.
+- `data/` — CSV exports backing paper numbers where an export exists (not every number has a CSV).
 - `main.bib` → `main.bbl`. Tool/dataset macros (`\ToolTeralizer`, `\ToolSPF`, `\ToolJqwik`,
   `\DatasetEqBench`, `\DatasetCommonsDev`, …) are defined in `main.tex`.
 
@@ -23,8 +23,10 @@ CI runs `latexmk` on **both** remotes — GitLab (`.gitlab-ci.yml`, internal AAU
 (`.github/workflows`, public). They must hold the same state; both must be green.
 
 ## Writing rules (paper-specific)
-- **Every number has a data source.** Take quantitative claims from `data/*.csv`; add a
-  `% Data source: <file>.csv` comment next to the value. Never fabricate or estimate numbers.
+- **Every number is reproducibly sourced.** Prefer a committed `data/*.csv` export with a
+  `% Data source: <file>.csv` comment. Where no CSV export exists (e.g. the JARVIS scoreboard,
+  computed from the analysis DB via `jarvis_scoreboard`), cite the reproducible analysis instead
+  (`% Source: <command or planning-doc slug>`). Never fabricate or estimate numbers.
 - Use the **macros** (`\ToolTeralizer`, `\DatasetEqBench`, …), never raw tool/dataset names.
 - **Non-breaking spaces (`~`)**: before citations (`word~\cite{x}`), in inline enumerations
   (`(i)~...`), and between a number and its unit (`3~hours`).
