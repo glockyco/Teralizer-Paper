@@ -188,8 +188,16 @@ All paper sections, generated assets, and bibliography entries MUST use the same
 - **WHEN** the paper includes a generated table-body fragment
 - **THEN** `publish.toml` declares the fragment artifact directly
 - **THEN** the paper owns the float environment, caption, short caption, table label, placement, sizing, and manuscript-local style
+- **THEN** artifact availability alone does not require manuscript inclusion or a paper wrapper
+- **THEN** the paper keeps the table upright and readable
 - **THEN** the paper wrapper does not copy or alter generated headers, cells, grouping, or row identities
 - **THEN** factual caption content agrees with the registered report and generated fragment
+
+#### Scenario: Evidence does not fit
+- **WHEN** a planned evidence presentation cannot fit at a readable size
+- **THEN** manuscript revision stops and asks the operator for direction
+- **THEN** no table is rotated
+- **THEN** no splitting, omission, aggregation, rescaling, replacement, or alternative artifact request occurs without explicit operator direction
 
 #### Scenario: Paper uses a generated metric macro
 - **WHEN** the aggregate macro file exposes a metric used by the manuscript

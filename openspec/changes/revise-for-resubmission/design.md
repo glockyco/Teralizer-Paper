@@ -193,7 +193,9 @@ After the fragment interface is available, add a `publish.toml` declaration to `
 
 The generator owns each table's tabular body, headers, cells, grouping, stable row anchors, and provenance. Width-sensitive generated constructs use `\linewidth` so one fragment can fit different manuscript containers. The fragment contains no float environment, caption, short caption, table label, placement, sizing, or manuscript-local style.
 
-The paper and thesis own their table wrappers. Each wrapper can select `table`, `table*`, `sidewaystable`, a minipage composition, or another suitable environment. It also owns the caption, label, placement, sizing, and local style. A different population, column set, or aggregation is a separate generated artifact, not a manuscript override.
+The paper and thesis own their table wrappers. Each wrapper owns the caption, label, placement, sizing, and local style. The paper must keep every table upright and readable. Artifact publication makes evidence available; it does not require the paper to present every artifact. Create a paper wrapper only when the corresponding section needs the table.
+
+If a generated fragment does not fit upright and readably, stop manuscript work and ask the operator. Do not rotate, split, omit, aggregate, rescale, replace, or request another artifact without explicit operator direction. A different population, column set, or aggregation is a separate generated artifact, not a manuscript override.
 
 Generated figure ownership stops at the figure PDF. Each manuscript owns its figure environment, caption, label, placement, sizing, and accessibility description. Verify each factual caption statement against the registered report and rendered asset.
 

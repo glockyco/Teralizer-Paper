@@ -33,7 +33,7 @@
 - [ ] 3.5 Update specification extraction for current symbolic execution, type handling, string support, resource limits, and explicit failure outcomes and verify each limit has an implementation source
 - [ ] 3.6 Update generalized-test creation for generators, path filters, symbolic oracles, original-input checks, widening refusals, and exception evidence and verify the description against current stage behavior
 - [ ] 3.7 Update test-suite reduction for mutant-based retention and source-assertion-based original-test removal and verify the formal rules match the implementation
-- [ ] 3.8 Port the new algorithm listing and examples, consume generated table-body fragments and figure PDFs directly, adapt manuscript-owned table and figure wrappers, captions, labels, placement, sizing, and accessibility descriptions to ACM conventions, and verify the manuscript builds without undefined controls or references
+- [ ] 3.8 Port the new algorithm listing and corrected examples, preserve the paper-owned approach figure and listing presentation unless scientific content requires a change, and verify the manuscript builds without undefined controls or references
 - [ ] 3.9 Review the full approach as a standalone account and verify that it does not depend on thesis chapters or thesis-only cross-references
 - [ ] 3.10 Run the recorded manuscript checks, inspect the rendered approach pages, and commit the verified approach revision as one atomic unit
 
@@ -41,7 +41,7 @@
 
 - [ ] 4.1 Add RQ0 to the research-question sequence and verify numbering, labels, cross-references, and roadmap text remain consistent through RQ6
 - [ ] 4.2 Update the evaluation framework for current variants, sampling budgets, project selection, datasets, timeouts, and measurement terminology and verify that RQ1--RQ5 reuse the same controlled population
-- [ ] 4.3 Add the controlled-study table-fragment and figure keys to the paper's `publish.toml`, publish them through Teralizer, use generated row anchors and manuscript-owned table and figure labels, and verify the delivered files remain unedited
+- [ ] 4.3 Reconcile the evaluation framework with the already-published controlled-study fragments and figures, use generated row anchors and manuscript-owned labels, update wrappers only for assets included in the revised framework, and verify the delivered files remain unedited
 - [ ] 4.4 Preserve unchanged controlled-study measurements while removing stale terminology and verify no paper value changed without an evidence source
 - [ ] 4.5 Run the recorded manuscript checks, inspect the evaluation framework and generated assets, and commit the verified framework revision
 - [ ] 4.6 Audit RQ1 and RQ2 against the thesis and generated evidence, verify all mutation-score values and denominators, run the focused manuscript checks, inspect the rendered result, and commit the RQ1--RQ2 revision
@@ -52,7 +52,7 @@
 ## 5. Add RQ0 and the JARVIS Comparison
 
 - [ ] 5.1 Add the JARVIS background and state that RQ0 reuses all twelve projects named by JARVIS without manual Teralizer project selection, document that JARVIS omits its selection procedure and exact revisions, explain the revision-reconstruction method, and verify the ten-scenario protocol and 100-sample configuration against RQ0 provenance
-- [ ] 5.2 Add the RQ0 table-fragment keys to the paper's `publish.toml`, publish the project-breadth, scenario-PVC, and sampling-budget fragments through Teralizer, wrap them in manuscript-owned floats, and verify every cell and row anchor against the registered RQ0 report
+- [ ] 5.2 Select the already-published RQ0 fragments required by the section, create upright and readable paper-owned wrappers only for the selected fragments, and verify every included cell and row anchor against the registered RQ0 report; if selected evidence does not fit, stop and ask the operator
 - [ ] 5.3 Report 9 of 12 versus 2 of 12 projects and 337 versus 9 distinct MUTs and verify the manuscript distinguishes measured Teralizer results from published JARVIS results
 - [ ] 5.4 Report higher, lower, and missing Teralizer PVC outcomes for the ten scenarios and verify the category counts and individual scenarios
 - [ ] 5.5 Explain the PVC-budget result and verify that unchanged mutation detection is not presented as an executed JARVIS fault-effectiveness comparison
@@ -63,7 +63,7 @@
 
 - [ ] 6.1 Replace the old selection account with the version 7 population and verify the 584 selected projects, 550 initial-gate exclusions, and 27 projects without executed tests against provenance
 - [ ] 6.2 Replace the project lifecycle and stage-entry account and verify each stage population against the generated project-funnel evidence
-- [ ] 6.3 Add the current RQ6 table-fragment keys to the paper's `publish.toml`, publish the dataset, project-funnel, filtering, exclusion, widening-refusal, and processing-failure fragments through Teralizer, wrap them in manuscript-owned floats, and verify every cell and row anchor against the registered reports
+- [ ] 6.3 Select the already-published RQ6 fragments required by the section, create upright and readable paper-owned wrappers only for the selected fragments, and verify every included cell and row anchor against the registered reports; if selected evidence does not fit, stop and ask the operator
 - [ ] 6.4 Replace the test-level account and verify included tests, excluded tests, and failures form the reported population
 - [ ] 6.5 Replace the assertion-level account and verify 6,905 included, 166,602 filtered, and 7,041 failed assertions total 180,548
 - [ ] 6.6 Replace the generalization-level account and verify attempts, widening refusals, emissions, validation, reduction, and final tests use their correct lifecycle denominators
@@ -94,7 +94,7 @@
 - [ ] 8.3 Revise the abstract with current results and compact scope language and verify it does not falsely narrow the evaluated population or overstate implementation-relative exactness
 - [ ] 8.4 Rewrite the standalone conclusion with the current contribution, JARVIS comparison, 85-of-584 result, reduction semantics, and remaining limits and verify it contains no thesis bridge
 - [ ] 8.5 Update bibliography entries, citation keys, artifact URLs, and the replication-package DOI and verify all citations resolve in the built manuscript
-- [ ] 8.6 Audit the complete paper `publish.toml`, aggregate macro import, generated table-body fragments and figure PDFs, manuscript-owned table and figure wrappers, listings, captions, labels, variant names, and RQ identifiers; verify every analysis-owned artifact is direct and unedited and every factual caption claim matches its report and rendered asset
+- [ ] 8.6 Audit the complete paper `publish.toml`, aggregate macro import, generated table-body fragments and figure PDFs, manuscript-owned table and figure wrappers, listings, captions, labels, variant names, and RQ identifiers; verify every included table is upright and readable, every analysis-owned artifact is direct and unedited, and every factual caption claim matches its report and rendered asset; if evidence does not fit, stop and ask the operator before any remedy
 - [ ] 8.7 Run the recorded manuscript checks, inspect the abstract through conclusion in the rendered PDF, and commit the framing and publication-asset revision atomically
 
 ## 9. Prepare the TOSEM Submission Correspondence
