@@ -80,7 +80,7 @@ Similarly, \DatasetsCommonsEs{} and \DatasetCommonsDev{}
 both use the Apache Commons projects as evaluation subjects,
 but mutation score improvements vary based on original test suite effectiveness.
 Both \VariantNaive{} and \VariantImproved{}
-show larger mutation score improvements
+both show larger mutation score improvements
 for \DatasetsEqBenchEs{} than for \DatasetsCommonsEs{}
 because of the simpler constraints in \DatasetsEqBenchEs{}
 (137--231 vs. 290--507 average operation counts, Table~\ref{tab:mutation-detection-comparison}),
@@ -119,7 +119,7 @@ Broadly speaking, there are three underlying causes that are responsible for the
 Prototype and project-integration limitations restrict the tests and projects that
 \ToolTeralizer{} can analyze.
 Tested method identification and specification extraction
-can fail to provide the evidence
+can fail to provide the necessary evidence
 required to create a sound generalized PBT\@.
 Build, execution, and environment failures can stop processing
 even when the remaining generalization mechanism is applicable.
@@ -439,8 +439,9 @@ Equivalent and subsumed mutants remain a risk to construct validity.
 We exclude exact-equivalent mutants that produce identical bytecode
 but do not detect semantic equivalence,
 and we retain subsumed mutants whose detection adds no independent information.
-Prior work surveys techniques for detecting equivalent mutants
-and reducing mutation-testing cost~\cite{jia_2011_analysis}.
+Prior work showed that up to 10\% of mutants can be equivalent
+and that mutant selection strategies based on subsumption
+can reduce the required mutant set~\cite{jia_2011_analysis}.
 Finally, mutation detection measures whether generalized tests expose behavioral differences,
 but not whether developers consider the resulting properties meaningful or maintainable.
 
@@ -509,6 +510,7 @@ of benchmark projects whose exact revisions are not specified by JARVIS\@.
 The reconstructed snapshots may therefore differ
 from the code on which the reported JARVIS results were produced.
 
+\textit{External Validity.}
 Our implementation targets Java~5--8 projects with JUnit~3--5 test suites
 and build environments that use either Maven or Gradle as a build tool.
 While the core approach is programming language-agnostic and could be

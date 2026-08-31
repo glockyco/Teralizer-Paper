@@ -72,5 +72,12 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 
 - `sections/05-discussion.tex` now follows the thesis discussion and validity account, including the RQ0 comparison, version 7 RQ6 synthesis, widening interpretation, three-part failure taxonomy, future directions, and mutation-testing validity discussion.
 - Standalone adaptations are limited to paper labels and references, registered evidence macros, retained study context, and the 584-project eligibility terminology established by the published RQ6 provenance.
-- The thesis cited two nonexistent bibliography keys for equivalent and subsumed mutants. The paper instead retains the same risk statement and cites the registered mutation-testing survey; no unsupported quantitative claim was imported.
+- The thesis cited two nonexistent bibliography keys for equivalent and subsumed mutants. The paper preserves the thesis claim and cites the registered mutation-testing survey, which covers equivalent-mutant detection and mutant-reduction strategies; the invalid keys were not imported.
 - Verification: `latexmk -pdf -interaction=nonstopmode -file-line-error main.tex` and `chktex -q sections/05-discussion.tex` pass; the discussion opening and threats-to-validity pages were inspected in the rendered PDF; no overfull box was reported.
+
+## Related-work reconciliation
+
+- The paper retains its detailed specification-inference, LLM, test-generation, oracle-inference, and developer-study citations because the thesis delegates those surveys to other chapters. This is standalone context, not a competing scientific account.
+- The thesis JARVIS comparison now points to RQ0, and its thesis-specific statement about unevaluated developer acceptance is adapted to the paper's evaluation while preserving the limitation.
+- Complete source comparison found no other scientific departure or nonessential proposal requiring a deferred candidate. Label comments and non-breaking reference spaces were adapted for the ACM source.
+- Verification: the complete manuscript builds, `chktex -q sections/06-related-work.tex` passes, and both related-work pages were inspected in the rendered PDF.

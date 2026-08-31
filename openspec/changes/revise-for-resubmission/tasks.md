@@ -82,11 +82,11 @@
 - [x] 7.4 Port the thesis exactness and intent language substantially unchanged, and defer any proposed reformulation even when it appears more precise
 - [x] 7.5 Port the thesis distinctions among approach, prototype, RQ0, RQ1--RQ5, and RQ6 substantially unchanged, adapting only references required by the standalone structure
 - [x] 7.6 Port the thesis RQ0, version 7, widening, failure-mechanism, and prototype-restriction synthesis substantially unchanged
-- [ ] 7.7 Port the thesis LLM discussion substantially unchanged and retain additional paper-related work only where a standalone reader requires it
+- [x] 7.7 Port the thesis LLM discussion substantially unchanged and retain additional paper-related work only where a standalone reader requires it
 - [x] 7.8 Port the thesis mutation-proxy and construct-validity discussion substantially unchanged and record any proposed addition or removal as a deferred candidate
 - [x] 7.9 Preserve all distinct thesis methods, results, research questions, and validity conditions, and do not make cosmetic or page-length edits during the backport
-- [ ] 7.10 Compare the discussion, validity, and related-work sections with the thesis source and record every nonessential proposed departure in the deferred-candidate register
-- [ ] 7.11 Run the recorded manuscript checks, inspect the ported discussion and related-work pages, and commit the faithful synthesis backport atomically
+- [x] 7.10 Compare the discussion, validity, and related-work sections with the thesis source and record every nonessential proposed departure in the deferred-candidate register
+- [x] 7.11 Run the recorded manuscript checks, inspect the ported discussion and related-work pages, and commit the faithful synthesis backport atomically
 
 ## 8. Adapt Paper-Level Framing and Publication Assets
 

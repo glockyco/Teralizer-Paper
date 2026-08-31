@@ -1,4 +1,4 @@
-\section{Related Work}
+\section{Related Work}%
 \label{sec:related-work}
 
 Our work draws on ideas from test amplification and symbolic analysis
@@ -11,7 +11,7 @@ improve specification inference capabilities of our current prototype
 and explores synergies with related techniques as well as developer perspectives
 (Section~\ref{sec:rw-synergies}).
 
-\subsection{Test Generalization}
+\subsection{Test Generalization}%
 \label{sec:rw-generalization}
 
 Property-based testing~\cite{claessen_2000_quickcheck} and
@@ -42,20 +42,20 @@ intentional behavior from incidental state changes or outputs.
 PROZE~\cite{tiwari_2024_proze} uses runtime inputs and outputs to transform CUTs to PUTs
 but does not generalize beyond observed values.
 JARVIS~\cite{peleg_2018_jarvis} introduced automated CUT-to-PBT transformation
-using black-box analysis with predefined abstraction templates,
+using black-box analysis with predefined abstraction templates (Section~\ref{sec:jarvis-comparison}),
 which produces overapproximations that require multiple related tests to constrain.
 We instead use white-box symbolic analysis along concrete execution paths,
 extracting path-exact specifications that generalize oracles
 from individual input-output examples.
 
-\subsection{Specification Inference}
+\subsection{Specification Inference}%
 \label{sec:rw-inference}
 
 % Paragraph 1: Type support advances for symbolic analysis
 Type support limitations fundamentally constrain
 specification extraction through single-path symbolic analysis,
 as discussed in Sections~\ref{sec:specification-extraction},
-\ref{sec:limitations-eval-extended}, and~\ref{sec:when-it-fails}.
+~\ref{sec:limitations-eval-extended}, and~\ref{sec:when-it-fails}.
 These limitations stem from our reliance on \ToolSPF{}~\cite{pasareanu_2013_symbolic},
 a symbolic execution tool designed for path exploration.
 Because full symbolic execution requires constraint solving
@@ -90,7 +90,7 @@ SpecGen~\cite{ma_2025_specgen} uses conversational prompting
 with mutation-based refinement to generate specifications from source code,
 whereas ClassInvGen~\cite{sun_2025_classinvgen} co-evolves class invariants with test inputs.
 
-\subsection{Test Generation and Developer Perspective}
+\subsection{Test Generation and Developer Perspective}%
 \label{sec:rw-synergies}
 
 % Paragraph 1: Synergies with test generation and oracle inference
@@ -123,7 +123,9 @@ By making minimal structural changes
 while preserving the original test logic ---
 test generalization may reduce friction
 compared to approaches that generate entirely new test code.
-However, property-based testing introduces its own complexity:
+Whether this structural continuity translates into developer acceptance
+remains an open question that our evaluation does not address.
+Property-based testing also introduces its own complexity:
 moving from example-based to property-based thinking
 requires a conceptual shift that can be difficult for developers~\cite{goldstein_2024_pbt_practice,hughes_2016_experiences}.
 Thus, generator constraints and generalized oracles that replace concrete values
