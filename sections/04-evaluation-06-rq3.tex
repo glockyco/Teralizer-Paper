@@ -3,7 +3,7 @@
 
 \ToolTeralizer{} transforms conventional JUnit tests into property-based \ToolJqwik{} tests.
 While this transformation improves mutation detection (Section~\ref{sec:primary-effects-eval}),
-it also affects test suite characteristics in several ways:
+it also affects other characteristics of the generalized test suites compared to their non-generalized baselines:
 
 \begin{enumerate}
   \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
@@ -54,9 +54,9 @@ not retained in the final test suite
 (as evaluated in Section~\ref{sec:limitations-eval}).
 Furthermore, the number of added tests is much smaller
 than the total number of generalized tests that are created and evaluated by \ToolTeralizer{}
-for both \VariantNaiveC{} as well as \VariantImprovedC{}
+for both \VariantNaiveC{} and \VariantImprovedC{}
 because only tests that measurably increase the mutation score of the test suite are retained.
-In total, \ToolTeralizer{} generates 21,478 candidate generalizations across the listed project and generalization variants.
+In total, \ToolTeralizer{} creates 21,478 candidate generalizations across the listed project and generalization variants.
 However, test suite reduction retains only 1,555~(7.2\%) generalized tests that demonstrably improve mutation detection results.
 
 \input{tables/tab-tests-per-project}
@@ -72,7 +72,7 @@ for these projects.
 The \DatasetCommonsDev{} project sees less compensation success:
 none of the tests for which generalizations are added can be removed.
 This is because an \VariantOriginal{} test can only be removed
-if generalized tests are created for all assertions in the test
+if retained generalized tests represent all assertions in the test
 (Section~\ref{sec:test-suite-reduction}).
 In projects with \ToolEvoSuite{}-generated tests,
 this requirement is generally satisfied because most tests only contain a single assertion.
