@@ -7,25 +7,20 @@
 % to property-based tests, thereby reducing the manual effort
 % that would otherwise be required to perform such a transformation.
 We evaluate the benefits, costs, and limitations
-of semantics-based test generalization
-through six research questions:
+of our semantics-based test generalization approach
+through the following seven research questions:
 
-\begin{itemize}
-  \item \textbf{RQ1:} How much does test generalization improve the mutation score of existing unit test suites?
-  \item \textbf{RQ2:} How does constraint complexity affect constraint-aware versus random input generation?
-  \item \textbf{RQ3:} To which degree does generalization affect the size and runtime of the target test suites?
-  \item \textbf{RQ4:} How efficient is test generalization compared to test generation?
-  \item \textbf{RQ5:} What are the causes of unsuccessful generalization attempts under controlled conditions?
-  \item \textbf{RQ6:} What are the causes of unsuccessful generalization attempts under real-world conditions?
-\end{itemize}
+\begin{description}
+  \item[\textbf{RQ0:}] How do \ToolTeralizer{} and JARVIS compare in applicability and value coverage?
+  \item[\textbf{RQ1:}] How much does test generalization improve the mutation score of existing unit test suites?
+  \item[\textbf{RQ2:}] How does constraint complexity affect constraint-aware versus random input generation?
+  \item[\textbf{RQ3:}] To which degree does generalization affect the size and runtime of the target test suites?
+  \item[\textbf{RQ4:}] How efficient is test generalization compared to test generation?
+  \item[\textbf{RQ5:}] What are the causes of unsuccessful generalization attempts under controlled conditions?
+  \item[\textbf{RQ6:}] What are the causes of unsuccessful generalization attempts under real-world conditions?
+\end{description}
 
-% These questions progress from measuring direct effects to understanding practical constraints.
-% RQ1 establishes effectiveness through mutation score improvements.
-% RQ2 explores how constraint complexity affects mutation score improvements of \VariantNaive{} and \VariantImproved{}.
-% RQ3 quantifies effects on test suite size and execution time.
-% RQ4 examines the runtime cost and efficiency of test generalization compared to test generation via \ToolEvoSuite{}.
-% RQ5 and RQ6 analyze failure cases to identify current limitations and guide future improvements.
 Section~\ref{sec:experimental-framework} describes our experimental setup and methodology.
-Sections~\ref{sec:primary-effects-eval}--\ref{sec:limitations-eval-extended} present results.
+The following subsections present the results for RQ0--RQ6.
 All experiments were run on a MacBook Air (M2, 24~GB RAM) with default JVM settings.
 All data is available in our replication package~\cite{replicationpackage}.

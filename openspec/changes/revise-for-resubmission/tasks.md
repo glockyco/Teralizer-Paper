@@ -40,11 +40,11 @@
 
 ## 4. Port the Evaluation Framework and RQ1--RQ5
 
-- [ ] 4.1 Port the thesis research-question sequence with RQ0, adapt only paper numbering, labels, cross-references, and roadmap assembly, and verify the sequence remains consistent through RQ6
-- [ ] 4.2 Port the thesis evaluation framework substantially unchanged, retain paper-only setup needed for a standalone account, and record any variant, budget, selection, dataset, timeout, or terminology concern as a deferred candidate
-- [ ] 4.3 Connect the ported framework to the already-published controlled-study fragments and figures through generated row anchors and manuscript-owned labels, and verify the delivered files remain unedited
-- [ ] 4.4 Preserve the thesis controlled-study account and measurements substantially unchanged, use equivalent generated paper macros where required by assembly, and record rather than correct any suspected stale terminology or evidence discrepancy
-- [ ] 4.5 Compare the framework with the thesis source, run the recorded manuscript checks, inspect the generated assets, and commit the faithful framework backport
+- [x] 4.1 Port the thesis research-question sequence with RQ0, adapt only paper numbering, labels, cross-references, and roadmap assembly, and verify the sequence remains consistent through RQ6
+- [x] 4.2 Port the thesis evaluation framework substantially unchanged, retain paper-only setup needed for a standalone account, and record any variant, budget, selection, dataset, timeout, or terminology concern as a deferred candidate
+- [x] 4.3 Connect the ported framework to the already-published controlled-study fragments and figures through generated row anchors and manuscript-owned labels, and verify the delivered files remain unedited
+- [x] 4.4 Preserve the thesis controlled-study account and measurements substantially unchanged, use equivalent generated paper macros where required by assembly, and record rather than correct any suspected stale terminology or evidence discrepancy
+- [x] 4.5 Compare the framework with the thesis source, run the recorded manuscript checks, inspect the generated assets, and commit the faithful framework backport
 - [ ] 4.6 Port the thesis RQ1 and RQ2 text substantially unchanged, verify values and denominators for the deferred-review register without rewriting the port, run focused checks, inspect the result, and commit the RQ1--RQ2 backport
 - [ ] 4.7 Port the thesis RQ3 text substantially unchanged, record any test-count, line-count, runtime, reduction, or terminology concern for deferred review, run focused checks, inspect the result, and commit the RQ3 backport
 - [ ] 4.8 Port the thesis RQ4 text substantially unchanged, record any processing-time, mutation-cost, Pareto, or efficiency concern for deferred review, run focused checks, inspect the result, and commit the RQ4 backport
