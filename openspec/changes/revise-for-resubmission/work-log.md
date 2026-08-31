@@ -67,3 +67,10 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - The three RQ6 tables use the directly published fragments under `tables/generated/`. Their values and row anchors match the thesis tables; only paper-owned wrapper width and presentation differ.
 - The complete-paper stale-claim audit found the rejected 632-project and 1.7\% result in `main.tex`, `sections/01-introduction.tex`, `sections/05-discussion.tex`, and `sections/07-conclusions.tex`. These are planned framing and synthesis destinations in tasks 7 and 8; do not remove their surrounding passages before those tasks port or adapt the complete sections.
 - No RQ6 count, denominator, funnel, exclusion, widening, or provenance discrepancy required a deferred candidate.
+
+## Discussion and validity backport
+
+- `sections/05-discussion.tex` now follows the thesis discussion and validity account, including the RQ0 comparison, version 7 RQ6 synthesis, widening interpretation, three-part failure taxonomy, future directions, and mutation-testing validity discussion.
+- Standalone adaptations are limited to paper labels and references, registered evidence macros, retained study context, and the 584-project eligibility terminology established by the published RQ6 provenance.
+- The thesis cited two nonexistent bibliography keys for equivalent and subsumed mutants. The paper instead retains the same risk statement and cites the registered mutation-testing survey; no unsupported quantitative claim was imported.
+- Verification: `latexmk -pdf -interaction=nonstopmode -file-line-error main.tex` and `chktex -q sections/05-discussion.tex` pass; the discussion opening and threats-to-validity pages were inspected in the rendered PDF; no overfull box was reported.

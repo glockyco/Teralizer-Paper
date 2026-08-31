@@ -76,15 +76,15 @@
 
 ## 7. Port Discussion, Validity, and Related Work
 
-- [ ] 7.1 Port the thesis discussion substantially unchanged and retain paper-only context only where the thesis relies on other chapters
-- [ ] 7.2 Port the thesis validity account substantially unchanged and retain the standalone paper's necessary study context without adding new qualifications during the backport
-- [ ] 7.3 Port the thesis explanation of mutation-independent Stages 1--4 and mutation-based Stage 5 substantially unchanged, and defer any proposed implementation clarification
-- [ ] 7.4 Port the thesis exactness and intent language substantially unchanged, and defer any proposed reformulation even when it appears more precise
-- [ ] 7.5 Port the thesis distinctions among approach, prototype, RQ0, RQ1--RQ5, and RQ6 substantially unchanged, adapting only references required by the standalone structure
-- [ ] 7.6 Port the thesis RQ0, version 7, widening, failure-mechanism, and prototype-restriction synthesis substantially unchanged
+- [x] 7.1 Port the thesis discussion substantially unchanged and retain paper-only context only where the thesis relies on other chapters
+- [x] 7.2 Port the thesis validity account substantially unchanged and retain the standalone paper's necessary study context without adding new qualifications during the backport
+- [x] 7.3 Port the thesis explanation of mutation-independent Stages 1--4 and mutation-based Stage 5 substantially unchanged, and defer any proposed implementation clarification
+- [x] 7.4 Port the thesis exactness and intent language substantially unchanged, and defer any proposed reformulation even when it appears more precise
+- [x] 7.5 Port the thesis distinctions among approach, prototype, RQ0, RQ1--RQ5, and RQ6 substantially unchanged, adapting only references required by the standalone structure
+- [x] 7.6 Port the thesis RQ0, version 7, widening, failure-mechanism, and prototype-restriction synthesis substantially unchanged
 - [ ] 7.7 Port the thesis LLM discussion substantially unchanged and retain additional paper-related work only where a standalone reader requires it
-- [ ] 7.8 Port the thesis mutation-proxy and construct-validity discussion substantially unchanged and record any proposed addition or removal as a deferred candidate
-- [ ] 7.9 Preserve all distinct thesis methods, results, research questions, and validity conditions, and do not make cosmetic or page-length edits during the backport
+- [x] 7.8 Port the thesis mutation-proxy and construct-validity discussion substantially unchanged and record any proposed addition or removal as a deferred candidate
+- [x] 7.9 Preserve all distinct thesis methods, results, research questions, and validity conditions, and do not make cosmetic or page-length edits during the backport
 - [ ] 7.10 Compare the discussion, validity, and related-work sections with the thesis source and record every nonessential proposed departure in the deferred-candidate register
 - [ ] 7.11 Run the recorded manuscript checks, inspect the ported discussion and related-work pages, and commit the faithful synthesis backport atomically
 

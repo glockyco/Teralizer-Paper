@@ -1,10 +1,15 @@
-\section{Discussion}
+\section{Discussion}%
 \label{sec:discussion}
 
 Our evaluation shows that
 semantics-based test generalization via symbolic analysis
 is viable but currently constrained to
 specific application environments and test architectures.
+Nevertheless, \ToolTeralizer{}'s applicability exceeds
+what JARVIS --- the closest prior work --- reports:
+\ToolTeralizer{} produces generalized tests in
+\TzRqzeroCensusPopulatedProjects{} of the 12 benchmark projects of JARVIS's evaluation,
+whereas JARVIS reports generalization success for only 2 of them (RQ0).
 Under controlled conditions that match current capabilities,
 \ToolTeralizer{} successfully generalized 40.1\% of assertions (RQ5)
 and improved mutation detection by 1--4 percentage points (RQ1).
@@ -13,41 +18,51 @@ generalization offers competitive efficiency:
 combining 1-second \ToolEvoSuite{} generation with \ToolTeralizer{}'s generalization
 achieved comparable mutation detection to 60-second generation
 while reducing processing time by 31.9\% (RQ4).
-Generalization of real-world projects
-faces substantial barriers (RQ6):
-only 0.6\% of assertions passed analysis and filtering stages
-(versus 47.8\% under controlled conditions),
-only 0.2\% of assertions successfully generalized,
-and only 1.7\% of real-world projects completed the processing pipeline.
+Similarly, keeping the generation budget unchanged
+but investing additional runtime in generalization
+extended the Pareto frontier to detection rates
+that longer \ToolEvoSuite{}-only generation did not reach (RQ4).
+Generalization of real-world projects faces several barriers (RQ6):
+only \TzRealworldAssertionsIncludedPct{} of assertions remain included,
+compared with 47.8\% under controlled conditions.
+\TzRealworldApplicabilityProjects{} of \TzRealworldEligibleProjects{} eligible projects complete the
+pipeline, and the final reduced suites contain \TzRealworldGeneralizationsFinalUsable{} generalized
+tests. The first major project-level exclusions occur during project, test, and assertion analysis.
+Later widening refusals show where the extracted path condition and symbolic output do not provide
+enough evidence for a sound generalized oracle.
 This section discusses when and why generalization succeeds (Section~\ref{sec:when-it-works}),
 when and why it fails (Section~\ref{sec:when-it-fails}),
 and how future research and engineering efforts
 can improve generalization effectiveness, efficiency, and applicability (Section~\ref{sec:how-to-improve}).
 
-\subsection{When and Why Generalization Succeeds}
+\subsection{When and Why Generalization Succeeds}%
 \label{sec:when-it-works}
 
-Generalization succeeds when implementation and test properties
+Within the evaluated projects,
+generalization succeeds when implementation and test properties
 of the target projects align
 with \ToolTeralizer{}'s current static analysis capabilities
 as well as the capabilities of \ToolSPF{}'s symbolic analysis.
 Implementation code that is amenable to generalization
 is primarily focused on numeric computations
-in pure deterministic functions without any side effects
+in pure deterministic functions without side effects
 (thus enabling symbolic analysis)
 and is organized in standard project structures that facilitate detection
 of required output artifacts such as compilation outputs
 as well as (mutation) testing and coverage reports.
-Tests amenable to generalization are single-assertion unit tests
+Tests amenable to generalization are single-assertion tests
 without complex setup logic, loops, or interprocedural control flow.
 % Together, these structural properties enable
 % reliable static analysis for identifying tested methods
-% and extracting path-exact specifications through \ToolSPF{}'s single-path symbolic analysis.
+% and symbolic execution for extracting path conditions and output expressions.
 
 When these conditions are satisfied,
 \ToolTeralizer{} achieves moderate mutation score improvements at reasonable runtime cost.
-Mutation scores increased by 1.2--3.9 percentage points in \DatasetsEqBenchEs{}
-and by 0.82--1.33 percentage points in \DatasetsCommonsEs{}
+Mutation scores increased by
+\TzEffectivenessEqbenchEvosuiteMutationImprovementMinPp{}--\TzEffectivenessEqbenchEvosuiteMutationImprovementMaxPp{}
+percentage points in \DatasetsEqBenchEs{}
+and by \TzEffectivenessCommonsEvosuiteMutationImprovementMinPp{}--\TzEffectivenessCommonsEvosuiteMutationImprovementMaxPp{}
+percentage points in \DatasetsCommonsEs{}
 compared to \ToolEvoSuite{}-generated baselines (Figure~\ref{fig:mutation-detection-results}).
 Beyond effectiveness, generalization offers competitive efficiency when combined with test generation.
 % where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
@@ -58,17 +73,21 @@ which achieves 51.6\% mutation detection rate in 55,075 seconds (Figure~\ref{fig
 
 Outcomes vary based on constraint complexity and
 original test suite effectiveness of the target projects.
-More complex constraints hinder mutation score improvements
-because they increase the number of \texttt{Too\-Many\-Filter\-Misses\-Exceptions}.
-Similarly, stronger original test suites leave less room for mutation score improvements.
-For example, \VariantNaive{} and \VariantImproved{}
-both show larger mutation score improvements
+The \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} datasets
+both use \ToolEvoSuite{}-generated original tests,
+but mutation score improvements vary based on constraint complexity.
+Similarly, \DatasetsCommonsEs{} and \DatasetCommonsDev{}
+both use the Apache Commons projects as evaluation subjects,
+but mutation score improvements vary based on original test suite effectiveness.
+Both \VariantNaive{} and \VariantImproved{}
+show larger mutation score improvements
 for \DatasetsEqBenchEs{} than for \DatasetsCommonsEs{}
 because of the simpler constraints in \DatasetsEqBenchEs{}
 (137--231 vs. 290--507 average operation counts, Table~\ref{tab:mutation-detection-comparison}),
 and larger mutation score improvements for \DatasetsCommonsEs{} than for \DatasetCommonsDev{}
 because of \DatasetCommonsDev{}'s stronger original tests
-(56.77--58.12\% vs. 80.35\% \VariantInitial{} mutation detection rate, Figure~\ref{fig:mutation-detection-results}).
+(56.77--58.12\% vs. \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{}
+\VariantInitial{} mutation detection rate, Figure~\ref{fig:mutation-detection-results}).
 
 \VariantNaive{} is more effective than \VariantImproved{} for simpler constraints
 (Figure~\ref{fig:mutation-detection-results}, rows 1--3),
@@ -78,250 +97,182 @@ Two factors explain these results (Section~\ref{sec:constraint-complexity-eval})
 First, simpler constraints are easier to satisfy by chance.
 Consequently, the difference in \texttt{Too\-Many\-Filter\-Misses\-Exceptions}
 between \VariantNaive{} and \VariantImproved{} is smaller in such cases
-than for more complex constraints.
-Second, simpler constraints enable \VariantImproved{}
+and does not significantly affect mutation detection rates.
+Second, \VariantImproved{} prioritizes boundary values,
+whereas \VariantNaive{} generates more diverse values.
+This means that \VariantImproved{} requires higher \tries{} settings
 to more reliably encode input partition boundaries.
 As a result, it spends more \tries{} on boundary testing
 but neglects non-boundary testing,
-which limits mutation detection improvements.
-This effect is more pronounced at low \tries{} settings
+limiting mutation detection improvements.
+This is more pronounced at low \tries{} settings
 where \VariantImprovedA{} underperforms
 all other generalization strategies
 (Figure~\ref{fig:mutation-detection-results}, rows 1--3).
 
-\subsection{When and Why Generalization Fails}
+\subsection{When and Why Generalization Fails}%
 \label{sec:when-it-fails}
 
-As shown by RQ6, generalization failed
-for the vast majority of evaluated real-world projects
+RQ6 shows that generalization is unsuccessful for many evaluated real-world projects
 (Section~\ref{sec:limitations-eval-extended}).
-We identify three high-level causes that explain these high exclusion rates.
-First, \ToolTeralizer{} is a research prototype,
-which limits its current capabilities.
-Second, extracting accurate specifications for generalization
-of test oracles is a non-trivial problem,
-even more so when moving beyond the domain of pure functions and numerical programs.
-Third, factors such as execution errors in \ToolTeralizer{}'s dependencies,
-timeouts enforced for evaluation purposes,
-and test failures in original test suites
-are beyond the direct control of the generalization mechanism itself,
-but still increase the number of unsuccessful generalization attempts. 
-The following subsections describe how 
-each of these causes affects generalization outcomes.
-This summary of failure causes then serves as the basis
-for the discussion of future improvements in Section~\ref{sec:how-to-improve}.
+Broadly speaking, there are three underlying causes that are responsible for the majority of exclusions.
+Prototype and project-integration limitations restrict the tests and projects that
+\ToolTeralizer{} can analyze.
+Tested method identification and specification extraction
+can fail to provide the evidence
+required to create a sound generalized PBT\@.
+Build, execution, and environment failures can stop processing
+even when the remaining generalization mechanism is applicable.
+The following discussion interprets their effects
+and motivates potential directions for future improvements
+in Section~\ref{sec:how-to-improve}.
 
-\paragraph{Implementation Limitations}
+\paragraph{Implementation Limitations}%
 \label{par:implementation-limitations}
 
-There are four limiting factors in the current implementation of our prototype:
-(i)~it only supports JUnit 4 and JUnit 5 tests and assertions,
-(ii)~it only supports generalization of tests that contain at least one assertion,
-(iii)~it only performs intraprocedural static analysis within test methods to detect assertions,
-and (iv)~it only supports projects that use default output directories
-for compilation outputs and test reports.
-Limitation (iv) directly causes
-95 project-level exclusions (15.0\% of projects)
-due to output detection and processing failures
-(Table~\ref{tab:processing-failures}, rows \#4, \#5, \#12, \#15, and \#16).
-Limitations (i)--(iii) contribute to the exclusion of
-129 projects (20.4\%) for which all tests are excluded
-(Table~\ref{tab:processing-failures}, row~\#2)
-and 266 projects (42.1\%) for which all assertions are excluded
-(Table~\ref{tab:processing-failures}, rows \#1 and \#8).
+Four implementation limitations directly constrain the results that the current prototype can achieve.
+First, \ToolTeralizer{} only supports standard \texttt{@Test} methods from JUnit~4 and 5,
+JUnit~3 tests that inherit from \texttt{TestCase}, and the six assertion types listed in
+Section~\ref{sec:test-assertion-analysis}.
+Second, \ToolTeralizer{} generalizes a test only when the analysis finds an assertion in the test method.
+Third, its intraprocedural assertion detection does not follow calls to helper methods.
+Fourth, its build integration expects compilation outputs and test reports in the default directories
+of the supported build systems.
 
-While the exact impact
-on the 129 test- and 266 assertion-related exclusions
-is difficult to quantify precisely
-(because both are also affected by the other two high-level factors),
-filter rejections provide at least an approximate measure.
-Limitation (i) causes all 12.5\% of \texttt{TestType} rejections
-(Table~\ref{tab:exclusions-filtering-extended})
-because these tests use JUnit~3.
-Furthermore, limitation (ii) causes all true positive \texttt{NoAssertions} rejections
-and (i)+(iii) cause all false positive \texttt{NoAssertions} rejections,
-together accounting for the exclusion of 41.3\% of tests
+Among these limitations, unsupported types of tests (e.g., \texttt{@Theory})
+have a comparatively small impact on the results.
+More specifically, the \texttt{TestType} filter rejects 0.2\% of tests that reach it
 (Table~\ref{tab:exclusions-filtering-extended}).
-Thus, limitations (i)--(iii) have comparatively high impact
-on the 129 test-related exclusions
---- the only other test-excluding factor is 11.8\% \texttt{NonPassingTest} rejections.
-In contrast, their impact on the 266 assertion-related exclusions is comparatively low,
-contributing only to 16.9\% \texttt{ExcludedTest} rejections
---- the lowest rate among all assertion-level filters
-(Table~\ref{tab:exclusions-filtering-extended}).
+Assertion recognition is more consequential: \texttt{NoAssertions} rejects 32.9\% of tests that reach this filter.
+A stratified sample estimates that only
+\TzRqsixReconstructionNoAssertionsGenuineAbsenceEstimatePct{} of these rejected tests genuinely
+contain no assertion (95\% CI\@:
+\TzRqsixReconstructionNoAssertionsGenuineAbsenceCiLowerPct{}--
+\TzRqsixReconstructionNoAssertionsGenuineAbsenceCiUpperPct{}).
+Most rejections therefore indicate assertions
+that the current intraprocedural analysis does not recognize.
+These test-level exclusions also prevent later tested method identification and specification
+extraction, so they can shadow downstream limitations.
 
-\paragraph{Specification Extraction Challenges}
+\paragraph{Specification Extraction Challenges}%
 \label{par:specification-extraction-challenges}
 
-Whereas implementation limitations primarily cause
-direct project-level and test-related exclusions,
-specification extraction challenges account for the majority
-of the 266 assertion-related exclusions (42.1\% of projects)
-as well as all 3 (0.5\%) generalization-related exclusions
-(Table~\ref{tab:processing-failures}, rows \#1, \#8, and \#11).
-The largest portion of these exclusions are due to 
-type limitations of the underlying symbolic analysis performed by \ToolSPF{}
-(discussed in Section~\ref{sec:symbolic-analysis}),
-which is used by \ToolTeralizer{} to extract specifications for oracle generalization
-(Sections~\ref{sec:specification-extraction} and \ref{sec:generalized-test-creation}).
-A smaller portion is due to the assumption that
-each assertion can be generalized by extracting the input-output specification
-of the last method call that was executed before the assertion
-(Section~\ref{sec:tested-method-identification}).
+Tested method identification supplies the MUT-to-assertion mapping required for specification
+extraction.
+\ToolTeralizer{} traces the value observed by an assertion through its data dependencies to the call
+that produced it.
+When this trace does not uniquely identify one call as the MUT,
+\ToolTeralizer{} selects one of the plausible MUT candidates
+based on a ranking heuristic (Section~\ref{sec:tested-method-identification}).
+The \texttt{MissingValue} filter rejects 39.1\% of real-world assertions when the analysis cannot
+identify a MUT at all (Table~\ref{tab:exclusions-filtering-extended}).
+Potential causes of such exclusions are unsupported assertions,
+unresolved MUT declarations, and assertions
+that simply are not connected to any visible method call.
+A manual review of 70 heuristic selections found \TzRqsixReconstructionAssertionToMutReviewedSupportedMapping{}
+supported and \TzRqsixReconstructionAssertionToMutReviewedContradictedMapping{} contradicted mappings.
+Thus, the review confirms that the ranking heuristic can select an incorrect MUT\@.
+However, all incorrect selections were later excluded by downstream filters.
 
-To quantify the impact of type limitations, notice that they are responsible for 
-the following assertion filter rejections listed in Table~\ref{tab:exclusions-filtering-extended}:
-all \texttt{ParameterType} rejections (49.4\% rejection rate),
-all \texttt{ReturnType} rejections (32.6\%),
-most \texttt{AssertionType} rejections (23.9\%),
-and many \texttt{MissingValue} rejections (57.9\%).
-\texttt{AssertionType} is type-related because
-many unsupported assertions are for non-primitive types
-(\texttt{assert(Not)Null}, \texttt{assert(Not)Same}, \texttt{assertArrayEquals}, etc.).
-\texttt{MissingValue} rejections are type-related
-because they are a superset of \texttt{AssertionType} rejections.
-\texttt{Parameter\-Type} and \texttt{ReturnType} rejections
-are directly enforced due to type limitations.
-Furthermore, the exclusion rates relative to the subset of cases for which type information
-is available are even higher than overall rejection rates suggest. Of 65,676 cases with parameter type information,
-60,283 (91.8\%) are rejected by the \texttt{ParameterType} filter.
-Similarly, 39,780 of 51,425 cases (77.4\%) with return type information
-are rejected by the \texttt{ReturnType} filter.
+After a MUT is identified, input and output types and symbolic evidence
+constrain the extractable specification.
+\texttt{ParameterType} rejects 36.5\% of real-world assertions, while \texttt{ReturnType} rejects
+\TzRealworldReturnTypeRejectedPct{} of assertions with recorded return type information
+(Table~\ref{tab:exclusions-filtering-extended}).
+These filters expose limited support for objects, collections, arrays, and other values that
+\ToolSPF{}'s symbolic models cannot represent soundly.
+During generalized test creation, the widening gate refuses another \TzRealworldWideningRefusals{} of
+\TzRealworldGeneralizationAttempts{} generalization attempts (\TzRealworldWideningRefusalsPct{}).
+A refusal occurs when the extracted path condition and symbolic output do not establish
+that the original oracle remains valid for new inputs.
+Thus, broader applicability requires stronger models or evidence rather than weaker acceptance criteria.
 
-Exclusions due to the 1:1 assertion-to-MUT mapping assumption
-show a smaller impact on overall exclusion rates.
-Specifically, this assumption causes the subset of \texttt{MissingValue} rejections
-that occur when no MUT can be identified for a given assertion.
-As explained in Section~\ref{par:real-world-assertion-exclusions},
-this subset accounts for 26\% of \texttt{MissingValue} rejections,
-which in turn reject 57.9\% of identified assertions ---
-thus contributing rejection votes for approximately 15\% of all assertions.
-However, this figure likely understates the assumption's true impact:
-since assertion-to-MUT mapping is only attempted for supported assertions,
-other rejection causes such as type limitations shadow
-an unknown portion of mapping failures
-that would be revealed if type and assertion support were improved.
-
-\paragraph{Dependencies and Environment}
+\paragraph{Dependencies and Environment}%
 \label{par:environmental-issues}
 
-Generalization success is also affected by
-execution errors in \ToolTeralizer{}'s dependencies
-and environmental factors such as resource limits.
-These factors are beyond the control of the generalization approach
-but account for 128 direct project-level exclusions (20.3\% of projects).
-Furthermore, they contribute to 
-129 test-related exclusions (20.4\%)
-and 266 assertion-related exclusions (42.1\%).
-The 128 project-level exclusions are caused by 89 timeouts
-(Table~\ref{tab:processing-failures}, rows \#3, \#10, and \#13)
-and 39 dependency errors
-(Table~\ref{tab:processing-failures}, rows \#6, \#7, \#9, \#12, and \#14).
-The 129 test-related exclusions are affected by
-\texttt{NonPassingTest} rejections
-(11.8\% of tests, Table~\ref{tab:exclusions-filtering-extended}),
-and the 266 assertion-related exclusions are affected by
-\texttt{ExcludedTest} rejections (16.9\% of assertions),
-\texttt{MissingValue} rejections (57.9\%,
-33\% of which are cases where Spoon
-is unable to resolve the declaration of an identified MUT,
-see Section~\ref{par:real-world-assertion-exclusions}),
-and \ToolSPF{} execution failures (0.3\%).
-\ToolSPF{} failures are underrepresented
-because most assertions are excluded before
-specification extraction.
-Among the 1093 assertions that reach \ToolSPF{},
-382 (34.9\%) fail due to \ToolSPF{} errors
-and enforced resource limits
-(Table~\ref{tab:exclusions-breakdown-extended}).
+Build failures, failing original tests, external-tool failures, and resource limits
+reduce end-to-end applicability for reasons distinct from
+implementation and specification extraction limitations
+(Section~\ref{sec:limitations-eval-extended} and Table~\ref{tab:processing-failures}).
+For example, among \TzRealworldJpfUncaughtExceptionDiagnostics{} uncaught exceptions
+recorded during \ToolSPF{} analysis, post-run classification
+attributes \TzRealworldJpfUncaughtExceptionReclassified{}
+(\TzRealworldJpfUncaughtExceptionReclassifiedPct{}) to application exceptions,
+missing native peers, or incomplete \ToolSPF{} models and fields.
+These failures require changes to projects, tool integration, resource limits, or symbolic models
+rather than improvements to the generalization approach itself.
+Project integration assumptions create a narrower limitation.
+A manual review of \TzRqsixReconstructionOutputDirectoriesTotal{} preserved output-directory records
+identifies \TzRqsixReconstructionOutputDirectoriesDefaultDirectoryMismatch{} default-directory
+mismatch. The other records contain absent project artifacts such as required databases
+or unreachable external services.
 
-\subsection{Directions for Future Improvements}
+\subsection{Directions for Future Improvements}%
 \label{sec:how-to-improve}
 
 Based on our findings, three improvement directions emerge for semantics-based test generalization:
-(i) expanding applicability to handle more projects, tests, and assertions,
-(ii) improving effectiveness when generalization does apply,
+(i)~expanding applicability to support a broader range of projects, tests, and assertions,
+(ii)~improving effectiveness when generalization does apply,
 and (iii)~improving efficiency in terms of generalization runtime
 as well as size and runtime of generalized test suites.
 This section discusses opportunities in each direction,
-distinguishing between engineering improvements
-achievable through additional implementation effort
-and research challenges requiring advances in underlying techniques.
+including both research challenges that require new techniques
+and engineering improvements that extend the current implementation.
 
 \subsubsection{Improving Applicability}
 
 The primary barrier to real-world adoption is limited applicability:
-99.4\% of real-world assertions are excluded before reaching generalized test creation
-(Table~\ref{tab:exclusions-breakdown-extended}).
-Three categories of improvements could noticeably expand
+only \TzRealworldAssertionsIncludedPct{} of real-world assertions reach generalized test creation (Table~\ref{tab:exclusions-breakdown-extended}),
+compared with 47.8\% under controlled conditions (Table~\ref{tab:exclusions-breakdown}).
+Two categories of improvements could noticeably expand
 the subset of projects, tests, and assertions that are amenable to generalization.
 
 \textit{Type Support.}
-Type limitations cause the largest portion of assertion-level exclusions.
-Among assertions where type information is available,
-type-based rejection rates reach
-91.8\% for cases with known parameter types
-and 77.4\% for cases with known return types
-(Section~\ref{par:specification-extraction-challenges}).
+Type limitations cause a large portion of assertion-level exclusions.
+For example, the \texttt{ReturnType} filter rejects \TzRealworldReturnTypeRejectedPct{}
+of assertions with recorded return type information
+in the evaluated RepoReapers projects (Table~\ref{tab:exclusions-filtering-extended}).
+The \texttt{ParameterType} filter similarly rejects many assertions because their
+selected MUT has no parameter with a supported input type.
 Expanding type support remains a fundamental research
 challenge~\cite{amadini_2021_string_survey,zhong_2021_arrays,chen_2024_z3noodler,chocholaty_2025_z3noodler,sun_2024_cgs}:
 precise constraint modeling for strings, arrays, and objects
-requires advances in symbolic analysis
-that go beyond the capabilities of current tools and approaches.
-Furthermore, type limitations shadow other issues.
-Thus, as type support improves,
-additional limitations in assertion-to-MUT mapping and general assertion support
+requires specialized solver theories or domain-specific abstractions.
+Supporting additional data types would not only increase applicability
+but also expose downstream limitations currently masked by early type-based exclusions.
+For example, assertion-to-MUT mapping failures, symbolic execution errors,
+and generation-level constraint issues
 would become visible, enabling more in-depth analysis and targeted improvement of these causes.
 
 \textit{Static Analysis.}
-The \texttt{NoAssertions} and \texttt{TestType} filters
-reject 41.3\% and 12.5\% of tests, respectively
-(Section~\ref{par:implementation-limitations}).
-Both are addressable through engineering improvements:
-interprocedural analysis that tracks assertion calls through the call graph
-would recover tests where assertions exist in helper methods.
+The evaluation results identify several static analysis limitations.
+Interprocedural analysis could recognize assertions delegated to helper methods.
+Support for assertion libraries such as AssertJ, Hamcrest, and Truth could recognize additional
+oracles. Improved MUT identification could add support for further cases.
 Tests that genuinely lack assertions could be modeled as implicit ``does not throw'' checks,
-thus eliminating the current need to exclude tests without assertions
+thus eliminating the need to exclude tests without assertions
 due to a lack of validated oracles.
-Adding support for JUnit~3, TestNG,
-and assertion libraries such as AssertJ, Hamcrest, and Truth
-would recover further rejections by the \texttt{TestType} and \texttt{NoAssertions} filters.
-
-\textit{Project Structure and Environment.}
-Output detection failures exclude 14.7\% of projects
-(Table~\ref{tab:processing-failures}).
-Configurable output paths or improved search heuristics
-would recover these projects without changing the core approach.
-%
-Timeouts exclude 14.1\% of projects across processing stages
-(Table~\ref{tab:processing-failures}).
-While increased limits could reduce these exclusions,
-diminishing returns are apparent: 
-doubling of all timeouts
-recovered only 2 of 89 timed-out projects in our internal testing,
-increasing the number of successfully processed real-world projects from 11 to 13.
-\ToolSPF{} execution errors account for 51.4\% of specification extraction failures
-under controlled settings (Section~\ref{sec:limitations-eval}),
-many due to missing models for native methods.
-Contributing such models to \ToolSPF{} would reduce these failures
-without any other changes in the approach.
+TestNG and JUnit theory support would
+address their corresponding \texttt{TestType} rejections.
+Furthermore, handling of inherited tests could be improved
+to capture yet another subset of cases.
 
 \subsubsection{Improving Effectiveness}
 
-When generalization does apply, effectiveness depends on
-the generation of inputs that thoroughly cover the valid input space.
-Two factors influence this:
-(i)~the generation strategy,
-which determines whether inputs are sampled randomly (\VariantNaive{})
-or specifically target input partition boundaries (\VariantImproved{}),
-and (ii)~constraint encoding,
-which determines how much of the extracted specification can be used to guide generation.
+Effectiveness varies by mutation operator, constraint complexity, and input generation strategy.
+Three paths emerge to enhance \VariantImproved{}'s effectiveness.
+First, the \texttt{Math} mutation trade-off can be addressed through
+higher \tries{} settings or balanced generation strategies that maintain boundary detection advantage
+while improving arithmetic coverage.
+Second, constraint encoding can be extended beyond simple variable-constant comparisons.
+Third, SMT-based solving and targeted property-based testing techniques
+can replace rejection-based filtering for complex constraints.
 
 \textit{Generation Strategies.}
 Constraint-aware input generation used by \VariantImproved{}
 increases detection rate improvements of boundary-related mutations
 such as \texttt{ConditionalsBoundary} compared to \VariantNaive{} (+2.55pp vs.\ +1.21pp,
-Section~\ref{sec:detection-rates-per-mutator}).
+Section~\ref{sec:primary-effects-eval}).
 However, focusing too much on boundaries limits arithmetic diversity
 within available \tries{}.
 This negatively affects detection rate improvements of \texttt{Math} mutations,
@@ -329,9 +280,10 @@ particularly at lower \tries{} settings (Section~\ref{sec:constraint-complexity-
 To improve detection rates without increasing \tries{},
 more balanced generation strategies can be developed
 that use heuristics based on constraint complexity or other source code properties
-to better balance boundary vs.\ non-boundary testing,
-thus utilizing the benefits of both random and boundary-focused
-generation where each provides the largest benefit.
+to distribute inputs between boundary and non-boundary values.
+Alternatively, targeted property-based testing approaches~\cite{loscher_2017_targeted}
+could guide generation toward inputs that are likely to reveal faults
+based on a continuous fitness function while maintaining diversity.
 
 \textit{Constraint Encoding.}
 Average constraint utilization per project ranges from 11\% to 69\%
@@ -340,7 +292,7 @@ in controlled settings
 This is because \ToolTeralizer{}'s \VariantImproved{} generalization strategy
 only encodes simple in-/equalities on variables and constants,
 whereas compound terms such as \texttt{a == (b + 1)}
-are enforced through filtering (Section~\ref{sec:constraint-encoding}).
+are enforced through filtering (Section~\ref{sec:generalized-test-creation}).
 Extending constraint encoding support would enable more precise boundary testing
 while reducing \texttt{TooManyFilterMissesException}s
 that affect 5.7--15.7\% of generalizations across datasets
@@ -348,18 +300,22 @@ that affect 5.7--15.7\% of generalizations across datasets
 However, as constraint complexity increases,
 generating valid inputs becomes increasingly difficult.
 Techniques such as SMT-based constraint solving~\cite{de_moura_2008_z3,ringer_2017_iorek},
-targeted property-based testing~\cite{loscher_2017_targeted},
-or coverage-guided property-based testing~\cite{lampropoulos_2019_fuzzchick}
-could more effectively generate inputs satisfying complex constraints
-than \ToolJqwik{}'s primarily random generation,
-albeit at increased computational cost.
+property-based testing with solver-backed generation~\cite{lampropoulos_2019_fuzzchick},
+and targeted input generation~\cite{loscher_2017_targeted}
+could replace filtering with direct generation of constraint-satisfying inputs.
+Integration with solvers that provide comprehensive type support,
+such as Z3-Noodler for strings~\cite{chen_2024_z3noodler,chocholaty_2025_z3noodler}
+or Bitwuzla for bit vectors and floating point~\cite{niemetz_2023_bitwuzla},
+could further expand the range of supported constraints
+while maintaining efficient input generation.
 
 \subsubsection{Improving Efficiency}
 
-Efficiency improvements could be implemented along the following three dimensions:
-(i)~tool runtime, which determines processing cost during generalization,
-(ii)~test suite runtime, which determines execution cost after generalization,
-and (iii)~test suite size, which primarily affects maintenance overhead.
+Generalization efficiency involves three dimensions:
+tool runtime during generalization,
+runtime of generated test suites,
+and size of generated test suites.
+Each dimension has distinct optimization opportunities.
 
 \textit{Tool Runtime.}
 Processing costs are dominated by mutation testing,
@@ -370,11 +326,13 @@ However, not all mutation operators benefit equally from generalization
 Focusing on operators that benefit the most from generalization
 and using lightweight heuristics based on constraint complexity
 or assertion patterns to identify unlikely-beneficial candidates before mutation testing
-could reduce processing time at the cost of potentially missing some improvements.
-Incremental processing that targets only newly-added or modified tests
-would avoid repeated analysis of stable code in continuous integration settings.
-Arcmutate~\cite{arcmutate_2024}, a commercial extension of \ToolPit{},
-offers an accelerator plugin that could further reduce processing costs.
+could substantially reduce evaluation cost.
+Similarly, applying mutation testing selectively ---
+only to generalized tests whose structure suggests potential for improvement ---
+could avoid expensive analysis of low-value cases.
+These optimizations represent engineering improvements
+that preserve the semantics-based generalization approach
+while reducing its computational overhead.
 
 \textit{Test Suite Runtime.}
 Test suite runtime increases caused by generalization stem primarily from \ToolJqwik{} framework overhead
@@ -387,62 +345,57 @@ and from 5.68ms to 1.98ms at 200~\tries{} (Figure~\ref{fig:test-runtime-differen
 Better constraint encoding would further reduce filter-and-regenerate cycles
 by enabling more inputs to be generated directly rather than requiring filtering.
 Additionally, \ToolJqwik{}~2 plans parallelization support~\cite{link_2024_jqwik2},
-which could reduce test suite execution time
+which could reduce wall-clock test suite runtime
 by distributing property-based test execution across multiple cores.
 
 \textit{Test Suite Size.}
-Observed LOC increases of 4.9--58.7\% across projects
-(Table~\ref{tab:lines-per-project})
-have two primary causes:
+Our evaluation shows observed LOC increases of 4.9--58.7\% across projects
+(Table~\ref{tab:lines-per-project}).
+These increases can be attributed to two primary causes:
 explicit constraint encoding in generalized tests
 and structural duplication from test isolation
-(Section~\ref{sec:test-suite-line-count}).
+(Section~\ref{sec:ancillary-effects-eval}).
 Abstracting constraint encoding in a library
 could reduce this overhead,
 and tighter integration of generalized tests into original test classes
-would avoid duplication from copied imports and helper methods.
-Test suite reduction could also be extended
-to replace multiple original tests that cover the same partition
-with a single property-based test,
-thus reducing test count instead of only compensating for added tests.
-This mirrors the idea of test suite reduction via
-parameterization~\cite{tsukamoto_2018_autoput,azamnouri_2021_compressing},
-but would use semantics-based analysis rather than syntactic clone detection
-to identify mergeable tests.
+could preserve shared setup and helper methods
+while avoiding duplication.
+However, such integration would complicate test reduction
+because dependencies between original and generalized tests
+would need to be analyzed before removal.
 
 \subsubsection{Deployment Strategies}
 
-Our results position semantics-based test generalization
-for targeted deployment during new unit test development
+The current prototype is most suitable for targeted deployment rather than universal application.
+Based on our findings,
+semantics-based test generalization is most promising for unit tests of
+pure numeric functions with relatively simple constraints,
+particularly when original test suites have low-to-moderate mutation scores.
+In practice, this suggests deployment as part of continuous integration for suitable modules,
 or as a post-processing step for generated tests in numeric-heavy domains.
 Because generalization success depends not only on domain characteristics
 but also on program and test architecture,
-developers who are interested in adopting automated test generalization tools 
+developers who are interested in adopting automated test generalization tools
 such as \ToolTeralizer{} can improve generalization outcomes
 through their implementation choices independent of further test generalization advances:
 
 \begin{enumerate}
   \item Following a more functional programming style that emphasizes pure functions
-    reduces assertion-to-MUT mapping failures
-    (57.9\% \texttt{MissingValue} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+    reduces assertion-to-MUT mapping failures.
   \item Placing assertions directly in test methods rather than delegating to helper methods
-    reduces assertion detection failures due to current interprocedural analysis
-    (41.3\% \texttt{NoAssertions} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+    reduces assertion detection failures due to the current intraprocedural analysis.
   \item Favoring supported assertions such as \texttt{assertEquals}
     over unsupported ones such as \texttt{assertThat} where this is feasible
-    reduces assertion type exclusions
-    (23.9\% \texttt{AssertionType} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+    reduces assertion type exclusions.
   \item Ensuring a green original test suite by addressing flaky tests and missing dependencies
-    avoids exclusions due to failing tests
-    (11.8\% \texttt{NonPassingTest} rejections, Table~\ref{tab:exclusions-filtering-extended}).
+    avoids exclusions due to failing tests.
   \item Using standard project structures and build output locations for test reports and coverage data
-    reduces output detection failures
-    (14.7\% project exclusions, Table~\ref{tab:processing-failures}).
+    reduces output detection failures.
 \end{enumerate}
 
 Beyond these factors,
 test smells~\cite{garousi_2018_test_smells,van_deursen_2001_refactoring,meszaros_2007_xunit}
-represent another dimension that affects generalizability.
+represent another factor that affects generalizability.
 For example, \emph{Eager Test}
 (where tests invoke multiple production methods)
 complicates assertion-to-MUT mapping
@@ -458,71 +411,112 @@ that refactor test code to improve generalizability
 before applying tools like \ToolTeralizer{}.
 Such transformations could build on
 testability transformation techniques~\cite{harman_2004_testability},
-which modify programs to improve amenability to test generation,
+which modify programs to improve test generation,
 and recent advances in automated test smell detection~\cite{peruma_2020_tsdetect}
 and refactoring~\cite{martins_2024_catalog,xuan_2016_brefactoring}.
 
-\subsection{Threats to Validity}
+\subsection{Threats to Validity}%
 \label{sec:threats-to-validity}
 
 \textit{Construct Validity.}
 We use mutation score as a proxy for fault detection capability.
 Fundamentally, this use of mutation testing
-rests on two hypotheses:
+rests on two underlying hypotheses:
 the competent programmer hypothesis,
-which assumes that real faults are often
+which suggests that real faults are often
 only small deviations from correct programs,
 and the coupling effect,
-which suggests that tests which detect simple faults
-will also generally detect more complex faults~\cite{demillo_1978_hints}.
+which suggests that tests which are capable of detecting simple faults
+will generally also detect more complex ones~\cite{demillo_1978_hints}.
 Empirical studies validated the coupling effect~\cite{offutt_1992_coupling},
 and subsequent work demonstrated that mutation scores correlate
 with real fault detection~\cite{just_2014_mutants,papadakis_2018_correlation}.
-Furthermore, surveys confirm the use
-of mutation testing as a standard evaluation technique
-in software testing research~\cite{jia_2011_analysis,papadakis_2019_mutation}.
-%
-While our use of \ToolPit{}'s \texttt{DEFAULTS} set of mutation operators
-may not represent all fault types,
-\texttt{DEFAULTS} is explicitly recommended by
-\ToolPit{} as a stable set of operators
-that minimizes equivalent mutants and avoids subsumption
-\cite{coles_2021_less_is_more, coles_pit_mutators}.
+We mitigate the risk of mutation-operator bias by using
+all default operators provided by \ToolPit{}.
+While these are relatively small and simple,
+prior work showed that they provide representative results~\cite{coles_2021_less_is_more}.
+Equivalent and subsumed mutants remain a risk to construct validity.
+We exclude exact-equivalent mutants that produce identical bytecode
+but do not detect semantic equivalence,
+and we retain subsumed mutants whose detection adds no independent information.
+Prior work surveys techniques for detecting equivalent mutants
+and reducing mutation-testing cost~\cite{jia_2011_analysis}.
+Finally, mutation detection measures whether generalized tests expose behavioral differences,
+but not whether developers consider the resulting properties meaningful or maintainable.
 
 \textit{Internal Validity.}
-Our experiments use single runs per configuration.
-While additional runs would produce more robust results,
-we already observe consistent effectiveness and efficiency trends across projects
-and configuration settings with our current setup.
-%
-Similarly, evaluation of higher \tries{}
-and longer timeouts could provide further evidence of scaling behaviors.
-However, we empirically determined
-these settings to provide a reasonable trade-off between
-resource requirements and result quality. Scaling trends
-and diminishing returns are already apparent throughout the evaluation,
-and doubled timeout settings recovered only 2 of 89 timed-out
-projects in our internal testing.
+Our implementation and evaluation
+may contain defects that affect the results.
+To mitigate this risk,
+we use well-tested third-party tools,
+performed code reviews,
+and manually inspected representative outputs at each pipeline stage.
+We also repeated experiments to confirm result consistency.
+However, non-determinism in symbolic execution,
+property-based test generation,
+and mutation testing
+may introduce small variations across runs.
+
+\textit{Conclusion Validity.}
+The controlled evaluation uses three dataset variants,
+covering 29 projects and 10,436 original tests.
+However, the effectiveness evaluation includes
+only 2,763 retained generalized tests after mutation-based reduction.
+This limited sample size affects statistical power,
+particularly for per-operator analyses where some mutation operators
+produce relatively few mutants.
+We report absolute and relative improvements
+and avoid making claims that exceed the observed effect sizes.
+The linear regression models that examine
+relationships between constraint complexity and effectiveness
+are based on six data points (three projects with two generalization strategies),
+which limits their generalizability despite high $R^2$ values.
 
 \textit{External Validity.}
-Our implementation targets Java~5--8 with JUnit~4/5 and Maven or Gradle builds.
+Our datasets may not represent all Java projects or testing practices.
+\DatasetEqBench{} consists of synthetic equation-solving benchmarks,
+\DatasetsCommons{} contains mature utility libraries,
+and RepoReapers includes popular open-source projects.
+These datasets provide diversity in project size,
+test suite maturity,
+and constraint complexity,
+but all projects are written in Java and primarily use JUnit.
+Results may differ for other programming languages,
+testing frameworks,
+application domains,
+or projects with different architectural characteristics.
+Additionally, \DatasetEqBench{}'s known numeric constraints
+and \DatasetsCommons{}'s utility-focused methods
+may be more amenable to symbolic analysis
+than typical application code.
+
+\textit{Configuration Validity.}
+We evaluate three \tries{} settings (10, 50, 200)
+and three \ToolEvoSuite{} search budgets (1, 10, 60 seconds).
+Different configurations could yield different effectiveness and efficiency trade-offs.
+Higher \tries{} values could improve boundary coverage
+but increase test suite runtime,
+whereas longer generation budgets could produce stronger baselines
+that reduce the relative benefit of generalization.
+Similarly, evaluation of higher \tries{}
+and longer timeouts could provide further evidence of scaling behaviors.
+%
+The comparison with JARVIS (RQ0) relies on the results reported
+in its paper rather than a full re-evaluation run.
+This is because the JARVIS implementation is not publicly available.
+We evaluate \ToolTeralizer{} on a best-effort reconstruction
+of benchmark projects whose exact revisions are not specified by JARVIS\@.
+The reconstructed snapshots may therefore differ
+from the code on which the reported JARVIS results were produced.
+
+Our implementation targets Java~5--8 projects with JUnit~3--5 test suites
+and build environments that use either Maven or Gradle as a build tool.
 While the core approach is programming language-agnostic and could be
 implemented for other languages and ecosystems
 (e.g., using KLEE~\cite{cadar_2008_klee}
 with RapidCheck~\cite{rapidcheck_2025} for~C/C++,
 or CrossHair~\cite{crosshair_2025}
 with Hypothesis~\cite{maciver_2019_hypothesis} for Python),
-observed results might differ
-due to language differences
-and maturity of available tools.
-%
-Our evaluation of benefits
-emphasizes projects that match current
-symbolic analysis capabilities,
-particularly regarding type support limitations.
-As type support improves,
-applicability of semantics-based test generalization
-would directly benefit,
-but results that can be achieved for non-numeric types might
-differ from those we observed during generalization
-of primarily numerical programs.
+each port would require equivalent static analysis,
+symbolic execution,
+and property-based testing infrastructure.
