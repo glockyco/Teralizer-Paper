@@ -2,7 +2,7 @@
 
 See `proposal.md` for motivation and the delta spec for publication requirements. The rejected paper is a standalone manuscript with explanations that the thesis intentionally omits. The thesis chapter contains 161 later commits and 54 changed paths, but many changes are thesis framing, layout work, or generated presentation changes.
 
-`glockyco/Teralizer` and `glockyco/Teralizer-Paper` are separate repositories with different responsibilities. Executable declarations, tests, registered reports, provenance, and generated evidence belong to `Teralizer`. The editable manuscript and its publication assets belong to `Teralizer-Paper`. The thesis chapter is the preferred scientific narrative for changes after the paper import. The rejected paper remains authoritative for standalone framing and material that other thesis chapters replace.
+`glockyco/Teralizer` and `glockyco/Teralizer-Paper` are separate repositories with different responsibilities. Executable declarations, tests, registered reports, provenance, and generated evidence belong to `Teralizer`. The editable manuscript and its publication assets belong to `Teralizer-Paper`. The thesis chapter is the textual authority for scientific content developed after the paper import. The rejected paper remains authoritative for standalone framing and material that other thesis chapters replace. Implementation and evidence sources support auditing, but they do not authorize rewriting thesis content during the backport.
 
 The paper submodule under `../phd-thesis/projects/` is read-only. Revision work must use a standalone clone. The thesis and Teralizer repositories remain read-only sources for this change. Corpus and project reruns require explicit operator approval and are outside this change.
 
@@ -39,32 +39,31 @@ This preserves the thesis submodule and gives the paper an independent, reviewab
 
 The paper repository guidance requires equivalent GitHub and GitLab states and green CI on both remotes. Record both canonical remote URLs and inspect both build workflows before editing. Verify each revision locally against their effective commands. Pushing and remote CI execution require explicit operator authorization. Until that authorization is given, describe the branch as locally verified and push-ready, not remotely synchronized or green.
 
-### 2. Use an authority hierarchy instead of treating either manuscript as ground truth
+### 2. Use the thesis as the textual authority for scientific content
 
-Resolve claims in this order:
+Port the thesis chapter's scientific content substantially unchanged. Preserve its explanations, terminology, formalizations, and ordering unless a standalone-paper requirement makes a local change necessary. Use the rejected manuscript for background, introduction, conclusion, and other standalone material that the thesis omits or replaces with chapter-level context.
 
-1. executable declarations and focused behavior checks.
-2. registered reports, provenance, and generated artifacts.
-3. the revised thesis narrative and its relevant Git history.
-4. the rejected manuscript.
+Use executable declarations, focused behavior checks, registered reports, provenance, and generated artifacts to audit the port. If an audit suggests a substantive change to thesis content, record it as a deferred candidate. Do not apply it during the backport. This rule applies even when the proposed change would improve implementation fidelity or scientific precision.
 
-Use the thesis for scientific changes, not for empirical authority. This prevents stale transcriptions and protects standalone explanations that are absent from the thesis.
+Necessary adaptations are limited to paper framing, retained standalone background, cross-references, macros, file assembly, generated-asset integration, and ACM presentation. Make only the minimum grammatical changes caused by those adaptations. Do not port the thesis bridge, references to other thesis chapters, or layout-only edits.
 
 A direct recursive merge was rejected. The two manuscripts have different macros, section boundaries, cross-references, and narrative responsibilities.
 
-### 3. Maintain a section-level backport manifest
+### 3. Maintain a section-level backport manifest and a deferred-review pass
 
 Classify each changed paragraph, table, figure, listing, macro, or citation as one of these actions:
 
-- `PORT`: new or corrected scientific content.
-- `ADAPT`: scientific content that needs standalone-paper wording.
-- `KEEP-PAPER`: material still needed outside the thesis context.
-- `DROP`: thesis framing, bridge text, cosmetic reflow, or unchanged meaning.
-- `VERIFY`: an apparent factual change that needs an authoritative source.
+- `PORT`: preserve the thesis wording, explanation, formalization, and order substantially unchanged.
+- `ADAPT`: change only the minimum text required by standalone-paper context or assembly.
+- `KEEP-PAPER`: retain material that the standalone paper needs and the thesis omits.
+- `DROP`: exclude thesis framing, bridge text, monograph cross-references, or layout-only changes.
+- `VERIFY`: record a possible discrepancy or material improvement without changing the ported text.
 
-Record the source path, destination path, action, evidence owner, and reviewer concern. This manifest controls completeness and prevents cosmetic churn.
+Record the source path, destination path, action, evidence owner, and reviewer concern. This manifest controls completeness and prevents cosmetic churn. Add a deferred-candidate register to the existing manifest. Each candidate must identify the thesis source, paper destination, exact proposed change, material benefit, supporting evidence, and operator decision.
 
-A raw line-by-line diff was rejected because it cannot distinguish scientific changes from thesis layout edits.
+Use two separate passes. Pass 1 completes the thesis backport and all necessary paper adaptations. Pass 2 starts only after every `PORT` and `ADAPT` item is present and the complete manuscript builds. In Pass 2, present each deferred candidate for an explicit operator decision before changing the manuscript. Cosmetic edits, line-fill changes, and synonymous rewrites do not qualify as material improvements.
+
+A raw line-by-line merge was rejected because it cannot distinguish scientific content from thesis layout edits. A later audit may use a line-by-line comparison to verify fidelity, but it must not select wording automatically.
 
 ### 4. Backport in scientific dependency order
 
@@ -183,7 +182,7 @@ Keep implementation versions and detailed restrictions in the approach, setup, a
 
 ### 10. Preserve the paper's standalone architecture
 
-Keep the paper's background, motivation, contribution list, full related work, and conclusion structure unless scientific changes require revision. Adapt thesis cross-references to paper sections. Do not port the thesis bridge or references to other thesis chapters.
+Keep the paper's background, motivation, contribution list, full related work, and conclusion structure where the thesis depends on other chapters or monograph framing. Port thesis scientific content within that standalone architecture without rewriting it. Adapt thesis cross-references to paper sections. Do not port the thesis bridge or references to other thesis chapters.
 
 The current table renderer emits complete floats and crosses the consumer boundary. Its table model includes captions, labels, body styles, placement, floating behavior, and width policy. These fields encode thesis presentation in an analysis-owned artifact. Do not use that full-float output for the paper revision.
 
@@ -235,7 +234,7 @@ This structure permits rollback and reviewer-oriented inspection. A single manus
 
 ## Reference Formulations
 
-These formulations are starting points for the manuscript and prior-review response. They are not mandatory verbatim text. Adapt tense, notation, and local context without weakening the stated distinction. Record each material adaptation in the backport manifest.
+These formulations are review criteria, not replacement prose for the thesis backport. During Pass 1, use a formulation only when the thesis already contains its scientific distinction. Otherwise, record it as a deferred candidate. After the complete backport, adapt an approved formulation to local tense, notation, and context without weakening its distinction. Record every approved material change in the backport manifest.
 
 ### Mutation-independent generation and mutation-based reduction
 
@@ -366,14 +365,15 @@ Use this response in the final prior-review response. Do not describe preserved 
 - **[Risk] Implementation is tracked from an OpenSpec change that does not authorize the paper clone.** → Scaffold the executable change in `Teralizer-Paper` before manuscript edits.
 - **[Risk] Local success is reported as dual-remote success.** → Require explicit push authorization and observed CI results before claiming synchronization or green remote builds.
 - **[Risk] Traceability controls leak into the submission bundle.** → Keep them under the paper-local OpenSpec change workspace.
-- **[Risk] Thesis wording omits context required by a standalone paper.** → Keep the paper passage until the adapted replacement is independently understandable.
-- **[Risk] An empirical value is copied from prose instead of its owner.** → Require a report, provenance, or generated-artifact source before changing it.
+- **[Risk] Thesis wording omits context required by a standalone paper.** → Keep the paper passage and adapt only the minimum surrounding text needed for an independently understandable account.
+- **[Risk] Implementation or evidence review silently rewrites thesis content during the backport.** → Record the proposed change and defer it until the complete first-pass manuscript is ready for operator review.
+- **[Risk] An empirical value is copied from prose instead of its owner.** → Preserve the thesis passage during Pass 1, record any source conflict, and require an explicit post-port decision before the final manuscript retains or changes the value.
 - **[Risk] RQ6 values remain stale outside the RQ6 section.** → Run a paper-wide stale-value and denominator audit after the atomic replacement.
 - **[Risk] JARVIS results appear more comparable than they are.** → Separate published and measured values and retain reconstruction threats beside the result.
 - **[Risk] Scope qualifiers collapse the controlled and real-world designs.** → State the shared RQ1--RQ5 controlled population separately. State that RQ6 exclusions and unsupported cases remain measured real-world outcomes.
 - **[Risk] Exactness qualifiers weaken the developer-oracle contribution.** → Lead with developer anchoring, then state the implementation-relative boundary.
 - **[Risk] The prior-review response concedes an incorrect mutation-overfitting claim.** → Explain the stage boundary and reduction invariant before discussing construct validity.
-- **[Risk] New content increases length.** → Remove actual redundancy only after scientific content stabilizes. Do not combine distinct RQs by default.
+- **[Risk] New content increases length.** → Record material condensation candidates during Pass 1. Consider them only after the complete backport and explicit operator approval. Do not make cosmetic cuts or combine distinct RQs by default.
 - **[Risk] Generated LaTeX fixes one manuscript's float presentation.** → Publish a body-only table fragment. Keep each manuscript's wrapper outside the generated artifact.
 - **[Risk] A table fragment assumes the page text width.** → Use `\linewidth` for width-sensitive generated constructs and inspect each consuming wrapper.
 - **[Risk] Publication-specific table or figure captions drift from the evidence.** → Permit layout-specific wording and labels, but verify every factual caption claim against the registered report and rendered asset.
@@ -389,10 +389,11 @@ Use this response in the final prior-review response. Do not describe preserved 
 5. Complete the separate Teralizer table-fragment change and record the separate thesis-wrapper migration.
 6. Add `publish.toml` and complete the publication-interface preflight without changing scientific content.
 7. Create paper-owned wrappers for all consumed table fragments and preserve paper-specific float presentation.
-8. Apply the scientific revision units in dependency order and commit each verified unit.
-9. Run the focused build, bibliography, reference, and style checks after each unit.
-10. Run the full manuscript build and inspect the rendered PDF after all units.
-11. Finalize and inspect the cover letter and prior-review response against the completed manuscript.
-12. With explicit operator authorization, synchronize both remotes and verify both CI workflows.
+8. Port the thesis scientific content in dependency order and commit each faithful backport unit.
+9. Run focused build, bibliography, reference, and style checks after each unit without making unapproved substantive edits.
+10. Complete the standalone framing adaptations, run the full manuscript build, and inspect the rendered first-pass PDF.
+11. Present every deferred substantive candidate for an explicit operator decision and apply only approved changes.
+12. Finalize and inspect the cover letter and prior-review response against the completed manuscript.
+13. With explicit operator authorization, synchronize both remotes and verify both CI workflows.
 
 Rollback uses the atomic commit history. Revert the smallest revision unit whose evidence or rendering is invalid. Do not reset unrelated manuscript work.

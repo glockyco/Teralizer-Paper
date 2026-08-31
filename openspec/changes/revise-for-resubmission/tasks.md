@@ -23,104 +23,113 @@
 - [x] 2.8 After the fragment interface is available, add every required RQ0--RQ6 artifact key and destination to the paper's `publish.toml`, run Teralizer's complete-report publication command against preserved evidence, and verify all dependencies, fragment destinations, row anchors, aggregate macros, figure PDFs, and unchanged source-repository state without starting an experiment
 - [x] 2.9 Create manuscript-owned wrappers for every generated table fragment consumed by the current manuscript, preserve paper-specific captions, labels, placement, sizing, and local style, import the aggregate macro file unchanged, and verify that the ACM manuscript builds without an alias, value mapping, or manual artifact substitute
 - [x] 2.10 Commit the verified publication interface and paper-owned wrappers with no scientific manuscript changes
+- [ ] 2.11 Revise the existing backport manifest so `PORT`, `ADAPT`, and `VERIFY` enforce thesis-first fidelity, add its deferred-candidate register, record the proposed `ORIGINAL`/`INITIAL` and mutation-round clarification there, and verify each existing disposition permits only necessary standalone adaptation
 
-## 3. Revise Concepts and the End-to-End Approach
+## 3. Port Concepts and the End-to-End Approach
 
-- [ ] 3.1 Add the assertion-to-MUT unit, MUT-call, specification, partition, oracle, and failure-result definitions and verify all later terms resolve to these definitions
-- [ ] 3.2 Port and adapt the end-to-end generalization algorithm and verify its stages, inputs, outputs, and retention rules against the evaluated implementation
-- [ ] 3.3 Update test and assertion analysis for current JUnit support, filters, collection rounds, and assertion forms and verify the described support against executable declarations
-- [ ] 3.4 Update tested-method identification for normalization, composite expressions, zero-or-multiple producers, ranked selection, and unresolved cases and verify each mechanism against code or focused tests
-- [ ] 3.5 Update specification extraction for current symbolic execution, type handling, string support, resource limits, and explicit failure outcomes and verify each limit has an implementation source
-- [ ] 3.6 Update generalized-test creation for generators, path filters, symbolic oracles, original-input checks, widening refusals, and exception evidence and verify the description against current stage behavior
-- [ ] 3.7 Update test-suite reduction for mutant-based retention and source-assertion-based original-test removal and verify the formal rules match the implementation
-- [ ] 3.8 Port the new algorithm listing and corrected examples, preserve the paper-owned approach figure and listing presentation unless scientific content requires a change, and verify the manuscript builds without undefined controls or references
-- [ ] 3.9 Review the full approach as a standalone account and verify that it does not depend on thesis chapters or thesis-only cross-references
-- [ ] 3.10 Run the recorded manuscript checks, inspect the rendered approach pages, and commit the verified approach revision as one atomic unit
+- [ ] 3.1 Remove the uncommitted synthesized concepts addition, port the thesis assertion-to-MUT, MUT-call, specification, partition, oracle, and failure-result definitions substantially unchanged, and verify every textual difference is a necessary paper adaptation
+- [ ] 3.2 Port the thesis end-to-end algorithm listing and its explanation substantially unchanged, preserve its inputs, outputs, control flow, failure outcomes, and retention rules, and record rather than apply any implementation-driven improvement
+- [ ] 3.3 Port the thesis test-and-assertion-analysis account substantially unchanged, adapt only paper labels and assembly, and record any JUnit-support, filter, collection-round, or assertion-form discrepancy as a deferred candidate
+- [ ] 3.4 Port the thesis tested-method-identification account substantially unchanged and record any normalization, composite-expression, producer-selection, ranking, or unresolved-case discrepancy as a deferred candidate
+- [ ] 3.5 Port the thesis specification-extraction account substantially unchanged and record any symbolic-execution, type, string, resource-limit, or failure-outcome discrepancy as a deferred candidate
+- [ ] 3.6 Port the thesis generalized-test-creation account substantially unchanged and record any generator, path-filter, symbolic-oracle, original-input, widening, or exception-evidence discrepancy as a deferred candidate
+- [ ] 3.7 Port the thesis test-suite-reduction account substantially unchanged and record any mutant-retention or source-assertion-removal discrepancy as a deferred candidate
+- [ ] 3.8 Port the thesis algorithm and corrected examples while preserving paper-owned figure and listing presentation, and verify that presentation adaptations do not change scientific content
+- [ ] 3.9 Compare the complete paper approach with the thesis source, verify every substantive thesis passage is present, and verify every departure is limited to standalone framing, labels, macros, assembly, or ACM presentation
+- [ ] 3.10 Run the recorded manuscript checks, inspect the rendered approach pages, and commit the faithful approach backport as one atomic unit
 
-## 4. Reconcile the Evaluation Framework and RQ1--RQ5
+## 4. Port the Evaluation Framework and RQ1--RQ5
 
-- [ ] 4.1 Add RQ0 to the research-question sequence and verify numbering, labels, cross-references, and roadmap text remain consistent through RQ6
-- [ ] 4.2 Update the evaluation framework for current variants, sampling budgets, project selection, datasets, timeouts, and measurement terminology and verify that RQ1--RQ5 reuse the same controlled population
-- [ ] 4.3 Reconcile the evaluation framework with the already-published controlled-study fragments and figures, use generated row anchors and manuscript-owned labels, update wrappers only for assets included in the revised framework, and verify the delivered files remain unedited
-- [ ] 4.4 Preserve unchanged controlled-study measurements while removing stale terminology and verify no paper value changed without an evidence source
-- [ ] 4.5 Run the recorded manuscript checks, inspect the evaluation framework and generated assets, and commit the verified framework revision
-- [ ] 4.6 Audit RQ1 and RQ2 against the thesis and generated evidence, verify all mutation-score values and denominators, run the focused manuscript checks, inspect the rendered result, and commit the RQ1--RQ2 revision
-- [ ] 4.7 Audit RQ3 test counts, lines of code, retained-suite runtimes, reduction explanations, and filtering terminology against generated evidence, run the focused manuscript checks, inspect the rendered result, and commit the RQ3 revision
-- [ ] 4.8 Audit RQ4 processing-time totals, mutation-testing costs, Pareto comparisons, and generalization-efficiency claims against registered reports and figures, run the focused manuscript checks, inspect the rendered result, and commit the RQ4 revision
-- [ ] 4.9 Audit RQ5 exclusion terms, percentages, references, and controlled-condition interpretations, verify that RQ5 analyzes failures in the RQ1--RQ4 population, run the focused manuscript checks, inspect the rendered result, and commit the RQ5 revision
+- [ ] 4.1 Port the thesis research-question sequence with RQ0, adapt only paper numbering, labels, cross-references, and roadmap assembly, and verify the sequence remains consistent through RQ6
+- [ ] 4.2 Port the thesis evaluation framework substantially unchanged, retain paper-only setup needed for a standalone account, and record any variant, budget, selection, dataset, timeout, or terminology concern as a deferred candidate
+- [ ] 4.3 Connect the ported framework to the already-published controlled-study fragments and figures through generated row anchors and manuscript-owned labels, and verify the delivered files remain unedited
+- [ ] 4.4 Preserve the thesis controlled-study account and measurements substantially unchanged, use equivalent generated paper macros where required by assembly, and record rather than correct any suspected stale terminology or evidence discrepancy
+- [ ] 4.5 Compare the framework with the thesis source, run the recorded manuscript checks, inspect the generated assets, and commit the faithful framework backport
+- [ ] 4.6 Port the thesis RQ1 and RQ2 text substantially unchanged, verify values and denominators for the deferred-review register without rewriting the port, run focused checks, inspect the result, and commit the RQ1--RQ2 backport
+- [ ] 4.7 Port the thesis RQ3 text substantially unchanged, record any test-count, line-count, runtime, reduction, or terminology concern for deferred review, run focused checks, inspect the result, and commit the RQ3 backport
+- [ ] 4.8 Port the thesis RQ4 text substantially unchanged, record any processing-time, mutation-cost, Pareto, or efficiency concern for deferred review, run focused checks, inspect the result, and commit the RQ4 backport
+- [ ] 4.9 Port the thesis RQ5 text substantially unchanged, record any exclusion, percentage, reference, population, or interpretation concern for deferred review, run focused checks, inspect the result, and commit the RQ5 backport
 
-## 5. Add RQ0 and the JARVIS Comparison
+## 5. Port RQ0 and the JARVIS Comparison
 
-- [ ] 5.1 Add the JARVIS background and state that RQ0 reuses all twelve projects named by JARVIS without manual Teralizer project selection, document that JARVIS omits its selection procedure and exact revisions, explain the revision-reconstruction method, and verify the ten-scenario protocol and 100-sample configuration against RQ0 provenance
-- [ ] 5.2 Select the already-published RQ0 fragments required by the section, create upright and readable paper-owned wrappers only for the selected fragments, and verify every included cell and row anchor against the registered RQ0 report; if selected evidence does not fit, stop and ask the operator
-- [ ] 5.3 Report 9 of 12 versus 2 of 12 projects and 337 versus 9 distinct MUTs and verify the manuscript distinguishes measured Teralizer results from published JARVIS results
-- [ ] 5.4 Report higher, lower, and missing Teralizer PVC outcomes for the ten scenarios and verify the category counts and individual scenarios
-- [ ] 5.5 Explain the PVC-budget result and verify that unchanged mutation detection is not presented as an executed JARVIS fault-effectiveness comparison
-- [ ] 5.6 Add JARVIS subject-selection opacity, revision-reconstruction, unavailable-implementation, comparability, PVC, and external-validity limits beside the RQ0 interpretation and verify no universal state-of-the-art claim remains
-- [ ] 5.7 Run the recorded manuscript checks, inspect all RQ0 tables, and commit the complete RQ0 package as one atomic unit
+- [ ] 5.1 Port the thesis JARVIS background, twelve-project scope, published-data limits, revision reconstruction, ten-scenario protocol, and sampling configuration substantially unchanged, adapting only standalone cross-references and assembly
+- [ ] 5.2 Select the already-published RQ0 fragments used by the thesis section, create upright and readable paper-owned wrappers only for those fragments, and verify every included cell and row anchor without changing the ported narrative; if selected evidence does not fit, stop and ask the operator
+- [ ] 5.3 Port the thesis project and MUT applicability result substantially unchanged and record any provenance discrepancy as a deferred candidate
+- [ ] 5.4 Port the thesis higher, lower, and missing PVC outcomes substantially unchanged and record any category or scenario discrepancy as a deferred candidate
+- [ ] 5.5 Port the thesis PVC-budget and mutation-detection interpretation substantially unchanged and record any proposed clarification as a deferred candidate
+- [ ] 5.6 Port the thesis JARVIS validity and comparison limits substantially unchanged and record any proposed strengthening or qualification as a deferred candidate
+- [ ] 5.7 Compare the complete RQ0 section with the thesis source, run the recorded manuscript checks, inspect all RQ0 tables, and commit the faithful RQ0 package atomically
 
-## 6. Replace RQ6 with RepoReapers Version 7
+## 6. Port RQ6 with RepoReapers Version 7
 
-- [ ] 6.1 Replace the old selection account with the version 7 population and verify the 584 selected projects, 550 initial-gate exclusions, and 27 projects without executed tests against provenance
-- [ ] 6.2 Replace the project lifecycle and stage-entry account and verify each stage population against the generated project-funnel evidence
-- [ ] 6.3 Select the already-published RQ6 fragments required by the section, create upright and readable paper-owned wrappers only for the selected fragments, and verify every included cell and row anchor against the registered reports; if selected evidence does not fit, stop and ask the operator
-- [ ] 6.4 Replace the test-level account and verify included tests, excluded tests, and failures form the reported population
-- [ ] 6.5 Replace the assertion-level account and verify 6,905 included, 166,602 filtered, and 7,041 failed assertions total 180,548
-- [ ] 6.6 Replace the generalization-level account and verify attempts, widening refusals, emissions, validation, reduction, and final tests use their correct lifecycle denominators
-- [ ] 6.7 Report 85 of 584 projects, 14.6%, and 1,435 final generalized tests and verify these values use the version 7 definitions
-- [ ] 6.8 Replace the failure interpretation with the evidence-backed three-part cause taxonomy and verify filtering, processing, and widening mechanisms remain distinct
-- [ ] 6.9 Add the version 7 provenance, manual-review boundaries, evidence gaps, and validity discussion and verify no reconstructed claim lacks a source
-- [ ] 6.10 Search the complete paper for `632`, `11`, `1.7%`, old assertion percentages, retired cause labels, and old lifecycle terms and resolve every stale or intentionally historical occurrence
-- [ ] 6.11 Run the recorded manuscript checks, inspect every RQ6 table and page, and commit the complete version 7 replacement as one atomic unit
+- [ ] 6.1 Port the thesis version 7 population and selection account substantially unchanged, including the 584 selected projects, 550 initial-gate exclusions, and 27 projects without executed tests
+- [ ] 6.2 Port the thesis project lifecycle and stage-entry account substantially unchanged and record any project-funnel discrepancy as a deferred candidate
+- [ ] 6.3 Select the already-published RQ6 fragments used by the thesis section, create upright and readable paper-owned wrappers only for those fragments, and verify every included cell and row anchor without changing the ported narrative; if selected evidence does not fit, stop and ask the operator
+- [ ] 6.4 Port the thesis test-level account substantially unchanged and record any population discrepancy as a deferred candidate
+- [ ] 6.5 Port the thesis assertion-level account substantially unchanged and record any count or denominator discrepancy as a deferred candidate
+- [ ] 6.6 Port the thesis generalization lifecycle, widening, emission, validation, reduction, and final-test account substantially unchanged and record any discrepancy as a deferred candidate
+- [ ] 6.7 Port the thesis 85-of-584, 14.6%, and final-generalized-test result substantially unchanged and record any definition or provenance discrepancy as a deferred candidate
+- [ ] 6.8 Port the thesis failure interpretation and three-part cause taxonomy substantially unchanged and record any mechanism-classification concern as a deferred candidate
+- [ ] 6.9 Port the thesis version 7 provenance, manual-review boundaries, evidence gaps, and validity discussion substantially unchanged
+- [ ] 6.10 Search the complete paper for remnants of the rejected RQ6 account, remove only passages superseded by the ported thesis section, and record any ambiguous historical occurrence for deferred review
+- [ ] 6.11 Compare the complete RQ6 section with the thesis source, run the recorded manuscript checks, inspect every RQ6 table and page, and commit the faithful version 7 package atomically
 
-## 7. Reconcile Cross-Cutting Scientific Claims
+## 7. Port Discussion, Validity, and Related Work
 
-- [ ] 7.1 Explain that Stages 1-4 do not consume mutants and verify the statement against the algorithm and implementation account
-- [ ] 7.2 Explain that Stage 5 preserves mutation effectiveness only to reduce retained-suite size and execution runtime, then verify that RQ3 and RQ4 distinguish this benefit from mutation-testing cost in the generalization process
-- [ ] 7.3 Inspect preserved evidence for unreduced and reduced mutation scores, report an existing comparison if available, and otherwise record the evidence gap without running an experiment
-- [ ] 7.4 Revise exactness and intent language to use developer-anchored, implementation-derived, path-bounded claims and verify all prominent exactness phrases follow this contract
-- [ ] 7.5 Distinguish the general approach, Java prototype, inherited RQ0 benchmark, shared RQ1--RQ5 controlled evaluation, and RQ6 real-world evaluation in the approach, setup, validity, and discussion and verify that the paper does not present RQ0 as a Teralizer-selected project population or apply RQ6 complete-population claims to another study
-- [ ] 7.6 Update the discussion with RQ0 applicability, version 7 applicability, widening as a safety boundary, current failure mechanisms, and remaining prototype restrictions and verify each conclusion cites its evidence
-- [ ] 7.7 Position identified LLM techniques under their adjacent specification-extraction, test-generation, or oracle-inference tasks, describe a Teralizer hybrid only as a separate future contribution, and verify the paper does not imply an existing LLM test-generalization approach or evaluated integration
-- [ ] 7.8 Preserve the standard mutation-proxy threat, remove the unsupported mutation-overfitting concession, and verify the remaining limitation concerns construct validity rather than test creation
-- [ ] 7.9 Review paper length only for genuine repetition and verify that no distinct method, result, research question, or validity condition was removed solely to reduce pages
-- [ ] 7.10 Reconcile the formulation register against the revised manuscript and verify every `ADAPT` or `OMIT` decision preserves the design's scientific distinctions
-- [ ] 7.11 Run the recorded manuscript checks, inspect the revised discussion and related-work pages, and commit the cross-cutting scientific revision atomically
+- [ ] 7.1 Port the thesis discussion substantially unchanged and retain paper-only context only where the thesis relies on other chapters
+- [ ] 7.2 Port the thesis validity account substantially unchanged and retain the standalone paper's necessary study context without adding new qualifications during the backport
+- [ ] 7.3 Port the thesis explanation of mutation-independent Stages 1--4 and mutation-based Stage 5 substantially unchanged, and defer any proposed implementation clarification
+- [ ] 7.4 Port the thesis exactness and intent language substantially unchanged, and defer any proposed reformulation even when it appears more precise
+- [ ] 7.5 Port the thesis distinctions among approach, prototype, RQ0, RQ1--RQ5, and RQ6 substantially unchanged, adapting only references required by the standalone structure
+- [ ] 7.6 Port the thesis RQ0, version 7, widening, failure-mechanism, and prototype-restriction synthesis substantially unchanged
+- [ ] 7.7 Port the thesis LLM discussion substantially unchanged and retain additional paper-related work only where a standalone reader requires it
+- [ ] 7.8 Port the thesis mutation-proxy and construct-validity discussion substantially unchanged and record any proposed addition or removal as a deferred candidate
+- [ ] 7.9 Preserve all distinct thesis methods, results, research questions, and validity conditions, and do not make cosmetic or page-length edits during the backport
+- [ ] 7.10 Compare the discussion, validity, and related-work sections with the thesis source and record every nonessential proposed departure in the deferred-candidate register
+- [ ] 7.11 Run the recorded manuscript checks, inspect the ported discussion and related-work pages, and commit the faithful synthesis backport atomically
 
-## 8. Update Paper-Level Framing and Publication Assets
+## 8. Adapt Paper-Level Framing and Publication Assets
 
-- [ ] 8.1 Rewrite the contribution list to include concepts and algorithm, RQ0, current RQ6 evidence, and a separate Java prototype contribution and verify every contribution is delivered in the body
-- [ ] 8.2 Revise the introduction and roadmap after all RQs stabilize and verify every headline result and section reference matches the body
-- [ ] 8.3 Revise the abstract with current results and compact scope language and verify it does not falsely narrow the evaluated population or overstate implementation-relative exactness
-- [ ] 8.4 Rewrite the standalone conclusion with the current contribution, JARVIS comparison, 85-of-584 result, reduction semantics, and remaining limits and verify it contains no thesis bridge
-- [ ] 8.5 Update bibliography entries, citation keys, artifact URLs, and the replication-package DOI and verify all citations resolve in the built manuscript
-- [ ] 8.6 Audit the complete paper `publish.toml`, aggregate macro import, generated table-body fragments and figure PDFs, manuscript-owned table and figure wrappers, listings, captions, labels, variant names, and RQ identifiers; verify every included table is upright and readable, every analysis-owned artifact is direct and unedited, and every factual caption claim matches its report and rendered asset; if evidence does not fit, stop and ask the operator before any remedy
-- [ ] 8.7 Run the recorded manuscript checks, inspect the abstract through conclusion in the rendered PDF, and commit the framing and publication-asset revision atomically
+- [ ] 8.1 Preserve the standalone paper's fuller background and integrate only thesis scientific additions that remain meaningful outside the monograph, adapting cross-references without importing the thesis's reduced-background structure
+- [ ] 8.2 Adapt the paper introduction, contribution list, and roadmap to the fully ported body, using thesis content where applicable and changing only what the standalone genre and added RQ0 or RQ6 material require
+- [ ] 8.3 Adapt the abstract to the fully ported results and scope while preserving thesis formulations where they fit the standalone paper
+- [ ] 8.4 Adapt the standalone conclusion to the fully ported thesis content, retain the paper conclusion structure, and omit the thesis bridge
+- [ ] 8.5 Port required bibliography additions, adapt citation keys and artifact URLs, update the replication-package DOI, and verify all citations resolve without rewriting cited claims
+- [ ] 8.6 Audit the complete paper `publish.toml`, aggregate macro import, generated table-body fragments and figure PDFs, manuscript-owned wrappers, listings, captions, labels, variant names, and RQ identifiers; verify every included table is upright and readable, every analysis-owned artifact is direct and unedited, and every factual caption claim is recorded for deferred review if it conflicts with the thesis; if evidence does not fit, stop and ask the operator before any remedy
+- [ ] 8.7 Verify that every planned thesis passage is present or has a necessary recorded disposition, run the manuscript checks, inspect the complete rendered paper, and commit the framing and publication-asset adaptation atomically
 
-## 9. Prepare the TOSEM Submission Correspondence
+## 9. Review Deferred Substantive Improvements
 
-- [ ] 9.1 Draft a concise new-submission cover letter that identifies TOSEM-2025-1249 as the rejected predecessor, summarizes the substantive revision, and does not imply an invited or requested revision
-- [ ] 9.2 Draft the prior-review-response overview around the concepts and algorithm, complete JARVIS benchmark, version 7 RepoReapers evaluation, and claim clarifications and verify each headline maps to manuscript locations
-- [ ] 9.3 Answer the mutation-selection concern with the stage boundary, reduction invariant, retained-suite benefit, generalization cost, mutation-proxy limitation, and any existing pre/post evidence and verify the response does not concede generation overfitting
-- [ ] 9.4 Answer the applicability concerns with both the JARVIS and RepoReapers results and verify all denominators and comparison limits are explicit
-- [ ] 9.5 Answer the exactness and intended-behavior concerns with the developer-anchored, implementation-derived account and verify the response matches paper terminology
-- [ ] 9.6 Answer type, purity, project, and framework scope concerns and verify the response distinguishes approach limits from prototype and evaluation outcomes
-- [ ] 9.7 Answer the LLM request with the expanded comparison and future direction and verify no unimplemented integration is promised
-- [ ] 9.8 Answer the length request by identifying removed redundancy and retained distinct RQs and verify the tone remains factual and respectful
-- [ ] 9.9 Mark independent real-bug or held-out-mutant validation as not added, explain the rationale and remaining construct limit, and verify the prior-review response does not imply such evidence exists
-- [ ] 9.10 Complete the reviewer matrix with final page, section, figure, table, and listing references and verify every concern has one disposition
-- [ ] 9.11 Build or render the cover letter through its declared workflow, inspect it, and commit it as a verified correspondence unit
-- [ ] 9.12 Build or render the prior-review response through its declared workflow, inspect it, and commit it as a separate verified correspondence unit
+- [ ] 9.1 Freeze the complete first-pass manuscript, compare every ported section with its thesis source and manifest disposition, and verify the deferred-candidate register contains every proposed nonessential substantive departure
+- [ ] 9.2 Present every deferred candidate to the operator with its thesis source, exact proposed change, material benefit, and evidence, record an explicit approve or reject decision, and block manuscript changes while any candidate remains undecided
+- [ ] 9.3 Apply only approved candidates, preserve thesis content for every rejected candidate, and keep each applied change traceable to its recorded decision
+- [ ] 9.4 Recheck all applied candidates against affected sections, evidence, and implementation sources and verify no unapproved stylistic, terminological, formal, or scientific rewrite entered the manuscript
+- [ ] 9.5 Run the recorded manuscript checks, inspect every page affected by approved candidates, and commit the post-port improvement review separately from the faithful backport commits
 
-## 10. Perform Submission Verification
+## 10. Prepare the TOSEM Submission Correspondence
 
-- [ ] 10.1 Run the complete manuscript build from a clean generated state and verify the command succeeds without unresolved references or bibliography errors
-- [ ] 10.2 Run the effective local commands for both paper CI workflows and the repository's complete style, spelling, hygiene, and pre-commit checks and resolve every task-owned failure
-- [ ] 10.3 Compare all manuscript empirical values with the evidence map and verify each measure has its denominator and provenance owner
-- [ ] 10.4 Recheck the backport manifest and verify every `PORT`, `ADAPT`, and `VERIFY` item has a final disposition and source location
-- [ ] 10.5 Recheck the reviewer matrix and verify every promised revision exists in the final manuscript or prior-review response
-- [ ] 10.6 Inspect the complete rendered manuscript, cover letter, and prior-review response in their actual PDF surfaces and resolve layout, clipping, reference, table, and figure defects
-- [ ] 10.7 Verify `Teralizer-Paper` is clean except for intended manuscript, correspondence, generated publication, and paper-local OpenSpec files and verify `Teralizer`, the thesis submodule, preserved data, and generated datasets remain unchanged
-- [ ] 10.8 Create the final atomic commit for submission-only corrections and verify the full local check set passes on the committed tree
-- [ ] 10.9 Report the branch as locally verified and push-ready unless the operator explicitly authorizes synchronization of both canonical remotes
-- [ ] 10.10 If synchronization is explicitly authorized, push both canonical remotes, observe both CI workflows, and report their exact results
+- [ ] 10.1 Draft a concise new-submission cover letter that identifies TOSEM-2025-1249 as the rejected predecessor, summarizes the substantive revision, and does not imply an invited or requested revision
+- [ ] 10.2 Draft the prior-review-response overview around the concepts and algorithm, complete JARVIS benchmark, version 7 RepoReapers evaluation, and claim clarifications and verify each headline maps to manuscript locations
+- [ ] 10.3 Answer the mutation-selection concern with the stage boundary, reduction invariant, retained-suite benefit, generalization cost, mutation-proxy limitation, and any existing pre/post evidence and verify the response does not concede generation overfitting
+- [ ] 10.4 Answer the applicability concerns with both the JARVIS and RepoReapers results and verify all denominators and comparison limits are explicit
+- [ ] 10.5 Answer the exactness and intended-behavior concerns with the developer-anchored, implementation-derived account and verify the response matches paper terminology
+- [ ] 10.6 Answer type, purity, project, and framework scope concerns and verify the response distinguishes approach limits from prototype and evaluation outcomes
+- [ ] 10.7 Answer the LLM request with the expanded comparison and future direction and verify no unimplemented integration is promised
+- [ ] 10.8 Answer the length request by identifying removed redundancy and retained distinct RQs and verify the tone remains factual and respectful
+- [ ] 10.9 Mark independent real-bug or held-out-mutant validation as not added, explain the rationale and remaining construct limit, and verify the prior-review response does not imply such evidence exists
+- [ ] 10.10 Complete the reviewer matrix with final page, section, figure, table, and listing references and verify every concern has one disposition
+- [ ] 10.11 Build or render the cover letter through its declared workflow, inspect it, and commit it as a verified correspondence unit
+- [ ] 10.12 Build or render the prior-review response through its declared workflow, inspect it, and commit it as a separate verified correspondence unit
+
+## 11. Perform Submission Verification
+
+- [ ] 11.1 Run the complete manuscript build from a clean generated state and verify the command succeeds without unresolved references or bibliography errors
+- [ ] 11.2 Run the effective local commands for both paper CI workflows and the repository's complete style, spelling, hygiene, and pre-commit checks and resolve every task-owned failure
+- [ ] 11.3 Compare all manuscript empirical values with the evidence map and verify each measure has its denominator and provenance owner
+- [ ] 11.4 Recheck the backport manifest and deferred-candidate register, verify every `PORT`, `ADAPT`, and `VERIFY` item has a final disposition and source location, and verify no rejected or undecided candidate changed the manuscript
+- [ ] 11.5 Recheck the reviewer matrix and verify every promised revision exists in the final manuscript or prior-review response
+- [ ] 11.6 Inspect the complete rendered manuscript, cover letter, and prior-review response in their actual PDF surfaces and resolve layout, clipping, reference, table, and figure defects
+- [ ] 11.7 Verify `Teralizer-Paper` is clean except for intended manuscript, correspondence, generated publication, and paper-local OpenSpec files and verify `Teralizer`, the thesis submodule, preserved data, and generated datasets remain unchanged
+- [ ] 11.8 Create the final atomic commit for submission-only corrections and verify the full local check set passes on the committed tree
+- [ ] 11.9 Report the branch as locally verified and push-ready unless the operator explicitly authorizes synchronization of both canonical remotes
+- [ ] 11.10 If synchronization is explicitly authorized, push both canonical remotes, observe both CI workflows, and report their exact results

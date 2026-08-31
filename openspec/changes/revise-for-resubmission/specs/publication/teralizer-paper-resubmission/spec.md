@@ -21,21 +21,33 @@ The manuscript revision MUST occur in an editable standalone clone of `glockyco/
 - **THEN** it does not push either remote without explicit operator authorization
 - **THEN** it claims equivalent remote states or green remote builds only after observing them
 
-### Requirement: Selective scientific backport
-The revised paper MUST incorporate substantive scientific changes from the thesis chapter. It MUST preserve standalone explanations that the thesis omits because other chapters provide them.
+### Requirement: Thesis-first scientific backport
+The revised paper MUST port the thesis chapter's scientific content substantially unchanged before substantive editorial review. During this first pass, it MUST preserve the thesis explanations, terminology, formalizations, and ordering. It MUST preserve standalone explanations that the thesis omits because other chapters provide them.
 
 #### Scenario: Thesis and paper passages differ
 - **WHEN** a thesis passage changes evidence, method, implementation behavior, interpretation, or validity
-- **THEN** the paper incorporates the scientific change with standalone wording
-- **THEN** it does not copy thesis-only framing, chapter bridges, or cosmetic reflow edits
+- **THEN** the paper ports the scientific content substantially unchanged
+- **THEN** it changes only the minimum text required for standalone framing, retained background, cross-references, macros, assembly, generated-asset integration, or ACM presentation
+- **THEN** it does not copy thesis-only framing, chapter bridges, monograph cross-references, or layout-only edits
+
+#### Scenario: Audit suggests a substantive improvement
+- **WHEN** implementation, evidence, or manuscript review suggests changing thesis content
+- **THEN** the revision records the thesis source, paper destination, exact proposal, material benefit, and supporting evidence
+- **THEN** the first-pass manuscript remains unchanged
+- **THEN** cosmetic edits, line-fill changes, and synonymous rewrites are not recorded as material improvements
+
+#### Scenario: Complete backport is ready for substantive review
+- **WHEN** all planned thesis content is present and the complete standalone manuscript builds
+- **THEN** each recorded candidate is presented for an explicit operator decision
+- **THEN** the manuscript applies only approved candidates
 
 ### Requirement: Current approach account
-The revised approach MUST define the assertion-to-MUT pair, MUT calls, input-output specifications, input partitions, generalized oracles, failure results, retention rules, and original-test removal rules. It MUST include the end-to-end algorithm and current stage behavior.
+The revised approach MUST port the thesis definitions of assertion-to-MUT pairs, MUT calls, input-output specifications, input partitions, generalized oracles, failure results, retention rules, and original-test removal rules. It MUST port the thesis end-to-end algorithm and current-stage explanation substantially unchanged.
 
 #### Scenario: Reader follows the transformation
 - **WHEN** a reader examines the approach without consulting the implementation
 - **THEN** the paper identifies every pipeline stage, its inputs, its outputs, and its failure outcome
-- **THEN** the algorithm agrees with the evaluated implementation
+- **THEN** any suspected implementation discrepancy is deferred until the complete backport is ready for substantive review
 
 ### Requirement: Approach, prototype, and evaluation scope
 The paper MUST distinguish the general approach from the Java prototype. It MUST also distinguish the inherited RQ0 benchmark, the shared RQ1--RQ5 controlled evaluation, and the RQ6 real-world evaluation.
@@ -118,6 +130,12 @@ Every empirical value MUST trace to a registered report, generated publication a
 - **WHEN** preserved sources cannot establish a requested claim
 - **THEN** the manuscript records the evidence gap or removes the claim
 - **THEN** it does not infer a value or authorize a rerun
+
+#### Scenario: Ported thesis value conflicts with generated evidence
+- **WHEN** the first-pass audit finds a conflict between thesis text and authoritative generated evidence
+- **THEN** the revision records the conflict without rewriting the thesis passage during the first pass
+- **THEN** the conflict receives an explicit operator decision after the complete backport
+- **THEN** the final manuscript does not retain an empirical value that lacks an authoritative source
 
 ### Requirement: Mutation-analysis semantics
 The paper MUST state that mutation results do not influence specification extraction or generalized-test creation. It MUST describe Stage 5 as post-generation reduction after every candidate PBT already exists. Stage 5 MUST preserve the unreduced suite's mutation score while reducing the retained suite's size and execution runtime. The paper MUST NOT describe Stage 5 as improving the efficiency of generalization because mutation testing adds substantial processing cost.
