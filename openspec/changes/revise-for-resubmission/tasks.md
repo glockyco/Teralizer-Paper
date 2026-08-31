@@ -23,7 +23,7 @@
 - [x] 2.8 After the fragment interface is available, add every required RQ0--RQ6 artifact key and destination to the paper's `publish.toml`, run Teralizer's complete-report publication command against preserved evidence, and verify all dependencies, fragment destinations, row anchors, aggregate macros, figure PDFs, and unchanged source-repository state without starting an experiment
 - [x] 2.9 Create manuscript-owned wrappers for every generated table fragment consumed by the current manuscript, preserve paper-specific captions, labels, placement, sizing, and local style, import the aggregate macro file unchanged, and verify that the ACM manuscript builds without an alias, value mapping, or manual artifact substitute
 - [x] 2.10 Commit the verified publication interface and paper-owned wrappers with no scientific manuscript changes
-- [ ] 2.11 Revise the existing backport manifest so `PORT`, `ADAPT`, and `VERIFY` enforce thesis-first fidelity, add its deferred-candidate register, record the proposed `ORIGINAL`/`INITIAL` and mutation-round clarification there, and verify each existing disposition permits only necessary standalone adaptation
+- [x] 2.11 Revise the existing backport manifest so `PORT`, `ADAPT`, and `VERIFY` enforce thesis-first fidelity, add its deferred-candidate register, record the proposed `ORIGINAL`/`INITIAL` and mutation-round clarification there, and verify each existing disposition permits only necessary standalone adaptation
 
 ## 3. Port Concepts and the End-to-End Approach
 
