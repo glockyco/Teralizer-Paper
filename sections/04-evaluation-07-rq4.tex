@@ -45,7 +45,7 @@ can achieve better detection-to-runtime ratios than simply running \ToolEvoSuite
 
 Our runtime evaluation results reveal
 that test suite reduction via mutation testing
-dominates the overall runtime cost of \ToolTeralizer{}.
+accounts for most of \ToolTeralizer{}'s runtime.
 More specifically, Figure~\ref{fig:teralizer-runtimes} shows
 that Stage~5 (test suite reduction) consumes 1,110--35,538 seconds
 (59.1--95.7\% of total processing time)
@@ -80,8 +80,8 @@ and replacing expected values in assertions
 
 \paragraph{Stage 5 Runtimes}
 
-Test suite reduction costs are substantially larger
-than the costs of the preceding stages
+Test suite reduction (Stage~5) accounts for 59.1--95.7\% of total processing time,
+more than all preceding stages combined,
 due to the high runtime cost of mutation testing.
 Mutation testing of the \VariantOriginal{} test suite takes,
 on average, 8$\times$ as long
@@ -232,6 +232,10 @@ because the more sophisticated input value generation avoids
   combining short \ToolEvoSuite{} generation with \ToolTeralizer{} generalization
   achieves better detection-to-runtime ratios than longer \ToolEvoSuite{} generation alone
   for multiple evaluated configurations.
+  Similarly, keeping the generation budget unchanged
+  but investing additional runtime in generalization
+  extends the Pareto frontier to detection rates
+  that \ToolEvoSuite{}-only configurations do not reach.
   This stems from complementary optimization targets:
   \ToolEvoSuite{} optimizes for breadth (coverage),
   while \ToolTeralizer{} optimizes for depth (thorough testing of discovered paths).
