@@ -1,43 +1,35 @@
 \section{Conclusions}
 \label{sec:conclusions}
 
-This paper introduced a semantics-based approach
-for automated test generalization,
-using specifications extracted through single-path symbolic analysis
-to transform conventional unit tests into property-based tests.
-We implemented this approach in a prototype tool called \ToolTeralizer{}.
-Under controlled conditions matching current symbolic analysis capabilities,
-\ToolTeralizer{} achieves mutation score improvements of 1--4 percentage points
-compared to \ToolEvoSuite{}-generated baselines.
-Pareto analysis further showed that combining short test generation with test generalization
-can outperform longer generation alone. For example,
-1-second generation plus generalization
-achieves a higher mutation score on \DatasetEqBench{}
-than 60-second generation (51.7\% vs 51.6\%)
-while requiring 32\% less total runtime.
+This paper introduced \ToolTeralizer{}, a semantics-based approach that transforms
+conventional unit tests into property-based tests.
+The approach extracts path-specific input-output specifications through single-path symbolic analysis,
+generates inputs that satisfy the extracted constraints,
+and preserves developer-written assertions as test oracles.
+This makes test generalization complementary to test generation:
+it extends the input space of existing tests while retaining their structure and intent.
 
-However, our evaluation across 632 real-world Java projects
-from the RepoReapers dataset reveals substantial barriers
-to fully automated generalization under real-world conditions:
-only 1.7\% of projects complete the processing pipeline,
-and 98.3\% of assertions are excluded before reaching generalized test creation.
-By analyzing these exclusions in detail,
-we distinguish implementation limitations of our prototype
-from fundamental research challenges in specification extraction,
-providing concrete guidance for advancing the field.
-The primary barrier to fully automated generalization
-is limited type support in existing symbolic analysis tools and approaches:
-current tools cannot precisely encode constraints for strings, arrays, and objects,
-causing the majority of assertion-level exclusions.
+The evaluation shows both the reach and the limits of this approach.
+On the 12 projects from JARVIS's original evaluation,
+\ToolTeralizer{} produces generalized tests for 9 projects,
+whereas JARVIS reports success for 2.
+Under controlled conditions, generalization improves mutation scores
+by 1--4 percentage points on generated test suites.
+Pareto analysis also shows that short test generation followed by generalization
+can outperform longer test generation alone.
+For mature developer-written Apache Commons tests,
+the improvement is only 0.05--0.07 percentage points,
+which indicates limited remaining opportunity for the evaluated mutation operators.
+Under real-world conditions, \TzRealworldApplicabilityProjects{} of
+\TzRealworldEligibleProjects{} eligible RepoReapers projects complete all five stages,
+and the final reduced suites contain \TzRealworldGeneralizationsFinalUsable{} generalized tests.
+The exclusions expose three broad barriers:
+prototype and project-integration limitations,
+insufficient path evidence for sound generalized oracles,
+and build, execution, or environment failures.
 
-As symbolic analysis improves to support additional types,
-semantics-based test generalization would directly benefit.
-Other limitations of \ToolTeralizer{}
-are addressable through engineering improvements
-without requiring research advances:
-interprocedural analysis would recover assertions in helper methods,
-broader framework support would reduce test-level exclusions,
-and extended constraint encoding in generated tests would improve effectiveness and efficiency
-by reducing filter-and-regenerate cycles.
-Our complete implementation and replication package
-are publicly available to support reproduction and extension of this work~\cite{replicationpackage}.
+Advancing semantics-based test generalization therefore requires
+both broader implementation support and research on specification extraction,
+encoding, and understandable generated tests.
+Our open implementation and replication package~\cite{replicationpackage}
+support reproduction of the reported results and further work on these challenges.

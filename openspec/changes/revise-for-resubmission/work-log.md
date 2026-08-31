@@ -85,3 +85,12 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 ## Operator-approved discussion correction
 
 - DC-004 records the duplicated `both` in the thesis discussion source. The operator approved immediate correction on 2026-08-31; `sections/05-discussion.tex` removes only the second `both`, preserving the comparison and evidence.
+
+## Standalone framing and publication assets
+
+- The paper retains its fuller standalone background unchanged. `sections/01-introduction.tex` now integrates the thesis scientific additions, the seven-question evaluation, the JARVIS and RepoReapers results, and a standalone contribution list and roadmap without thesis chapter framing.
+- The 218-word abstract in `main.tex` and the paper-owned synthesis in `sections/07-conclusions.tex` now cover the complete RQ0--RQ6 scope. The thesis-only bridge remains omitted.
+- `main.bib` and the abstract use the registered 2026 replication package and DOI `10.5281/zenodo.18242626`; the complete build reports no unresolved citations or references.
+- Publication verification reran `../test-generalization/scripts/publish-analysis.sh` with this repository as `PAPER_OUT`. All 78 declared CSV, LaTeX, macro, and figure destinations were republished, and the worktree retained no generated-artifact changes, confirming byte-equivalent registered outputs.
+- The complete 57-page manuscript was inspected after the framing changes. Every included table is upright and readable; no clipping, missing asset, incorrect float orientation, or factual caption conflict was found. The paper-owned listings, captions, labels, variant macros, and RQ0--RQ6 identifiers remain consistent with the manuscript assembly.
+- Verification: `latexmk -pdf -interaction=nonstopmode -file-line-error main.tex` succeeds; `chktex` reports only the manuscript's recorded pre-existing warnings, including ORCID dashes, labels, and code-like text in accessibility descriptions.

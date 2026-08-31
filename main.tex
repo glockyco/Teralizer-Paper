@@ -257,30 +257,34 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Conventional unit tests validate single input-output pairs, leaving most inputs of an execution path untested.
-Property-based testing addresses this shortcoming by generating multiple inputs satisfying properties
-but requires significant manual effort to define properties and their constraints.
-We propose a semantics-based approach that automatically transforms
-unit tests into property-based tests by extracting specifications
-from implementations via single-path symbolic analysis.
-We demonstrate this approach through Teralizer, a prototype for Java
-that transforms JUnit tests into property-based jqwik tests.
-Unlike prior work that generalizes from input-output examples,
-Teralizer derives specifications from program semantics.
+Conventional unit tests validate individual input-output pairs,
+leaving most inputs along the same execution path untested.
+Property-based testing addresses this limitation by checking properties over generated inputs,
+but developers must define both the properties and their input constraints.
+We present a semantics-based approach that automates this transformation
+by extracting path-specific input-output specifications through single-path symbolic analysis.
+\ToolTeralizer{}, our Java prototype, transforms JUnit tests into \ToolJqwik{} property-based tests
+that preserve developer-written assertions while exercising additional inputs.
+Unlike JARVIS, which generalizes repeated examples through predefined abstraction templates,
+\ToolTeralizer{} derives specifications from tests and implementation semantics.
 
-We evaluated Teralizer on three progressively challenging datasets.
-On EvoSuite-generated tests for EqBench and Apache Commons utilities,
-Teralizer improved mutation scores by 1--4 percentage points.
-Generalization of mature developer-written tests from Apache Commons utilities
-showed only 0.05--0.07 percentage points improvement.
-Analysis of 632 real-world Java projects from RepoReapers
-highlights applicability barriers:
-only 1.7\% of projects completed the generalization pipeline,
-with failures primarily due to type support limitations in symbolic analysis and static analysis limitations in our prototype.
-Based on the results, we provide a roadmap for future work, identifying research and engineering
-challenges that need to be tackled to advance the field of test generalization.
+We evaluate \ToolTeralizer{} from controlled benchmarks to real-world projects.
+On JARVIS's 12 benchmark projects, \ToolTeralizer{} produces generalized tests for 9 projects,
+whereas JARVIS reports success for 2.
+On \ToolEvoSuite{}-generated tests for \DatasetEqBench{} and Apache Commons utilities,
+generalization improves mutation scores by 1--4 percentage points.
+For mature developer-written Apache Commons tests,
+the improvement is only 0.05--0.07 percentage points.
+Under real-world conditions, \TzRealworldApplicabilityProjects{} of
+\TzRealworldEligibleProjects{} eligible RepoReapers projects complete all five stages,
+and the final reduced suites contain \TzRealworldGeneralizationsFinalUsable{} generalized tests.
+The main barriers are prototype and project-integration limitations,
+insufficient evidence for sound generalized oracles,
+and build, execution, or environment failures.
+These results show that semantics-based test generalization is viable in suitable environments
+but requires broader analysis and modeling support for general use.
 
-Artifacts available at: \url{https://doi.org/10.5281/zenodo.17950380}
+Artifacts are available at \url{https://doi.org/10.5281/zenodo.18242626}.
 \end{abstract}
 
 %%

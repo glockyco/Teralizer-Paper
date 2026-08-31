@@ -80,56 +80,54 @@ showing how a simple equality assertion $abs(0) = 0$
 becomes the property $abs(x) = x$,
 valid for all non-negative values of $x$.
 
-To evaluate our approach,
-we applied \ToolTeralizer{} to three complementary datasets.
-The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides controlled settings
-with numeric-focused programs well-suited for symbolic analysis.
-Because \DatasetEqBench{} lacks test suites, we generated tests using \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
-Utility methods extracted from Apache Commons projects
-offer a middle ground between controlled and real-world scenarios.
-Here, we directly compared \ToolEvoSuite{}-generated and developer-written tests
-on the same codebase, partially isolating the influence of test architecture on generalization outcomes.
-Finally, we applied \ToolTeralizer{} to 632 real-world Java projects with developer-written tests
+We evaluate \ToolTeralizer{} in three complementary environments
+that span controlled to real-world conditions.
+The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides numeric-focused programs
+well suited to symbolic analysis; because it lacks tests,
+we generate them with \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
+Utility methods from Apache Commons provide an intermediate setting
+in which we compare generated and developer-written tests on the same codebase.
+Finally, \TzRealworldEligibleProjects{} eligible Java projects with developer-written tests
 from the RepoReapers dataset~\cite{munaiah_2017_reporeapers}
-to expose the full complexity of practical application scenarios.
-This progression from controlled to real-world conditions highlights
-both the potential and limitations of semantics-based test generalization.
+expose practical applicability barriers.
+We also compare \ToolTeralizer{} with the results JARVIS reports
+for the 12 benchmark projects of its original evaluation.
 
-Our evaluation shows modest yet consistent improvements under controlled conditions.
-On \ToolEvoSuite{}-generated tests, mutation scores increased by 1--4 percentage points:
-from 48--52\% to 52--55\% on \DatasetEqBench{},
-and from 57--58\% to 58--59\% on Apache Commons utilities.
-In contrast, generalization of developer-written tests for Apache Commons utilities
-showed only 0.05--0.07 percentage points improvement from a baseline of 80.35\%.
-% This shows that the tests of these projects already detected most of the faults targeted by automated generalization.
-%Beyond mutation detection improvements,
-Results from the RepoReapers projects reveal practical applicability barriers:
-% our analysis of 632 real-world projects reveals practical applicability barriers:
-only 1.7\% of projects successfully completed the generalization pipeline.
-Failures primarily occurred due to 
-type support limitations of symbolic analysis
-as well as static analysis limitations
-of our prototype.
-To provide a roadmap for future work,
-we classified these failures into
-those that can be resolved through engineering effort
-and those that represent deeper research challenges in specification extraction and encoding.
+The results show broader measured applicability than JARVIS on the shared benchmark:
+\ToolTeralizer{} produces generalized tests in 9 of 12 projects,
+whereas JARVIS reports success in 2 of 12 projects.
+Under controlled conditions, generalization increases mutation scores
+by \TzEffectivenessEqbenchEvosuiteMutationImprovementMinPp{}--\TzEffectivenessEqbenchEvosuiteMutationImprovementMaxPp{}~percentage points
+on \ToolEvoSuite{}-generated tests for \DatasetEqBench{}
+and by \TzEffectivenessCommonsEvosuiteMutationImprovementMinPp{}--\TzEffectivenessCommonsEvosuiteMutationImprovementMaxPp{}~percentage points
+on generated Apache Commons tests.
+For mature developer-written Apache Commons tests, the increase is only
+\TzEffectivenessCommonsDeveloperMutationImprovementMinPp{}--\TzEffectivenessCommonsDeveloperMutationImprovementMaxPp{}~percentage points
+from a baseline of \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{}.
+Under real-world conditions, \TzRealworldApplicabilityProjects{} of
+\TzRealworldEligibleProjects{} eligible RepoReapers projects complete all five stages,
+and the final reduced suites contain \TzRealworldGeneralizationsFinalUsable{} generalized tests.
+The associated exclusions arise primarily from prototype and project-integration limitations,
+insufficient evidence for sound generalized oracles,
+and build, execution, or environment failures.
 
 This paper makes the following contributions:
 
 \begin{enumerate}
-\item A \textbf{semantics-based test generalization approach} that extracts specifications via symbolic analysis to transform conventional unit tests into property-based tests.
-\item A comprehensive \textbf{empirical evaluation} across three complementary datasets, demonstrating 1--4 percentage point mutation score improvements under controlled conditions.
-\item A systematic \textbf{analysis of applicability barriers}, distinguishing addressable engineering limitations from fundamental research challenges in specification extraction and encoding.
-\item An \textbf{open implementation and replication package} \cite{replicationpackage}, enabling reproduction and extension of our results.
+\item A \textbf{semantics-based test generalization approach} that extracts path-specific specifications through symbolic analysis and transforms conventional unit tests into property-based tests.
+\item A Java \textbf{prototype implementation}, \ToolTeralizer{}, that realizes the approach as a five-stage pipeline.
+\item A comprehensive \textbf{empirical evaluation} that compares against JARVIS's published benchmark results and measures effectiveness, efficiency, and applicability from controlled benchmarks to real-world projects.
+\item A systematic \textbf{analysis of applicability barriers} that distinguishes prototype and integration limitations, insufficient specification evidence, and environmental failures.
+\item An \textbf{open implementation and replication package}~\cite{replicationpackage} that supports reproduction and extension of the results.
 \end{enumerate}
 
 The paper is organized as follows.
 Section~\ref{sec:background} introduces the technical foundations of test generalization.
 Section~\ref{sec:approach} presents \ToolTeralizer{}'s five-stage pipeline.
-Section~\ref{sec:evaluation} evaluates our approach through six research questions,
-covering mutation score improvements, impact on test suite size and execution time,
-runtime requirements, and causes of unsuccessful generalizations.
-Section~\ref{sec:discussion} discusses the results, directions for future work, and threats to validity.
-Section~\ref{sec:related-work} positions our work within the broader testing literature,
+Section~\ref{sec:evaluation} evaluates the approach through seven research questions:
+the JARVIS comparison (RQ0), mutation-score effects (RQ1 and RQ2),
+test-suite size and runtime (RQ3), efficiency relative to test generation (RQ4),
+and causes of unsuccessful generalization under controlled and real-world conditions (RQ5 and RQ6).
+Section~\ref{sec:discussion} discusses the results, future directions, and threats to validity.
+Section~\ref{sec:related-work} positions the approach within the broader testing literature,
 and Section~\ref{sec:conclusions} concludes the paper.

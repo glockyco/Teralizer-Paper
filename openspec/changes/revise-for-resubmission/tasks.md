@@ -90,13 +90,13 @@
 
 ## 8. Adapt Paper-Level Framing and Publication Assets
 
-- [ ] 8.1 Preserve the standalone paper's fuller background and integrate only thesis scientific additions that remain meaningful outside the monograph, adapting cross-references without importing the thesis's reduced-background structure
-- [ ] 8.2 Adapt the paper introduction, contribution list, and roadmap to the fully ported body, using thesis content where applicable and changing only what the standalone genre and added RQ0 or RQ6 material require
-- [ ] 8.3 Adapt the abstract to the fully ported results and scope while preserving thesis formulations where they fit the standalone paper
-- [ ] 8.4 Adapt the standalone conclusion to the fully ported thesis content, retain the paper conclusion structure, and omit the thesis bridge
-- [ ] 8.5 Port required bibliography additions, adapt citation keys and artifact URLs, update the replication-package DOI, and verify all citations resolve without rewriting cited claims
-- [ ] 8.6 Audit the complete paper `publish.toml`, aggregate macro import, generated table-body fragments and figure PDFs, manuscript-owned wrappers, listings, captions, labels, variant names, and RQ identifiers; verify every included table is upright and readable, every analysis-owned artifact is direct and unedited, and every factual caption claim is recorded for deferred review if it conflicts with the thesis; if evidence does not fit, stop and ask the operator before any remedy
-- [ ] 8.7 Verify that every planned thesis passage is present or has a necessary recorded disposition, run the manuscript checks, inspect the complete rendered paper, and commit the framing and publication-asset adaptation atomically
+- [x] 8.1 Preserve the standalone paper's fuller background and integrate only thesis scientific additions that remain meaningful outside the monograph, adapting cross-references without importing the thesis's reduced-background structure
+- [x] 8.2 Adapt the paper introduction, contribution list, and roadmap to the fully ported body, using thesis content where applicable and changing only what the standalone genre and added RQ0 or RQ6 material require
+- [x] 8.3 Adapt the abstract to the fully ported results and scope while preserving thesis formulations where they fit the standalone paper
+- [x] 8.4 Adapt the standalone conclusion to the fully ported thesis content, retain the paper conclusion structure, and omit the thesis bridge
+- [x] 8.5 Port required bibliography additions, adapt citation keys and artifact URLs, update the replication-package DOI, and verify all citations resolve without rewriting cited claims
+- [x] 8.6 Audit the complete paper `publish.toml`, aggregate macro import, generated table-body fragments and figure PDFs, manuscript-owned wrappers, listings, captions, labels, variant names, and RQ identifiers; verify every included table is upright and readable, every analysis-owned artifact is direct and unedited, and every factual caption claim is recorded for deferred review if it conflicts with the thesis; if evidence does not fit, stop and ask the operator before any remedy
+- [x] 8.7 Verify that every planned thesis passage is present or has a necessary recorded disposition, run the manuscript checks, inspect the complete rendered paper, and commit the framing and publication-asset adaptation atomically
 
 ## 9. Review Deferred Substantive Improvements
 
