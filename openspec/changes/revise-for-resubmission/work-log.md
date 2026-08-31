@@ -81,3 +81,7 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - The thesis JARVIS comparison now points to RQ0, and its thesis-specific statement about unevaluated developer acceptance is adapted to the paper's evaluation while preserving the limitation.
 - Complete source comparison found no other scientific departure or nonessential proposal requiring a deferred candidate. Label comments and non-breaking reference spaces were adapted for the ACM source.
 - Verification: the complete manuscript builds, `chktex -q sections/06-related-work.tex` passes, and both related-work pages were inspected in the rendered PDF.
+
+## Operator-approved discussion correction
+
+- DC-004 records the duplicated `both` in the thesis discussion source. The operator approved immediate correction on 2026-08-31; `sections/05-discussion.tex` removes only the second `both`, preserving the comparison and evidence.
