@@ -46,9 +46,9 @@
 - [x] 4.4 Preserve the thesis controlled-study account and measurements substantially unchanged, use equivalent generated paper macros where required by assembly, and record rather than correct any suspected stale terminology or evidence discrepancy
 - [x] 4.5 Compare the framework with the thesis source, run the recorded manuscript checks, inspect the generated assets, and commit the faithful framework backport
 - [x] 4.6 Port the thesis RQ1 and RQ2 text substantially unchanged, verify values and denominators for the deferred-review register without rewriting the port, run focused checks, inspect the result, and commit the RQ1--RQ2 backport
-- [ ] 4.7 Port the thesis RQ3 text substantially unchanged, record any test-count, line-count, runtime, reduction, or terminology concern for deferred review, run focused checks, inspect the result, and commit the RQ3 backport
-- [ ] 4.8 Port the thesis RQ4 text substantially unchanged, record any processing-time, mutation-cost, Pareto, or efficiency concern for deferred review, run focused checks, inspect the result, and commit the RQ4 backport
-- [ ] 4.9 Port the thesis RQ5 text substantially unchanged, record any exclusion, percentage, reference, population, or interpretation concern for deferred review, run focused checks, inspect the result, and commit the RQ5 backport
+- [x] 4.7 Port the thesis RQ3 text substantially unchanged, record any test-count, line-count, runtime, reduction, or terminology concern for deferred review, run focused checks, inspect the result, and commit the RQ3 backport
+- [x] 4.8 Port the thesis RQ4 text substantially unchanged, record any processing-time, mutation-cost, Pareto, or efficiency concern for deferred review, run focused checks, inspect the result, and commit the RQ4 backport
+- [x] 4.9 Port the thesis RQ5 text substantially unchanged, record any exclusion, percentage, reference, population, or interpretation concern for deferred review, run focused checks, inspect the result, and commit the RQ5 backport
 
 ## 5. Port RQ0 and the JARVIS Comparison
 

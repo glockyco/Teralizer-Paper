@@ -70,7 +70,7 @@ The \texttt{NoAssertions} filter operates on
 after exclusions due to test-level failures (7 tests)
 and rejections by the preceding filters (1527 + 180 tests).
 From this subset, 2,226 tests are rejected
-because they do not directly contain any assertions in the test method.
+because they do not contain assertions in the test method.
 In \ToolEvoSuite{}-generated test suites, all \texttt{NoAssertions} exclusions
 are genuinely assertion-free tests that pass if no exception occurs during test execution.
 In contrast, 69 of 80 \texttt{NoAssertions} exclusions (86.3\%) in the developer-written
@@ -80,6 +80,9 @@ However, \ToolTeralizer{}'s current static analysis
 only examines the top-level test method,
 which causes it to miss these delegated assertion calls
 (as described in Section~\ref{sec:test-assertion-analysis}).
+
+\input{tables/tab-exclusions-breakdown}
+\input{tables/tab-exclusions-filtering}
 
 \paragraph{Assertion-level Exclusions}
 \label{par:assertion-level-exclusions}
@@ -92,7 +95,7 @@ whereas 2,995 stem from failures during specification extraction via \ToolSPF{}.
 Causes for the 2,995 assertion-level failures include \ToolSPF{} errors, \ToolTeralizer{} errors,
 and exceeded analysis limits.
 %(timeout, specification size limit, depth limit, etc.).
-SPF exceptions constitute 51.4\% of failures (1,540 assertions).
+\ToolSPF{} exceptions constitute 51.4\% of failures (1,540 assertions).
 They occur primarily due to missing models for native methods
 in the current implementation of \ToolSPF{}
 and, to a lesser extent,
@@ -144,9 +147,6 @@ for tested methods with void return types.
 The current implementation of \ToolTeralizer{} does not support such methods
 because no output specification can be inferred for them.
 
-\input{tables/tab-exclusions-breakdown}
-\input{tables/tab-exclusions-filtering}
-
 \paragraph{Generalization-level Exclusions}
 \label{par:generalization-level-exclusions}
 
@@ -157,8 +157,8 @@ in 0.2\% of cases (22 of 13,836 generalized tests).
 This low rejection rate indicates
 that the transformation to \ToolJqwik{} tests is largely successful.
 The 22 test failures that force \texttt{NonPassingTest} to reject
-occur for tests in the \DatasetCommonsDev{} project
-that call MUTs or assertions within a loop.
+occur for tests in \DatasetCommonsDev{}
+that call MUTs or assertions within loops.
 This is problematic because \ToolTeralizer{}'s current implementation
 does not properly account for loops.
 As a result, the \VariantBaseline{} generalization strategy
@@ -179,7 +179,7 @@ especially for more complex constraints
 (Section~\ref{sec:constraint-complexity-eval}).
 The remaining filtering-based exclusions are due to 
 inaccurate input/output specifications which cause exceptions
-during assertion checking (\texttt{AssertionFailedError}, 729 / 803 / 819 exclusions by \textsc{Naive$_{10/50/200}$})
+during assertion checking (\texttt{AssertionFailedError}, 729 / 803 / 819 exclusions by \VariantNaives{})
 or general test execution (\texttt{ArithmeticException}, 99 / 99 / 99 exclusions).
 Underlying causes include
 (i) assertions in loops,
