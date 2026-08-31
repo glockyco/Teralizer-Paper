@@ -1,0 +1,4 @@
+variant,probes,total_pvc,killed_mutants,covered_mutants,covered_mutation_score
+IMPROVED_100_TRIES,10,1135,51,80,0.6375
+IMPROVED_200_TRIES,10,2152,51,80,0.6375
+IMPROVED_1000_TRIES,10,10055,51,80,0.6375

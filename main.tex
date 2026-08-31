@@ -112,6 +112,9 @@
 \usepackage{algorithmic}
 \usepackage{xcolor}
 
+\newcounter{reporttablerow}
+\providecommand{\theHreporttablerow}{\arabic{reporttablerow}}
+
 \newcommand{\rqanswerbox}[2]{%
   \par\medskip\noindent
   \setlength{\fboxsep}{8pt}%
@@ -167,8 +170,11 @@
 \newcommand{\VariantImprovedA}{\textsc{Improved\textsubscript{10}}}
 \newcommand{\VariantImprovedB}{\textsc{Improved\textsubscript{50}}}
 \newcommand{\VariantImprovedC}{\textsc{Improved\textsubscript{200}}}
+\newcommand{\VariantAll}{\textsc{All}}
 
 \newcommand{\tries}{\texttt{tries}}
+
+\input{tables/generated/macros}
 
 \floatstyle{plain}
 \newfloat{genericfloat}{tbph}{lop}

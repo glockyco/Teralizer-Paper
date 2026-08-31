@@ -50,3 +50,13 @@ The source and evidence repository and its registered submodules were clean afte
 ## Remote authorization gate
 
 No remote will be pushed, and no GitHub or GitLab CI result will be claimed, without explicit operator authorization. Local execution of the CI commands is not remote CI evidence.
+
+## Generated evidence publication
+
+- Teralizer publication command: `PAPER_OUT=/Users/glockyco/src/github.com/glockyco/Teralizer-Paper scripts/publish-analysis.sh`
+- Published set: 34 LaTeX artifacts, 33 CSV exports, and 5 figure PDFs declared in `publish.toml`
+- Existing manuscript tables migrated to 14 paper-owned wrappers; captions, labels, placement, and sizing remain in those wrappers
+- Generated table bodies remain under `tables/generated/`; unpublished evidence tables have no speculative manuscript wrappers
+- Aggregate evidence macros are imported unchanged from `tables/generated/macros.tex`
+- Verification: all 72 declared destinations exist; 132 row anchors are unique; the 49-page ACM manuscript builds; representative table pages were inspected in the PDF
+- Teralizer source worktree remained clean after publication. The thesis worktree retained its pre-existing ` M projects/teralizer-paper` state and no thesis file was edited

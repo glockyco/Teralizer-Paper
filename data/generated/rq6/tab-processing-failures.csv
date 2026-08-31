@@ -1,0 +1,15 @@
+row_key,cause,count
+1 + 2:all tests or assertions excluded due to filter rejections,all tests or assertions excluded due to filter rejections,228
+1 + 2:JUnit execution of the original test suite exceeds 300 seconds,JUnit execution of the ORIGINAL test suite exceeds 300 seconds,26
+1 + 2:JUnit test execution or Spoon test analysis fails,JUnit test execution or Spoon test analysis fails,21
+1 + 2:no test or assertion records collected,no test or assertion records collected,11
+1 + 2:JUnit report collection fails,JUnit report collection fails,5
+3:processing failures prevent specification extraction,processing failures prevent specification extraction,112
+3:no generalization attempt recorded despite retained assertions,no generalization attempt recorded despite retained assertions,2
+4:widening refusals contribute to exclusion of all generalization attempts,widening refusals contribute to exclusion of all generalization attempts,74
+4:filter rejections alone exclude all generalization attempts,filter rejections alone exclude all generalization attempts,4
+4:processing failures alone exclude all generalization attempts,processing failures alone exclude all generalization attempts,3
+"5:PIT mutation testing of the initial test suite exceeds 3,600 seconds","PIT mutation testing of the INITIAL test suite exceeds 3,600 seconds",4
+5:generalized test suite has failing tests before mutation,IMPROVED_200_TRIES test suite has failing tests before mutation,3
+5:initial test suite has failing tests before mutation,INITIAL test suite has failing tests before mutation,3
+5:required PIT reports or JaCoCo outputs unavailable for the initial test suite,required PIT reports or JaCoCo outputs unavailable for the INITIAL test suite,3

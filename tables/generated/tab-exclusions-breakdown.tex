@@ -1,0 +1,19 @@
+  \begin{tabular*}{\linewidth}{@{\hspace{\tabcolsep}\extracolsep{\fill}}llrrrr}
+  \toprule
+   &  &  &  & \multicolumn{2}{c}{Excluded} \\
+  \cmidrule(lr){5-6}
+  Strategy & Level & Total & \multicolumn{1}{c}{Included} & \multicolumn{1}{c}{Filtering} & \multicolumn{1}{c}{Failures} \\
+  \midrule
+  \VariantAll{} & Test & 23,246 & 19,306\; (83.1\%) & 3,933\; (16.9\%) & 7\; (\phantom{0}0.0\%) \\
+  \midrule
+  \VariantAll{} & Assertion & 28,923 & 13,836\; (47.8\%) & 12,092\; (41.8\%) & 2,995\; (10.4\%) \\
+  \midrule
+  \VariantBaseline{} & Generalization & 13,836 & 13,814\; (99.8\%) & 22\; (\phantom{0}0.2\%) & 0\; (\phantom{0}0.0\%) \\
+  \VariantNaiveA{} & Generalization & 13,836 & 10,743\; (77.6\%) & 3,061\; (22.1\%) & 32\; (\phantom{0}0.2\%) \\
+  \VariantNaiveB{} & Generalization & 13,836 & 9,964\; (72.0\%) & 3,840\; (27.8\%) & 32\; (\phantom{0}0.2\%) \\
+  \VariantNaiveC{} & Generalization & 13,836 & 9,881\; (71.4\%) & 3,923\; (28.4\%) & 32\; (\phantom{0}0.2\%) \\
+  \VariantImprovedA{} & Generalization & 13,836 & 11,788\; (85.2\%) & 2,016\; (14.6\%) & 32\; (\phantom{0}0.2\%) \\
+  \VariantImprovedB{} & Generalization & 13,836 & 11,660\; (84.3\%) & 2,144\; (15.5\%) & 32\; (\phantom{0}0.2\%) \\
+  \VariantImprovedC{} & Generalization & 13,836 & 11,597\; (83.8\%) & 2,207\; (16.0\%) & 32\; (\phantom{0}0.2\%) \\
+  \bottomrule
+  \end{tabular*}

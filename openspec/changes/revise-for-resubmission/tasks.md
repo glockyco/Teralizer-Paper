@@ -19,10 +19,10 @@
 - [x] 2.4 Record the section correspondence under the paper-local change workspace and verify every rejected-paper section has an intended source strategy
 - [x] 2.5 Add each design reference formulation to the paper-local formulation register with its manuscript, cover-letter, or prior-review-response destination and a `USE`, `ADAPT`, or `OMIT` disposition
 - [x] 2.6 Commit the verified baseline, paper-local planning artifacts, and traceability controls before publication integration begins
-- [ ] 2.7 Complete a separate Teralizer OpenSpec change that publishes table-body fragments with `\linewidth`, leaves its worktree unchanged during publication, and records a separate thesis-wrapper migration; keep paper publication blocked until this interface is available
-- [ ] 2.8 After the fragment interface is available, add every required RQ0--RQ6 artifact key and destination to the paper's `publish.toml`, run Teralizer's complete-report publication command against preserved evidence, and verify all dependencies, fragment destinations, row anchors, aggregate macros, figure PDFs, and unchanged source-repository state without starting an experiment
-- [ ] 2.9 Create manuscript-owned wrappers for every generated table fragment, preserve paper-specific captions, labels, placement, sizing, and local style, import the aggregate macro file unchanged, and verify that the ACM manuscript builds without an alias, value mapping, or manual artifact substitute
-- [ ] 2.10 Commit the verified publication interface and paper-owned wrappers with no scientific manuscript changes
+- [x] 2.7 Complete a separate Teralizer OpenSpec change that publishes table-body fragments with `\linewidth`, leaves its worktree unchanged during publication, and records a separate thesis-wrapper migration; keep paper publication blocked until this interface is available
+- [x] 2.8 After the fragment interface is available, add every required RQ0--RQ6 artifact key and destination to the paper's `publish.toml`, run Teralizer's complete-report publication command against preserved evidence, and verify all dependencies, fragment destinations, row anchors, aggregate macros, figure PDFs, and unchanged source-repository state without starting an experiment
+- [x] 2.9 Create manuscript-owned wrappers for every generated table fragment consumed by the current manuscript, preserve paper-specific captions, labels, placement, sizing, and local style, import the aggregate macro file unchanged, and verify that the ACM manuscript builds without an alias, value mapping, or manual artifact substitute
+- [x] 2.10 Commit the verified publication interface and paper-owned wrappers with no scientific manuscript changes
 
 ## 3. Revise Concepts and the End-to-End Approach
 
