@@ -23,7 +23,7 @@ Decisions apply to scientific content, not raw files. `PORT` preserves the thesi
 | 9 | M | `chapters/05-teralizer/04-evaluation-rq3.tex` | VERIFY | Port the thesis RQ3 text unchanged during Pass 1; record any count, reduction, runtime, or terminology concern for deferred review. |
 | 10 | M | `chapters/05-teralizer/04-evaluation-rq4.tex` | VERIFY | Port the thesis RQ4 text unchanged during Pass 1; record any processing-cost or mutation-cost concern for deferred review. |
 | 11 | M | `chapters/05-teralizer/04-evaluation-rq5.tex` | VERIFY | Port the thesis RQ5 text unchanged during Pass 1; record any controlled-population or failure-terminology concern for deferred review. |
-| 12 | M | `chapters/05-teralizer/04-evaluation-rq6.tex` | PORT | Port the complete thesis version 7 population, lifecycle, outcomes, and causes substantially unchanged into `sections/04-evaluation-09-rq6.tex`. |
+| 12 | M | `chapters/05-teralizer/04-evaluation-rq6.tex` | PORT | Ported the complete thesis version 7 population, lifecycle, outcomes, and causes substantially unchanged into `sections/04-evaluation-09-rq6.tex`; adapted only paper labels, references, assembly, and the registered population provenance. |
 | 13 | M | `chapters/05-teralizer/05-discussion.tex` | ADAPT | Preserve the thesis implications and limitations; adapt only context supplied by other thesis chapters and retain necessary standalone synthesis. |
 | 14 | M | `chapters/05-teralizer/06-related-work.tex` | ADAPT | Preserve the thesis comparisons and LLM positioning; adapt only monograph cross-references and retain paper context and citations that the thesis omits. |
 | 15 | A | `chapters/05-teralizer/07-bridge.tex` | DROP | Thesis-only bridge; the paper keeps a standalone conclusion. |
@@ -53,9 +53,9 @@ Decisions apply to scientific content, not raw files. `PORT` preserves the thesi
 | 39 | A | `chapters/05-teralizer/tables/rq0-table2-comparison.tex` | DROP | Regenerate and publish directly from the registered RQ0 report. |
 | 40 | M | `chapters/05-teralizer/tables/tab-dataset-statistics.tex` | VERIFY | Use the published controlled-study fragment; preserve the thesis narrative during Pass 1 and record any value or terminology conflict for deferred review. |
 | 41 | M | `chapters/05-teralizer/tables/tab-detections-per-mutator.tex` | VERIFY | Use the published controlled-study fragment; preserve the thesis narrative during Pass 1 and record any value or terminology conflict for deferred review. |
-| 42 | M | `chapters/05-teralizer/tables/tab-exclusions-breakdown-extended.tex` | DROP | Replace with a directly published version 7 RQ6 artifact; do not copy the thesis table. |
-| 43 | M | `chapters/05-teralizer/tables/tab-exclusions-breakdown.tex` | DROP | Replace with a directly published version 7 RQ6 artifact; do not copy the thesis table. |
-| 44 | M | `chapters/05-teralizer/tables/tab-exclusions-filtering-extended.tex` | DROP | Replace with a directly published version 7 RQ6 artifact; do not copy the thesis table. |
+| 42 | M | `chapters/05-teralizer/tables/tab-exclusions-breakdown-extended.tex` | DROP | Replaced with the directly published version 7 fragment at `tables/generated/tab-exclusions-breakdown-extended.tex` and paper-owned wrapper at `tables/tab-exclusions-breakdown-extended.tex`; did not copy the thesis table. |
+| 43 | M | `chapters/05-teralizer/tables/tab-exclusions-breakdown.tex` | DROP | Replaced with the directly published controlled-study fragment at `tables/generated/tab-exclusions-breakdown.tex`; did not copy the thesis table. |
+| 44 | M | `chapters/05-teralizer/tables/tab-exclusions-filtering-extended.tex` | DROP | Replaced with the directly published version 7 fragment at `tables/generated/tab-exclusions-filtering-extended.tex` and paper-owned wrapper at `tables/tab-exclusions-filtering-extended.tex`; did not copy the thesis table. |
 | 45 | M | `chapters/05-teralizer/tables/tab-exclusions-filtering.tex` | DROP | Replace with a directly published version 7 RQ6 artifact; do not copy the thesis table. |
 | 46 | M | `chapters/05-teralizer/tables/tab-lines-per-project.tex` | VERIFY | Use the published controlled-study fragment or retained paper table; preserve the thesis narrative and record any evidence conflict for deferred review. |
 | 47 | D | `chapters/05-teralizer/tables/tab-mutants-per-project.tex` | PORT | Port the thesis deletion when the corresponding thesis narrative no longer consumes this table; do not infer another presentation change. |
@@ -63,7 +63,7 @@ Decisions apply to scientific content, not raw files. `PORT` preserves the thesi
 | 49 | M | `chapters/05-teralizer/tables/tab-pareto-commons.tex` | VERIFY | Preserve the thesis narrative during Pass 1 and use the published fragment; record any terminology or value conflict for deferred review. |
 | 50 | M | `chapters/05-teralizer/tables/tab-pareto-eqbench.tex` | VERIFY | Preserve the thesis narrative during Pass 1 and use the published fragment; record any terminology or value conflict for deferred review. |
 | 51 | M | `chapters/05-teralizer/tables/tab-pit-mutators.tex` | VERIFY | Preserve the thesis narrative during Pass 1 and use the published fragment; record any mutator-terminology conflict for deferred review. |
-| 52 | M | `chapters/05-teralizer/tables/tab-processing-failures.tex` | DROP | Replace with a directly published version 7 processing-failure artifact. |
+| 52 | M | `chapters/05-teralizer/tables/tab-processing-failures.tex` | DROP | Replaced with the directly published version 7 fragment at `tables/generated/tab-processing-failures.tex` and paper-owned wrapper at `tables/tab-processing-failures.tex`. |
 | 53 | M | `chapters/05-teralizer/tables/tab-runtime-per-project.tex` | VERIFY | Use the published controlled-study fragment or retained paper table; preserve the thesis narrative and record any evidence conflict for deferred review. |
 | 54 | M | `chapters/05-teralizer/tables/tab-tests-per-project.tex` | VERIFY | Use the published controlled-study fragment or retained paper table; preserve the thesis narrative and record any evidence conflict for deferred review. |
 

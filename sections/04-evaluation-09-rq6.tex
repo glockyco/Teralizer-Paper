@@ -2,8 +2,11 @@
 \label{sec:limitations-eval-extended}
 
 RQ5 established exclusion causes under controlled conditions.
-RQ6 now examines how \ToolTeralizer{} performs
-on 632 Java projects from the RepoReapers dataset
+The version 7 evaluation initially selected \TzRealworldSelectedProjects{} RepoReapers projects.
+The initial gate excluded \TzRealworldInitialGateExcludedProjects{},
+and \TzRealworldNoExecutedTestExcludedProjects{} further projects had no executed tests,
+leaving \TzRealworldEligibleProjects{} eligible projects.
+RQ6 examines how \ToolTeralizer{} performs on this corpus
 (Section~\ref{sec:experimental-framework})
 to identify generalization barriers in real-world projects.
 Section~\ref{sec:project-level-exclusions-extended} covers project-level exclusions.
@@ -16,316 +19,286 @@ when filtering or failures exclude all tests, assertions, or generalizations in 
 the project is excluded.
 Understanding exclusion patterns guides future work toward addressing the most impactful limitations.
 
-\subsubsection{Project-Level Exclusions}
+\subsubsection{Project-Level Exclusions}%
 \label{sec:project-level-exclusions-extended}
 
-Only 11 of 632 projects (1.7\%) successfully complete
-all five processing stages (Table~\ref{tab:processing-failures}),
-revealing substantial barriers to real-world applicability.
+Overall, \TzRealworldApplicabilityProjects{} of \TzRealworldEligibleProjects{} projects
+(\TzRealworldApplicabilityPct{}) successfully complete all five processing stages.
 To understand where and why processing fails,
-we examine exclusions stage by stage,
-distinguishing between internal causes
-(caused by configured resource limits or limitations of \ToolTeralizer{}),
-external causes
-(caused by \ToolTeralizer{}'s dependencies: JUnit, Spoon, \ToolJPF{}/\ToolSPF{}, \ToolJacoco{}, and \ToolPit{}),
-and mixed causes
-(influenced by both internal and external factors).
-This reveals which barriers are addressable through future improvements of \ToolTeralizer{}
-and which ones reflect less actionable limitations in \ToolTeralizer{}'s dependencies.
+we examine exclusions stage by stage.
+Table~\ref{tab:processing-failures} reports the observed stage, cause, and count for each exclusion,
+reflecting three primary causes:
+(i)~limitations in the prototype and its project integration,
+(ii)~insufficient evidence from the extracted input/output specifications,
+and (iii)~build, execution, or environment failures.
+Stage~1+2 (project analysis) retains
+\TzRealworldStageOneTwoIncluded{} of \TzRealworldStageOneTwoEntering{} projects
+(\TzRealworldStageOneTwoIncludedPct{}).
+Stage~3 (specification extraction) retains
+\TzRealworldStageThreeIncluded{} of \TzRealworldStageThreeEntering{} remaining projects
+(\TzRealworldStageThreeIncludedPct{}),
+whereas Stage~4 (generalized test creation) retains
+\TzRealworldStageFourIncluded{} of \TzRealworldStageFourEntering{}
+(\TzRealworldStageFourIncludedPct{}), and
+Stage~5 (test suite reduction) retains
+\TzRealworldStageFiveIncluded{} of \TzRealworldStageFiveEntering{}
+(\TzRealworldStageFiveIncludedPct{}).
 
 \input{tables/tab-processing-failures}
 
-The pipeline shows a distinct funnel pattern with two major barriers
-at the early and late processing stages,
-separated by high-success middle stages.
-Stage~1+2 (project analysis) excludes 79.4\% of projects (502 of 632),
-forming the first major barrier.
-Projects that pass this initial filter progress largely successfully through
-Stage~3 (specification extraction, 90.0\% pass rate: 117 of 130 projects)
-and Stage~4 (generalized test creation, 97.4\% pass rate: 114 of 117 projects).
-The second major barrier emerges at Stage~5 (test suite reduction via mutation testing),
-where 90.4\% of remaining projects are excluded (103 of 114 projects),
-leaving only 11 projects (1.7\% of the original 632) to complete all stages.
-This pattern suggests that the core generalization mechanisms (Stages 3--4) operate reliably
-when projects match current tool capabilities,
-but both early filtering and final mutation testing highlight substantial practical challenges.
-
 \paragraph{Stage 1 + 2 Exclusions:}
 
-Project analysis excludes 502 of 632 projects (79.4\%),
-with the primary failure mode being complete absence of suitable generalization candidates.
-Cases where all assertions are excluded affect 255 projects (40.3\% of stage input),
-while all tests being excluded affects 129 projects (20.4\%).
-For assertion exclusions, all 255 result from filter rejections,
-indicating that these projects contain only assertion patterns
-that are currently unsupported by \ToolTeralizer{}
-or beyond the current capabilities of the underlying symbolic analysis performed by \ToolSPF{}
-(detailed in Section~\ref{sec:test-assertion-generalization-exclusions-extended}).
-For test exclusions, 116 projects (89.9\% of the 129) stem from filter rejections,
-6 projects (4.7\%) from failures during test analysis (e.g., missing test report files),
-and 7 projects (5.4\%) from a combination of both.
+Project analysis excludes \TzRealworldStageOneTwoExcluded{} of
+\TzRealworldStageOneTwoEntering{} projects.
+Filter rejections are the dominant project-level cause.
+They exclude every assertion in 150 projects and every test in 78 projects.
+The later test- and assertion-level results report the individual filter classes and entity counts.
+A further 10 projects have no collected test records,
+and 1 project has test records but no assertion records.
+Execution and report-collection failures exclude the remaining 52 projects.
+More specifically, the \VariantOriginal{} test suite exceeds its 300-second limit in 26 projects.
+JUnit execution fails in 13 projects, and Spoon analysis fails in 8 projects.
+Four projects use a JUnit report layout that the collector does not support.
+For 1 project, the collector finds no JUnit report directory at the expected location.
 
-Further internal exclusions
-caused by configured timeouts (60 seconds per project) and output detection failures
-affect 97~projects (15.3\%).
-Timeout-based exclusions can be observed in 48~projects (7.6\%)
-that have particularly long-running \VariantOriginal{} test suites.
-Output detection failures affect 49~projects (7.8\%),
-split between failed JUnit report detection (31~projects, 4.9\%)
-and failed compilation output detection (18~projects, 2.8\%).
-Both types of output detection failures
-are caused by projects that store these outputs in non-standard output directories.
-Thus, these exclusions indicate that current search heuristics used by \ToolTeralizer{}
-cannot accommodate the full diversity of real-world project structures.
+\paragraph{Stage 3 Exclusions:}
 
-External execution errors affect 21 projects (3.3\%):
-13 projects (2.1\%) encounter JUnit execution errors during test execution,
-and 8 projects (1.3\%) encounter Spoon execution errors during test analysis.
-These failures stem from \ToolTeralizer{}'s dependencies
-and, therefore, lie outside the direct control of \ToolTeralizer{}.
+Stage~3 excludes \TzRealworldStageThreeExcluded{} of
+\TzRealworldStageThreeEntering{} projects.
+Processing failures prevent 112 projects from advancing through specification extraction.
+In 106 projects, no assertion that remains after filtering produces an input/output specification.
+The most frequent recorded failures are missing \ToolJPF{} native peers in 41 projects,
+uncaught exceptions during \ToolJPF{} execution in 36, and unsupported bytecode in 21.
+These project counts overlap because different assertions in one project can fail for different reasons.
+Instrumented-project compilation fails in another 5 projects,
+and initial-test execution fails in 1.
+The remaining 2 projects retain assertions but show no recorded generalization attempt.
 
-\paragraph{Stage 3 + 4 Exclusions:}
+\paragraph{Stage 4 Exclusions:}
 
-The 130 projects that complete project analysis
-face substantially lower exclusion rates in the two subsequent stages.
-This confirms that early filtering successfully identifies viable generalization candidates.
-Stage~3 (specification extraction) excludes 13 projects (10.0\%)
-due to \ToolSPF{} execution errors, \ToolTeralizer{} errors, or exceeded resource limits
-(detailed in Section~\ref{sec:test-assertion-generalization-exclusions-extended}).
-One external failure represents a Spoon execution error during test instrumentation,
-and one internal failure occurs due to a test suite execution timeout
-(60 seconds per \VariantInitial{} test suite).
-%
-Stage~4 (generalized test creation) shows the lowest failure rate in the pipeline:
-only 3 of 117 projects (2.6\%) are excluded,
-all due to filter rejections that exclude all generalizations.
-The high inclusion rates at both stages
-(90.0\% and 97.4\% respectively)
-demonstrate that projects containing suitable assertions
-generally proceed successfully through specification extraction and test generation,
-supporting the pipeline's core generalization mechanisms.
+Stage~4 excludes \TzRealworldStageFourExcluded{} of
+\TzRealworldStageFourEntering{} projects.
+Widening refusals are the most prominent exclusion cause throughout this stage
+(Section~\ref{sec:generalized-test-creation}),
+which contribute to the exclusion of generalization attempts in 74 projects.
+The later generalization-level results provide a more detailed
+analysis of the different root causes that trigger such exclusions.
+In the remaining 7 projects, filter rejections exclude 4,
+and processing failures exclude 3.
 
 \paragraph{Stage 5 Exclusions:}
 
-Test suite reduction via mutation testing
-represents the second major exclusion barrier,
-excluding 103 of 114 projects that reach this stage (90.4\%).
-Unlike Stage~1 + 2 failures that are primarily caused by proactive filtering
-of unsuitable tests and assertions,
-Stage~5 failures stem mainly from failures to detect required coverage and mutation testing reports,
-exceeded timeouts (300 seconds per test suite variant), and external tool failures.
-
-In total, output detection failures affect 44 projects (38.6\% of stage input).
-\ToolJacoco{} reports in non-standard locations cause 40 of these exclusions,
-while the remaining 4 projects are due to \ToolPit{} reports in non-standard locations.
-These failures mirror the output detection issues seen in Stage~1 + 2,
-further supporting the observation that real-world projects organize build artifacts more diversely
-than \ToolTeralizer{}'s current output detection heuristics accommodate.
-
-All 40 projects that are excluded due to exceeded runtime limits
-already reach the configured timeout (300 seconds per test suite variant)
-when performing mutation testing for the \VariantOriginal{} test suite.
-No additional exclusions occur during mutation testing of the test suite
-created by the \VariantImprovedC{} generalization strategy.
-
-External execution errors affect 17 projects (14.9\%):
-16~projects encounter \ToolPit{} errors during mutation testing
-and 1~project encounters a \ToolJacoco{} error during coverage collection.
-Two additional projects (1.8\%) fail during \ToolPit{} report parsing,
-where \ToolTeralizer{} fails to successfully process the generated mutation reports.
+Test suite reduction excludes \TzRealworldStageFiveExcluded{} of
+\TzRealworldStageFiveEntering{} remaining projects.
+Among these exclusions, 4 occur because
+mutation testing of the \VariantInitial{} test suite
+reaches the 3,600-second \ToolPit{} timeout.
+Required \ToolPit{} reports or \ToolJacoco{} outputs are unavailable in 3 projects,
+and the \VariantInitial{} test suite has failing tests before mutation in another 3.
+The \VariantImprovedC{} test suite has failing tests in the remaining 3 projects.
 
 % \paragraph{Actionability of Project-Level Exclusions:}
-
-% Grouping these 621 project-level exclusions by underlying cause
-% reveals varying degrees of actionability.
-% Filter-based exclusions affect 384 projects (61.8\%)
-% where all tests or assertions are excluded
-% because projects contain no patterns currently supported by \ToolTeralizer{}.
-% Addressing these requires expanding tool capabilities,
-% as detailed in Section~\ref{sec:test-assertion-generalization-exclusions-extended}.
-% Project structure detection failures affect 93 projects (15.0\%),
-% split between missing outputs during project analysis (49 projects)
-% and undetectable mutation testing artifacts (44 projects).
-% These failures could be reduced through more robust search heuristics
-% that accommodate diverse project layouts.
-% Timeout failures affect 88 projects (14.2\%),
-% representing engineering trade-offs between analysis depth and execution time.
-% External tool failures affect 38 projects (6.1\%),
-% stemming from dependencies outside direct control.
-% The remaining 18 projects (2.9\%) encounter various internal implementation issues,
-% offering limited improvement potential given their small contribution to overall failures.
-
-% This distribution indicates that expanding filtering capabilities
-% and improving project structure detection
-% represent the highest-impact opportunities for increasing applicability,
-% potentially recovering 477 of 621 excluded projects (76.8\%).
-
-\subsubsection{Test, Assertion, and Generalization Exclusions}
+\subsubsection{Test, Assertion, and Generalization Exclusions}%
 \label{sec:test-assertion-generalization-exclusions-extended}
-
-% % | Category                     | Count  | Where It Appears |
-% % |------------------------------|--------|------------------|
-% % | Included                     | 33,390 | Included column  |
-% % | Filtering (REJECT decisions) | 40,602 | Filtering column |
-% % | Before filtering             | 7,502  | Failures column  |
-% % | TestAnalysisTask failures    | 321    | Failures column  |
-% % | Filtering exceptions         | 19     | Failures column  |
-% % | Total                        | 81,834 | Total column     |
 
 Beyond project-level exclusions,
 individual tests, assertions, and generalizations are excluded
-throughout pipeline processing via filtering and due to processing failures.
+throughout the processing pipeline due to filtering and processing failures.
 Table~\ref{tab:exclusions-breakdown-extended} quantifies
-exclusion rates across all 632 projects,
-distinguishing between filtering-based and failure-based exclusions.
-Table~\ref{tab:exclusions-filtering-extended} provides
-further details about the causes of filter rejections across the three levels.
+exclusion rates across all \TzRealworldEligibleProjects{} projects.
+Table~\ref{tab:exclusions-filtering-extended}
+reports the filtering outcomes across the three levels.
+Each row shows the number of cases that reach the corresponding filter,
+so totals can differ between rows because
+(i)~further cases are excluded as the processing pipeline progresses
+and (ii)~some filters only target subsets of cases.
 For brevity, we only include the results for the \VariantImprovedC{} generalization strategy.
 Since most exclusions occur in the \VariantShared{} processing stages,
-differences across generalization strategies are minor.
+differences across generalization strategies are comparatively small.
 Full results are available in our replication package~\cite{replicationpackage}.
 
-\paragraph{Test-level Exclusions}
+\paragraph{Test-level Exclusions}%
 \label{par:real-world-test-exclusions}
 
-Only 40.8\% of real-world tests are included (33,385 of 81,810),
-compared to 83.1\% under controlled conditions
-(Table~\ref{tab:exclusions-breakdown-extended} vs.\ Table~\ref{tab:exclusions-breakdown}).
-Of the 48,425 excluded tests, 49.6\% are rejected through filtering
-while 9.6\% are excluded due to processing failures.
-The high prevalence of filtering-based exclusions indicates that
-generalization of real-world tests commonly requires capabilities
-that are beyond what \ToolTeralizer{} currently supports.
+Of the 85,368 real-world tests in the selected RepoReapers projects,
+44,875 (52.6\%) remain included (Table~\ref{tab:exclusions-breakdown-extended}),
+compared with 83.1\% under controlled conditions (Table~\ref{tab:exclusions-breakdown}).
+Filtering excludes 47.1\% of the tests, whereas processing failures exclude only 0.3\%.
+This shows that known applicability restrictions of the current prototype,
+rather than unexpected processing failures, account for almost all test-level exclusions.
 
-The \texttt{NoAssertions} filter shows the highest exclusion rate,
-rejecting 41.3\% of real-world tests versus 10.3\% under controlled conditions.
-However, RQ5 identified 86.3\% of \texttt{NoAssertions} rejections
-in developer-written tests to be false positives:
-tests that are rejected by the \texttt{NoAssertions} filter but actually contain assertions in helper methods
-which \ToolTeralizer{}'s interprocedural static analysis does not detect.
-Given that RepoReapers exclusively contains developer-written tests,
-these rejections are likely to contain a high rate of false positives as well.
+The \texttt{NoAssertions} filter is the most prominent test-level barrier.
+It rejects 24,266 real-world tests (32.9\%),
+compared with 10.3\% under controlled conditions,
+because \ToolTeralizer{} finds no assertion in the analyzed test method.
+We reviewed a stratified sample of 100 tests, grouping
+projects by how many \texttt{NoAssertions} rejections they contributed. After weighting the groups
+to the full rejection population, we estimate that
+\TzRqsixReconstructionNoAssertionsGenuineAbsenceEstimatePct{} of rejected tests genuinely contain
+no assertion (95\% CI: \TzRqsixReconstructionNoAssertionsGenuineAbsenceCiLowerPct{}--
+\TzRqsixReconstructionNoAssertionsGenuineAbsenceCiUpperPct{}). Most rejections therefore reflect
+limits in oracle recognition, such as assertions delegated to helper methods
+or expressed in some other form that the current intraprocedural analysis does not recognize.
 
-The \texttt{NonPassingTest} filter rejects 11.8\% of real-world tests
-compared to the 6.6\% rejection rate under controlled conditions.
-As explained in Section~\ref{sec:limitations-eval},
-this filter operates at the test class level
-because \ToolPit{} requires a green test suite
-but only supports class-level exclusions.
-As a result, the filter rejects all 8,741 test methods from 974 classes containing at least one failing test.
-Of these, 4,709 (54\%) actually failed during execution,
-while 4,032 (46\%) passed but were rejected due to class-level filtering.
-Analysis of the 4,709 failing tests reveals that failures stem primarily from
-infrastructure and environment issues rather than broken tests:
-18.8\% encounter missing dependencies (NoClassDefFoundError),
-14.1\% fail due to unavailable external services (Redis, MongoDB, MySQL),
-10.0\% encounter null pointer exceptions, etc.
-Only 18.3\% of failures are genuine assertion failures
-where tests execute to completion but produce incorrect results.
+The \texttt{NonPassingTest} filter rejects \TzRealworldNonPassingRejectedTests{} methods
+(10.5\%), compared with 6.6\% under controlled conditions. \ToolPit{} requires a green test suite
+but permits exclusions only at the test-class level. \ToolTeralizer{} must therefore reject every
+method in a class that contains a non-passing test. Of the rejected methods,
+\TzRealworldNonPassingNonpassed{} (\TzRealworldNonPassingNonpassedPct{}) have at least one non-passing original execution, whereas
+\TzRealworldNonPassingPassed{} (\TzRealworldNonPassingPassedPct{}) pass every execution and
+are excluded only through class-level propagation. Many non-passing executions reflect
+missing dependencies or unavailable services rather than incorrect assertions. Consequently, this
+filter measures both unsuitable executions and collateral exclusions imposed by the mutation testing
+interface.
 
-The \texttt{TestType} filter rejections increase
-from 0.8\% under controlled conditions to 12.5\% in real-world projects.
-Under controlled conditions,
-all rejections are @ParameterizedTest annotations in \DatasetCommonsDev{}.
-In contrast, all 9,277 RepoReapers rejections are legacy JUnit 3 test methods
-that use the JUnit 3 naming convention (method names starting with ``test'')
-instead of @Test annotations,
-occurring across 70 different RepoReapers projects.
-
-\paragraph{Assertion-level Exclusions}
-\label{par:real-world-assertion-exclusions}
-
-Assertion exclusions differ substantially between
-controlled and real-world conditions.
-Only 0.6\% of assertions in RepoReapers projects are included (711 of 122,153)
-versus 47.8\% under controlled conditions.
-Filtering accounts for 99.1\% of exclusions while failures represent 0.3\%,
-confirming that the primary barriers are known limitations of \ToolTeralizer{}
-rather than unexpected failures during processing.
-
-The \texttt{MissingValue} filter shows the largest assertion-level rejection rate of 57.9\%,
-compared to 24.7\% under controlled conditions.
-Rejections have three underlying causes.
-First, 41\% involve unsupported assertion types
-(assertThat, assertNull, fail, etc.)
-where method identification is not attempted.
-Second, 26\% involve assertions where the actual value is not a method invocation
-or cannot be traced back to a method declaration,
-including field accesses, comparison expressions, and literal values.
-Third, 33\% identify a method call but Spoon cannot resolve its declaration.
-
-The \texttt{ParameterType} filter rejects 49.4\% of assertions
-versus 15.4\% under controlled conditions.
-This difference reflects dataset characteristics:
-the controlled dataset used methods with primarily numeric and boolean parameters.
-In contrast, real-world projects show
-52.6\% no-parameter methods,
-26.9\% object and array parameters,
-and only 19.8\% numeric and boolean parameters.
-No-parameter methods cannot benefit from input generalization,
-while methods with object and array parameters require capabilities
-beyond \ToolTeralizer{}'s current support for numeric and boolean types.
-
-The \texttt{ReturnType} filter defers on 57.9\% of assertions
-where the method is unknown (matching the \texttt{MissingValue} rejection rate)
-and rejects 32.6\% of all assertions.
-Among methods with known return types (42.1\% of all assertions),
-52.7\% return objects, 46.6\% return numeric or boolean types,
-and 0.7\% return other types (char, arrays, void).
-This contrasts with controlled conditions where 98.3\% of methods returned numeric and boolean types.
+The remaining filter exclusions identify narrower structural and tool limitations. The \texttt{Mocking}
+filter rejects 6,973 tests because \ToolSPF{} cannot execute the mocking frameworks used in these tests,
+thus preventing the collection of required input/output specifications.
+A total of \TzRealworldTestFilteringInheritedMethodRejected{} + 1,053 tests are excluded
+because they rely on specific inheritance structures that are not supported by the current prototype.
+\texttt{TestType} shows only 199 rejections. It primarily captures unsupported execution models
+or declaration-resolution limitations (e.g., \texttt{@Theory} annotations).
+Together, these results show that secondary test exclusions arise primarily
+from compatibility limitations and unsupported inheritance structures.
 
 \input{tables/tab-exclusions-breakdown-extended}
 \input{tables/tab-exclusions-filtering-extended}
 
-The \texttt{AssertionType} filter rejects 23.9\% of real-world assertions
-versus 2.6\% under controlled conditions.
-This increase stems from more diverse assertion usage in real-world test code.
-For example, assertEquals accounts for 83.6\% of assertions
-in controlled conditions, primarily due to the large number
-of \ToolEvoSuite{}-generated tests which use assertEquals in 84.7\% of cases.
-In contrast, assertEquals accounts for only 54.5\% of assertions
-in the RepoReapers projects.
-The most common unsupported assertion types are assertThat (8.3\%),
-assertNotNull (6.1\%), fail (3.3\%), and assertNull (3.1\%).
-In controlled conditions, these four types collectively account for only 0.8\% of assertions.
+\paragraph{Assertion-level Exclusions}%
+\label{par:real-world-assertion-exclusions}
 
-The \texttt{ExcludedTest} filter shows a 3$\times$ increase
-from 5.5\% under controlled conditions to 16.9\% in real-world projects,
-reflecting the corresponding increase in test-level exclusions
-from 16.9\% to 59.2\%.
+Only \TzRealworldAssertionsIncluded{} of \TzRealworldAssertionsTotal{} real-world assertions
+from the selected RepoReapers projects remain included (\TzRealworldAssertionsIncludedPct{}),
+compared with 47.8\% under controlled conditions (Tables~\ref{tab:exclusions-breakdown-extended} and~\ref{tab:exclusions-breakdown}).
+Filtering excludes 92.3\% of real-world assertions, while processing failures exclude 3.9\%.
+All six assertion filters are applied to all \TzRealworldAssertionsTotal{} identified assertions,
+so a single assertion can be rejected by multiple filters.
 
-\paragraph{Generalization-level Exclusions}
+The \texttt{MissingValue} filter has the largest rejection rate: 39.1\% in RepoReapers, compared
+with 24.7\% under controlled conditions. It rejects an assertion when tested method identification
+cannot identify a MUT or obtain the source declaration and method signature needed for specification
+extraction (Section~\ref{sec:tested-method-identification}). Of its
+\TzRealworldMissingValueRejected{} rejections,
+\TzRealworldMissingValueUnsupportedAssertionShape{} involve unsupported assertions,
+\TzRealworldMissingValueLibraryDeclaration{} resolve to library declarations,
+\TzRealworldMissingValueUnresolvedSourceDeclaration{} identify source declarations that Spoon
+cannot resolve, and \TzRealworldMissingValueNoVisibleCall{} contain no visible call from which to
+identify a MUT. The remaining \TzRealworldMissingValueMissingTestedFile{} lack the tested source
+file. These causes distinguish unsupported assertions from limitations in source resolution and
+tested method identification.
+
+The \texttt{ParameterType} filter rejects 36.5\% of real-world assertions, compared with 15.4\%
+under controlled conditions. \TzRealworldParameterTypeUnsupportedTypes{} rejections affect MUTs
+that declare one or more parameters, but none of those parameters has a supported type. A
+further \TzRealworldParameterTypeZeroParameters{} reject parameterless MUTs
+that offer no opportunities for generalization.
+For \TzRealworldParameterTypeMissingDeclaration{} rejections,
+the selected call resolves to a library declaration or an unresolved source declaration,
+so the MUT signature is unavailable. These assertions are also rejected by \texttt{MissingValue}.
+The remaining \TzRealworldParameterTypeDerivationGap{} select a MUT
+with a supported parameter but yield no generalizable input from the observed expression.
+Thus, the largest recorded \texttt{ParameterType} cause is limited input-type
+support, particularly for objects, collections, and arrays.
+
+Limited type support also appears in the \texttt{ReturnType} and
+\texttt{StringOperation} results. Of the \TzRealworldReturnTypeEvaluated{} assertions with return
+type information,
+\texttt{ReturnType} rejects \TzRealworldReturnTypeRejected{}
+(\TzRealworldReturnTypeRejectedPct{})
+because \ToolTeralizer{}'s oracle generalization does not support the return type of the corresponding MUT.
+Commonly rejected types include \texttt{void}, collections, arrays, \texttt{java.lang.Object}, and
+project-specific object types. \texttt{StringOperation} separately rejects 5,203 assertions
+whose MUTs use string operations that the current \ToolSPF{}/\ToolTeralizer{}
+implementation cannot model soundly (Section~\ref{sec:specification-extraction}). These results
+expose the limits of specification extraction for broader string fragments, arrays, and objects.
+
+The \texttt{AssertionType} filter rejects 17.5\% of real-world assertions,
+compared with 2.6\% under controlled conditions.
+The current implementation supports the assertions
+and semantic contexts described in Section~\ref{sec:test-assertion-analysis}.
+The most frequently rejected assertions are
+\texttt{assertNotNull} (\TzRealworldAssertionTypeAssertNotNull{}),
+\texttt{fail} (\TzRealworldAssertionTypeFail{}), \texttt{assertNull}
+(\TzRealworldAssertionTypeAssertNull{}), and \texttt{assertThat}
+(\TzRealworldAssertionTypeAssertThat{}).
+Extending support for these assertions
+requires both modeling of the corresponding assertion semantics
+and improved type support for the values that these assertions compare.
+
+Finally, \texttt{ExcludedTest} rejects an assertion whose test has already been excluded. This
+affects 21.5\% of RepoReapers assertions, compared with 5.5\% under controlled conditions.
+Its higher rejection rate therefore reflects the increase in test-level exclusions.
+
+\paragraph{Generalization-level Exclusions}%
 \label{par:real-world-generalization-exclusions}
 
-Of 239 generalization attempts in the RepoReapers projects,
-206~(86.2\%) succeed.
-The 33 exclusions result from
-\texttt{NonPassingTest} filter rejections (23 cases, 9.6\%)
-and test report detection failures (10 cases, 4.2\%).
-The 86.2\% inclusion rate is comparable to the 83.8\% rate under controlled conditions.
-However, only 0.2\% of all assertions result in an included generalization
-(206 of 122,153), compared to 40.1\% under controlled conditions (11,597 of 28,923).
-These results demonstrate that
-the core generalization mechanism operates reliably when applicable,
-but real-world applicability is limited by three primary barriers:
-limited type and assertion pattern support
-(99.4\% of assertions excluded by filters at earlier stages),
-non-standard project structures
-(output detection failures exclude 14.7\% of projects at Stages~1+2 and~5),
-and resource constraints
-(timeout exclusions affect 14.1\% of projects across all stages).
+Of the \TzRealworldGeneralizationAttempts{} generalization candidates in the RepoReapers projects,
+\TzRealworldGeneralizationsValidated{} (\TzRealworldGeneralizationValidatedPct{})
+produce a generalized test for which compilation, execution, report collection,
+and the \texttt{NonPassingTest} filter all succeed.
+Generalization-level filter decisions are sequential: each decision evaluates
+only the generalization attempts or generalized tests that remain after earlier decisions.
+The row populations in Table~\ref{tab:exclusions-filtering-extended}
+therefore differ and must not be interpreted as overlapping decisions over one fixed population.
+
+The \texttt{SeedSpecConsistency} gate rejects one attempt because its original concrete input does
+not satisfy the extracted path condition. The \texttt{WideningLicense} gate then rejects
+\TzRealworldWideningRefusals{} of the remaining attempts
+(\TzRealworldWideningRefusalsPct{}). These widening refusals prevent \ToolTeralizer{} from applying
+the extracted oracle to new inputs when the extracted path condition and symbolic output expression
+do not provide sufficient evidence that the oracle remains valid throughout the input partition
+(Section~\ref{sec:generalized-test-creation}).
+
+Most widening refusals occur because the analysis records only a concrete return value,
+with neither a symbolic expression relating that value to the inputs
+nor evidence that the executed path returns a fixed literal:
+\TzRealworldWideningRefusalOutputNotLiteral{} refusals, or
+\TzRealworldWideningRefusalOutputNotLiteralPct{} of all refusals. Another
+\TzRealworldWideningRefusalConcretization{} refusals
+(\TzRealworldWideningRefusalConcretizationPct{}) occur
+after a native operation receives a symbolic argument
+and loses its symbolic relation to that argument
+because SPF does not provide a symbolic model for the operation.
+In \TzRealworldWideningRefusalParametersEmpty{} cases,
+the path condition contains none of the generalizable parameters,
+and in a further \TzRealworldWideningRefusalPathCoverage{} cases
+it does not cover every generalizable parameter.
+The remaining 14 refusals concern exception oracles
+whose concretization or path condition evidence
+does not establish that the expected exception remains reachable
+for the generalized inputs.
+Widening refusals therefore primarily expose cases
+where symbolic information is lost
+or otherwise cannot be recovered during specification extraction.
+
+\ToolTeralizer{} emits \TzRealworldGeneralizationsEmitted{} candidate generalized tests.
+Compilation or processing failures prevent 22
+from reaching the \texttt{NonPassingTest} filter
+(Table~\ref{tab:exclusions-breakdown-extended}).
+The filter then rejects 420 of the remaining
+\TzRealworldGeneralizationsFilterResultRecorded{} tests
+and includes \TzRealworldGeneralizationsFilterPassed{}.
+At this post-generation boundary, RepoReapers projects
+show inclusions for \TzRqsixFilteringRealworldIncludedPct{} of generalized tests,
+compared with \TzRqsixFilteringControlledIncludedPct{} under controlled conditions.
+Stage~5 then performs mutation-based test suite reduction and leaves
+\TzRealworldGeneralizationsFinalUsable{} generalized tests from
+\TzRealworldFinalUsableProjects{} projects.
 
 \rqanswerbox{6}{
-  Fully automated generalization of real-world test suites encounters significant challenges.
-  Only 206 of 122,153 assertions (0.2\%) are successfully generalized
-  (compared to 40.1\% under controlled conditions)
-  and only 11 of 632 projects (1.7\%) complete all processing stages.
-  The core generalization mechanism operates reliably when applicable:
-  generalization-level success rates are comparable (86.2\% real-world vs 83.8\% controlled),
-  and projects that pass early filtering also complete specification extraction (90.0\%) and generalized test creation (97.4\%).
-  However, three barriers prevent higher overall success rates:
-  limited type and assertion support causes 99.4\% of assertions to be filtered
-  (e.g., \texttt{MissingValue}: 57.9\%, \texttt{ParameterType}: 49.4\%, \texttt{ReturnType}: 32.6\%),
-  non-standard project structures prevent output detection in 14.7\% of projects,
-  and execution timeouts exclude 14.1\% of projects.
+  \ToolTeralizer{} completes all five processing stages for
+  \TzRealworldApplicabilityProjects{} of the \TzRealworldEligibleProjects{} selected RepoReapers
+  projects (\TzRealworldApplicabilityPct{}). Compared with controlled conditions, test inclusion
+  falls from 83.1\% to 52.6\%, while assertion inclusion falls from 47.8\% to
+  \TzRealworldAssertionsIncludedPct{}. Proactive filtering leaves 228 projects without a retained
+  test or assertion. These exclusions reflect limitations in recognizing and executing tests and
+  assertions, identifying MUTs, and obtaining usable specifications from \ToolSPF{}.
+  Problems in the instrumented build or during \ToolSPF{} execution leave 112 further
+  projects without a usable extracted specification. During generalized-test creation, widening
+  conservatively refuses \TzRealworldWideningRefusals{} of
+  \TzRealworldGeneralizationAttempts{} candidates (\TzRealworldWideningRefusalsPct{}) and
+  contributes to the exclusion of every candidate in 74 projects because the extracted evidence cannot establish a sound
+  oracle for varied inputs. Among generalized tests that reach post-generalization filtering,
+  inclusion rates are similar in RepoReapers and the controlled projects (79.4\% versus 84.0\%). The
+  primary real-world barriers are therefore observed in earlier processing stages.
 }

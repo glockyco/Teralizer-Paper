@@ -62,17 +62,17 @@
 
 ## 6. Port RQ6 with RepoReapers Version 7
 
-- [ ] 6.1 Port the thesis version 7 population and selection account substantially unchanged, including the 584 selected projects, 550 initial-gate exclusions, and 27 projects without executed tests
-- [ ] 6.2 Port the thesis project lifecycle and stage-entry account substantially unchanged and record any project-funnel discrepancy as a deferred candidate
-- [ ] 6.3 Select the already-published RQ6 fragments used by the thesis section, create upright and readable paper-owned wrappers only for those fragments, and verify every included cell and row anchor without changing the ported narrative; if selected evidence does not fit, stop and ask the operator
-- [ ] 6.4 Port the thesis test-level account substantially unchanged and record any population discrepancy as a deferred candidate
-- [ ] 6.5 Port the thesis assertion-level account substantially unchanged and record any count or denominator discrepancy as a deferred candidate
-- [ ] 6.6 Port the thesis generalization lifecycle, widening, emission, validation, reduction, and final-test account substantially unchanged and record any discrepancy as a deferred candidate
-- [ ] 6.7 Port the thesis 85-of-584, 14.6%, and final-generalized-test result substantially unchanged and record any definition or provenance discrepancy as a deferred candidate
-- [ ] 6.8 Port the thesis failure interpretation and three-part cause taxonomy substantially unchanged and record any mechanism-classification concern as a deferred candidate
-- [ ] 6.9 Port the thesis version 7 provenance, manual-review boundaries, evidence gaps, and validity discussion substantially unchanged
-- [ ] 6.10 Search the complete paper for remnants of the rejected RQ6 account, remove only passages superseded by the ported thesis section, and record any ambiguous historical occurrence for deferred review
-- [ ] 6.11 Compare the complete RQ6 section with the thesis source, run the recorded manuscript checks, inspect every RQ6 table and page, and commit the faithful version 7 package atomically
+- [x] 6.1 Port the thesis version 7 population and selection account substantially unchanged, including the 584 selected projects, 550 initial-gate exclusions, and 27 projects without executed tests
+- [x] 6.2 Port the thesis project lifecycle and stage-entry account substantially unchanged and record any project-funnel discrepancy as a deferred candidate
+- [x] 6.3 Select the already-published RQ6 fragments used by the thesis section, create upright and readable paper-owned wrappers only for those fragments, and verify every included cell and row anchor without changing the ported narrative; if selected evidence does not fit, stop and ask the operator
+- [x] 6.4 Port the thesis test-level account substantially unchanged and record any population discrepancy as a deferred candidate
+- [x] 6.5 Port the thesis assertion-level account substantially unchanged and record any count or denominator discrepancy as a deferred candidate
+- [x] 6.6 Port the thesis generalization lifecycle, widening, emission, validation, reduction, and final-test account substantially unchanged and record any discrepancy as a deferred candidate
+- [x] 6.7 Port the thesis 85-of-584, 14.6%, and final-generalized-test result substantially unchanged and record any definition or provenance discrepancy as a deferred candidate
+- [x] 6.8 Port the thesis failure interpretation and three-part cause taxonomy substantially unchanged and record any mechanism-classification concern as a deferred candidate
+- [x] 6.9 Port the thesis version 7 provenance, manual-review boundaries, evidence gaps, and validity discussion substantially unchanged
+- [x] 6.10 Search the complete paper for remnants of the rejected RQ6 account, remove only passages superseded by the ported thesis section, and record any ambiguous historical occurrence for deferred review
+- [x] 6.11 Compare the complete RQ6 section with the thesis source, run the recorded manuscript checks, inspect every RQ6 table and page, and commit the faithful version 7 package atomically
 
 ## 7. Port Discussion, Validity, and Related Work
 

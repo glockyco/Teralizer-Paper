@@ -60,3 +60,10 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - Aggregate evidence macros are imported unchanged from `tables/generated/macros.tex`
 - Verification: all 72 declared destinations exist; 132 row anchors are unique; the 49-page ACM manuscript builds; representative table pages were inspected in the PDF
 - Teralizer source worktree remained clean after publication. The thesis worktree retained its pre-existing ` M projects/teralizer-paper` state and no thesis file was edited
+
+## Version 7 RQ6 backport
+
+- `sections/04-evaluation-09-rq6.tex` now contains the complete version 7 lifecycle and result account. Paper-only changes are limited to labels, references, assembly, and the registered selection provenance: 1,161 initially selected projects, 550 initial-gate exclusions, 27 projects without executed tests, and 584 eligible projects.
+- The three RQ6 tables use the directly published fragments under `tables/generated/`. Their values and row anchors match the thesis tables; only paper-owned wrapper width and presentation differ.
+- The complete-paper stale-claim audit found the rejected 632-project and 1.7\% result in `main.tex`, `sections/01-introduction.tex`, `sections/05-discussion.tex`, and `sections/07-conclusions.tex`. These are planned framing and synthesis destinations in tasks 7 and 8; do not remove their surrounding passages before those tasks port or adapt the complete sections.
+- No RQ6 count, denominator, funnel, exclusion, widening, or provenance discrepancy required a deferred candidate.
