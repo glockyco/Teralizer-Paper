@@ -11,7 +11,8 @@ are designed to use the original input values as the first
 set of inputs exercised during property-based test execution.
 To address these inefficiencies,
 \ToolTeralizer{} performs test suite reduction
-as the final stage of the generalization pipeline,
+as the final stage of the generalization pipeline
+(lines 12--14 of Algorithm~\ref{alg:test-generalization}),
 using mutation testing to measure each test's contribution to fault detection
 and retaining only those original and generalized tests
 that strengthen the test suite's effectiveness.
@@ -43,21 +44,25 @@ By comparing which mutants each configuration detects,
 that catch mutants not detected by the original test suite.
 The selection criterion is straightforward:
 retain only generalized tests that detect at least one mutant
-not caught by the original test suite.
+not caught by the original test suite,
+i.e., a generalized test $g$ is retained \emph{iff}
+$\mathit{killed}(g) \not\subseteq \mathit{killed}(T)$
+holds for the original test suite $T$.
 This ensures that every generalized test in the final test suite
 contributes unique fault detection capability,
 while those that only detect already-caught mutants are excluded as redundant.
 
 Beyond filtering generalized tests, \ToolTeralizer{} identifies original tests
-that can be removed without loss of test suite effectiveness.
-An original test is removable if property-based tests were successfully created for all of its assertions.
+that can be removed without loss of test suite effectiveness
+(line 13 of Algorithm~\ref{alg:test-generalization}).
+An original test is removable if retained property-based tests represent all of its assertions.
 For tests containing a single assertion, generalization ensures that
-the property-based test validates that assertion across the entire input partition,
+the retained property-based test validates that assertion across the entire input partition,
 making the original single-input validation redundant.
 For tests containing multiple assertions, removal requires that
-every assertion has been successfully transformed.
-If any assertion cannot be generalized
-(due to type limitations, failed MUT identification, or other filtering criteria)
+every assertion has a retained generalized test.
+If any assertion lacks a retained generalized test
+(due to type limitations, failed MUT identification, mutation redundancy, or other filtering criteria),
 the original test must be retained to preserve that validation.
 The final test suite of each variant
 combines the retained generalized tests

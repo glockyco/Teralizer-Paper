@@ -3,7 +3,8 @@
 
 The specification extraction stage takes
 the MUT-to-assertion mappings from tested method identification
-and produces input/output specifications for every MUT.
+and produces input/output specifications for every MUT
+(lines 6--7 of Algorithm~\ref{alg:test-generalization}).
 Each specification captures two elements:
 the path condition that describes which inputs
 follow the same execution path through the MUT as the test,
@@ -14,9 +15,14 @@ first instrumenting tests to create entry points for symbolic analysis,
 then executing them with \ToolSPFLong{} (\ToolSPF{}) in constraint collection mode.
 In this mode, \ToolSPF{} follows the test's execution path
 while maintaining symbolic representations,
-extracting path-exact specifications without exploring alternative paths.
+collecting path conditions and symbolic outputs without exploring alternative paths.
+\ToolTeralizer{} contributes the test instrumentation
+that marks the MUT call as the starting point of the analysis
+and a custom listener that captures the specification
+and terminates \ToolSPF{} after the single executed path.
 
-The first step, test instrumentation, generates three artifacts for each identified MUT:
+During the first specification extraction step --- test instrumentation ---
+\ToolTeralizer{} generates three artifacts for each identified MUT:
 an instrumented version of the test class,
 a driver class, 
 and a configuration file for \ToolSPF{}.
@@ -104,7 +110,7 @@ bad performance:
 \end{genericfloat}
 }
 
-The second step, symbolic analysis, executes these artifacts with \ToolSPF{}.
+During the second step --- symbolic analysis --- \ToolTeralizer{} executes these artifacts with \ToolSPF{}.
 For the \textit{good performance} case with concrete inputs (1500, 1000),
 the first if condition \texttt{sales / 2 >= target}
 in the \texttt{calculate} method (see Listing~\ref{lst:bonus-method})
@@ -121,11 +127,19 @@ and then immediately terminates \ToolSPF{} without exploring alternative paths.
 Listing~\ref{lst:extracted-specs} shows the input/output specifications
 that are collected for the three identified MUT calls of our running example.
 
-Single-path symbolic analysis requires tested methods to be pure functions, i.e.,
-deterministic, side-effect-free, and dependent only on their input parameters~\cite{cadar_2013_symbolic,baldoni_2018_survey}.
-Furthermore, \ToolSPF{} can only provide precise specifications for numeric and boolean values.
-Because of this, \ToolTeralizer{} only targets generalization of
-numeric and boolean inputs, leaving string, array, and object inputs unchanged.
+\ToolTeralizer{} extracts specifications for the supported data types
+stated in Section~\ref{sec:approach-concepts},
+while array and object inputs remain concrete.
+String handling remains limited by both the underlying symbolic analysis
+and \ToolTeralizer{}'s translation.
+\ToolSPF{}/\ToolJPF{} supports only restricted string operations and, for example,
+does not model \texttt{charAt} and \texttt{substring} bounds soundly or implement
+\texttt{compareTo}.
+Among the modeled operations, \ToolTeralizer{} incorporates equality, emptiness, literal
+prefix, suffix, containment, and numeric-format constraints directly into its input
+generators. Furthermore, it translates a broader fragment including case-insensitive
+equality and selected string transformations into Java expressions used as
+post-generation filters or output oracles.
 If no input/output specification can be extracted for a given MUT,
 \ToolTeralizer{} excludes this MUT from further processing.
 The primary causes of such exclusions are \ToolSPF{} errors,
@@ -137,5 +151,5 @@ a 100,000-character limit per path condition,
 and a function call depth limit of 100 (Listing~\ref{lst:jpf-config}).
 We empirically determined these settings to provide
 a reasonable trade-off between resource consumption and result quality.
-Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended} show
+Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended} show
 how often the mentioned causes lead to exclusions in our evaluation.

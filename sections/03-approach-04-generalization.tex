@@ -1,24 +1,44 @@
 \subsection{Generalized Test Creation}
 \label{sec:generalized-test-creation}
 
-The generalized test creation stage transforms original JUnit tests
+The generalized test creation stage implements \textsc{CreateGeneralizedTest}
+from Algorithm~\ref{alg:test-generalization} (line 8),
+transforming original JUnit tests
 into property-based \ToolJqwik{} tests.
+Each specification is compiled into three components:
+an input generator that produces candidate inputs,
+a filter that evaluates the path condition on every candidate
+and rejects inputs outside the input partition,
+and an oracle that computes the expected output from the symbolic output expression.
 Figure~\ref{fig:generalization} provides a high-level overview of this transformation:
 the original test with hardcoded values (left) becomes a property-based test (right)
 where inputs are automatically generated to satisfy constraints
 and expected values are encoded as expressions that hold for all inputs from the input partition.
 This preserves the developer-provided oracles encoded in assertions
 while generalizing from concrete values to symbolic specifications.
-%
-To be able to systematically evaluate the costs and benefits of test generalization,
-\ToolTeralizer{} creates three variants of each property-based test.
-%which differ in their input generation strategies.
-The \VariantBaseline{} variant tests only the original inputs to measure framework overhead.
-The \VariantNaive{} variant adds random input generation to explore the input space,
-and the \VariantImproved{} variant incorporates constraint-aware generation to favor values at the boundaries of input partitions.
-Section~\ref{sec:transformation-pipeline} describes the main transformation process,
-Section~\ref{sec:three-variant-design} explains differences between the three variants,
-and Section~\ref{sec:constraint-encoding} provides further details on the constraint encoding strategy used by \VariantImproved{}.
+
+Satisfying the path condition ensures that generated inputs follow the observed execution path,
+but does not by itself establish that the extracted oracle remains valid for those inputs.
+Before creating a property that exercises inputs beyond the original test values,
+\ToolTeralizer{} therefore checks whether the extracted path condition and output
+provide sufficient evidence to apply the oracle to those inputs.
+Such evidence may be insufficient, for example,
+when the output is accumulated across an input-dependent loop
+that the single-path analysis executes but does not summarize symbolically,
+or when a symbolic argument enters a native operation that \ToolSPF{} executes concretely.
+In these cases, \ToolTeralizer{} creates no generalized test for that attempt.
+We call this outcome a \emph{widening refusal}.
+
+\ToolTeralizer{} creates three variants of each property-based test for evaluation purposes.
+The \VariantImproved{} variant implements the approach's constraint-aware input generation strategy,
+favoring values at the boundaries of input partitions.
+The \VariantBaseline{} and \VariantNaive{} variants serve as comparison points:
+\VariantBaseline{} tests only the original inputs to measure framework overhead,
+and \VariantNaive{} adds unconstrained random input generation
+to isolate the benefit of testing additional inputs.
+The remainder of this subsection describes the main transformation process,
+explains the differences between the three variants,
+and provides further details on the constraint encoding strategy used by \VariantImproved{}.
 
 \subsubsection{Transformation Process}
 \label{sec:transformation-pipeline}
@@ -50,14 +70,14 @@ This is relevant for mutation testing:
 \ToolPit{} requires a green test suite and only supports class-level exclusion,
 so a single failing generalized assertion
 could otherwise prevent all tests in the same class from being evaluated.
-Furthermore, the isolation prevents unintended side-effects on developer-written code.
+Furthermore, the isolation prevents unintended side effects on developer-written code.
 Input parameters are provided by supplier classes rather than parameter annotations
 to enable encoding of constraints that reference multiple parameters.
 Only the generalized assertion is preserved ---
 other assertions are removed because they might validate methods
 that consume outputs from the generalized MUT
 and fail when those outputs differ from the original test's values.
-Non-generalizable parameters (strings, arrays, objects)
+Non-generalizable parameters, including arrays and objects,
 retain their concrete input values.
 %because current symbolic analysis techniques
 %cannot extract complete constraints for them.

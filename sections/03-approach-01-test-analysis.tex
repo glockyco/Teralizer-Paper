@@ -1,18 +1,21 @@
-\subsection{Test and Assertion Analysis}
+\subsection{Test and Assertion Analysis}%
 \label{sec:test-assertion-analysis}
 
-% To transform unit tests into property-based tests, we must first identify which tests and assertions
-% are suitable candidates for generalization.
-% Not all tests reach this standard: real test suites commonly contain tests without assertions,
-% operations on complex data structures that resist symbolic analysis, or even failing tests.
-% Generalizable tests must contain explicit assertions that capture input-output relationships,
-% operate on data types that symbolic analysis can model accurately, and pass reliably.
-% This stage builds a database of tests and assertions that meet these criteria,
-% filtering out unsuitable candidates.
-% By filtering early in the processing pipeline,
-% we avoid spending computational resources on unviable generalization attempts
-% and systematically track how prevalent different barriers to generalization are in practice.
+% Why filtering is the first stage; ties to Alg. lines 2--3.
+Not every test is a suitable generalization candidate:
+real test suites commonly contain tests without assertions,
+operations on data types that resist symbolic analysis,
+or failing tests.
+Generalizable tests must contain explicit assertions that capture input-output relationships,
+operate on data types that single-path symbolic analysis can model accurately,
+and pass reliably.
+The test and assertion analysis stage identifies the tests and assertions that meet these criteria
+(lines 2--3 of Algorithm~\ref{alg:test-generalization}).
+By filtering early in the processing pipeline,
+\ToolTeralizer{} avoids spending computational resources on unviable generalization attempts
+and systematically tracks how prevalent different barriers to generalization are in practice.
 
+% Collection mechanics.
 To identify generalization candidates, \ToolTeralizer{} collects descriptions of all tests and assertions in the codebase.
 First, it executes the original test suite to generate JUnit XML reports.
 Next, it parses these reports to identify executed tests and their execution results.
@@ -23,34 +26,51 @@ and various other structural information relevant for the generalization
 Based on the collected information, \ToolTeralizer{} applies filtering heuristics
 to exclude unsuitable tests and assertions from further processing.
 
-Tests need to pass three filters:
-\texttt{TestType}, \texttt{NonPassingTest}, and \texttt{NoAssertions}.
-The \texttt{TestType} filter rejects tests that are not standard \texttt{@Test} methods,
-such as \texttt{@ParameterizedTest}s that would require special handling not currently implemented in \ToolTeralizer{},
+Filtering occurs in two rounds. Before static analysis, the \texttt{TestType} filter checks the
+test declaration and the \texttt{NonPassingTest} filter checks the original test-suite result.
+After static analysis, five further filters inspect the collected source facts:
+\texttt{UnnamedPackage}, \texttt{DisabledTest}, \texttt{InheritedTestCase},
+\texttt{MockingFramework}, and \texttt{NoAssertions}.
+
+The \texttt{UnnamedPackage} filter excludes tests in the unnamed package because the resulting
+\ToolJqwik{} class cannot import them without reflection. The \texttt{DisabledTest} filter excludes tests
+that their JUnit framework disables. The \texttt{InheritedTestCase} filter excludes JUnit~3 tests
+that call inherited members which the generalized test would still need after \ToolTeralizer{}
+removes its \texttt{TestCase} inheritance. The \texttt{MockingFramework} filter excludes tests with
+a direct dependency on a mocking framework that \ToolJPF{} cannot execute faithfully.
+
+The \texttt{TestType} filter accepts standard \texttt{@Test} methods from JUnit~4 and 5
+as well as JUnit~3 tests that inherit from \texttt{junit.framework.TestCase}.
+It rejects other declarations,
+such as \texttt{@Parameter\-ized\-Test}s that would require special handling not currently implemented in \ToolTeralizer{},
 or \texttt{@RepeatedTest}s that indicate non-deterministic behavior incompatible
-with symbolic analysis-based specification extraction (as described in Section~\ref{sec:symbolic-analysis}).
+with symbolic analysis--based specification extraction (as described in Section~\ref{sec:symbolic-analysis}).
 The \texttt{NonPassingTest} and \texttt{NoAssertions} filters both address the absence of validated oracles.
 Failing tests do not reflect intended behavior, so no specification can be inferred from them.
 Similarly, tests without assertions lack explicit oracles.
 Assertions might be missing for two reasons:
-(i) the test validates only that execution completes without crashing
-or (ii) assertions are present but are contained in helper methods
+(i)~the test validates only that execution completes without crashing
+or (ii)~assertions are present but are contained in helper methods
 that are not captured by \ToolTeralizer{}'s intraprocedural assertion detection.
 While interprocedural analysis could detect delegated assertions
 and test refactoring could make implicit validation explicit,
 we leave such enhancements for future work.
-Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended} quantify
+Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended} quantify
 how frequently each filter excludes tests in practice.
 
 Individual assertions within suitable tests require further analysis to determine generalizability.
-\ToolTeralizer{} currently supports four assertion types: \texttt{assertEquals}, \texttt{assertTrue}, 
-\texttt{assertFalse}, and \texttt{assertThrows} from both JUnit 4 and JUnit 5.
+\ToolTeralizer{} currently supports six assertion forms:
+\texttt{assertEquals}, \texttt{assertTrue}, and \texttt{assertFalse} from JUnit~3--5,
+\texttt{assertThrows} from JUnit~5,
+\texttt{assertThat} with an equality matcher from Hamcrest~\cite{hamcrest},
+and a no-argument \texttt{fail} inside a try block
+whose single catch clause names the expected exception.
 These assertions capture computational relationships that symbolic analysis can model.
-The \texttt{AssertionType} filter excludes unsupported assertions such as reference equality checks 
+The \texttt{AssertionType} filter excludes unsupported assertions such as reference equality checks
 (\texttt{assertSame}, \texttt{assertNull})
 and structural comparisons (\texttt{assertArrayEquals}, \texttt{assertInstanceOf})
 that operate on data types current symbolic execution cannot accurately model.
-The \texttt{ExcludedTest} filter excludes assertions from tests already filtered at the test level.
+The \texttt{ExcludedTest} filter excludes assertions from tests that have already been excluded.
 % These filters produce a database of potentially generalizable assertions,
 % annotated with the type information, arguments, and source locations.
 %required for the next stage to identify which methods each assertion validates.

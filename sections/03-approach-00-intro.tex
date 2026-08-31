@@ -19,38 +19,33 @@
 \label{sec:approach}
 
 This section presents our semantics-based approach for automated test generalization.
-% which transforms conventional unit tests into property-based tests
-% by analyzing both test and implementation code.
-% While property-based tests can validate entire input partitions (Section~\ref{sec:property-based-testing}),
-% they traditionally require manual specification of constraints and properties,
-% a barrier that limits adoption in practice~\cite{goldstein_2024_pbt_practice}.
-% Our approach automates this transformation by extracting path-exact specifications
-% through single-path symbolic analysis of existing test executions.
-We implemented this approach in \ToolTeralizer{}, a prototype tool for Java.
-%
-As shown in Figure~\ref{fig:approach-overview}, our approach follows a five-stage pipeline
+The approach transforms conventional unit tests into property-based tests
+by extracting input/output specifications
+through single-path symbolic analysis of existing test executions.
+We implemented the approach in \ToolTeralizer{}, a prototype tool for Java.
+As shown in Figure~\ref{fig:approach-overview}, the approach follows a five-stage pipeline
 that takes the implementation and test code of a software project as input
 and produces generalized property-based tests as output:
 (1)~test and assertion analysis identifies potentially generalizable tests and their assertions,
-(2)~tested method identification maps assertions to the methods that they validate through data flow analysis,
+(2)~tested method identification maps each assertion to the method call that it validates through data-flow analysis,
 (3)~specification extraction recovers input/output specifications from the tested methods through single-path symbolic analysis,
-(4)~generalized test creation produces property-based tests with three input generation strategies (\VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}),
-and (5)~test suite reduction filters tests to retain only those that measurably improve the mutation score of the test suite.
+(4)~generalized test creation compiles the extracted specifications into property-based tests,
+and (5)~test suite reduction retains only those tests that measurably improve the mutation score of the test suite.
 
-We illustrate our approach with a running example.
+To illustrate the approach, we utilize a running example.
 Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
 for exceptional, good, and bad performance.
 Listing~\ref{lst:original-test} shows a typical unit test
 that tests one input for each performance level.
 While the test detects regressions that affect these three inputs,
-it misses regressions that affect other inputs in the same partitions.
-Consider a mutation that changes \texttt{sales / 2 >= target} to \texttt{sales / 2 > target}.
+it misses regressions that affect other inputs that follow the same execution paths.
+Consider a mutation that changes \texttt{sales / 2 >= target} in line~3 to \texttt{sales / 2 > target}.
 Despite the change, the test still passes,
 but boundary cases where \texttt{sales = 2 * target} now
 return the good performance bonus instead of the exceptional performance bonus.
-To detect such subtle regressions, \ToolTeralizer{} transforms existing
-unit tests into property-based tests that encode the intended behavior
-for all inputs in the covered input partitions.
+To detect such subtle regressions, \ToolTeralizer{}'s generalized property-based tests
+encode the intended behavior for all inputs that follow the covered execution paths
+instead of individual input/output examples.
 
 {
 \begin{genericfloat}[b]
@@ -97,17 +92,167 @@ void testCalculate() {
 \end{genericfloat}
 }
 
-While the underlying generalization approach is independent of
-specific programming languages or project environments,
-our current implementation of \ToolTeralizer{} targets Java 5--8 projects
-(imposed by our dependency on \ToolSPFLong{})
-that use Maven or Gradle for dependency management and JUnit 4 or JUnit 5 for testing.
-Before starting the main processing stages, \ToolTeralizer{} automatically detects the build system
-used by the target project and injects necessary dependencies including
-\ToolJqwik{}~\cite{link_2022_jqwik} for property-based testing,
-\ToolPit{}~\cite{coles_2016_pit} for mutation testing,
-and \ToolJacoco{}~\cite{jacoco} for coverage tracking,
-thus ensuring full automation without the need for manual preprocessing steps.
+% Roadmap: abstract subsection first, then the Java instantiation.
+Section~\ref{sec:approach-concepts} defines the concepts and the overall algorithm
+of the approach, which is independent of any particular target language or toolchain.
+Sections~\ref{sec:test-assertion-analysis}--\ref{sec:test-suite-reduction}
+then describe how \ToolTeralizer{} implements each of the five stages for Java.
+The full implementation of \ToolTeralizer{} is available in our replication package~\cite{replicationpackage}.
+
+\subsection{Concepts and Algorithm}%
+\label{sec:approach-concepts}
+
+% Problem model: assertion--MUT pairs as the unit of generalization; example.
+A unit test combines setup code, calls into the implementation,
+and assertions that compare the outputs of these calls against expected values~\cite{meszaros_2007_xunit}.
+The method whose output an assertion validates is the assertion's method under test (MUT),
+and the call that produced this output is its MUT call.
+The \texttt{testCalculate} method of the running example
+contains three assertion--MUT pairs:
+\texttt{assertEquals(250, b1)} validates \texttt{calculate(2500, 1000)},
+\texttt{assertEquals(75, b2)} validates \texttt{calculate(1500, 1000)},
+and \texttt{assertEquals(0, b3)} validates \texttt{calculate(500, 1000)}.
+Each pair yields one generalized test.
+
+% The end-to-end algorithm, before any stage details.
+Algorithm~\ref{alg:test-generalization} shows the generalization process
+for a program $P$ and its test suite $T$.
+Stage~1 restricts the test suite to generalizable tests and supported assertions (lines 2--3).
+Stage~2 identifies the MUT call of each assertion (lines 4--5).
+Stage~3 extracts an input/output specification $(\mathit{pc}, \mathit{out})$
+for each MUT call (lines 6--7):
+a constraint $\mathit{pc}$ on the MUT's inputs
+and an expression $\mathit{out}$ for its expected outputs,
+both defined below.
+Stage~4 creates one generalized test per remaining assertion (line~8).
+Stage~5 runs mutation testing
+to reduce the combined suite of original and generalized tests (lines 11--14):
+a generalized test $g$ is retained only if $\mathit{killed}(g) \not\subseteq \mathit{killed}(T)$,
+where $\mathit{killed}(\cdot)$ denotes the set of mutants that a test or test suite detects.
+The set $A'$ contains the source assertions of these retained generalized tests,
+and an original test $t$ is removed only if all of its assertions are represented,
+i.e., $\mathit{assertions}(t) \subseteq A'$.
+Failed MUT identifications and specification extractions yield $\bot$ (lines 5 and 7),
+excluding the affected assertion.
+Every exclusion is recorded with its reason,
+which Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended} use
+to quantify the applicability barriers of the approach.
+
+% Input/output specification, defined by two properties.
+An input/output specification describes the behavior of a MUT
+along one execution path.
+Let $m$ be the MUT of an assertion,
+let $x_1, \ldots, x_n$ be variables for the generalizable parameters of $m$,
+and let $v_1, \ldots, v_n$ be their concrete values in the MUT call.
+We write $m(x_1, \ldots, x_n)$ for the result of invoking $m$
+with the $x_i$ in the generalizable parameter positions
+and the concrete values of the MUT call in all remaining positions.
+An input/output specification for the MUT call is a pair $(\mathit{pc}, \mathit{out})$,
+a path condition and a symbolic output expression,
+such that:
+\begin{enumerate}
+    \item[(i)] $\mathit{pc}(x_1, \ldots, x_n)$ holds \emph{iff}
+          $m(x_1, \ldots, x_n)$ follows the same execution path
+          as $m(v_1, \ldots, v_n)$,
+    \item[(ii)] $m(x_1, \ldots, x_n) = \mathit{out}(x_1, \ldots, x_n)$
+          for all $x_1, \ldots, x_n$ that satisfy $\mathit{pc}$.
+\end{enumerate}
+The inputs that satisfy $\mathit{pc}$ form the input partition of the assertion.
+For example, for the \textit{good performance} assertion of the running example
+(Listings~\ref{lst:bonus-method} and~\ref{lst:original-test}),
+with $x_1 = \mathit{sales}$ and $x_2 = \mathit{target}$,
+$\mathit{pc} = \mathit{sales}/2 < \mathit{target} \land \mathit{sales} \geq \mathit{target}$
+and $\mathit{out} = \mathit{sales}/20$.
+
+% The generalized test: out becomes the oracle; what fails it.
+A generalized test replaces the assertion's hardcoded expected value
+with $\mathit{out}(x_1, \ldots, x_n)$
+and checks $m(x_1, \ldots, x_n) = \mathit{out}(x_1, \ldots, x_n)$
+for many inputs from the input partition,
+using constraint-aware input generation and filtering
+(Section~\ref{sec:generalized-test-creation}).
+For the implementation from which the specification was extracted,
+this equality holds on the entire input partition by property (ii),
+so the generalized test passes.
+The recorded $\mathit{out}$ thereby preserves the validated behavior as the oracle
+against which later versions of $m$ are tested:
+a regression that alters outputs anywhere within the input partition
+makes the generalized test fail whenever a sampled input exposes the change,
+whereas the original test detects only changes
+that affect the single input point $(v_1, \ldots, v_n)$.
+For the running example, the boundary mutation described at the beginning of this section
+alters the output only at the boundary of the \textit{exceptional performance} partition
+($\mathit{pc} = \mathit{sales}/2 \geq \mathit{target}$, $\mathit{out} = \mathit{sales}/10$).
+This boundary lies outside the original test's single input $(2500, 1000)$
+but inside the input partition that the generalized test samples,
+so only the generalized test can detect the mutation.
+
+\input{listings/alg-test-generalization}
+
+% Extraction via single-path symbolic analysis; the approach is solver-free.
+To extract input/output specifications,
+our approach utilizes single-path symbolic analysis (Section~\ref{sec:symbolic-analysis}).
+Thus, the test executes concretely, and from the MUT call onward,
+the analysis additionally tracks symbolic values for the generalizable parameters.
+At every branch that involves symbolic values,
+the concrete execution determines the branch direction,
+and the analysis records the condition of the taken branch over the symbolic values.
+When the MUT call returns, the conjunction of the recorded conditions forms the path condition,
+and the symbolic value of the returned result forms the symbolic output expression.
+Because the concrete execution decides every branch direction,
+the analysis visits exactly one path and requires neither backtracking nor constraint solving.
+
+% Scope of exactness.
+Single-path symbolic analysis requires pure MUTs,
+i.e., MUTs that are deterministic, side-effect-free,
+and dependent only on their input parameters~\cite{cadar_2013_symbolic,baldoni_2018_survey}.
+Purity guarantees that the parameters are the only inputs that determine the MUT's behavior,
+so the recorded $(\mathit{pc}, \mathit{out})$ pair characterizes the entire partition.
+For a non-pure MUT, the pair would additionally depend on state
+that existed during extraction, e.g., field values or file contents,
+and an input that satisfies $\mathit{pc}$ could follow a different execution path
+or produce a different output once that state changes.
+The current implementation generalizes Java's eight primitive scalar types,
+their boxed forms, and \texttt{String} inputs and outputs within a restricted
+set of string operations.
+Parameters outside these supported domains retain their concrete values,
+so MUTs with mixed parameter types are generalized partially,
+and MUTs without any generalizable parameter are excluded
+(Section~\ref{sec:tested-method-identification}).
+
+% Established techniques and instantiation; language, toolchain, and analysis capabilities are not fixed.
+The five stages of the approach build on established techniques,
+which \ToolTeralizer{} instantiates for Java:
+Spoon~\cite{pawlak_2016_spoon} provides the static analysis of the test code for stages 1 and 2,
+\ToolSPF{}~\cite{pasareanu_2013_symbolic} the single-path symbolic analysis for stage 3
+(Section~\ref{sec:symbolic-analysis}),
+\ToolJqwik{}~\cite{link_2022_jqwik} the property-based test execution for stage 4
+(Section~\ref{sec:property-based-testing}),
+and \ToolPit{}~\cite{coles_2016_pit} the mutation testing for stage 5
+(Section~\ref{sec:mutation-testing}).
+However, the underlying approach is independent of any particular language or toolchain,
+i.e., none of the used techniques is specific to Java,
+and other languages offer counterpart tools,
+e.g., KLEE~\cite{cadar_2008_klee} in place of \ToolSPF{} for C programs
+or Hypothesis~\cite{maciver_2019_hypothesis} in place of \ToolJqwik{} for Python.
+The purity and domain restrictions likewise stem from the employed analysis
+rather than from the approach itself,
+since properties (i) and (ii) do not prescribe how specifications are obtained.
+An analysis with support for additional data structures, e.g., symbolic arrays,
+or with heap state modeled as additional symbolic input~\cite{khurshid_2003_gse}
+would relax these restrictions.
+
+% Implementation scope and automation.
+The current prototype implementation of \ToolTeralizer{} targets Java 5--8 projects
+(the versions \ToolSPF{} supports)
+that use Maven or Gradle for dependency management
+and JUnit 3, JUnit 4, or JUnit 5 for testing.
+Prior to the execution of the five primary processing stages,
+\ToolTeralizer{} automatically detects the build system of the target project
+and injects the dependencies that the pipeline requires,
+including \ToolJqwik{}, \ToolPit{}, and \ToolJacoco{}~\cite{jacoco} for coverage tracking.
+Thus, \ToolTeralizer{} requires no manual intervention throughout the generalization process ---
+project preparation and all five processing stages are fully automated.
 
 The following subsections detail each stage of the generalization process as implemented in \ToolTeralizer{}.
 Section~\ref{sec:test-assertion-analysis} explains test and assertion analysis.

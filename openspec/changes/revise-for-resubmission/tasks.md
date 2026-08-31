@@ -27,16 +27,16 @@
 
 ## 3. Port Concepts and the End-to-End Approach
 
-- [ ] 3.1 Remove the uncommitted synthesized concepts addition, port the thesis assertion-to-MUT, MUT-call, specification, partition, oracle, and failure-result definitions substantially unchanged, and verify every textual difference is a necessary paper adaptation
-- [ ] 3.2 Port the thesis end-to-end algorithm listing and its explanation substantially unchanged, preserve its inputs, outputs, control flow, failure outcomes, and retention rules, and record rather than apply any implementation-driven improvement
-- [ ] 3.3 Port the thesis test-and-assertion-analysis account substantially unchanged, adapt only paper labels and assembly, and record any JUnit-support, filter, collection-round, or assertion-form discrepancy as a deferred candidate
-- [ ] 3.4 Port the thesis tested-method-identification account substantially unchanged and record any normalization, composite-expression, producer-selection, ranking, or unresolved-case discrepancy as a deferred candidate
-- [ ] 3.5 Port the thesis specification-extraction account substantially unchanged and record any symbolic-execution, type, string, resource-limit, or failure-outcome discrepancy as a deferred candidate
-- [ ] 3.6 Port the thesis generalized-test-creation account substantially unchanged and record any generator, path-filter, symbolic-oracle, original-input, widening, or exception-evidence discrepancy as a deferred candidate
-- [ ] 3.7 Port the thesis test-suite-reduction account substantially unchanged and record any mutant-retention or source-assertion-removal discrepancy as a deferred candidate
-- [ ] 3.8 Port the thesis algorithm and corrected examples while preserving paper-owned figure and listing presentation, and verify that presentation adaptations do not change scientific content
-- [ ] 3.9 Compare the complete paper approach with the thesis source, verify every substantive thesis passage is present, and verify every departure is limited to standalone framing, labels, macros, assembly, or ACM presentation
-- [ ] 3.10 Run the recorded manuscript checks, inspect the rendered approach pages, and commit the faithful approach backport as one atomic unit
+- [x] 3.1 Remove the uncommitted synthesized concepts addition, port the thesis assertion-to-MUT, MUT-call, specification, partition, oracle, and failure-result definitions substantially unchanged, and verify every textual difference is a necessary paper adaptation
+- [x] 3.2 Port the thesis end-to-end algorithm listing and its explanation substantially unchanged, preserve its inputs, outputs, control flow, failure outcomes, and retention rules, and record rather than apply any implementation-driven improvement
+- [x] 3.3 Port the thesis test-and-assertion-analysis account substantially unchanged, adapt only paper labels and assembly, and record any JUnit-support, filter, collection-round, or assertion-form discrepancy as a deferred candidate
+- [x] 3.4 Port the thesis tested-method-identification account substantially unchanged and record any normalization, composite-expression, producer-selection, ranking, or unresolved-case discrepancy as a deferred candidate
+- [x] 3.5 Port the thesis specification-extraction account substantially unchanged and record any symbolic-execution, type, string, resource-limit, or failure-outcome discrepancy as a deferred candidate
+- [x] 3.6 Port the thesis generalized-test-creation account substantially unchanged and record any generator, path-filter, symbolic-oracle, original-input, widening, or exception-evidence discrepancy as a deferred candidate
+- [x] 3.7 Port the thesis test-suite-reduction account substantially unchanged and record any mutant-retention or source-assertion-removal discrepancy as a deferred candidate
+- [x] 3.8 Port the thesis algorithm and corrected examples while preserving paper-owned figure and listing presentation, and verify that presentation adaptations do not change scientific content
+- [x] 3.9 Compare the complete paper approach with the thesis source, verify every substantive thesis passage is present, and verify every departure is limited to standalone framing, labels, macros, assembly, or ACM presentation
+- [x] 3.10 Run the recorded manuscript checks, inspect the rendered approach pages, and commit the faithful approach backport as one atomic unit
 
 ## 4. Port the Evaluation Framework and RQ1--RQ5
 

@@ -1,9 +1,10 @@
-\subsection{Tested Method Identification}
+\subsection{Tested Method Identification}%
 \label{sec:tested-method-identification}
 
 After identifying generalizable tests and assertions,
-the next step is to identify which implementation methods are validated by the tests.
-These methods under test (MUT) serve as targets for subsequent specification extraction.
+the next step is to identify the MUT call of each assertion
+(lines 4--5 of Algorithm~\ref{alg:test-generalization}),
+which serves as the target of the subsequent specification extraction.
 First, we must distinguish test setup code
 from code that exercises and validates the MUT
 to be able to restrict specification extraction
@@ -16,62 +17,77 @@ with the right output specification when creating the corresponding generalized 
 through static analysis based on Spoon~\cite{pawlak_2016_spoon}
 that traces output values validated by assertions
 back to the method calls that produced them.
+The test-to-code traceability literature refers to these methods
+as focal methods~\cite{ghafari_2015_focal,he_2024_focal}.
 % As a result, \ToolTeralizer{} collects descriptions of
 % identified MUTs (source code locations, method signatures, etc.)
 % as well as mappings that connect each MUT call to a corresponding assertion.
 
 Consider the \texttt{testCalculate} method in Listing~\ref{lst:original-test}.
 To identify MUT calls in this method,
-\ToolTeralizer{} uses Spoon to first get the \texttt{actual}
-arguments that are passed into each assertion.
-In our example, all three assertions are \texttt{static void assertEquals(int expected, int actual)} calls.
-\ToolTeralizer{} thus identifies \texttt{b1}, \texttt{b2}, and \texttt{b3}
-as the \texttt{actual} arguments of the three assertions.
-Since all three arguments are local variables,
+\ToolTeralizer{} first normalizes every assertion into a common form:
+a value comparison, a boolean condition, or an expected exception,
+together with the expression that the assertion observes.
+This form abstracts over the syntactic differences between the supported assertion forms,
+e.g., the argument positions that hold the expected and the actual value.
+In our example, all three assertions are \texttt{static void assertEquals(int expected, int actual)} calls,
+so all three normalize to value comparisons
+that observe \texttt{b1}, \texttt{b2}, and \texttt{b3}.
+Since all three expressions are local variables,
 \ToolTeralizer{} uses Spoon to identify where they were defined.
 For example, for \texttt{b1}, Spoon identifies \texttt{int b1 = c.calculate(2500, 1000)} as the definition.
 Since the right side of the assignment is a method call,
 \ToolTeralizer{} marks it as a MUT call, storing a description of the method
 as well as a mapping to the corresponding \texttt{assertEquals(250, b1)} call.
 Processing \texttt{b2} and \texttt{b3} similarly identifies
-\texttt{c.calculate(1500, 1000)} and \texttt{c.calculate(500, 1000)}
-as the MUT calls for the second and third assertions.
+\texttt{c.calculate(1500, 1000)} and \texttt{c.calculate(500, 1000)} as MUT calls.
 
-Processing for other assertion types and code structures follows similar patterns.
-\ToolTeralizer{} first identifies the assertion argument
-that represents the (output of the) MUT call.
-If the argument is a method call,
-\ToolTeralizer{} directly marks it as a MUT call.
-Otherwise, \ToolTeralizer{} aims to identify
-a MUT call from the argument.
-For local variables,
-it traces them back to their definition
-using the simple data flow analysis based on Spoon
-we described in the previous paragraph.
-For lambda expressions, which are commonly used
-as the \texttt{executable} argument of 
-\texttt{assertThrows(Class expectedType, Executable executable)}
-assertions,
-\ToolTeralizer{} instead marks the last method call within the lambda expression as the MUT call,
-following the heuristic that the last call typically triggers the expected exception.
+Other code structures follow the same principle.
+An observed expression that is itself a method call is marked as the MUT call directly.
+Otherwise, \ToolTeralizer{} traces the producing call
+through the operands of composite expressions,
+through the reaching definitions of local variables and fields,
+and through zero-argument inspectors, whose receiver is traced in turn.
+Every call found this way is a data dependence of the observed expression.
+
+Tracing does not always identify a single call.
+A composite expression can depend on several producing calls,
+and an assertion over a value that no visible call produced ---
+e.g., a field that a preceding call modified as a side effect ---
+yields none at all.
+In both cases, \ToolTeralizer{} ranks the calls that precede the assertion
+and selects the highest-ranked one.
+The ranking prefers, in order,
+calls whose parameter and return types are supported (Section~\ref{sec:approach-concepts}),
+calls that belong to the class under test that \ToolTeralizer{} infers
+from the test class name and the source layout~\cite{tufano_2022_methods2test},
+calls whose name corresponds to the name of the test method~\cite{van_rompaey_2009_traceability,tufano_2022_methods2test},
+and calls that are closer to the assertion~\cite{van_rompaey_2009_traceability}.
+Such a selection is a heuristic rather than a data dependence:
+it identifies a plausible MUT call, not provably the intended one.
+For exception assertions, the candidates are the calls
+inside the \texttt{assertThrows} body or those preceding a \texttt{fail} call,
+of which \ToolTeralizer{} selects the last one,
+following the heuristic that the last call triggers the expected exception ---
+a common assumption in focal method identification~\cite{van_rompaey_2009_traceability,ghafari_2015_focal}.
 
 \ToolTeralizer{} applies three filters
 to exclude unsuitable MUTs:
-\texttt{MissingValue}, \texttt{ParameterType}, and \texttt{ReturnType}.
+\texttt{Missing\-Value}, \texttt{Parameter\-Type}, and \texttt{Return\-Type}.
 The \texttt{MissingValue} filter rejects cases where
 \ToolTeralizer{} cannot identify a MUT for an assertion
 or cannot extract a method signature for an identified MUT.
-Common causes for this include
-reversed \texttt{expected} and \texttt{actual} arguments (e.g., \texttt{assertEquals(abs(0), 0)}),
-validation of object fields set as side effects rather than return values (e.g., \texttt{assertEquals(3, a.length)}),
-and MUTs in inheritance hierarchies that Spoon cannot resolve.
+This happens for assertion shapes that the analysis does not support,
+for assertions that leave no visible call to select,
+and for selected calls whose declaration is a library method
+or cannot be resolved to a declaration in the project's source at all.
 The \texttt{ParameterType} and \texttt{ReturnType} filters reject MUTs
 that use unsupported types for all of the MUT's parameters or return values.
-While methods with mixed parameter types can be partially generalized
-(numeric and boolean parameters become test inputs; others remain unchanged),
-\ToolSPF{} cannot extract complete constraints
-for strings, arrays, and objects.
-This is due to symbolic analysis limitations
-discussed in Section~\ref{sec:symbolic-analysis}.
-Sections~\ref{sec:limitations-eval} and \ref{sec:limitations-eval-extended}
+Methods with mixed parameter types can be partially generalized:
+parameters from the supported set become test inputs,
+while arrays and objects retain their concrete values.
+\ToolSPF{} cannot extract complete constraints for these unsupported values
+due to the symbolic analysis limitations discussed in
+Section~\ref{sec:symbolic-analysis}.
+Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended}
 evaluate the exclusion rates of all filters.

@@ -1,0 +1,22 @@
+\begin{algorithm}[tbp]
+\caption[End-to-end semantics-based test generalization]{Semantics-Based Test Generalization}%
+\label{alg:test-generalization}
+\begin{algorithmic}[1]
+\REQUIRE Program $P$, passing unit test suite $T$
+\ENSURE Reduced test suite $T' \cup G'$ of retained original and generalized tests
+\STATE $G \gets \emptyset$
+\FORALL[Stage 1, Section~\ref{sec:test-assertion-analysis}]{$t \in \textsc{GeneralizableTests}(T)$}
+    \FORALL{$a \in \textsc{SupportedAssertions}(t)$}
+        \STATE $c \gets \textsc{IdentifyMutCall}(t, a)$ \COMMENT{Stage 2, Section~\ref{sec:tested-method-identification}}
+        \STATE \textbf{if} $c = \bot$ \textbf{then} \textbf{continue}
+        \STATE $(\mathit{pc}, \mathit{out}) \gets \textsc{ExtractSpecification}(P, t, c)$ \COMMENT{Stage 3, Section~\ref{sec:specification-extraction}}
+        \STATE \textbf{if} $(\mathit{pc}, \mathit{out}) = \bot$ \textbf{then} \textbf{continue}
+        \STATE $G \gets G \cup \{\textsc{CreateGeneralizedTest}(t, a, c, \mathit{pc}, \mathit{out})\}$ \COMMENT{Stage 4, Section~\ref{sec:generalized-test-creation}}
+    \ENDFOR
+\ENDFOR
+\STATE $G' \gets \{g \in G \mid \mathit{killed}(g) \not\subseteq \mathit{killed}(T)\}$ \COMMENT{Stage 5, Section~\ref{sec:test-suite-reduction}}
+\STATE $A' \gets \{a \mid \exists g \in G' : \mathit{sourceAssertion}(g) = a\}$
+\STATE $T' \gets \{t \in T \mid \mathit{assertions}(t) \not\subseteq A'\}$
+\RETURN $T' \cup G'$
+\end{algorithmic}
+\end{algorithm}
