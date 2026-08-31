@@ -8,10 +8,10 @@ For \ToolTeralizer{}, it reveals whether testing additional inputs
 for existing execution paths achieves the intended improvement in fault detection capabilities.
 We use mutation score rather than parameter value coverage~\cite{sampath_2008_prioritizing}
 --- the metric employed by JARVIS~\cite{peleg_2018_jarvis} ---
-because mutation testing is a stronger proxy
-for fault detection capability.
-Direct comparison with JARVIS is not possible
-as its implementation is not publicly available.
+as our primary effectiveness metric because mutation testing
+is a stronger proxy for fault detection capability (Section~\ref{sec:jarvis-comparison}).
+Direct comparison with JARVIS is not possible for any of the remaining evaluations
+because the implementation of JARVIS is not publicly available.
 Section~\ref{sec:overall-detection-rates} quantifies detection improvements across projects,
 and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutation operator.
 
@@ -57,7 +57,7 @@ and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutat
 % such as loops in test code or modifications of object state rather than direct return values,
 % and (iii)~tests exercising methods without generalizable parameters have no numeric
 % or boolean inputs to vary.
-% Section~\ref{sec:filtering-eval} quantifies how frequently all exclusion causes occur,
+% Section~\ref{sec:limitations-eval} quantifies how frequently all exclusion causes occur,
 % providing guidance for extending generalization capabilities.
 
 % Mutation coverage patterns highlight further differences across the project environments.
@@ -70,13 +70,30 @@ and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutat
 % (but no tests for transitively called methods),
 % while EvoSuite variants generate comprehensive suites for all included code.
 % This focused scope reflects our intent to evaluate code amenable to generalization in this part of the dataset,
-% as discussed in Section~\ref{sec:apache-commons-utils}.
+% as discussed in Section~\ref{sec:experimental-framework}.
 
 % With the evaluation scope established, we now analyze how effectively
 % the generalized tests detect mutations within the included subset.
 
-\subsubsection{Overall Mutation Detection Rates}
+\subsubsection{Overall Mutation Detection Rates}%
 \label{sec:overall-detection-rates}
+
+Generalization improves mutation detection across all
+\DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
+though the degree of improvement varies by project type
+(Figure~\ref{fig:mutation-detection-results}).
+\DatasetsEqBenchEs{} projects (rows 1--3 in the figure) show the largest improvements:
+detection rates increase from 48.1--51.6\% to 49.5--55.0\%
+across different \tries{} and generalization strategies,
+representing absolute improvements of
+\TzEffectivenessEqbenchEvosuiteMutationImprovementMinPp{}--\TzEffectivenessEqbenchEvosuiteMutationImprovementMaxPp{}
+percentage points (2.4--8.2\% relative increase).
+\DatasetsCommonsEs{} projects (rows 4--6) improve by
+\TzEffectivenessCommonsEvosuiteMutationImprovementMinPp{}--\TzEffectivenessCommonsEvosuiteMutationImprovementMaxPp{}
+percentage points (1.4--2.3\% relative increase),
+while \DatasetCommonsDev{} (row 7) improves by only
+\TzEffectivenessCommonsDeveloperMutationImprovementMinPp{}--\TzEffectivenessCommonsDeveloperMutationImprovementMaxPp{}
+percentage points from its \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{} baseline.
 
 \begin{figure}
   \centering
@@ -96,20 +113,6 @@ and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutat
   \label{fig:mutation-detection-results}
 \end{figure}
 
-Generalization improves mutation detection across all
-\DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
-though the degree of improvement varies by project type
-(Figure~\ref{fig:mutation-detection-results}).
-\DatasetsEqBenchEs{} projects (rows 1--3 in the figure) show the largest improvements:
-detection rates increase from 48.1--51.6\% to 49.5--55.0\%
-across different \tries{} and generalization strategies,
-representing absolute improvements of 1.2--3.9 percentage points
-(2.4--8.2\% relative increase).
-\DatasetsCommonsEs{} projects (rows 4--6) improve by 0.82--1.33 percentage points
-(1.4--2.3\% relative increase),
-while \DatasetCommonsDev{} (row 7) improves by only 0.05--0.07 percentage points
-from its 80.4\% baseline.
-
 Two factors strongly affect generalization improvements:
 initial test suite strength and input constraint complexity.
 \DatasetsEqBenchEs{} projects offer the most suitable conditions for generalization.
@@ -125,7 +128,7 @@ while they also start from EvoSuite-generated tests,
 the \DatasetsCommons{} methods involve more complex input specifications,
 making it harder to generate inputs that satisfy these input constraints.
 \DatasetCommonsDev{} faces both challenges:
-the mature developer-written tests already achieve 80.4\% detection
+the mature developer-written tests already achieve \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{} detection
 and share the same complex constraints as other \DatasetsCommons{} variants.
 This leaves little opportunity for automated improvement.
 
@@ -148,7 +151,7 @@ and low constraint complexity favor \VariantNaive{},
 while in \DatasetsCommonsEs{}, \VariantImproved{}'s
 benefits overcome its \texttt{Math} detection disadvantage.
 We investigate the mechanisms behind these results in further detail in
-Sections~\ref{sec:detection-rates-per-mutator} and \ref{sec:constraint-complexity-eval}.
+Sections~\ref{sec:detection-rates-per-mutator} and~\ref{sec:constraint-complexity-eval}.
 % \DatasetCommonsDev{} shows no meaningful differences between approaches,
 % with all variants achieving approximately 80.4\% detection.
 
@@ -179,21 +182,21 @@ Similarly, on \DatasetsCommonsEs{},
 10-second generation plus \VariantNaiveC{} generalization
 reaches 58.5\% (last orange bar in row 5)
 versus 58.1\% for 60-second generation (blue bar in row 6).
-Section~\ref{sec:execution-efficiency} investigates the efficiency trade-offs
+Section~\ref{sec:runtime-eval} investigates the efficiency trade-offs
 between different combinations of \ToolEvoSuite{} timeouts and \ToolTeralizer{} \tries{}
 in further detail through Pareto front analysis.
 
-\subsubsection{Mutation Detection Rates per Mutator}
+\subsubsection{Mutation Detection Rates per Mutator}%
 \label{sec:detection-rates-per-mutator}
 
-Generalization effectiveness varies significantly across mutation operators
+Generalization effectiveness varies across mutation operators,
+from no improvement on four return value mutators to a 3.99 percentage point gain on \texttt{Math}
 (Table~\ref{tab:detections-per-mutator}).
-The \texttt{Math} mutation operator dominates the mutation landscape
-in \DatasetsEqBenchEs{} and \DatasetsCommons{} projects,
-making up 59.1\% of total mutants.
+The \texttt{Math} mutation operator accounts for 59.1\% of mutants
+in the \DatasetsEqBenchEs{} and \DatasetsCommons{} projects.
 This strong representation of \texttt{Math} mutations
 is primarily due to the focus on numeric computations in these datasets.
-The next most commonly occurring mutations are 
+The next most commonly occurring mutations are
 \texttt{Conditionals\-Boundary} and \texttt{Remove\-Conditional\-Order\-Else}
 mutations, each of which accounts for 10.99\% of total mutants
 (both operators are applied at the same source code locations).
@@ -214,7 +217,7 @@ while behavioral mutants are more elusive.
 For example, \texttt{VoidMethodCall} mutations achieve a detection rate of only 24.96\%
 because removing void method calls typically affects only internal state
 or produces side effects that are rarely verified by existing assertions.
-Because these cases often require new assertions to be added to achieve detection rate improvements,
+Because these cases often require new assertions to be added to achieve improvements,
 they are largely beyond the intended capabilities of \ToolTeralizer{}.
 In contrast, \VariantInitial{} detection rates of
 27.68\% for \texttt{ConditionalsBoundary} mutations,
@@ -228,9 +231,9 @@ aims to generate additional test inputs.
 
 \VariantNaiveC{} achieves the largest improvements on
 \texttt{Math} (+3.99\%),
-\texttt{RemoveConditionalEqualElse} (+2.07\%),
+\texttt{Remove\-Conditional\-Equal\-Else} (+2.07\%),
 and \texttt{Invert\-Negs} (+1.70\%).
-\texttt{RemoveConditionalEqualElse} detection improves because the created property-based tests
+\texttt{Remove\-Conditional\-Equal\-Else} detection improves because the created property-based tests
 cover diverse inputs that trigger both branches of equality checks.
 %exposing mutations that force false branches.
 \texttt{Math} detection similarly benefits from diverse
@@ -238,7 +241,7 @@ inputs because arithmetic operations often produce
 different results across input ranges.
 In contrast, 4 of 5 return value mutators show no improvement:
 \texttt{Null\-Return\-Vals}, \texttt{Boolean\-True\-Return\-Vals},
-\texttt{Boolean\-False\-ReturnVals}, and \texttt{EmptyObjectReturnVals}.
+\texttt{Boolean\-False\-Return\-Vals}, and \texttt{Empty\-Object\-Return\-Vals}.
 These already achieve high \VariantInitial{} detection rates (87.87--98.77\%)
 because return value mutations often directly violate test assertions,
 leaving little room for improvement.
@@ -281,7 +284,7 @@ even at lower \tries{} settings,
 thus avoiding the runtime cost of higher \tries{}.
 
 Results for the 10 and 50 \tries{} variants of \VariantNaive{} and \VariantImproved{}
-generally follow the same trends as those for the listed variants with 200 \tries{},
+generally follow the same trends as those for the variants with 200 \tries{},
 albeit with smaller detection rate improvements over \VariantInitial{}.
 The exception is \texttt{Math} mutation detection,
 where \VariantImprovedA{} achieves only 1.1\% improvement compared to 2.8\% for \VariantNaiveA{}.
@@ -296,10 +299,19 @@ Full results for all variants are available in our replication package~\cite{rep
 
 \rqanswerbox{1}{
   Test generalization improves mutation detection across all evaluated projects,
-  achieving absolute improvements of 1--4 percentage points depending on project type and generalization strategy.
-  \DatasetsEqBenchEs{} projects show the largest improvements (1.2--3.9pp, or 2.4--8.2\% relative increase).
-  \DatasetsCommonsEs{} improves by 0.82--1.33pp (1.4--2.3\% relative increase)
-  and \DatasetCommonsDev{} shows minimal improvement (0.05--0.07pp) due to its high baseline detection rate of 80.4\%.
+  achieving absolute improvements of
+  \TzEffectivenessEqbenchEvosuiteMutationImprovementMinPp{}--\TzEffectivenessEqbenchEvosuiteMutationImprovementMaxPp{}
+  percentage points depending on project type and generalization strategy.
+  \DatasetsEqBenchEs{} projects show the largest improvements
+  (\TzEffectivenessEqbenchEvosuiteMutationImprovementMinPp{}--\TzEffectivenessEqbenchEvosuiteMutationImprovementMaxPp{}pp,
+  or 2.4--8.2\% relative increase).
+  \DatasetsCommonsEs{} improves by
+  \TzEffectivenessCommonsEvosuiteMutationImprovementMinPp{}--\TzEffectivenessCommonsEvosuiteMutationImprovementMaxPp{}pp
+  (1.4--2.3\% relative increase)
+  and \DatasetCommonsDev{} shows minimal improvement
+  (\TzEffectivenessCommonsDeveloperMutationImprovementMinPp{}--\TzEffectivenessCommonsDeveloperMutationImprovementMaxPp{}pp)
+  due to its high baseline detection rate of
+  \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{}.
   Effectiveness varies by mutation operator:
   constraint-aware generation (\VariantImproved{}) excels at detecting boundary-related mutations like \texttt{ConditionalsBoundary} (+2.55pp),
   while random generation (\VariantNaive{}) performs better on \texttt{Math} mutations (+3.99pp vs +3.37pp) due to greater arithmetic diversity.
