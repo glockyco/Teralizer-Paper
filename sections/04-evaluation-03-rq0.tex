@@ -1,0 +1,308 @@
+\subsection{RQ0: How do \ToolTeralizer{} and JARVIS compare in applicability and value coverage?}
+\label{sec:jarvis-comparison}
+
+% P1: The two generalization mechanisms.
+As described in Section~\ref{sec:rw-generalization},
+JARVIS~\cite{peleg_2018_jarvis} is the closest prior work to \ToolTeralizer{}.
+It transforms conventional unit tests into property-based tests
+by abstracting the constant values of repetitive tests,
+selecting each abstraction from a manually defined template library
+based on static analysis of test code alone~\cite{peleg_2018_jarvis}.
+\ToolTeralizer{}, in contrast,
+derives its input/output specifications
+through static and dynamic analysis
+of both the tests and the implementation of a target project,
+and generalizes the developer-written assertions themselves (Section~\ref{sec:approach}).
+
+% P2: Comparison basis, and the evaluation environment reconstruction.
+The JARVIS implementation and abstraction template library are not publicly available,
+so we benchmark \ToolTeralizer{} against the results reported in the JARVIS paper.
+JARVIS was evaluated on the JUnit test suites
+of 12 Apache Commons projects~\cite{peleg_2018_jarvis}.
+However, the JARVIS paper identifies neither the exact project revisions it evaluated
+nor the exact date of its evaluation.
+In a best-effort attempt to reconstruct the evaluation environment,
+we therefore pin each of the 12 projects
+to its last commit before February~1, 2017 ---
+the date on which the commons-lang fix that JARVIS reports was submitted.
+We generalize the test suites of all 12 projects
+with the \VariantImproved{} strategy at 100 \tries{},
+matching the 100 samples per synthesized property used during the original evaluation of JARVIS.
+
+% P3: Why the two outputs differ in unit.
+% Because the two approaches follow different generalization mechanisms,
+% their results must be aligned on a shared unit before they can be compared.
+% JARVIS groups structurally repetitive tests into scenarios,
+% that is, tests that execute the same statement sequence
+% and differ only in their constant values,
+% and it reports its results per scenario.
+% \ToolTeralizer{} creates one PBT per generalizable assertion
+% (Section~\ref{sec:generalized-test-creation}).
+% Thus, JARVIS's scenario-based PBTs
+% and \ToolTeralizer{}'s assertion-based PBTs
+% are not directly comparable.
+
+% P4: Why the two sets of results are aligned at the method under test.
+% What both approaches share is the set of methods whose behaviors they exercise.
+% Every test in a scenario targeted by JARVIS executes the same tested method calls,
+% and \ToolTeralizer{} maps every assertion it targets to exactly one tested method call.
+% Thus, we aggregate generalization results at the level of these methods under test (MUTs).
+% The \TzRqzeroTabletwoReportedRows{} scenarios that JARVIS reports
+% correspond to \TzRqzeroTabletwoDistinctMuts{} distinct MUTs (Table~\ref{tab:jarvis-scenario-pvc}):
+% the 3 PolynomialFunction scenarios all call \texttt{PolynomialFunction.value},
+% \texttt{testMinMaxDouble} calls both \texttt{FastMath.min} and \texttt{FastMath.max},
+% and each of the remaining 6 scenarios calls one method.
+
+% P5: Roadmap.
+The comparison proceeds in three parts:
+the first compares parameter value coverage
+of JARVIS and \ToolTeralizer{} for the \TzRqzeroTabletwoReportedRows{} scenarios
+for which JARVIS successfully produces property-based tests,
+the second compares applicability
+across all 12 projects targeted in the JARVIS evaluation
+by measuring how many MUTs each tool produces PBTs for,
+and the third examines the relationship
+between parameter value coverage and test suite effectiveness.
+
+\subsubsection{Parameter Value Coverage on the Scenarios that JARVIS Successfully Generalizes}%
+\label{sec:jarvis-scenario-pvc}
+
+% P1: Measurement and table contract.
+Table~\ref{tab:jarvis-scenario-pvc} compares parameter value coverage (PVC):
+the number of distinct input values that a test suite exercises
+for the parameters of a MUT~\cite{sampath_2008_prioritizing}.
+PVC is the primary coverage metric reported by the JARVIS evaluation~\cite{peleg_2018_jarvis}.
+The last three columns show PVC before generalization,
+after generalization with JARVIS,
+and after generalization with \ToolTeralizer{}.
+Each row represents one of the \TzRqzeroTabletwoReportedRows{} scenarios
+successfully generalized by JARVIS.
+
+\input{tables/rq0-table2-comparison}
+
+% P2: Head-to-head result and comparable sampling budget.
+\ToolTeralizer{} creates generalized tests for
+\TzRqzeroTabletwoSoundTabletwoRows{} of the
+\TzRqzeroTabletwoReportedRows{} scenarios.
+For 4 of these \TzRqzeroTabletwoReportedRows{} scenarios (1, 2, 4, and 5),
+the PVC measured for \ToolTeralizer{} is higher than the PVC reported by JARVIS.
+For the other 3 scenarios (3, 7, and 8), its PVC is lower.
+Both evaluations exercise each synthesized PBT with 100 inputs.
+The per-PBT sampling budget is therefore the same,
+but the total budget for a scenario depends on how many PBTs it yields.
+JARVIS may create multiple PBTs to preserve distinct constraints
+or positive and negative regions found in its original tests.
+\ToolTeralizer{} instead creates one PBT per generalizable assertion.
+
+% P3: Cases where JARVIS reports higher PVC.
+The number of PBTs created by the two tools
+for each scenario explains some of the JARVIS advantages.
+Scenarios 7 and 8 each have one numeric parameter.
+Their JARVIS PVCs of 264 and 160 therefore require at least 3 and 2
+executions of a 100-input PBT, respectively.
+However, \ToolTeralizer{} only produces one PBT for each of these scenarios,
+because each one only offers a single generalizable assertion.
+Scenario 3 shows that the number of created PBTs
+is not the only factor that affects PVC results.
+\ToolTeralizer{} produces 2 PBTs in this case:
+one for \texttt{FastMath.min} and one for \texttt{FastMath.max}.
+However, the input samples generated by these PBTs repeat some values.
+Those repetitions reduce PVC independently of PBT count.
+Furthermore, JARVIS's inability to sample \texttt{Double.NaN}
+also reduces its coverage for this scenario~\cite{peleg_2018_jarvis},
+contributing yet another modulating factor.
+
+% P4: Cases where Teralizer reports higher PVC.
+The higher \ToolTeralizer{} values primarily reflect input retention.
+By design, \ToolTeralizer{}'s generalized test suites retain the original input values
+when sampling input values for its PBTs
+(Section~\ref{sec:three-variant-design}).
+JARVIS constrains its generators to regions that contain the original examples,
+but random sampling does not guarantee that these examples are executed again.
+This distinction explains Scenarios 2 and 4.
+JARVIS reduces their PVC from 195 to 45 and from 2,001 to 65,
+whereas \ToolTeralizer{} retains the original values
+and increases the corresponding PVC to 197 and 2,074, respectively.
+For Scenario 1, JARVIS increases PVC from 6 to 59,
+yet \ToolTeralizer{} achieves a larger increase to a PVC of 230
+by creating multiple PBTs rather than just a single one
+--- one for each assertion in the original test.
+
+% P5: Truncated JARVIS run and interpretation boundary.
+% Scenario 5 is a separate case.
+% Its JARVIS PVC of 2 records a PBT that terminates
+% on the second generated input on average because the property fails.
+% It is therefore a truncated run rather than ordinary 100-input coverage~\cite{peleg_2018_jarvis}.
+% Across the 7 shared scenarios, the observed differences follow 4 mechanisms:
+% PBT count, retained original inputs, repeated sampled values,
+% and premature property termination.
+% Exact JARVIS PBT counts are not reported,
+% but the published PVC values establish the lower bounds above.
+
+% P6: Why Teralizer declines 3 scenarios.
+\ToolTeralizer{} does not create generalized tests for the 3 remaining scenarios (6, 9, and 10)
+because specification extraction does not establish a usable relation
+between the generalized input and the expected output for these cases.
+In Scenarios 9 and 10, the corresponding implementations
+of \texttt{Precision.equals} and \texttt{Abs.value}
+compute their outputs through raw IEEE-754 bit operations.
+\ToolSPF{} models floating-point values as real numbers
+and thus cannot preserve the symbolic input/output relation through these operations.
+In Scenario 6, the method's output depends on internal state
+rather than its input parameter.
+The extracted specification tracks the input parameter but not this internal state,
+so it cannot establish the input/output relation needed for a generalized oracle.
+RQ5 and RQ6 (Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended})
+analyze the prevalence of the different exclusion mechanisms in further detail.
+
+\subsubsection{Applicability Across the Full JARVIS Benchmark}%
+\label{sec:jarvis-applicability}
+
+% P1: Population and reported applicability.
+The \TzRqzeroTabletwoReportedRows{} scenarios reported in Table~\ref{tab:jarvis-scenario-pvc}
+are all found within 2 of the 12 Apache Commons projects
+used during the original evaluation of JARVIS:
+commons-lang and commons-math~\cite{peleg_2018_jarvis}.
+For the 10 remaining projects that are part of the JARVIS benchmark,
+the paper reports no successful generalization.
+Table~\ref{tab:jarvis-applicability} compares this reported applicability result
+with \ToolTeralizer{}'s measured results across the same 12 projects.
+A dash in the JARVIS columns means
+that the paper reports no PBT for the project.
+A dash in the \ToolTeralizer{} columns means
+that the 12-project evaluation created no generalized test for the project.
+
+\input{tables/rq0-breadth-summary}
+
+% P2: The unit that carries both sets of results.
+% The two sets of results do not share a unit.
+% JARVIS reports per scenario, its grouping of structurally repetitive tests,
+% and the paper publishes no count
+% of the property-based tests it creates.
+% \ToolTeralizer{} instead creates one PBT per generalizable assertion
+% (Section~\ref{sec:generalized-test-creation}).
+% Both tools do identify the methods whose behavior they exercise,
+% so Table~\ref{tab:jarvis-applicability} counts MUTs.
+% The \TzRqzeroTabletwoReportedRows{} JARVIS scenarios call
+% \TzRqzeroTabletwoDistinctMuts{} of them:
+% one scenario calls both \texttt{FastMath.min} and \texttt{FastMath.max},
+% whereas 3 scenarios share \texttt{PolynomialFunction.value}.
+
+% P3: Applicability result.
+\ToolTeralizer{} creates generalized tests for
+\TzRqzeroBreadthTeralizerTotalSoundMuts{} MUTs in 9 of the 12 projects,
+whereas JARVIS reports successful generalization for only
+\TzRqzeroBreadthJarvisTotalMuts{} MUTs
+in \TzRqzeroBreadthPublishedProjects{} of the 12 projects.
+% P4: What JARVIS requires before generalization can succeed.
+Three requirements that are inherent to the JARVIS approach limit its applicability
+(Section~\ref{sec:rw-generalization}).
+First, abstraction requires at least two structurally matching tests.
+As reported in the JARVIS paper, the median project-level share of scenarios
+that meet this repetition prerequisite is 30.6\% across the 12 projects,
+with a range of 13.3--60.0\%~\cite{peleg_2018_jarvis}.
+Second, JARVIS selects each abstraction
+from a manually curated library of abstraction templates,
+so a fitting template must exist for the relation between the observed inputs.
+Third, JARVIS uses Z3 to instantiate the coefficients of the selected template.
+Consequently, solver theory limitations (Section~\ref{sec:symbolic-analysis})
+affect which data types the template library can usefully cover.
+
+% P5: How Teralizer avoids these three requirements.
+\ToolTeralizer{} avoids these three requirements
+by deriving its specifications via single-path symbolic analysis
+rather than static analysis of repetitive tests.
+A single test execution provides both the path condition
+and the symbolic output expression,
+so \ToolTeralizer{} needs neither a second matching test
+nor a curated template library.
+\ToolTeralizer{} also performs no constraint solving at any pipeline stage,
+so the types it can generalize depend on \ToolSPF{}'s symbolic representations
+instead of solver theories.
+Section~\ref{sec:when-it-fails} examines why this distinction
+between representation limits and solver theories
+matters in practice.
+
+% P6: The 3 projects without generalized tests.
+In the 3 projects without generalized tests,
+\ToolTeralizer{} fails to obtain a specification that it can generalize.
+Across commons-email and commons-jexl,
+filtering and \ToolSPF{} failures exclude every assertion.
+In commons-email, most failures occur while \ToolSPF{} initializes \texttt{java.net.IDN},
+which the tested code uses to convert internationalized addresses.
+Its initializer reads a Unicode data file from the class path,
+which \ToolSPF{} does not provide, so the initializer fails its own assertion.
+In commons-jexl, most failures occur because the test constructor
+requests the default charset,
+which the JDK derives from the \texttt{file.encoding} property.
+\ToolSPF{} leaves that property unset,
+so the request fails before the MUT is called.
+For commons-pool, the pipeline stops before specification extraction,
+because the original test suite does not finish
+within the 300-second execution budget.
+RQ5 and RQ6 provide a more thorough analysis of failure causes
+(Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended}).
+
+\subsubsection{Interpreting Parameter Value Coverage}%
+\label{sec:jarvis-pvc-budget}
+
+% P1: Why PVC cannot measure the effectiveness that the evaluation targets.
+A comprehensive evaluation of test generalization approaches
+should address both applicability
+and regression detection effectiveness.
+The preceding section measures applicability
+by counting the number of projects and MUTs
+for which JARVIS and \ToolTeralizer{} create generalized tests.
+However, PVC --- which is the primary metric used in the JARVIS paper ---
+measures input diversity rather than fault detection effectiveness:
+it counts distinct input values without observing whether they expose faulty behavior
+\cite{sampath_2008_prioritizing,inozemtseva_2014_coverage,peleg_2018_jarvis}.
+
+% P2: Construction of the budget experiment.
+We examine the distinction between input diversity and fault detection effectiveness
+for the 10 scenarios of the initial PVC evaluation (Table~\ref{tab:jarvis-scenario-pvc}).
+For this, we reuse the generalized tests created by \ToolTeralizer{}'s
+\VariantImproved{} generalization strategy
+and increase their sampling budget from 100 to 200 and 1,000 \tries{}.
+This setup raises PVC by exercising more distinct values
+without changing the test code or how inputs are selected.
+We then use covered mutation score ---
+which is commonly accepted as a reasonable proxy
+for fault detection capability (Section~\ref{sec:mutation-testing})
+--- to observe whether the additional samples detect a larger number of seeded faults.
+Table~\ref{tab:jarvis-pvc-budget} reports the mutation results at each budget.
+
+\input{tables/rq0-pvc-budget}
+
+% P3: Observed contrast and the handoff to the remaining evaluation.
+At both the 200 and 1,000 \tries{} budgets, PVC exceeds its 100-try baseline.
+Nevertheless, all 3 budgets cover the same
+\TzRqzeroBudgetImprovedOnezerozeroTriesCoveredMutants{} mutants
+and kill the same
+\TzRqzeroBudgetImprovedOnezerozeroTriesKilledMutants{}.
+They therefore achieve the same covered mutation score of
+\TzRqzeroBudgetImprovedOnezerozeroTriesCoveredMutationScore{}.
+Thus, while PVC remains useful for describing input diversity
+and for the direct comparison with JARVIS
+--- which does not provide a publicly available implementation and, therefore,
+prevents a more robust effectiveness comparison ---
+the remaining effectiveness analyses use mutation score instead,
+which has stronger supporting evidence as a regression detection proxy
+(Section~\ref{sec:mutation-testing}).
+
+\rqanswerbox{0}{
+  Across the 12 projects of the JARVIS benchmark,
+  \ToolTeralizer{} creates generalized tests
+  for \TzRqzeroBreadthTeralizerTotalSoundMuts{} MUTs in 9 projects,
+  whereas JARVIS reports successful generalization for
+  only \TzRqzeroBreadthJarvisTotalMuts{} MUTs
+  in \TzRqzeroBreadthPublishedProjects{} projects.
+  Among the 10 scenarios that JARVIS successfully generalizes,
+  \ToolTeralizer{} creates PBTs with higher PVC in 4,
+  lower PVC in 3, and fails to create PBTs in 3 scenarios.
+  This suggests that \ToolTeralizer{} is more broadly applicable than JARVIS
+  while neither approach has a clear input diversity advantage.
+  However, it does not provide definitive evidence
+  about the fault detection effectiveness of either approach
+  because PVC is a comparatively weak predictor for this.
+}

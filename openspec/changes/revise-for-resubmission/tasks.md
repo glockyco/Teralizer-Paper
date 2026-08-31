@@ -52,13 +52,13 @@
 
 ## 5. Port RQ0 and the JARVIS Comparison
 
-- [ ] 5.1 Port the thesis JARVIS background, twelve-project scope, published-data limits, revision reconstruction, ten-scenario protocol, and sampling configuration substantially unchanged, adapting only standalone cross-references and assembly
-- [ ] 5.2 Select the already-published RQ0 fragments used by the thesis section, create upright and readable paper-owned wrappers only for those fragments, and verify every included cell and row anchor without changing the ported narrative; if selected evidence does not fit, stop and ask the operator
-- [ ] 5.3 Port the thesis project and MUT applicability result substantially unchanged and record any provenance discrepancy as a deferred candidate
-- [ ] 5.4 Port the thesis higher, lower, and missing PVC outcomes substantially unchanged and record any category or scenario discrepancy as a deferred candidate
-- [ ] 5.5 Port the thesis PVC-budget and mutation-detection interpretation substantially unchanged and record any proposed clarification as a deferred candidate
-- [ ] 5.6 Port the thesis JARVIS validity and comparison limits substantially unchanged and record any proposed strengthening or qualification as a deferred candidate
-- [ ] 5.7 Compare the complete RQ0 section with the thesis source, run the recorded manuscript checks, inspect all RQ0 tables, and commit the faithful RQ0 package atomically
+- [x] 5.1 Port the thesis JARVIS background, twelve-project scope, published-data limits, revision reconstruction, ten-scenario protocol, and sampling configuration substantially unchanged, adapting only standalone cross-references and assembly
+- [x] 5.2 Select the already-published RQ0 fragments used by the thesis section, create upright and readable paper-owned wrappers only for those fragments, and verify every included cell and row anchor without changing the ported narrative; if selected evidence does not fit, stop and ask the operator
+- [x] 5.3 Port the thesis project and MUT applicability result substantially unchanged and record any provenance discrepancy as a deferred candidate
+- [x] 5.4 Port the thesis higher, lower, and missing PVC outcomes substantially unchanged and record any category or scenario discrepancy as a deferred candidate
+- [x] 5.5 Port the thesis PVC-budget and mutation-detection interpretation substantially unchanged and record any proposed clarification as a deferred candidate
+- [x] 5.6 Port the thesis JARVIS validity and comparison limits substantially unchanged and record any proposed strengthening or qualification as a deferred candidate
+- [x] 5.7 Compare the complete RQ0 section with the thesis source, run the recorded manuscript checks, inspect all RQ0 tables, and commit the faithful RQ0 package atomically
 
 ## 6. Port RQ6 with RepoReapers Version 7
 

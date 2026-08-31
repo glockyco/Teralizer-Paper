@@ -36,9 +36,10 @@ The \VariantBaseline{} and \VariantNaive{} variants serve as comparison points:
 \VariantBaseline{} tests only the original inputs to measure framework overhead,
 and \VariantNaive{} adds unconstrained random input generation
 to isolate the benefit of testing additional inputs.
-The remainder of this subsection describes the main transformation process,
-explains the differences between the three variants,
-and provides further details on the constraint encoding strategy used by \VariantImproved{}.
+Section~\ref{sec:transformation-pipeline} describes the main transformation process,
+Section~\ref{sec:three-variant-design} explains the differences between the three variants,
+and Section~\ref{sec:constraint-encoding} provides further details
+on the constraint encoding strategy used by \VariantImproved{}.
 
 \subsubsection{Transformation Process}
 \label{sec:transformation-pipeline}
