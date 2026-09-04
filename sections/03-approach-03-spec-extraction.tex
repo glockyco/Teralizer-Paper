@@ -86,7 +86,7 @@ symbolic.collect_constraints=true
 
 listener=teralizer.jpf.TestGeneralizationListener
 
-teralizer.max_execution_time=60.0
+teralizer.max_execution_time=10.0
 teralizer.max_path_condition_size=100000
 search.depth_limit=100
 ...
@@ -146,7 +146,7 @@ The primary causes of such exclusions are \ToolSPF{} errors,
 NullPointerExceptions for certain edge cases
 in our current implementation of \ToolTeralizer{},
 and exceeded resource limits.
-By default, \ToolTeralizer{} uses a 60 second timeout per MUT,
+By default, \ToolTeralizer{} uses a 10 second timeout per MUT,
 a 100,000-character limit per path condition,
 and a function call depth limit of 100 (Listing~\ref{lst:jpf-config}).
 We empirically determined these settings to provide

@@ -94,3 +94,25 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - Publication verification reran `../test-generalization/scripts/publish-analysis.sh` with this repository as `PAPER_OUT`. All 78 declared CSV, LaTeX, macro, and figure destinations were republished, and the worktree retained no generated-artifact changes, confirming byte-equivalent registered outputs.
 - The complete 57-page manuscript was inspected after the framing changes. Every included table is upright and readable; no clipping, missing asset, incorrect float orientation, or factual caption conflict was found. The paper-owned listings, captions, labels, variant macros, and RQ0--RQ6 identifiers remain consistent with the manuscript assembly.
 - Verification: `latexmk -pdf -interaction=nonstopmode -file-line-error main.tex` succeeds; `chktex` reports only the manuscript's recorded pre-existing warnings, including ORCID dashes, labels, and code-like text in accessibility descriptions.
+
+## First-pass freeze
+
+- Commit `9bef962` freezes the complete faithful backport. Every manifest row now records a final manuscript or artifact location, and the deferred register contains all four departures identified by the source, implementation, evidence, and rendered-manuscript audits.
+- DC-004 is already operator-approved and applied. DC-001 through DC-003 remain undecided; no manuscript change may apply them until the operator records an explicit decision.
+
+## Deferred-candidate verification (2026-09-04)
+
+- Each open candidate was checked against the implementation, git history, and the stored `project.configuration` of every run database (`postgres_dev`, `postgres_jarvis_census`, `postgres_jarvis_scoreboard`, `postgres_reporeapers_rq6_v7`).
+- DC-001: the controlled-study reduction uses `ORIGINAL` as its baseline; a direct query reproduces the published `tab-tests-per-project` "Added" values. The manuscript rule already matches the implementation. Recommendation: reject.
+- DC-002: all reported controlled, census, and v7 runs recorded a 10-second JPF budget; the scoreboard run recorded 30 seconds. The manuscript says 60 seconds in Section 3 and 10 seconds "in every processing run" in Section 4. Recommendation: approve with the corrected values.
+- DC-003: unambiguous listing defect. Recommendation: approve.
+- DC-005 (new): `\TzRealworldGeneralizationsFinalUsable` (1,435) counts generalized tests whose Stage-5 PIT run completed, not tests retained by the reduction criterion. The criterion retains 19 tests in 13 projects. The manuscript presents 1,435 as the reduced-suite content in five locations. Recommendation: approve; requires a registered analysis metric before any manuscript edit.
+- No manuscript file changed during this verification.
+
+## Post-port improvement review (2026-09-04)
+
+- Operator decisions: DC-001 rejected; DC-002 approved in simplified form (10 s in Section 3 prose and listing only); DC-003 approved; DC-005 approved as wording only.
+- The scoreboard run's 30 s JPF budget never bound: all 18 `EXECUTE_JPF` tasks succeeded, maximum runtime 0.46 s. Section 4 was left unchanged.
+- Applied to the paper: `sections/03-approach-03-spec-extraction.tex`, `sections/03-approach-04-generalization.tex`, `sections/04-evaluation-09-rq6.tex`, `sections/05-discussion.tex`, `sections/01-introduction.tex`, `sections/07-conclusions.tex`, and the abstract in `main.tex`. The 1,435 / 85 applicability figures are unchanged; only the "reduction leaves" and "reduced suites contain" framing was replaced.
+- Applied the same corrections to the thesis chapter (`chapters/05-teralizer/03-approach.tex`, `04-evaluation-rq6.tex`, `05-discussion.tex`, `listings/lst-jpf-config.tex`, `listings/lst-generalized-test.tex`).
+- Verification: both documents build without unresolved references; `chktex` counts unchanged from baseline; the thesis style check reports 0 blocking; all affected pages were inspected in both rendered PDFs with no layout defects.

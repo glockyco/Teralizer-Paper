@@ -100,11 +100,11 @@
 
 ## 9. Review Deferred Substantive Improvements
 
-- [ ] 9.1 Freeze the complete first-pass manuscript, compare every ported section with its thesis source and manifest disposition, and verify the deferred-candidate register contains every proposed nonessential substantive departure
-- [ ] 9.2 Present every deferred candidate to the operator with its thesis source, exact proposed change, material benefit, and evidence, record an explicit approve or reject decision, and block manuscript changes while any candidate remains undecided
-- [ ] 9.3 Apply only approved candidates, preserve thesis content for every rejected candidate, and keep each applied change traceable to its recorded decision
-- [ ] 9.4 Recheck all applied candidates against affected sections, evidence, and implementation sources and verify no unapproved stylistic, terminological, formal, or scientific rewrite entered the manuscript
-- [ ] 9.5 Run the recorded manuscript checks, inspect every page affected by approved candidates, and commit the post-port improvement review separately from the faithful backport commits
+- [x] 9.1 Freeze the complete first-pass manuscript, compare every ported section with its thesis source and manifest disposition, and verify the deferred-candidate register contains every proposed nonessential substantive departure
+- [x] 9.2 Present every deferred candidate to the operator with its thesis source, exact proposed change, material benefit, and evidence, record an explicit approve or reject decision, and block manuscript changes while any candidate remains undecided
+- [x] 9.3 Apply only approved candidates, preserve thesis content for every rejected candidate, and keep each applied change traceable to its recorded decision
+- [x] 9.4 Recheck all applied candidates against affected sections, evidence, and implementation sources and verify no unapproved stylistic, terminological, formal, or scientific rewrite entered the manuscript
+- [x] 9.5 Run the recorded manuscript checks, inspect every page affected by approved candidates, and commit the post-port improvement review separately from the faithful backport commits
 
 ## 10. Prepare the TOSEM Submission Correspondence
 
