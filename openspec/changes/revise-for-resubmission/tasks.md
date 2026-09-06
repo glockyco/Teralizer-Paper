@@ -108,18 +108,18 @@
 
 ## 10. Prepare the TOSEM Submission Correspondence
 
-- [ ] 10.1 Draft a concise new-submission cover letter that identifies TOSEM-2025-1249 as the rejected predecessor, summarizes the substantive revision, and does not imply an invited or requested revision
-- [ ] 10.2 Draft the prior-review-response overview around the concepts and algorithm, complete JARVIS benchmark, version 7 RepoReapers evaluation, and claim clarifications and verify each headline maps to manuscript locations
-- [ ] 10.3 Answer the mutation-selection concern with the stage boundary, reduction invariant, retained-suite benefit, generalization cost, mutation-proxy limitation, and any existing pre/post evidence and verify the response does not concede generation overfitting
-- [ ] 10.4 Answer the applicability concerns with both the JARVIS and RepoReapers results and verify all denominators and comparison limits are explicit
-- [ ] 10.5 Answer the exactness and intended-behavior concerns with the developer-anchored, implementation-derived account and verify the response matches paper terminology
-- [ ] 10.6 Answer type, purity, project, and framework scope concerns and verify the response distinguishes approach limits from prototype and evaluation outcomes
-- [ ] 10.7 Answer the LLM request with the expanded comparison and future direction and verify no unimplemented integration is promised
-- [ ] 10.8 Answer the length request by identifying removed redundancy and retained distinct RQs and verify the tone remains factual and respectful
-- [ ] 10.9 Mark independent real-bug or held-out-mutant validation as not added, explain the rationale and remaining construct limit, and verify the prior-review response does not imply such evidence exists
-- [ ] 10.10 Complete the reviewer matrix with final page, section, figure, table, and listing references and verify every concern has one disposition
-- [ ] 10.11 Build or render the cover letter through its declared workflow, inspect it, and commit it as a verified correspondence unit
-- [ ] 10.12 Build or render the prior-review response through its declared workflow, inspect it, and commit it as a separate verified correspondence unit
+- [x] 10.1 Draft a concise new-submission cover letter that identifies TOSEM-2025-1249 as the rejected predecessor, summarizes the substantive revision, and does not imply an invited or requested revision
+- [x] 10.2 Draft the prior-review-response overview around the concepts and algorithm, complete JARVIS benchmark, version 7 RepoReapers evaluation, and claim clarifications and verify each headline maps to manuscript locations
+- [x] 10.3 Answer the mutation-selection concern with the stage boundary, reduction invariant, retained-suite benefit, generalization cost, mutation-proxy limitation, and any existing pre/post evidence and verify the response does not concede generation overfitting
+- [x] 10.4 Answer the applicability concerns with both the JARVIS and RepoReapers results and verify all denominators and comparison limits are explicit
+- [x] 10.5 Answer the exactness and intended-behavior concerns with the developer-anchored, implementation-derived account and verify the response matches paper terminology
+- [x] 10.6 Answer type, purity, project, and framework scope concerns and verify the response distinguishes approach limits from prototype and evaluation outcomes
+- [x] 10.7 Answer the LLM request with the expanded comparison and future direction and verify no unimplemented integration is promised
+- [x] 10.8 Answer the length request by identifying removed redundancy and retained distinct RQs and verify the tone remains factual and respectful
+- [x] 10.9 Mark independent real-bug or held-out-mutant validation as not added, explain the rationale and remaining construct limit, and verify the prior-review response does not imply such evidence exists
+- [x] 10.10 Complete the reviewer matrix with final page, section, figure, table, and listing references and verify every concern has one disposition
+- [x] 10.11 Build or render the cover letter through its declared workflow, inspect it, and commit it as a verified correspondence unit
+- [x] 10.12 Build or render the prior-review response through its declared workflow, inspect it, and commit it as a separate verified correspondence unit
 
 ## 11. Perform Submission Verification
 

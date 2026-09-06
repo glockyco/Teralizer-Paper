@@ -1,0 +1,3 @@
+[submodule "correspondence"]
+	path = correspondence
+	url = git@github.com:glockyco/Teralizer-Paper-Correspondence.git

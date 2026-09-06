@@ -122,3 +122,10 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - Operator-directed framing pass. Seven drafts were reviewed read-only by four persona subagents with unbiased briefs. All four independently flagged the same defects, and the drafts were corrected before application. Edit 6 (related work) was withdrawn because the existing sentence was already correct.
 - Applied to the paper: background two-decision paragraph, 3.1 selection sentence, introduction complementarity, 5.1 bound by construction, 5.3 third deployment strategy, 5.4 oracle account linked to the regression purpose, conclusion, and four consistency fixes. Abstract unchanged except "path-specific" to "path-exact".
 - Verification: complete build with no unresolved references, `chktex` counts identical to baseline for every touched section, all eight affected pages inspected in the rendered PDF with no layout defect.
+
+## Submission correspondence
+
+- Submission letters must not enter the public paper repository. Created the private repository `glockyco/Teralizer-Paper-Correspondence` and mounted it as the submodule `correspondence/`.
+- `cover-letter.tex` identifies TOSEM-2025-1249 as the rejected predecessor and summarizes six substantive changes without implying an invited revision.
+- `prior-review-response.tex` answers every row of the reviewer matrix with one of five response types and cites final section and page numbers. Every manuscript claim cited in the response was verified against the section source before the letters were built.
+- Verification: both letters build with `latexmk`, contain no semicolons, and were inspected page by page. One orphaned heading was fixed with `needspace`.
