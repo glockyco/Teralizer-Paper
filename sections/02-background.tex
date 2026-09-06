@@ -39,11 +39,25 @@ into a corresponding property-based test (Figure~\ref{fig:generalization}).
 %
 A central challenge in test amplification approaches is the oracle problem:
 determining expected outputs for new test inputs~\cite{barr_2015_oracle}.
-Existing tests provide validated oracles for their specific execution paths,
+Existing tests provide validated oracles for their specific inputs and exercise specific execution paths,
 encoding developer knowledge about expected behavior.
 Other execution paths lack equally trustworthy oracles,
 making it difficult to distinguish intentional behavior
 from incidental state changes or outputs.
+
+An existing test therefore determines two things:
+which method call and assertion to check,
+and which expected value that assertion accepts for the original inputs.
+Test generalization keeps the choice of what to check
+and extends the check to the input partition of the original execution path.
+For inputs other than the original ones,
+the expected values come from the implementation (Section~\ref{sec:symbolic-analysis}).
+Generalization does not check any method call or assertion
+that the existing tests do not already check.
+When the existing test is developer-written,
+both the choice of what to check and the expected value at the original inputs carry developer intent.
+Test generation tools such as \ToolEvoSuite{}~\cite{fraser_2011_evosuite}
+instead infer assertions and their expected values from the observed behavior of the implementation.
 
 \subsection{Property-Based Testing as Target Representation}
 \label{sec:property-based-testing}

@@ -64,6 +64,13 @@ percentage points in \DatasetsEqBenchEs{}
 and by \TzEffectivenessCommonsEvosuiteMutationImprovementMinPp{}--\TzEffectivenessCommonsEvosuiteMutationImprovementMaxPp{}
 percentage points in \DatasetsCommonsEs{}
 compared to \ToolEvoSuite{}-generated baselines (Figure~\ref{fig:mutation-detection-results}).
+These gains are bounded by construction.
+A generalized test executes the MUT call of its assertion
+with inputs from the input partition of the original execution path.
+It can therefore detect only mutants that these inputs execute,
+and it raises the mutation score only for mutants
+that the \VariantInitial{} test suite does not already detect.
+Mutants of methods or paths that no generalizable assertion covers are out of reach.
 Beyond effectiveness, generalization offers competitive efficiency when combined with test generation.
 % where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
 % and \ToolTeralizer{} achieves depth through partition-based input generation within already-covered test execution paths.
@@ -373,6 +380,16 @@ pure numeric functions with relatively simple constraints,
 particularly when original test suites have low-to-moderate mutation scores.
 In practice, this suggests deployment as part of continuous integration for suitable modules,
 or as a post-processing step for generated tests in numeric-heavy domains.
+A third deployment strategy would apply generalization to tests
+that developers write with generalization in mind.
+A developer writes one test per execution path with a typical input,
+and generalization extends it to the boundaries of that path's input partition,
+which \VariantImproved{} targets explicitly (Section~\ref{sec:constraint-encoding}).
+Boundary mutations are where generalization adds the most detection in RQ1
+(\texttt{ConditionalsBoundary} in Table~\ref{tab:detections-per-mutator}),
+so this strategy directs generalization at the inputs a typical-case test is most likely to miss.
+Other input selection strategies within a partition remain future work,
+and our evaluation does not cover test suites written for this purpose.
 Because generalization success depends not only on domain characteristics
 but also on program and test architecture,
 developers who are interested in adopting automated test generalization tools
@@ -442,8 +459,27 @@ and we retain subsumed mutants whose detection adds no independent information.
 Prior work showed that up to 10\% of mutants can be equivalent
 and that mutant selection strategies based on subsumption
 can reduce the required mutant set~\cite{jia_2011_analysis}.
+Mutation testing does not influence how generalized tests are created (Stages 1--4).
+Stage~5 runs it once on the complete suite of original and generalized tests,
+and the mutation scores reported for RQ1 and RQ2 are measured in that run,
+before any test is removed.
 Finally, mutation detection measures whether generalized tests expose behavioral differences,
 but not whether developers consider the resulting properties meaningful or maintainable.
+The generalized oracle records the behavior of the analyzed implementation,
+as do the assertions that \ToolEvoSuite{} infers.
+For a developer-written original test,
+the generalized test agrees with the developer's expected value at the original inputs.
+For the remaining inputs of the partition,
+the expected values come from the symbolic output expression.
+The generalized test therefore cannot detect a fault
+that was present when the specification was extracted
+and that the original assertion did not expose.
+This follows from the purpose of generalization:
+the oracle characterizes the analyzed version,
+and the generalized test detects later deviations from it (Section~\ref{sec:approach-concepts}).
+Beyond the original inputs,
+neither a generalized test nor an inferred assertion
+states expected behavior independently of the implementation.
 
 \textit{Internal Validity.}
 Our implementation and evaluation

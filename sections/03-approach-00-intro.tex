@@ -44,8 +44,8 @@ Despite the change, the test still passes,
 but boundary cases where \texttt{sales = 2 * target} now
 return the good performance bonus instead of the exceptional performance bonus.
 To detect such subtle regressions, \ToolTeralizer{}'s generalized property-based tests
-encode the intended behavior for all inputs that follow the covered execution paths
-instead of individual input/output examples.
+encode the property implicit in the original assertion for all inputs that follow the covered execution paths
+instead of for a single input/output example.
 
 {
 \begin{genericfloat}[b]
@@ -186,6 +186,8 @@ alters the output only at the boundary of the \textit{exceptional performance} p
 This boundary lies outside the original test's single input $(2500, 1000)$
 but inside the input partition that the generalized test samples,
 so only the generalized test can detect the mutation.
+Generalization thus never checks a MUT call or assertion that the original test does not check,
+and it widens only the inputs of each check.
 
 \input{listings/alg-test-generalization}
 

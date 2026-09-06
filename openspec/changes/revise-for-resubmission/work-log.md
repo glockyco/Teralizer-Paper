@@ -116,3 +116,9 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - Applied to the paper: `sections/03-approach-03-spec-extraction.tex`, `sections/03-approach-04-generalization.tex`, `sections/04-evaluation-09-rq6.tex`, `sections/05-discussion.tex`, `sections/01-introduction.tex`, `sections/07-conclusions.tex`, and the abstract in `main.tex`. The 1,435 / 85 applicability figures are unchanged; only the "reduction leaves" and "reduced suites contain" framing was replaced.
 - Applied the same corrections to the thesis chapter (`chapters/05-teralizer/03-approach.tex`, `04-evaluation-rq6.tex`, `05-discussion.tex`, `listings/lst-jpf-config.tex`, `listings/lst-generalized-test.tex`).
 - Verification: both documents build without unresolved references; `chktex` counts unchanged from baseline; the thesis style check reports 0 blocking; all affected pages were inspected in both rendered PDFs with no layout defects.
+
+## Framing revision (DC-006, 2026-09-06)
+
+- Operator-directed framing pass. Seven drafts were reviewed read-only by four persona subagents with unbiased briefs. All four independently flagged the same defects, and the drafts were corrected before application. Edit 6 (related work) was withdrawn because the existing sentence was already correct.
+- Applied to the paper: background two-decision paragraph, 3.1 selection sentence, introduction complementarity, 5.1 bound by construction, 5.3 third deployment strategy, 5.4 oracle account linked to the regression purpose, conclusion, and four consistency fixes. Abstract unchanged except "path-specific" to "path-exact".
+- Verification: complete build with no unresolved references, `chktex` counts identical to baseline for every touched section, all eight affected pages inspected in the rendered PDF with no layout defect.

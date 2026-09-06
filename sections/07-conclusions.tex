@@ -3,11 +3,12 @@
 
 This paper introduced \ToolTeralizer{}, a semantics-based approach that transforms
 conventional unit tests into property-based tests.
-The approach extracts path-specific input-output specifications through single-path symbolic analysis,
+The approach extracts path-exact input/output specifications through single-path symbolic analysis,
 generates inputs that satisfy the extracted constraints,
-and preserves developer-written assertions as test oracles.
-This makes test generalization complementary to test generation:
-it extends the input space of existing tests while retaining their structure and intent.
+and retains the original assertions with expected values replaced by symbolic output expressions.
+This makes test generalization complementary to test generation.
+It retains the assertions of existing tests
+and extends each check to the input partition of its execution path.
 
 The evaluation shows both the reach and the limits of this approach.
 On the 12 projects from JARVIS's original evaluation,

@@ -56,10 +56,16 @@ to derive path-exact specifications through single-path symbolic analysis~\cite{
 Our method determines which inputs follow the same execution path as existing tests
 and transforms unit tests into property-based tests
 that validate the same assertions across entire input partitions.
-Because specifications are extracted directly from program semantics,
-the resulting properties are exact for each execution path
-and preserve the developer-provided oracles encoded in assertions.
-%This enables thorough testing within those validated behaviors.
+Because specifications are extracted from program semantics,
+the resulting properties are exact for the analyzed implementation along each execution path.
+The generalized test retains the original assertion,
+agrees with its expected value at the original inputs,
+and checks the assertion for all inputs of the same execution path.
+Test generation tools such as \ToolEvoSuite{}~\cite{fraser_2011_evosuite}
+instead infer assertions from the observed behavior of the implementation.
+Generalization requires existing tests, whereas generation creates them,
+so the two techniques are complementary:
+generalization can follow generation when developer-written tests are absent.
 To our knowledge, JARVIS~\cite{peleg_2018_jarvis} is the only prior work
 that automatically generalizes unit tests into property-based tests.
 However, JARVIS infers properties from input-output examples based solely on test code,
