@@ -137,3 +137,8 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - `revise-for-resubmission` is shared between the macbook-pro and korolev clones over SSH and has not been pushed to GitHub, which holds only `main`.
 - On korolev, the decision letter cited by the reviewer matrix is at `/home/user/src/github.com/glockyco/phd-thesis/projects/teralizer-paper/tosem-decision.txt`.
 - `AGENTS.md` and `.omp/rules/bib.md` now cite the installed `research-evidence` and `commit-policy` skills instead of the retired literature, PDF, BibTeX, and commit skills.
+
+## Thesis RQ6 follow-up (2026-10-05)
+
+- Ported thesis commit `a2700ca` (`revise(ch5): refine RQ6 exclusion wording`, 2026-09-15), which postdates the backport audit. The Stage 3 and Stage 4 project counts now refer to remaining projects, and the widening-refusal sentence is split in two. The paper keeps its own `Section~\ref{sec:generalized-test-creation}` reference.
+- Verification: the complete build has no unresolved references and stays at 59 pages, the `chktex` count for `sections/04-evaluation-09-rq6.tex` is unchanged, and the affected page 43 was inspected in the rendered PDF.

@@ -64,7 +64,7 @@ For 1 project, the collector finds no JUnit report directory at the expected loc
 \paragraph{Stage 3 Exclusions:}
 
 Stage~3 excludes \TzRealworldStageThreeExcluded{} of
-\TzRealworldStageThreeEntering{} projects.
+\TzRealworldStageThreeEntering{} remaining projects.
 Processing failures prevent 112 projects from advancing through specification extraction.
 In 106 projects, no assertion that remains after filtering produces an input/output specification.
 The most frequent recorded failures are missing \ToolJPF{} native peers in 41 projects,
@@ -77,10 +77,10 @@ The remaining 2 projects retain assertions but show no recorded generalization a
 \paragraph{Stage 4 Exclusions:}
 
 Stage~4 excludes \TzRealworldStageFourExcluded{} of
-\TzRealworldStageFourEntering{} projects.
-Widening refusals are the most prominent exclusion cause throughout this stage
-(Section~\ref{sec:generalized-test-creation}),
-which contribute to the exclusion of generalization attempts in 74 projects.
+\TzRealworldStageFourEntering{} remaining projects.
+Widening refusals are the most prominent exclusion cause in this stage
+(Section~\ref{sec:generalized-test-creation}).
+They contribute to the exclusion of generalization attempts in 74 projects.
 The later generalization-level results provide a more detailed
 analysis of the different root causes that trigger such exclusions.
 In the remaining 7 projects, filter rejections exclude 4,
