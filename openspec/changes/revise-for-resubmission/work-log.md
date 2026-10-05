@@ -129,3 +129,11 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - `cover-letter.tex` identifies TOSEM-2025-1249 as the rejected predecessor and summarizes six substantive changes without implying an invited revision.
 - `prior-review-response.tex` answers every row of the reviewer matrix with one of five response types and cites final section and page numbers. Every manuscript claim cited in the response was verified against the section source before the letters were built.
 - Verification: both letters build with `latexmk`, contain no semicolons, and were inspected page by page. One orphaned heading was fixed with `needspace`.
+
+## GitLab retirement (2026-10-05)
+
+- Access to the AAU GitLab instance `git-isys.aau.at` has ended. The `gitlab` remote was removed from the macbook-pro and korolev clones, and `.gitlab-ci.yml` was deleted. GitHub Actions is the only CI.
+- The proposal, design, setup and remote-readiness scenarios, and open tasks 11.2, 11.9, and 11.10 now name only the GitHub remote. Earlier entries that mention GitLab describe the state at that time.
+- `revise-for-resubmission` is shared between the macbook-pro and korolev clones over SSH and has not been pushed to GitHub, which holds only `main`.
+- On korolev, the decision letter cited by the reviewer matrix is at `/home/user/src/github.com/glockyco/phd-thesis/projects/teralizer-paper/tosem-decision.txt`.
+- `AGENTS.md` and `.omp/rules/bib.md` now cite the installed `research-evidence` and `commit-policy` skills instead of the retired literature, PDF, BibTeX, and commit skills.

@@ -19,8 +19,8 @@ Property-Based Tests" (ACM `acmart`, TOSEM, options `[manuscript,screen,review]`
 | Word count | `texcount -1 main.tex` |
 | Clean aux | `latexmk -c` (`-C` also removes the PDF) |
 
-CI runs `latexmk` on **both** remotes — GitLab (`.gitlab-ci.yml`, internal AAU) and GitHub Actions
-(`.github/workflows`, public). They must hold the same state; both must be green.
+CI: GitHub Actions (`.github/workflows/latex-compile.yml`) runs the same `latexmk` build on every
+push and pull request; it must stay green.
 
 ## Writing rules (paper-specific)
 - **Every number is reproducibly sourced.** Prefer a committed `data/*.csv` export with a
@@ -33,9 +33,8 @@ CI runs `latexmk` on **both** remotes — GitLab (`.gitlab-ci.yml`, internal AAU
 - Run `chktex` after editing a `.tex` file; confirm cross-references resolve (build twice if refs changed).
 - Abstract: 200–250 words.
 - Don't open a sentence/paragraph with a bare `Table X`/`Figure Y`; integrate the reference.
-- Bibliography: use `skill://searching-literature`, `skill://retrieving-paper-pdfs`, and
-  `skill://formatting-bibtex-entries` for finding, acquiring, and formatting `main.bib`
-  entries.
+- Bibliography: use `skill://research-evidence` for finding papers, retrieving full texts, and
+  verifying DOI/BibTeX metadata for `main.bib` entries.
 
 ## Quality bars (self-check before yielding written prose)
 - Every contribution claimed in the introduction maps to a results/evaluation subsection.
@@ -48,4 +47,5 @@ CI runs `latexmk` on **both** remotes — GitLab (`.gitlab-ci.yml`, internal AAU
 - Use repo-relative paths under `figures/`/`tables/`; no absolute paths.
 
 ## Commits
-Follow `skill://commit`. Short, imperative subject (e.g. "Rewrite sec:test-suite-reduction").
+Follow `skill://commit-policy`; `commitlint.config.js` defines the permitted types (e.g.
+`revise(rq6): tighten exclusion wording`).

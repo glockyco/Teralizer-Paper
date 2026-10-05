@@ -10,7 +10,7 @@ The manuscript revision MUST occur in an editable standalone clone of `glockyco/
 #### Scenario: Revision workspace is prepared
 - **WHEN** manuscript revision starts
 - **THEN** the editable files exist in a standalone `Teralizer-Paper` clone outside `projects/`
-- **THEN** its GitHub and GitLab remotes resolve to the canonical paper repositories
+- **THEN** its GitHub remote resolves to the canonical paper repository
 - **THEN** a paper-local OpenSpec change owns task progress and manuscript execution
 - **THEN** traceability controls remain under that change workspace and outside the submission bundle
 - **THEN** `glockyco/Teralizer`, the thesis repository, and the thesis paper submodule remain unchanged
@@ -18,7 +18,7 @@ The manuscript revision MUST occur in an editable standalone clone of `glockyco/
 #### Scenario: Remote readiness is reported
 - **WHEN** the revision reports repository or CI status
 - **THEN** it distinguishes local verification from remote synchronization and remote CI results
-- **THEN** it does not push either remote without explicit operator authorization
+- **THEN** it does not push the GitHub remote without explicit operator authorization
 - **THEN** it claims equivalent remote states or green remote builds only after observing them
 
 ### Requirement: Thesis-first scientific backport

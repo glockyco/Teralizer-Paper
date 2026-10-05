@@ -37,7 +37,7 @@ Store the work log, backport manifest, reviewer matrix, evidence map, section co
 
 This preserves the thesis submodule and gives the paper an independent, reviewable history. Editing the submodule was rejected because repository rules make `projects/` read-only. This repository boundary is an editing safeguard, not manuscript framing. The paper identifies the public replication package through its Zenodo record.
 
-The paper repository guidance requires equivalent GitHub and GitLab states and green CI on both remotes. Record both canonical remote URLs and inspect both build workflows before editing. Verify each revision locally against their effective commands. Pushing and remote CI execution require explicit operator authorization. Until that authorization is given, describe the branch as locally verified and push-ready, not remotely synchronized or green.
+The paper repository guidance requires green CI on the canonical GitHub remote. The AAU GitLab remote was retired on 2026-10-05 after access to it ended; earlier records of it describe the state at that time. Verify each revision locally against the GitHub workflow's effective command. Pushing and remote CI execution require explicit operator authorization. Until that authorization is given, describe the branch as locally verified and push-ready, not remotely synchronized or green.
 
 ### 2. Use the thesis as the textual authority for scientific content
 
@@ -363,7 +363,7 @@ Use this response in the final prior-review response. Do not describe preserved 
 ## Risks / Trade-offs
 
 - **[Risk] Implementation is tracked from an OpenSpec change that does not authorize the paper clone.** → Scaffold the executable change in `Teralizer-Paper` before manuscript edits.
-- **[Risk] Local success is reported as dual-remote success.** → Require explicit push authorization and observed CI results before claiming synchronization or green remote builds.
+- **[Risk] Local success is reported as remote success.** → Require explicit push authorization and observed CI results before claiming synchronization or green remote builds.
 - **[Risk] Traceability controls leak into the submission bundle.** → Keep them under the paper-local OpenSpec change workspace.
 - **[Risk] Thesis wording omits context required by a standalone paper.** → Keep the paper passage and adapt only the minimum surrounding text needed for an independently understandable account.
 - **[Risk] Implementation or evidence review silently rewrites thesis content during the backport.** → Record the proposed change and defer it until the complete first-pass manuscript is ready for operator review.
@@ -394,6 +394,6 @@ Use this response in the final prior-review response. Do not describe preserved 
 10. Complete the standalone framing adaptations, run the full manuscript build, and inspect the rendered first-pass PDF.
 11. Present every deferred substantive candidate for an explicit operator decision and apply only approved changes.
 12. Finalize and inspect the cover letter and prior-review response against the completed manuscript.
-13. With explicit operator authorization, synchronize both remotes and verify both CI workflows.
+13. With explicit operator authorization, push the GitHub remote and verify its CI workflow.
 
 Rollback uses the atomic commit history. Revert the smallest revision unit whose evidence or rendering is invalid. Do not reset unrelated manuscript work.

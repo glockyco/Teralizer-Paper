@@ -5,7 +5,7 @@ The rejected Teralizer paper no longer describes the implementation or the avail
 ## What Changes
 
 - Clone `glockyco/Teralizer-Paper` outside `projects/` before execution. Scaffold a paper-local OpenSpec change with this approved plan before the first manuscript edit. Use that paper-local change to track implementation. Retain this Teralizer change as the planning and evidence record. Do not edit `glockyco/Teralizer`, the thesis repository, or the read-only thesis paper submodule.
-- Verify the paper repository's canonical GitHub and GitLab remotes and their build workflows. Keep each local revision ready for both remotes. Do not push or claim remote CI success without explicit operator authorization.
+- Verify the paper repository's canonical GitHub remote and its build workflow. Keep each local revision ready for that remote. Do not push or claim remote CI success without explicit operator authorization.
 - Store the work log, backport manifest, reviewer matrix, evidence map, section correspondence, and formulation register in the paper-local OpenSpec change workspace. Keep them separate from the submission files.
 - Port the thesis chapter's scientific content substantially unchanged. Adapt it only where the standalone ACM paper requires different framing, retained background, cross-references, macros, assembly, or presentation. Do not revise thesis content during the port to improve style, terminology, formalization, implementation fidelity, or scientific precision. Record any candidate substantive improvement separately and decide it only after the complete thesis backport.
 - Add RQ0 with the complete twelve-project JARVIS comparison and its reconstruction limitations.
