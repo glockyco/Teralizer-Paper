@@ -135,10 +135,13 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - Access to the AAU GitLab instance `git-isys.aau.at` has ended. The `gitlab` remote was removed from the macbook-pro and korolev clones, and `.gitlab-ci.yml` was deleted. GitHub Actions is the only CI.
 - The proposal, design, setup and remote-readiness scenarios, and open tasks 11.2, 11.9, and 11.10 now name only the GitHub remote. Earlier entries that mention GitLab describe the state at that time.
 - `revise-for-resubmission` is shared between the macbook-pro and korolev clones over SSH and has not been pushed to GitHub, which holds only `main`.
-- On korolev, the decision letter cited by the reviewer matrix is at `/home/user/src/github.com/glockyco/phd-thesis/projects/teralizer-paper/tosem-decision.txt`.
 - `AGENTS.md` and `.omp/rules/bib.md` now cite the installed `research-evidence` and `commit-policy` skills instead of the retired literature, PDF, BibTeX, and commit skills.
 
 ## Thesis RQ6 follow-up (2026-10-05)
 
 - Ported thesis commit `a2700ca` (`revise(ch5): refine RQ6 exclusion wording`, 2026-09-15), which postdates the backport audit. The Stage 3 and Stage 4 project counts now refer to remaining projects, and the widening-refusal sentence is split in two. The paper keeps its own `Section~\ref{sec:generalized-test-creation}` reference.
 - Verification: the complete build has no unresolved references and stays at 59 pages, the `chktex` count for `sections/04-evaluation-09-rq6.tex` is unchanged, and the affected page 43 was inspected in the rendered PDF.
+
+## Decision letter (2026-10-05)
+
+- The TOSEM-2025-1249 decision letter existed only as an untracked file in the macbook-pro thesis worktree, so the reviewer matrix could cite it only by a machine-specific absolute path. It is now versioned in the private correspondence repository as `correspondence/tosem-2025-1249-decision.txt`, and the reviewer matrix cites that path. The untracked copies were removed from the macbook-pro and korolev thesis worktrees.

@@ -3,7 +3,7 @@
 ## Source and disposition contract
 
 - Decision: `TOSEM-2025-1249`, 23 June 2026
-- Source: `/Users/glockyco/src/github.com/glockyco/phd-thesis/projects/teralizer-paper/tosem-decision.txt`
+- Source: `correspondence/tosem-2025-1249-decision.txt` (private submodule `glockyco/Teralizer-Paper-Correspondence`)
 - Submission treatment: new TOSEM submission after rejection, not an invited revision
 
 Each concern has one response type: `accepted and revised`, `addressed by new evidence`, `partially addressed with a stated boundary`, `rebutted with mechanism and evidence`, or `not implemented, with rationale`. Final references are recorded in the prior-review response at `correspondence/prior-review-response.tex` (private submodule `glockyco/Teralizer-Paper-Correspondence`), which cites the manuscript section and page for every row.
