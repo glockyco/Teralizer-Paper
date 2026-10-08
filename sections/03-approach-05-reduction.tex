@@ -16,6 +16,9 @@ as the final stage of the generalization pipeline
 using mutation testing to measure each test's contribution to fault detection
 and retaining only those original and generalized tests
 that strengthen the test suite's effectiveness.
+Stage~5 is optional because Stages~1--4 create the generalized tests without mutation testing.
+Skipping it avoids the cost of mutation testing (Section~\ref{sec:runtime-eval})
+but keeps all original and generalized tests (Section~\ref{sec:ancillary-effects-eval}).
 
 \ToolTeralizer{} evaluates fault detection capability
 using the \texttt{DEFAULTS} group of mutation operators

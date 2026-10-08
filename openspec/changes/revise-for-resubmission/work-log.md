@@ -159,3 +159,9 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - Applied DC-008: the RQ2 complexity and utilization ranges and the discussion's utilization range now match the generated table. The same corrections, DC-007, and the DC-006 statement on when mutation testing runs were applied to the thesis.
 - The DC-006 statement matches the implementation: the reduction phase runs PIT on the `ORIGINAL`, `INITIAL`, and complete generalized suites, and no PIT run follows test removal (`PipelinePhase.REDUCTION`).
 - Verification: the complete build has no unresolved references and is 58 pages, `chktex` counts are unchanged, and the revised RQ2 page 29 was inspected in the rendered PDF.
+
+## Approach corrections (2026-10-05)
+
+- Applied DC-009 to the paper and the thesis: the constraint-encoding example now numbers parameters from 1, as Algorithm 2 does.
+- Applied DC-010 to the paper only: Section 3.6 states that Stage 5 is optional and what skipping it costs and saves.
+- Verification: the complete build has no unresolved references and is 58 pages, `chktex` counts are unchanged, the new paragraph ending fills 89% of the text width, and pages 16--18 were inspected in the rendered PDF. Pages after 18 are unchanged.
