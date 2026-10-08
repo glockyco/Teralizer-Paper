@@ -156,7 +156,7 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 
 ## RQ2 statistics correction (2026-10-05)
 
-- Applied DC-008: the RQ2 complexity and utilization ranges and the discussion's utilization range now match the generated table. The same corrections, DC-007, and the DC-006 statement on when mutation testing runs were applied to the thesis.
+- Applied DC-008: the RQ2 complexity and utilization ranges and the discussion's utilization range now match the generated table. DC-007 and the same corrections were applied to the thesis. The DC-006 statement on when mutation testing runs was also applied to the thesis but removed by the owner, who considers it evident to software engineering researchers.
 - The DC-006 statement matches the implementation: the reduction phase runs PIT on the `ORIGINAL`, `INITIAL`, and complete generalized suites, and no PIT run follows test removal (`PipelinePhase.REDUCTION`).
 - Verification: the complete build has no unresolved references and is 58 pages, `chktex` counts are unchanged, and the revised RQ2 page 29 was inspected in the rendered PDF.
 
