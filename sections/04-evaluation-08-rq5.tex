@@ -49,13 +49,13 @@ and the \texttt{TestType} filter~(0.8\%).
 Null pointer dereferences that occur during project analysis
 exclude 7 additional tests~(0.0\%).
 
-Of the 1,527 \texttt{NonPassingTest} rejections, 132 are tests that fail
+Of the 1,527 \texttt{NonPassingTest} rejections, 94 are tests that fail
 after disabling \ToolEvoSuite{}'s isolation and reproducibility features.
 These features had to be disabled due to incompatibilities
 which caused \ToolPit{} crashes during mutation testing.
 However, removal of these features causes \ToolEvoSuite{}-generated tests that rely on system time or specific environmental conditions to fail.
 Because \ToolPit{} only supports class-level exclusion,
-1,395 additional passing tests in the same classes are also excluded as a side effect,
+1,433 additional passing tests in the same classes are also excluded as a side effect,
 amplifying the impact of individual test failures by over 10$\times$.
 
 All 180 \texttt{TestType} rejections are caused by the presence of
