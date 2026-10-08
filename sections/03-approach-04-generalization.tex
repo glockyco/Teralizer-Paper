@@ -323,7 +323,7 @@ then processes each encodable constraint (lines 2-10) to handle circular depende
 constraints are only added to the parameter with the higher index,
 with constraint directions rewritten as needed.
 This ensures each parameter depends only on previously generated ones.
-For example, given \texttt{a >= b \&\& b >= a} with \texttt{a} at index 0 and \texttt{b} at index 1,
+For example, given \texttt{a >= b \&\& b >= a} with \texttt{a} at index 1 and \texttt{b} at index 2,
 we add \texttt{b <= a} (rewritten from \texttt{a >= b})
 and \texttt{b >= a} to parameter \texttt{b}, while \texttt{a} remains unconstrained.
 During generation (lines 11-24), the algorithm selects the strictest applicable bounds:
