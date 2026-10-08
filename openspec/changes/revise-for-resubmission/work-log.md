@@ -153,3 +153,9 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 - These passages now follow the thesis text. The remaining differences from the thesis are reference styles, the paper's "eligible" project term, and the DC-006 statement that the RQ1 and RQ2 mutation scores are measured before any test is removed.
 - Applied DC-007, which corrects two operation-count ranges in RQ2 to match the generated table.
 - Verification: the complete build has no unresolved references and is 58 pages, `chktex` reports no warnings for `sections/05-discussion.tex`, and pages 47--53 were inspected in the rendered PDF.
+
+## RQ2 statistics correction (2026-10-05)
+
+- Applied DC-008: the RQ2 complexity and utilization ranges and the discussion's utilization range now match the generated table. The same corrections, DC-007, and the DC-006 statement on when mutation testing runs were applied to the thesis.
+- The DC-006 statement matches the implementation: the reduction phase runs PIT on the `ORIGINAL`, `INITIAL`, and complete generalized suites, and no PIT run follows test removal (`PipelinePhase.REDUCTION`).
+- Verification: the complete build has no unresolved references and is 58 pages, `chktex` counts are unchanged, and the revised RQ2 page 29 was inspected in the rendered PDF.

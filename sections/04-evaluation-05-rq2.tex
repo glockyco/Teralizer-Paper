@@ -41,13 +41,13 @@ and the model contains 5 operators:
 
 Undetected mutants have more complex models than detected ones
 across all evaluated projects.
-Operation counts for undetected mutants are 1.2--3$\times$ higher:
+Operation counts for undetected mutants are 1.1--1.7$\times$ higher:
 \DatasetsEqBenchEs{} projects show mean counts of
 218--231 operations for undetected mutants
 versus 137--147 operations for detected mutants,
-while \DatasetsCommonsEs{} show even larger gaps with 389--507 versus 290--467 operations.
+while \DatasetsCommonsEs{} show higher counts but smaller relative gaps with 389--507 versus 290--467 operations.
 Constraint counts follow similar patterns,
-with undetected mutants having 1.0--2.5$\times$ more constraints.
+with undetected mutants having 1.0--1.8$\times$ as many constraints.
 Even though both \VariantNaive{} and \VariantImproved{}
 achieve better generalization outcomes for simpler constraints,
 more complex constraints have a stronger detrimental effect on \VariantNaive{},
@@ -55,8 +55,9 @@ which produces 2-2.5$\times$ as many \texttt{Too\-Many\-Filter\-Misses\-Exceptio
 as discussed in more detail in Section~\ref{sec:limitations-eval}.
 
 Constraint utilization rates show large differences across project types.
-\DatasetsEqBenchEs{} achieve 47--70\% mean constraint utilization for detected mutants,
-while \DatasetsCommonsEs{} achieve only 25--47\% mean utilization.
+\DatasetsEqBenchEs{} achieve 47--69\% mean constraint utilization for detected mutants
+and 23--67\% for undetected mutants,
+while \DatasetsCommonsEs{} achieve only 43--47\% and 10--11\%, respectively.
 The higher utilization in \DatasetsEqBenchEs{} reflects their simpler constraint structures:
 these projects primarily use basic numeric comparisons
 that match \VariantImproved{}'s encoding capabilities.
@@ -74,7 +75,8 @@ As a result, detection rates for the very common \texttt{Math} mutations decreas
 causing overall detection rates to go down despite detection rates for most other mutants increasing.
 
 \DatasetsCommonsEs{} projects present a different scenario.
-Complex constraints reduce \VariantImproved{}'s constraint utilization to 25--47\%,
+Complex constraints reduce \VariantImproved{}'s constraint utilization to 43--47\% for detected
+and 10--11\% for undetected mutants,
 causing generalized tests to generate inputs from broader ranges
 that overapproximate the true partition boundaries.
 As a result, fewer partition boundaries are accurately identified,
