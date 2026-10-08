@@ -145,3 +145,11 @@ No remote will be pushed, and no GitHub or GitLab CI result will be claimed, wit
 ## Decision letter (2026-10-05)
 
 - The TOSEM-2025-1249 decision letter existed only as an untracked file in the macbook-pro thesis worktree, so the reviewer matrix could cite it only by a machine-specific absolute path. It is now versioned in the private correspondence repository as `correspondence/tosem-2025-1249-decision.txt`, and the reviewer matrix cites that path. The untracked copies were removed from the macbook-pro and korolev thesis worktrees.
+
+## Discussion fidelity correction (2026-10-05)
+
+- A sentence-level audit compared the manuscript with every thesis chapter at five commits from 2026-08-30 to 2026-09-15 and with the rejected manuscript. Outside commit `846ab3e` (`docs(discussion): update synthesis and validity`), every number, citation key, and reworded sentence traces to a source or an approved candidate.
+- Commit `846ab3e` had rewritten parts of the discussion instead of porting them. Section 5.4 claimed code reviews, stage-wise manual inspection, and repeated experiments where the thesis states single runs per configuration. It also added a conclusion-validity paragraph with unsourced counts (10,436 original tests, 2,763 retained generalized tests) and nonexistent regression models, an equivalent-mutant exclusion step the implementation does not perform, a misquoted equivalent-mutant rate, and inaccurate EqBench and RepoReapers descriptions. Sections 5.1 and 5.3 contained an unsupported significance claim, an altered causal explanation, a mislabeled FuzzChick citation, a "substantially reduce" claim, and a continuous-integration deployment strategy.
+- These passages now follow the thesis text. The remaining differences from the thesis are reference styles, the paper's "eligible" project term, and the DC-006 statement that the RQ1 and RQ2 mutation scores are measured before any test is removed.
+- Applied DC-007, which corrects two operation-count ranges in RQ2 to match the generated table.
+- Verification: the complete build has no unresolved references and is 58 pages, `chktex` reports no warnings for `sections/05-discussion.tex`, and pages 47--53 were inspected in the rendered PDF.
