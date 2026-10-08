@@ -218,9 +218,9 @@ Based on our findings, three improvement directions emerge for semantics-based t
 and (iii)~improving efficiency in terms of generalization runtime
 as well as size and runtime of generalized test suites.
 This section discusses opportunities in each direction,
-distinguishing between engineering improvements
-achievable through additional implementation effort
-and research challenges requiring advances in underlying techniques.
+distinguishing engineering improvements
+achievable through implementation effort
+from research challenges requiring advances in underlying techniques.
 
 \subsubsection{Improving Applicability}
 
@@ -362,7 +362,7 @@ thus reducing test count instead of only compensating for added tests.
 This mirrors the idea of test suite reduction via
 parameterization~\cite{tsukamoto_2018_autoput,azamnouri_2021_compressing},
 but would use semantics-based analysis rather than syntactic clone detection
-to identify mergeable tests.
+to identify the original tests that can be merged.
 
 \subsubsection{Deployment Strategies}
 

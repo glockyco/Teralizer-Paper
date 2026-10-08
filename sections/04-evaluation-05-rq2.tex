@@ -52,7 +52,7 @@ Even though both \VariantNaive{} and \VariantImproved{}
 achieve better generalization outcomes for simpler constraints,
 more complex constraints have a stronger detrimental effect on \VariantNaive{},
 which produces 2-2.5$\times$ as many \texttt{Too\-Many\-Filter\-Misses\-Exceptions} as \VariantImproved{},
-as discussed in more detail in Section~\ref{sec:limitations-eval}.
+as discussed in Section~\ref{sec:limitations-eval}.
 
 Constraint utilization rates show large differences across project types.
 \DatasetsEqBenchEs{} achieve 47--69\% mean constraint utilization for detected mutants
@@ -63,7 +63,7 @@ these projects primarily use basic numeric comparisons
 that match \VariantImproved{}'s encoding capabilities.
 \DatasetsCommonsEs{} projects contain more compound terms
 and mathematical functions that are not modeled by \ToolTeralizer{},
-reducing the percentage of constraints that can guide input generation.
+reducing the percentage of extracted constraints that \VariantImproved{} can use to guide input generation.
 
 These utilization differences explain the contrasting detection results.
 In \DatasetsEqBenchEs{}, simple constraints enable effective boundary targeting for \VariantImproved{},
@@ -80,7 +80,7 @@ and 10--11\% for undetected mutants,
 causing generalized tests to generate inputs from broader ranges
 that overapproximate the true partition boundaries.
 As a result, fewer partition boundaries are accurately identified,
-and the number of generated inputs that need to be excluded during filtering increases.
+and more generated inputs must be excluded during filtering.
 Nevertheless, constraint utilization still reduces \texttt{Too\-Many\-Filter\-Misses\-Exception} failures
 relative to \VariantNaive{} (Section~\ref{sec:limitations-eval}), which
 enables \VariantImproved{} variants to achieve higher mutation detection rates
