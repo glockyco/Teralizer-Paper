@@ -17,17 +17,16 @@ and expected values are encoded as expressions that hold for all inputs from the
 This retains the original assertions
 while generalizing from concrete values to symbolic specifications.
 
-Satisfying the path condition ensures that generated inputs follow the observed execution path,
-but does not by itself establish that the extracted oracle remains valid for those inputs.
-Before creating a property that exercises inputs beyond the original test values,
-\ToolTeralizer{} therefore checks whether the extracted path condition and output
-provide sufficient evidence to apply the oracle to those inputs.
-Such evidence may be insufficient, for example,
-when the output is accumulated across an input-dependent loop
-that the single-path analysis executes but does not summarize symbolically,
-or when a symbolic argument enters a native operation that \ToolSPF{} executes concretely.
-In these cases, \ToolTeralizer{} creates no generalized test for that attempt.
-We call this outcome a \emph{widening refusal}.
+Filtering generated inputs by the path condition ensures that they follow the observed execution path,
+but the extracted output expression is not always a valid oracle for those inputs.
+Before creating a generalized test, \ToolTeralizer{} therefore checks whether the extracted specification establishes how the output depends on the varied inputs.
+This is not the case, for example, when an input-dependent loop accumulates the output across a fixed number of iterations without a symbolic summary (e.g., \texttt{for (int i = 0; i < n; i++) sum += i}, which leaves \texttt{sum} concrete rather than a symbolic formula over \texttt{n}).
+It also fails when a symbolic argument enters a native operation that \ToolSPF{} executes concretely.
+In these cases, \ToolTeralizer{} creates no generalized test for that attempt, which we call a \emph{widening refusal}.
+
+For each created generalized test, \ToolTeralizer{} compiles and executes it against the original program and applies the generalization-level \texttt{NonPassingTest} filter.
+This filter excludes any generalized test that fails on the original program.
+Such failures occur when input generation repeatedly misses the path condition filter (\texttt{Too\-Many\-Filter\-Misses\-Exception}) or when a generated input triggers an assertion or runtime failure (e.g., due to loops in the test method or arithmetic overflows not modeled by \ToolSPF{}; Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended}).
 
 \ToolTeralizer{} creates three variants of each property-based test for evaluation purposes.
 The \VariantImproved{} variant implements the approach's constraint-aware input generation strategy,
@@ -350,8 +349,10 @@ boundary values such as 0, 1, 999, and 1000 is then left up to chance.
 In contrast, both boundaries of this example are exactly encoded
 in \texttt{Arbitraries} calls of the \VariantImproved{} variant,
 enabling them to reliably produce the true boundary values.
+Because the original test execution already witnesses that the path condition is satisfiable, Algorithm~\ref{alg:constraint-encoding} requires no constraint solver or uniform SMT sampler at test runtime.
+Instead, it narrows the generator intervals using direct variable and constant equalities and inequalities (e.g., \texttt{x == y} or \texttt{y >= x}) and enforces compound arithmetic constraints (e.g., \texttt{sales / 2 < target}) through the concrete filter \texttt{satisfiesInputSpec}.
 We deliberately avoid full constraint solving for input generation
 because it would introduce significant runtime overhead
 and would still require fallbacks for cases that cannot be solved,
 either because they are not tractable for current solvers
-or because they are inherently undecidable.
+or because they are inherently undecidable~\cite{cadar_2013_symbolic,baldoni_2018_survey} (Section~\ref{sec:symbolic-analysis}).
