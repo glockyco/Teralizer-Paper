@@ -127,13 +127,22 @@ Linear integer constraints (e.g., $x > 0$, $y \leq 2 \cdot x$)
 are well supported by symbolic execution tools such as
 Symbolic PathFinder (SPF) for Java~\cite{pasareanu_2013_symbolic}
 and KLEE for C~\cite{cadar_2008_klee}.
-Non-linear arithmetic and floating-point operations are more problematic:
-while tools can still represent them precisely,
-constraint solving quickly becomes computationally intractable,
-leading to timeouts~\cite{de_moura_2008_z3}. Strings,
-arrays, and complex objects pose the greatest practical barrier:
-symbolic representations typically lose precision or become overly abstract,
-limiting their usefulness for specification extraction~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
+Non-linear arithmetic and floating-point operations
+can be represented precisely as well,
+and because single-path symbolic analysis does not invoke a constraint solver,
+specification extraction does not incur the high computational costs
+that are commonly observed for full symbolic execution
+on the same cases~\cite{de_moura_2008_z3,baldoni_2018_survey}.
+Nevertheless, instantiation of concrete input values
+that match the extracted specifications during PBT execution
+remains challenging irrespective of whether a constraint
+solver or a random sampling-based input generator is used to produce them.
+Strings, arrays, and complex objects remain practical barriers.
+Symbolic string support covers only restricted operations and constraint fragments,
+while symbolic representations of arrays and complex objects typically lose precision
+or become overly abstract.
+Both limitations restrict the specifications that can be extracted
+and the inputs that a property-based testing framework can generate~\cite{baldoni_2018_survey,amadini_2021_string_survey}.
 
 These limitations affect test generalization at two distinct stages.
 First, imprecise specifications (as with complex types) prevent generalization entirely
