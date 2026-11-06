@@ -318,7 +318,7 @@ but could also reduce the runtime cost of generalized tests.
   LOC increases by 4.9--58.7\% due to explicit constraint encoding and test isolation.
   \VariantImproved{} shows larger increases than \VariantNaive{} because it encodes additional constraints in the input suppliers.
   Runtime increases by 9.4--2,651.5\% across projects and \tries{} settings,
-  reflecting property-based testing overhead, i.e., \ToolJqwik{} framework cost plus increased number of tested inputs.
+  reflecting property-based testing overhead (\ToolJqwik{} framework cost and more tested inputs).
   \VariantNaive{} shows larger runtime increases than \VariantImproved{}
   because random generation requires more filter-and-regenerate cycles to satisfy constraints.
 }

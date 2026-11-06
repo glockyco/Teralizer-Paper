@@ -239,14 +239,14 @@ necessitating preemptive exclusion of the largest specifications.
   across the three strategies.
   Most exclusions occur at the assertion level,
   primarily due to static analysis limitations in identifying tested methods (24.7\%)
-  and the presence of parameter types that cannot be accurately modeled by current symbolic analysis (15.4\%).
+  and parameter types that current symbolic analysis cannot model accurately (15.4\%).
   \ToolSPF{} errors and exceeded analysis limits
   exclude 5.3\% and 4.7\% of assertions, respectively.
   Test-level filtering excludes 5.5\% of assertions due to non-passing \VariantOriginal{} tests.
   \VariantNaive{} generalized tests pass in 71.4--77.6\% of cases,
   with failures primarily due to \texttt{Too\-Many\-Filter\-Misses\-Exceptions} (16.1--21.7\%)
-  and inaccurate specifications in the presence of
-  loops and interprocedural control flow in tests (6.0--6.6\%).
+  and inaccurate specifications when tests contain
+  loops or interprocedural control flow (6.0--6.6\%).
   \VariantImproved{} increases pass rates to 83.8--85.2\%
   by reducing filter misses by 46.5--58.4\% through constraint-aware input generation.
 }
