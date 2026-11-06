@@ -34,22 +34,6 @@ that automatically generalize existing unit tests by deriving properties from pr
   \label{fig:regression-detection}
 \end{figure}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=.95\linewidth]{figures/fig_generalization}
-  \caption{\ToolTeralizer{} takes implementation and test code as input, and produces property-based tests as output.}
-  \Description{Transformation workflow showing Teralizer converting a unit test to a property-based test.
-  Left side shows the original abs() implementation and a JUnit test with @Test annotation
-  that asserts abs(0) equals 0.
-  Center shows the Teralizer transformation arrow.
-  Right side shows the generated jqwik property-based test with @Property annotation,
-  parameterized input (min=0) int x,
-  and generalized assertion assertEquals(x, abs(x)).
-  Annotations indicate replaced annotations, added constraints, added parameters,
-  replaced expected values, and replaced arguments.}
-  \label{fig:generalization}
-\end{figure}
-
 We propose a semantics-based approach for automated test generalization
 that analyzes both test and implementation code
 to derive path-exact specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic}.
@@ -85,6 +69,22 @@ Figure~\ref{fig:generalization} illustrates the effects of this transformation,
 showing how a simple equality assertion $abs(0) = 0$
 becomes the property $abs(x) = x$,
 valid for all non-negative values of $x$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=.95\linewidth]{figures/fig_generalization}
+  \caption{\ToolTeralizer{} takes implementation and test code as input, and produces property-based tests as output.}
+  \Description{Transformation workflow showing Teralizer converting a unit test to a property-based test.
+  Left side shows the original abs() implementation and a JUnit test with @Test annotation
+  that asserts abs(0) equals 0.
+  Center shows the Teralizer transformation arrow.
+  Right side shows the generated jqwik property-based test with @Property annotation,
+  parameterized input (min=0) int x,
+  and generalized assertion assertEquals(x, abs(x)).
+  Annotations indicate replaced annotations, added constraints, added parameters,
+  replaced expected values, and replaced arguments.}
+  \label{fig:generalization}
+\end{figure}
 
 We evaluate \ToolTeralizer{} in three complementary environments
 that span controlled to real-world conditions.

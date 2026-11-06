@@ -1,20 +1,3 @@
-\begin{figure}[tbph]
-  \centering
-  \includegraphics[width=.96\linewidth]{figures/fig_approach.drawio}
-  \caption{Overview of \ToolTeralizer{}'s test generalization process.}
-  \Description{System architecture diagram showing Teralizer's five-stage pipeline.
-  Input (left): Java Project box containing Implementation and Test Suite components.
-  Center: Teralizer system with five numbered stages:
-  (1) Test and Assertion Analysis, (2) Tested Method Identification, 
-  (3) Specification Extraction, (4) Generalized Test Creation, (5) Test Suite Reduction.
-  Below stages: Intermediate Outputs listing Processing Logs, Test/Assertion/Generalization Data,
-  Input/Output Specifications, and External Tool Reports.
-  Bottom row shows integrated tools: JUnit, JaCoCo, PIT, jqwik, Spoon, and JPF/SPF.
-  Output (right): Generalized Tests box containing three variants: \VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}.
-  Thick arrows connect input to Teralizer and Teralizer to output.}
-  \label{fig:approach-overview}
-\end{figure}
-
 \section{Approach}
 \label{sec:approach}
 
@@ -32,6 +15,23 @@ and produces generalized property-based tests as output:
 (4)~generalized test creation compiles the extracted specifications into property-based tests,
 and (5)~test suite reduction retains only those tests that measurably improve the mutation score of the test suite.
 
+\begin{figure}[b]
+  \centering
+  \includegraphics[width=.96\linewidth]{figures/fig_approach.drawio}
+  \caption{Overview of \ToolTeralizer{}'s test generalization process.}
+  \Description{System architecture diagram showing Teralizer's five-stage pipeline.
+  Input (left): Java Project box containing Implementation and Test Suite components.
+  Center: Teralizer system with five numbered stages:
+  (1) Test and Assertion Analysis, (2) Tested Method Identification, 
+  (3) Specification Extraction, (4) Generalized Test Creation, (5) Test Suite Reduction.
+  Below stages: Intermediate Outputs listing Processing Logs, Test/Assertion/Generalization Data,
+  Input/Output Specifications, and External Tool Reports.
+  Bottom row shows integrated tools: JUnit, JaCoCo, PIT, jqwik, Spoon, and JPF/SPF.
+  Output (right): Generalized Tests box containing three variants: \VariantBaseline{}, \VariantNaive{}, and \VariantImproved{}.
+  Thick arrows connect input to Teralizer and Teralizer to output.}
+  \label{fig:approach-overview}
+\end{figure}
+
 To illustrate the approach, we utilize a running example.
 Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
 for exceptional, good, and bad performance.
@@ -48,7 +48,7 @@ encode the property implicit in the original assertion for all inputs that follo
 instead of for a single input/output example.
 
 {
-\begin{genericfloat}[b]
+\begin{genericfloat}[t]
 \noindent
 \begin{minipage}[t]{0.48\textwidth}
 
@@ -138,6 +138,8 @@ Every exclusion is recorded with its reason,
 which Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended} use
 to quantify the applicability barriers of the approach.
 
+\input{listings/alg-test-generalization}
+
 % Input/output specification, defined by two properties.
 An input/output specification describes the behavior of a MUT
 along one execution path.
@@ -194,8 +196,6 @@ First, $\mathit{pc}$ keeps generated inputs on the execution path whose setup an
 It also guides input generators toward partition boundaries that uniform sampling over the full input domain rarely reaches (Sections~\ref{sec:primary-effects-eval} and~\ref{sec:constraint-complexity-eval}).
 Second, compiling $\mathit{out}$ into the test yields a self-contained, single-version test that executes in standard test runners without retaining prior program versions alongside the test suite.
 Third, generating one test per assertion-partition pair enables test suite reduction (Section~\ref{sec:test-suite-reduction}) to discard partitions where additional sampling detects no new mutants (Section~\ref{sec:ancillary-effects-eval}).
-
-\input{listings/alg-test-generalization}
 
 % Extraction via single-path symbolic analysis; the approach is solver-free.
 To extract input/output specifications,
