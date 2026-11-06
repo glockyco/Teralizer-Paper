@@ -70,7 +70,7 @@ The \texttt{AssertionType} filter excludes unsupported assertions such as refere
 (\texttt{assertSame}, \texttt{assertNull})
 and structural comparisons (\texttt{assertArrayEquals}, \texttt{assertInstanceOf})
 that operate on data types current symbolic execution cannot accurately model.
-The \texttt{ExcludedTest} filter excludes assertions from tests that have already been excluded.
+The \texttt{ExcludedTest} filter excludes assertions in excluded tests.
 % These filters produce a database of potentially generalizable assertions,
 % annotated with the type information, arguments, and source locations.
 %required for the next stage to identify which methods each assertion validates.

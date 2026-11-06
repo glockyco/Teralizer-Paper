@@ -188,14 +188,14 @@ alters the output only at the boundary of the \textit{exceptional performance} p
 This boundary lies outside the original test's single input $(2500, 1000)$
 but inside the input partition that the generalized test samples,
 so only the generalized test can detect the mutation.
-Generalization thus never checks a MUT call or assertion that the original test does not check,
-and it widens only the inputs of each check.
+Generalization thus never checks a MUT call or assertion that the original test does not check.
+It widens only the inputs of each check.
 
 Restricting each generalized test to the path partition $\mathit{pc}$ and symbolic output $\mathit{out}$ serves three purposes compared to unconstrained whole-method differential testing.
-First, $\mathit{pc}$ keeps generated inputs on the execution path whose setup and assertion semantics (e.g., \texttt{assertTrue} or \texttt{assertThrows}) were validated by the original test.
+First, $\mathit{pc}$ keeps generated inputs on the execution path whose setup and assertion semantics (e.g., \texttt{assertTrue} or \texttt{assertThrows}) the original test validated.
 It also guides input generators toward partition boundaries that uniform sampling over the full input domain rarely reaches (Sections~\ref{sec:primary-effects-eval} and~\ref{sec:constraint-complexity-eval}).
-Second, compiling $\mathit{out}$ into the test yields a self-contained, single-version test that executes in standard test runners without retaining prior program versions alongside the test suite.
-Third, generating one test per assertion-partition pair enables test suite reduction (Section~\ref{sec:test-suite-reduction}) to discard partitions where additional sampling detects no new mutants (Section~\ref{sec:ancillary-effects-eval}).
+Second, compiling $\mathit{out}$ into the test yields a self-contained, single-version test that runs in standard test runners without retaining prior program versions alongside the test suite.
+Third, generating one test per assertion-partition pair lets test suite reduction (Section~\ref{sec:test-suite-reduction}) discard partitions where further sampling detects no new mutants (Section~\ref{sec:ancillary-effects-eval}).
 
 % Extraction via single-path symbolic analysis; the approach is solver-free.
 To extract input/output specifications,
