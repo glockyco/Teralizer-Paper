@@ -116,9 +116,9 @@ percentage points from its \TzEffectivenessCommonsDeveloperBaselineMutationScore
 Two factors strongly affect generalization improvements:
 initial test suite strength and input constraint complexity.
 \DatasetsEqBenchEs{} projects offer the most suitable conditions for generalization.
-This is because EvoSuite-generated tests leave more room for enhancement
-(starting from 48.1--51.6\% detection rates)
-than the thorough \DatasetCommonsDev{} test suite,
+This is because \ToolEvoSuite{}'s coverage-guided tests start from lower baseline detection rates
+(48.1--51.6\%)
+than the developer-written \DatasetCommonsDev{} test suite (\TzEffectivenessCommonsDeveloperBaselineMutationScorePct{}),
 and the \DatasetEqBench{} benchmark's input constraints
 are simpler than the input constraints of \DatasetsCommons{},
 thus making valid input generation easier

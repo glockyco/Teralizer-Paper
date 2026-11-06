@@ -99,7 +99,7 @@ First, \ToolTeralizer{} encodes constraints explicitly in the source code of the
 (Section~\ref{sec:three-variant-design}).
 As a result, the LOC impact scales with parameter count and constraint complexity.
 \VariantImproved{} variants also show higher per-test LOC
-because of their more sophisticated input generation logic.
+because they encode additional constraints in the input suppliers.
 For example, \DatasetCommonsDev{}'s three generalized tests require
 36 additional LOC with \VariantImprovedC{} compared to \VariantNaiveC{}
 (9,018 vs.\ 8,982 total LOC).
@@ -316,7 +316,7 @@ but could also reduce the runtime cost of generalized tests.
   \ToolEvoSuite{}-generated test suites see near-complete compensation via test suite reduction (1,549 tests added, 1,541 removed).
   Developer-written tests resist compensation due to multi-assertion architectures (6 added, 0 removed).
   LOC increases by 4.9--58.7\% due to explicit constraint encoding and test isolation.
-  \VariantImproved{} shows larger increases than \VariantNaive{} because of its more sophisticated input generation logic.
+  \VariantImproved{} shows larger increases than \VariantNaive{} because it encodes additional constraints in the input suppliers.
   Runtime increases by 9.4--2,651.5\% across projects and \tries{} settings,
   reflecting property-based testing overhead, i.e., jqwik framework cost plus increased number of tested inputs.
   \VariantNaive{} shows larger runtime increases than \VariantImproved{}
