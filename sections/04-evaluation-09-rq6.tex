@@ -13,11 +13,11 @@ Section~\ref{sec:project-level-exclusions-extended} covers project-level exclusi
 Section~\ref{sec:test-assertion-generalization-exclusions-extended} examines
 test, assertion, and generalization exclusions,
 comparing exclusion rates to controlled settings.
-Full project-level exclusions and
+Project-level exclusions and
 partial test, assertion, and generalization exclusions are interconnected:
-when filtering or failures exclude all tests, assertions, or generalizations in a project,
+when filtering or failures exclude every test, assertion, or generalization in a project,
 the project is excluded.
-Understanding exclusion patterns guides future work toward addressing the most impactful limitations.
+Understanding these patterns guides future work toward addressing the most impactful limitations.
 
 \subsubsection{Project-Level Exclusions}%
 \label{sec:project-level-exclusions-extended}
@@ -112,7 +112,7 @@ Each row shows the number of cases that reach the corresponding filter,
 so totals can differ between rows because
 (i)~further cases are excluded as the processing pipeline progresses
 and (ii)~some filters only target subsets of cases.
-For brevity, we only include the results for the \VariantImprovedC{} generalization strategy.
+For brevity, we include only the \VariantImprovedC{} results.
 Since most exclusions occur in the \VariantShared{} processing stages,
 differences across generalization strategies are comparatively small.
 Full results are available in our replication package~\cite{replicationpackage}.
@@ -138,12 +138,12 @@ to the full rejection population, we estimate that
 no assertion (95\% CI: \TzRqsixReconstructionNoAssertionsGenuineAbsenceCiLowerPct{}--
 \TzRqsixReconstructionNoAssertionsGenuineAbsenceCiUpperPct{}). Most rejections therefore reflect
 limits in oracle recognition, such as assertions delegated to helper methods
-or expressed in some other form that the current intraprocedural analysis does not recognize.
+or expressed in forms that the current intraprocedural analysis does not recognize.
 
 The \texttt{NonPassingTest} filter rejects \TzRealworldNonPassingRejectedTests{} methods
 (10.5\%), compared with 6.6\% under controlled conditions. \ToolPit{} requires a green test suite
 but permits exclusions only at the test-class level. \ToolTeralizer{} must therefore reject every
-method in a class that contains a non-passing test. Of the rejected methods,
+method in a class with a non-passing test. Of the rejected methods,
 \TzRealworldNonPassingNonpassed{} (\TzRealworldNonPassingNonpassedPct{}) have at least one non-passing original execution, whereas
 \TzRealworldNonPassingPassed{} (\TzRealworldNonPassingPassedPct{}) pass every execution and
 are excluded only through class-level propagation. Many non-passing executions reflect
@@ -225,7 +225,7 @@ Extending support for these assertions
 requires both modeling of the corresponding assertion semantics
 and improved type support for the values that these assertions compare.
 
-Finally, \texttt{ExcludedTest} rejects an assertion whose test has already been excluded. This
+Finally, \texttt{ExcludedTest} rejects assertions whose tests were already excluded. This
 affects 21.5\% of RepoReapers assertions, compared with 5.5\% under controlled conditions.
 Its higher rejection rate therefore reflects the increase in test-level exclusions.
 
@@ -245,7 +245,7 @@ The \texttt{SeedSpecConsistency} gate rejects one attempt because its original c
 not satisfy the extracted path condition. The \texttt{WideningLicense} gate then rejects
 \TzRealworldWideningRefusals{} of the remaining attempts
 (\TzRealworldWideningRefusalsPct{}). These widening refusals prevent \ToolTeralizer{} from applying
-the extracted oracle to new inputs when the extracted path condition and symbolic output expression
+the extracted oracle to new inputs when the extracted path condition and symbolic output
 do not provide sufficient evidence that the oracle remains valid throughout the input partition
 (Section~\ref{sec:generalized-test-creation}).
 
@@ -264,12 +264,12 @@ the path condition contains none of the generalizable parameters,
 and in a further \TzRealworldWideningRefusalPathCoverage{} cases
 it does not cover every generalizable parameter.
 The remaining 14 refusals concern exception oracles
-whose concretization or path condition evidence
+where concretization or path condition evidence
 does not establish that the expected exception remains reachable
-for the generalized inputs.
-Widening refusals therefore primarily expose cases
+for generalized inputs.
+Widening refusals thus primarily expose cases
 where symbolic information is lost
-or otherwise cannot be recovered during specification extraction.
+or cannot be recovered during specification extraction.
 
 \ToolTeralizer{} emits \TzRealworldGeneralizationsEmitted{} candidate generalized tests.
 Compilation or processing failures prevent 22
@@ -278,12 +278,12 @@ from reaching the \texttt{NonPassingTest} filter
 The filter then rejects 420 of the remaining
 \TzRealworldGeneralizationsFilterResultRecorded{} tests
 and includes \TzRealworldGeneralizationsFilterPassed{}.
-At this post-generation boundary, RepoReapers projects
+After this filter, RepoReapers projects
 show inclusions for \TzRqsixFilteringRealworldIncludedPct{} of generalized tests,
 compared with \TzRqsixFilteringControlledIncludedPct{} under controlled conditions.
 \TzRealworldGeneralizationsFinalUsable{} generalized tests from
-\TzRealworldFinalUsableProjects{} projects then complete Stage~5,
-the mutation testing that supports test suite reduction.
+\TzRealworldFinalUsableProjects{} projects then complete Stage~5
+mutation testing for test suite reduction.
 
 \rqanswerbox{6}{
   \ToolTeralizer{} completes all five processing stages for

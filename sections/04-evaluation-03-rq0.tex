@@ -217,9 +217,7 @@ nor a curated template library.
 \ToolTeralizer{} also performs no constraint solving at any pipeline stage,
 so the types it can generalize depend on \ToolSPF{}'s symbolic representations
 instead of solver theories.
-Section~\ref{sec:when-it-fails} examines why this distinction
-between representation limits and solver theories
-matters in practice.
+Section~\ref{sec:when-it-fails} examines why this distinction matters in practice.
 
 % P6: The 3 projects without generalized tests.
 In the 3 projects without generalized tests,
@@ -238,7 +236,7 @@ so the request fails before the MUT is called.
 For commons-pool, the pipeline stops before specification extraction,
 because the original test suite does not finish
 within the 300-second execution budget.
-RQ5 and RQ6 provide a more thorough analysis of failure causes
+RQ5 and RQ6 analyze these failure causes in detail
 (Sections~\ref{sec:limitations-eval} and~\ref{sec:limitations-eval-extended}).
 
 \subsubsection{Interpreting Parameter Value Coverage}%

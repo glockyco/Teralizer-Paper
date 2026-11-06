@@ -123,9 +123,9 @@ When the wrapper method returns, our custom \texttt{TestGeneralizationListener}
 captures the complete path condition
 (\texttt{sales / 2 < target \&\& sales >= target}) and the symbolic output expression (\texttt{sales / 20}),
 writes both concrete input/output values and symbolic input/output specifications to JSON files,
-and then immediately terminates \ToolSPF{} without exploring alternative paths.
+and immediately terminates \ToolSPF{} without exploring alternative paths.
 Listing~\ref{lst:extracted-specs} shows the input/output specifications
-that are collected for the three identified MUT calls of our running example.
+collected for the three identified MUT calls of our running example.
 
 \ToolTeralizer{} extracts specifications for the supported data types
 stated in Section~\ref{sec:approach-concepts},

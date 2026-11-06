@@ -49,12 +49,12 @@ Thus, we distinguish the following nine test suite variants:
 
 As described in Section~\ref{sec:three-variant-design},
 using \VariantInitial{} as a shared starting point
-not only reduces the runtime costs of the evaluation
+not only reduces evaluation runtime costs
 but also enables a fair comparison
-across the different generalization strategies
+across the generalization strategies
 by avoiding non-deterministic Stage 1--3 failures such as \texttt{OutOfMemoryError}s
 from affecting one strategy more strongly than another.
-The used \tries{} settings of 10, 50, and 200 were selected
+The \tries{} settings of 10, 50, and 200 were selected
 to demonstrate the scaling behavior of higher \tries{}
 %(both in terms of mutation score improvements as well as in terms of runtime costs)
 while keeping runtime costs manageable.

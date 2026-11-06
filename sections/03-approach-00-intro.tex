@@ -104,10 +104,10 @@ The full implementation of \ToolTeralizer{} is available in our replication pack
 
 % Problem model: assertion--MUT pairs as the unit of generalization; example.
 A unit test combines setup code, calls into the implementation,
-and assertions that compare the outputs of these calls against expected values~\cite{meszaros_2007_xunit}.
-The method whose output an assertion validates is the assertion's method under test (MUT),
+and assertions that compare their outputs against expected values~\cite{meszaros_2007_xunit}.
+The method whose output an assertion validates is its method under test (MUT),
 and the call that produced this output is its MUT call.
-The \texttt{testCalculate} method of the running example
+The running example's \texttt{testCalculate} method
 contains three assertion--MUT pairs:
 \texttt{assertEquals(250, b1)} validates \texttt{calculate(2500, 1000)},
 \texttt{assertEquals(75, b2)} validates \texttt{calculate(1500, 1000)},
@@ -223,9 +223,9 @@ or produce a different output once that state changes.
 The current implementation generalizes Java's eight primitive scalar types,
 their boxed forms, and \texttt{String} inputs and outputs within a restricted
 set of string operations.
-Parameters outside these supported domains retain their concrete values,
+Parameters outside these domains retain their concrete values,
 so MUTs with mixed parameter types are generalized partially,
-and MUTs without any generalizable parameter are excluded
+and MUTs without generalizable parameters are excluded
 (Section~\ref{sec:tested-method-identification}).
 
 % Established techniques and instantiation; language, toolchain, and analysis capabilities are not fixed.
@@ -242,26 +242,26 @@ However, the underlying techniques are independent of any particular language or
 and other languages offer counterpart tools,
 e.g., KLEE~\cite{cadar_2008_klee} in place of \ToolSPF{} for C programs
 or Hypothesis~\cite{maciver_2019_hypothesis} in place of \ToolJqwik{} for Python.
-The purity and domain restrictions likewise stem from the employed analysis
-rather than from the approach itself,
+The purity and domain restrictions likewise stem from the analysis
+rather than the approach itself,
 since properties (i) and (ii) do not prescribe how specifications are obtained.
-An analysis with support for additional data structures, e.g., symbolic arrays,
-or with heap state modeled as additional symbolic input~\cite{khurshid_2003_gse}
+An analysis that supports additional data structures, e.g., symbolic arrays,
+or with heap state modeled as symbolic input~\cite{khurshid_2003_gse}
 would relax these restrictions.
 
 % Implementation scope and automation.
 The current prototype implementation of \ToolTeralizer{} targets Java 5--8 projects
 (the versions \ToolSPF{} supports)
 that use Maven or Gradle for dependency management
-and JUnit 3, JUnit 4, or JUnit 5 for testing.
-Prior to the execution of the five primary processing stages,
-\ToolTeralizer{} automatically detects the build system of the target project
-and injects the dependencies that the pipeline requires,
+and JUnit~3, 4, or 5 for testing.
+Before executing the five primary processing stages,
+\ToolTeralizer{} automatically detects the target project's build system
+and injects the required pipeline dependencies,
 including \ToolJqwik{}, \ToolPit{}, and \ToolJacoco{}~\cite{jacoco} for coverage tracking.
-Thus, \ToolTeralizer{} requires no manual intervention throughout the generalization process ---
+Thus, \ToolTeralizer{} requires no manual intervention ---
 project preparation and all five processing stages are fully automated.
 
-The following subsections detail each stage of the generalization process as implemented in \ToolTeralizer{}.
+The following subsections detail each stage as implemented in \ToolTeralizer{}.
 Section~\ref{sec:test-assertion-analysis} explains test and assertion analysis.
 Section~\ref{sec:tested-method-identification} describes tested method identification.
 Section~\ref{sec:specification-extraction} presents input/output specification extraction,

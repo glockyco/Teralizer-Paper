@@ -89,7 +89,7 @@ valid for all non-negative values of $x$.
 We evaluate \ToolTeralizer{} in three complementary environments
 that span controlled to real-world conditions.
 The \DatasetEqBench{} benchmark~\cite{badihi_2021_eqbench} provides numeric-focused programs
-well suited to symbolic analysis; because it lacks tests,
+well suited to symbolic analysis. Because it lacks tests,
 we generate them with \ToolEvoSuite{}~\cite{fraser_2011_evosuite}.
 Utility methods from Apache Commons provide an intermediate setting
 in which we compare generated and developer-written tests on the same codebase.
@@ -124,7 +124,7 @@ This paper makes the following contributions:
 \item A Java \textbf{prototype implementation}, \ToolTeralizer{}, that realizes the approach as a five-stage pipeline.
 \item A comprehensive \textbf{empirical evaluation} that compares against JARVIS's published benchmark results and measures effectiveness, efficiency, and applicability from controlled benchmarks to real-world projects.
 \item A systematic \textbf{analysis of applicability barriers} that distinguishes prototype and integration limitations, insufficient specification evidence, and environmental failures.
-\item An \textbf{open implementation and replication package}~\cite{replicationpackage} that supports reproduction and extension of the results.
+\item An \textbf{open implementation and replication package}~\cite{replicationpackage} that supports reproducing and extending the results.
 \end{enumerate}
 
 The paper is organized as follows.

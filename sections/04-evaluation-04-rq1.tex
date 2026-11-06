@@ -84,8 +84,8 @@ though the degree of improvement varies by project type
 (Figure~\ref{fig:mutation-detection-results}).
 \DatasetsEqBenchEs{} projects (rows 1--3 in the figure) show the largest improvements:
 detection rates increase from 48.1--51.6\% to 49.5--55.0\%
-across different \tries{} and generalization strategies,
-representing absolute improvements of
+across \tries{} and generalization strategies,
+for absolute improvements of
 \TzEffectivenessEqbenchEvosuiteMutationImprovementMinPp{}--\TzEffectivenessEqbenchEvosuiteMutationImprovementMaxPp{}
 percentage points (2.4--8.2\% relative increase).
 \DatasetsCommonsEs{} projects (rows 4--6) improve by
@@ -204,10 +204,10 @@ In contrast, the least common operators, i.e., \texttt{Increments} (0.52\%),
 \texttt{Boolean\-False\-ReturnVals} (0.24\%),
 and \texttt{Empty\-Object\-Return\-Vals} (0.13\%), together
 account for less than 1\% of all mutants.
-This large difference in mutant prevalence means that
+Because of this difference in mutant prevalence,
 improvements to \texttt{Math} detection rates
 have proportionally larger impact on overall mutation scores
-than improvements to less commonly occurring mutation types.
+than improvements to less common mutation types.
 
 \VariantInitial{} detection rates show a clear pattern: return value mutants
 (i.e., \texttt{Primitive\-Returns}, \texttt{Boolean\-True\-Return\-Vals},

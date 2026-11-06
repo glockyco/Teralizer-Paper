@@ -32,7 +32,7 @@ Later widening refusals show where the extracted path condition and symbolic out
 enough evidence for a sound generalized oracle.
 This section discusses when and why generalization succeeds (Section~\ref{sec:when-it-works}),
 when and why it fails (Section~\ref{sec:when-it-fails}),
-and how future research and engineering efforts
+and how future work
 can improve generalization effectiveness, efficiency, and applicability (Section~\ref{sec:how-to-improve}).
 
 \subsection{When and Why Generalization Succeeds}%
@@ -42,12 +42,12 @@ Within the evaluated projects,
 generalization succeeds when implementation and test properties
 of the target projects align
 with \ToolTeralizer{}'s current static analysis capabilities
-as well as the capabilities of \ToolSPF{}'s symbolic analysis.
+and \ToolSPF{}'s symbolic analysis capabilities.
 Implementation code that is amenable to generalization
 is primarily focused on numeric computations
 in pure deterministic functions without side effects
 (thus enabling symbolic analysis)
-and is organized in standard project structures that facilitate detection
+and uses standard project structures that facilitate detection
 of required output artifacts such as compilation outputs
 as well as (mutation) testing and coverage reports.
 Tests amenable to generalization are single-assertion tests
@@ -132,14 +132,13 @@ in Section~\ref{sec:how-to-improve}.
 \paragraph{Implementation Limitations}%
 \label{par:implementation-limitations}
 
-Four implementation limitations directly constrain the results that the current prototype can achieve.
+Four implementation limitations directly constrain what the current prototype can achieve.
 First, \ToolTeralizer{} only supports standard \texttt{@Test} methods from JUnit~4 and 5,
 JUnit~3 tests that inherit from \texttt{TestCase}, and the six assertion types listed in
 Section~\ref{sec:test-assertion-analysis}.
-Second, \ToolTeralizer{} generalizes a test only when the analysis finds an assertion in the test method.
+Second, \ToolTeralizer{} generalizes a test only when it finds an assertion in the test method.
 Third, its intraprocedural assertion detection does not follow calls to helper methods.
-Fourth, its build integration expects compilation outputs and test reports in the default directories
-of the supported build systems.
+Fourth, its build integration expects compilation outputs and test reports in the supported build systems' default directories.
 
 Among these limitations, unsupported types of tests (e.g., \texttt{@Theory})
 have a comparatively small impact on the results.
@@ -393,21 +392,21 @@ Other input selection strategies within a partition remain future work,
 and our evaluation does not cover test suites written for this purpose.
 Because generalization success depends not only on domain characteristics
 but also on program and test architecture,
-developers who are interested in adopting automated test generalization tools
+developers adopting automated test generalization tools
 such as \ToolTeralizer{} can improve generalization outcomes
-through their implementation choices independent of further test generalization advances:
+through implementation choices independent of further tool advances:
 
 \begin{enumerate}
-  \item Following a more functional programming style that emphasizes pure functions
+  \item Following a functional programming style that emphasizes pure functions
     reduces assertion-to-MUT mapping failures.
   \item Placing assertions directly in test methods rather than delegating to helper methods
     reduces assertion detection failures due to the current intraprocedural analysis.
   \item Favoring supported assertions such as \texttt{assertEquals}
     over unsupported ones such as \texttt{assertThat} where this is feasible
     reduces assertion type exclusions.
-  \item Ensuring a green original test suite by addressing flaky tests and missing dependencies
-    avoids exclusions due to failing tests.
-  \item Using standard project structures and build output locations for test reports and coverage data
+  \item Maintaining a green original test suite by addressing flaky tests and missing dependencies
+    avoids exclusions from failing tests.
+  \item Using standard project layouts and build output locations for test reports and coverage data
     reduces output detection failures.
 \end{enumerate}
 
@@ -474,10 +473,10 @@ The generalized oracle records the behavior of the analyzed implementation,
 as do the assertions that \ToolEvoSuite{} infers.
 For a developer-written original test,
 the generalized test agrees with the developer's expected value at the original inputs.
-For the remaining inputs of the partition,
+For the remaining partition inputs,
 the expected values come from the symbolic output expression.
 The generalized test therefore cannot detect a fault
-that was present when the specification was extracted
+present when the specification was extracted
 and that the original assertion did not expose.
 This follows from the purpose of generalization:
 the oracle characterizes the analyzed version,
