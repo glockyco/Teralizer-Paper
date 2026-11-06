@@ -75,8 +75,8 @@ Beyond effectiveness, generalization offers competitive efficiency when combined
 % where \ToolEvoSuite{} achieves breadth through coverage-guided exploration
 % and \ToolTeralizer{} achieves depth through partition-based input generation within already-covered test execution paths.
 For example, 1-second \ToolEvoSuite{} generation combined with \VariantNaiveB{} generalization
-achieves 51.7\% mutation detection rate in 37,532 seconds, thus outperforming 60-second generation alone
-which achieves 51.6\% mutation detection rate in 55,075 seconds (Figure~\ref{fig:teralizer-efficiency}).
+achieves a 51.7\% mutation detection rate in 37,532~seconds, outperforming 60-second generation alone
+(51.6\% in 55,075~seconds, Figure~\ref{fig:teralizer-efficiency}).
 
 Outcomes vary based on constraint complexity and
 original test suite effectiveness of the target projects.
@@ -138,13 +138,13 @@ JUnit~3 tests that inherit from \texttt{TestCase}, and the six assertion types l
 Section~\ref{sec:test-assertion-analysis}.
 Second, \ToolTeralizer{} generalizes a test only when it finds an assertion in the test method.
 Third, its intraprocedural assertion detection does not follow calls to helper methods.
-Fourth, its build integration expects compilation outputs and test reports in the supported build systems' default directories.
+Fourth, its build integration expects compilation outputs and test reports in the default Maven or Gradle build directories.
 
 Among these limitations, unsupported types of tests (e.g., \texttt{@Theory})
-have a comparatively small impact on the results.
-More specifically, the \texttt{TestType} filter rejects 0.2\% of tests that reach it
+have a comparatively small impact on the results:
+the \texttt{TestType} filter rejects 0.2\% of tests that reach it
 (Table~\ref{tab:exclusions-filtering-extended}).
-Assertion recognition is more consequential: \texttt{NoAssertions} rejects 32.9\% of tests that reach this filter.
+Assertion recognition is more consequential, as \texttt{NoAssertions} rejects 32.9\% of tests that reach it.
 A stratified sample estimates that only
 \TzRqsixReconstructionNoAssertionsGenuineAbsenceEstimatePct{} of these rejected tests genuinely
 contain no assertion (95\% CI\@:
