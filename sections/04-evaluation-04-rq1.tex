@@ -15,6 +15,24 @@ because the implementation of JARVIS is not publicly available.
 Section~\ref{sec:overall-detection-rates} quantifies detection improvements across projects,
 and Section~\ref{sec:detection-rates-per-mutator} analyzes improvements by mutation operator.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
+  \caption{Percentage of detected mutants (left side) and improvement over INITIAL (right side) per project and generalization strategy.
+  Improvements show both the absolute improvement (top value) as well as the relative improvement (bottom value).}
+  \Description{Multi-panel bar chart showing mutation detection results.
+  Left column displays detected percentages for seven projects:
+  eqbench-es-default-1s, -10s, -60s, commons-utils-es-default-1s, -10s, -60s, and commons-utils.
+  Each panel shows bars for INITIAL (blue), NAIVE variants (orange), and IMPROVED variants (green).
+  Variants have subscripts (10, 50, 200) indicating tries parameter.
+  Y-axis ranges from approximately 48\% to 81\% detection rate.
+  Right column shows corresponding improvement percentages over INITIAL baseline,
+  with values in parentheses and +/- indicators.
+  Improvements range from minimal (0.05\%) for commons-utils developer tests
+  to substantial (7.82\%) for eqbench-es-default-1s.}
+  \label{fig:mutation-detection-results}
+\end{figure}
+
 % \subsubsection{Included Mutants}
 % \label{sec:included-mutants}
 
@@ -94,24 +112,6 @@ percentage points (1.4--2.3\% relative increase),
 while \DatasetCommonsDev{} (row 7) improves by only
 \TzEffectivenessCommonsDeveloperMutationImprovementMinPp{}--\TzEffectivenessCommonsDeveloperMutationImprovementMaxPp{}
 percentage points from its \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{} baseline.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_mutation_detection_comparison}
-  \caption{Percentage of detected mutants (left side) and improvement over INITIAL (right side) per project and generalization strategy.
-  Improvements show both the absolute improvement (top value) as well as the relative improvement (bottom value).}
-  \Description{Multi-panel bar chart showing mutation detection results.
-  Left column displays detected percentages for seven projects:
-  eqbench-es-default-1s, -10s, -60s, commons-utils-es-default-1s, -10s, -60s, and commons-utils.
-  Each panel shows bars for INITIAL (blue), NAIVE variants (orange), and IMPROVED variants (green).
-  Variants have subscripts (10, 50, 200) indicating tries parameter.
-  Y-axis ranges from approximately 48\% to 81\% detection rate.
-  Right column shows corresponding improvement percentages over INITIAL baseline,
-  with values in parentheses and +/- indicators.
-  Improvements range from minimal (0.05\%) for commons-utils developer tests
-  to substantial (7.82\%) for eqbench-es-default-1s.}
-  \label{fig:mutation-detection-results}
-\end{figure}
 
 Two factors strongly affect generalization improvements:
 initial test suite strength and input constraint complexity.
@@ -209,6 +209,8 @@ improvements to \texttt{Math} detection rates
 have proportionally larger impact on overall mutation scores
 than improvements to less common mutation types.
 
+\input{tables/tab-detections-per-mutator}
+
 \VariantInitial{} detection rates show a clear pattern: return value mutants
 (i.e., \texttt{Primitive\-Returns}, \texttt{Boolean\-True\-Return\-Vals},
 \texttt{Boolean\-False\-Return\-Vals}, and \texttt{Empty\-Object\-Return\-Vals})
@@ -262,8 +264,6 @@ which confirms that constraint-aware input generation achieves its intended purp
 Furthermore, the slightly higher detection rates for several other mutators
 suggest that testing at partition boundaries may also benefit
 some mutators that do not directly modify boundary constraints.
-
-\input{tables/tab-detections-per-mutator}
 
 The \texttt{Math} mutation results highlight the trade-off
 in boundary versus non-boundary testing:
