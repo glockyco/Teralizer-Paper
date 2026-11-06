@@ -227,8 +227,8 @@ from research challenges requiring advances in underlying techniques.
 The primary barrier to real-world adoption is limited applicability:
 only \TzRealworldAssertionsIncludedPct{} of real-world assertions reach generalized test creation (Table~\ref{tab:exclusions-breakdown-extended}),
 compared with 47.8\% under controlled conditions (Table~\ref{tab:exclusions-breakdown}).
-Two categories of improvements could noticeably expand
-the subset of projects, tests, and assertions that are amenable to generalization.
+Three categories of improvements could expand
+the subset of projects, tests, and assertions amenable to generalization.
 
 \textit{Type Support.}
 Type limitations cause a large portion of assertion-level exclusions.
@@ -237,15 +237,27 @@ of assertions with recorded return type information
 in the evaluated RepoReapers projects (Table~\ref{tab:exclusions-filtering-extended}).
 The \texttt{ParameterType} filter similarly rejects many assertions because their
 selected MUT has no parameter with a supported input type.
-Expanding type support remains a fundamental research
+Expanding symbolic type support remains a fundamental research
 challenge~\cite{amadini_2021_string_survey,zhong_2021_arrays,chen_2024_z3noodler,chocholaty_2025_z3noodler,sun_2024_cgs}:
 precise constraint modeling for strings, arrays, and objects
 requires advances in symbolic analysis
 that go beyond the capabilities of current tools and approaches.
+On the input side, however, property-based testing is already an incomplete, sampling-based approach~\cite{claessen_2000_quickcheck}:
+a generator that samples valid inputs from a subset of the partition only narrows which inputs are tested without risking spurious test failures.
+Grammar inference and learned input generators produce such samplers without a complete formal model~\cite{bastani_2017_glade,gopinath_2020_mimid,zhang_2025_g2fuzz}.
+For complex objects that the symbolic execution engine cannot construct directly, \citeauthor{thummalapenta_2011_retrofitting}~\cite{thummalapenta_2011_retrofitting} manually created factory methods whose method-call sequences build the required object states, and recent work automates parts of this synthesis through static call-chain analysis~\cite{yang_2026_telpa} or LLM-generated input and object builders~\cite{tu_2026_cottontail}.
 Furthermore, type limitations shadow other issues.
 Thus, as type support improves,
 additional limitations in assertion-to-MUT mapping and general assertion support
 would become visible, enabling more in-depth analysis and targeted improvement of these causes.
+
+\textit{Specification Extraction.}
+At the widening gate, \ToolTeralizer{} refuses \TzRealworldWideningRefusalsPct{} of real-world generalization attempts when single-path analysis returns a concrete output value because data flow crosses unmerged local branches or input-dependent loops (Section~\ref{sec:limitations-eval-extended}).
+Conversely, when extraction succeeds on paths with complex control flow or many loop iterations, the resulting symbolic expressions can exceed \ToolTeralizer{}'s specification size limit (Listing~\ref{lst:jpf-config} and Section~\ref{sec:limitations-eval}).
+Bounded path-region merging~\cite{sharma_2020_ranger} and loop summarization~\cite{godefroid_2011_automatic,xie_2016_proteus,kapus_2019_loops} can fold multi-branch assignments and linear induction variables into compact closed-form expressions.
+Where exact closed-form output formulas cannot be extracted or grow too large, a test generalizer could instead weaken the oracle from exact output equality to partial or relational postconditions, such as the interval bounds, ordering constraints, and linear relationships inferred by abstract interpretation~\cite{cousot_1977_abstract,partush_2014_abstract} and specification inference techniques~\cite{ernst_2007_daikon,flanagan_2001_houdini,padhi_2016_pie} (Section~\ref{sec:rw-inference}).
+Recent work also explores using LLMs to synthesize loop invariants, postconditions, or property-based tests directly~\cite{kamath_2024_loopy,ma_2025_specgen,vikram_2024_pbt,li_2026_probe}.
+However, unverified LLM-generated properties frequently fail on correct implementations~\cite{vikram_2024_pbt}, whereas sound LLM specification synthesizers rely on iterative verifier and solver calls~\cite{kamath_2024_loopy,ma_2025_specgen}, so hybrid approaches must balance specification recovery against solver cost and the soundness of the resulting oracle.
 
 \textit{Static Analysis.}
 The evaluation results identify several static analysis limitations.
@@ -446,6 +458,14 @@ may not represent all fault types,
 \texttt{DEFAULTS} is explicitly recommended by
 \ToolPit{} as a stable set of operators
 that minimizes equivalent mutants and avoids subsumption~\cite{coles_2021_less_is_more, coles_pit_mutators}.
+%
+Evaluating fault detection via mutation testing on suites that pass on the original version follows established practice in test amplification and oracle assessment~\cite{danglot_2019_dspot,tasnim_2026_togbench}.
+Evaluating on real-world regressions would complement this setup, but existing benchmarks do not fit the current prototype's scope.
+Real-world bug and regression datasets~\cite{just_2014_defects4j,saha_2018_bugsjar,madeiral_2019_bears,song_2022_regminer,silva_2024_gitbug} draw from general open source projects, where most tests and methods are excluded by the applicability barriers identified in RQ6 (Section~\ref{sec:limitations-eval-extended}).
+Conversely, oracle and seeded-fault benchmarks~\cite{lin_2017_quixbugs,tasnim_2026_togbench} target single program versions rather than historical regressions, while symbolic analysis benchmarks~\cite{badihi_2021_eqbench,beyer_2026_svcomp} lack developer-written unit test suites.
+Broadening tool applicability (Section~\ref{sec:how-to-improve}) would allow future evaluations to use established regression datasets directly.
+However, because fundamental symbolic analysis limits will remain (Section~\ref{sec:symbolic-analysis}), future work could also curate regression benchmarks for supported program fragments as a fallback.
+
 Mutation testing does not influence how generalized tests are created (Stages 1--4).
 Stage~5 runs it once on the complete suite of original and generalized tests,
 and the mutation scores reported for RQ1 and RQ2 are measured in that run,
