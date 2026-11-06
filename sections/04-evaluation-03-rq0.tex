@@ -68,7 +68,7 @@ between parameter value coverage and test suite effectiveness.
 
 % P1: Measurement and table contract.
 Table~\ref{tab:jarvis-scenario-pvc} compares parameter value coverage (PVC):
-the number of distinct input values that a test suite exercises
+the number of distinct input values a test suite exercises
 for the parameters of a MUT~\cite{sampath_2008_prioritizing}.
 PVC is the primary coverage metric reported by the JARVIS evaluation~\cite{peleg_2018_jarvis}.
 The last three columns show PVC before generalization,
@@ -200,7 +200,7 @@ As reported in the JARVIS paper, the median project-level share of scenarios
 that meet this repetition prerequisite is 30.6\% across the 12 projects,
 with a range of 13.3--60.0\%~\cite{peleg_2018_jarvis}.
 Second, JARVIS selects each abstraction
-from a manually curated library of abstraction templates,
+from a manually curated template library,
 so a fitting template must exist for the relation between the observed inputs.
 Third, JARVIS uses Z3 to instantiate the coefficients of the selected template.
 Consequently, solver theory limitations (Section~\ref{sec:symbolic-analysis})

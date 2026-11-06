@@ -13,7 +13,7 @@ Section~\ref{sec:project-level-exclusions-extended} covers project-level exclusi
 Section~\ref{sec:test-assertion-generalization-exclusions-extended} examines
 test, assertion, and generalization exclusions,
 comparing exclusion rates to controlled settings.
-Project-level exclusions and
+Full project-level exclusions and
 partial test, assertion, and generalization exclusions are interconnected:
 when filtering or failures exclude every test, assertion, or generalization in a project,
 the project is excluded.
@@ -89,15 +89,12 @@ and processing failures exclude 3.
 \paragraph{Stage 5 Exclusions:}
 
 Test suite reduction excludes \TzRealworldStageFiveExcluded{} of
-\TzRealworldStageFiveEntering{} remaining projects.
-Among these exclusions, 4 occur because
-mutation testing of the \VariantInitial{} test suite
-reaches the 3,600-second \ToolPit{} timeout.
-Required \ToolPit{} reports or \ToolJacoco{} outputs are unavailable in 3 projects,
-and the \VariantInitial{} test suite has failing tests before mutation in another 3.
-The \VariantImprovedC{} test suite has failing tests in the remaining 3 projects.
+\TzRealworldStageFiveEntering{} remaining projects:
+4 reach the 3,600-second \ToolPit{} timeout on the \VariantInitial{} test suite,
+3 lack required \ToolPit{} reports or \ToolJacoco{} outputs,
+3 have failing tests in the \VariantInitial{} suite before mutation,
+and the remaining 3 have failing tests in the \VariantImprovedC{} suite.
 
-% \paragraph{Actionability of Project-Level Exclusions:}
 \subsubsection{Test, Assertion, and Generalization Exclusions}%
 \label{sec:test-assertion-generalization-exclusions-extended}
 
@@ -225,9 +222,9 @@ Extending support for these assertions
 requires both modeling of the corresponding assertion semantics
 and improved type support for the values that these assertions compare.
 
-Finally, \texttt{ExcludedTest} rejects assertions whose tests were already excluded. This
-affects 21.5\% of RepoReapers assertions, compared with 5.5\% under controlled conditions.
-Its higher rejection rate therefore reflects the increase in test-level exclusions.
+Finally, \texttt{ExcludedTest} rejects an assertion whose test has already been excluded. This
+affects 21.5\% of RepoReapers assertions, compared with 5.5\% under controlled conditions,
+reflecting the higher test-level exclusion rate.
 
 \paragraph{Generalization-level Exclusions}%
 \label{par:real-world-generalization-exclusions}
@@ -245,8 +242,8 @@ The \texttt{SeedSpecConsistency} gate rejects one attempt because its original c
 not satisfy the extracted path condition. The \texttt{WideningLicense} gate then rejects
 \TzRealworldWideningRefusals{} of the remaining attempts
 (\TzRealworldWideningRefusalsPct{}). These widening refusals prevent \ToolTeralizer{} from applying
-the extracted oracle to new inputs when the extracted path condition and symbolic output
-do not provide sufficient evidence that the oracle remains valid throughout the input partition
+the extracted oracle to new inputs when the path condition and symbolic output expression
+do not provide sufficient evidence that the oracle remains valid across the input partition
 (Section~\ref{sec:generalized-test-creation}).
 
 Most widening refusals occur because the analysis records only a concrete return value,
