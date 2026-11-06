@@ -13,7 +13,7 @@ and produces generalized property-based tests as output:
 (2)~tested method identification maps each assertion to the method call that it validates through data-flow analysis,
 (3)~specification extraction recovers input/output specifications from the tested methods through single-path symbolic analysis,
 (4)~generalized test creation compiles the extracted specifications into property-based tests,
-and (5)~test suite reduction retains only those tests that measurably improve the mutation score of the test suite.
+and (5)~test suite reduction retains only those original and generalized tests that measurably improve the mutation score of the target project's test suite.
 
 \begin{figure}[b]
   \centering
@@ -104,15 +104,15 @@ The full implementation of \ToolTeralizer{} is available in our replication pack
 
 % Problem model: assertion--MUT pairs as the unit of generalization; example.
 A unit test combines setup code, calls into the implementation,
-and assertions that compare their outputs against expected values~\cite{meszaros_2007_xunit}.
-The method whose output an assertion validates is its method under test (MUT),
+and assertions that compare the outputs of these calls against expected values~\cite{meszaros_2007_xunit}.
+The method whose output an assertion validates is the assertion's method under test (MUT),
 and the call that produced this output is its MUT call.
-The running example's \texttt{testCalculate} method
+The \texttt{testCalculate} method of the running example
 contains three assertion--MUT pairs:
 \texttt{assertEquals(250, b1)} validates \texttt{calculate(2500, 1000)},
 \texttt{assertEquals(75, b2)} validates \texttt{calculate(1500, 1000)},
 and \texttt{assertEquals(0, b3)} validates \texttt{calculate(500, 1000)}.
-Each pair yields one generalized test.
+Each of these three pairs yields one generalized test.
 
 % The end-to-end algorithm, before any stage details.
 Algorithm~\ref{alg:test-generalization} shows the generalization process
@@ -162,9 +162,9 @@ such that:
 The inputs that satisfy $\mathit{pc}$ form the input partition of the assertion.
 For example, for the \textit{good performance} assertion of the running example
 (Listings~\ref{lst:bonus-method} and~\ref{lst:original-test}),
-with $x_1 = \mathit{sales}$ and $x_2 = \mathit{target}$,
-$\mathit{pc} = \mathit{sales}/2 < \mathit{target} \land \mathit{sales} \geq \mathit{target}$
-and $\mathit{out} = \mathit{sales}/20$.
+with variables $x_1 = \mathit{sales}$ and $x_2 = \mathit{target}$,
+the path condition is $\mathit{pc} = \mathit{sales}/2 < \mathit{target} \land \mathit{sales} \geq \mathit{target}$
+and the symbolic output expression is $\mathit{out} = \mathit{sales}/20$.
 
 % The generalized test: out becomes the oracle; what fails it.
 A generalized test replaces the assertion's hardcoded expected value
@@ -253,7 +253,7 @@ would relax these restrictions.
 The current prototype implementation of \ToolTeralizer{} targets Java 5--8 projects
 (the versions \ToolSPF{} supports)
 that use Maven or Gradle for dependency management
-and JUnit~3, 4, or 5 for testing.
+and JUnit~3, JUnit~4, or JUnit~5 for testing.
 Before executing the five primary processing stages,
 \ToolTeralizer{} automatically detects the target project's build system
 and injects the required pipeline dependencies,

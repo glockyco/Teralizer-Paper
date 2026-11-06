@@ -66,7 +66,7 @@ and calls that are closer to the assertion~\cite{van_rompaey_2009_traceability}.
 Such a selection is a heuristic rather than a data dependence:
 it identifies a plausible MUT call, not provably the intended one.
 For exception assertions, the candidates are the calls
-inside the \texttt{assertThrows} body or those preceding a \texttt{fail} call,
+inside the \texttt{assertThrows} body or preceding a \texttt{fail} call,
 of which \ToolTeralizer{} selects the last one,
 following the heuristic that the last call triggers the expected exception ---
 a common assumption in focal method identification~\cite{van_rompaey_2009_traceability,ghafari_2015_focal}.

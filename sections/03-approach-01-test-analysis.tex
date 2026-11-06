@@ -50,8 +50,8 @@ Failing tests do not reflect intended behavior, so no specification can be infer
 Similarly, tests without assertions lack explicit oracles.
 Assertions might be missing for two reasons:
 (i)~the test validates only that execution completes without crashing
-or (ii)~assertions are present but are contained in helper methods
-that are not captured by \ToolTeralizer{}'s intraprocedural assertion detection.
+or (ii)~assertions are present in helper methods
+that \ToolTeralizer{}'s intraprocedural assertion detection does not capture.
 While interprocedural analysis could detect delegated assertions
 and test refactoring could make implicit validation explicit,
 we leave such enhancements for future work.
