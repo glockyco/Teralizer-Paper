@@ -19,7 +19,7 @@ can achieve better detection-to-runtime ratios than simply running \ToolEvoSuite
   \centering
   \includegraphics[width=\linewidth]{figures/fig_teralizer_runtimes}
   \caption{
-    Teralizer runtimes per project, processing stage, and generalization strategy.
+    \ToolTeralizer{} runtimes per project, processing stage, and generalization strategy.
     Stages 1--3 are \VariantShared{} stages that are only executed once.
     Stages 4 and 5 are executed once per generalization strategy,
     i.e., \VariantBaseline{}, \VariantNaives{}, and \VariantImproveds{}.
@@ -67,8 +67,8 @@ to concretely execute tests using single-path symbolic analysis
 While this introduces some overhead
 because \ToolJPF / \ToolSPF{}
 is less optimized than production-ready JVMs
-(\ToolJPF{} itself runs inside a host JVM \cite{pasareanu_2013_symbolic}),
-the cost is comparatively small at, on average, ca.\ 5$\times$ the runtime of an \VariantOriginal{} test suite execution (mean: 1020s vs. 221s).
+(\ToolJPF{} itself runs inside a host JVM~\cite{pasareanu_2013_symbolic}),
+the cost is comparatively small at, on average, ca.\ 5$\times$ the runtime of an \VariantOriginal{} test suite execution (mean: 1,020s vs. 221s).
 Generalized test creation cost (Stage 4) is even smaller at a one-time cost
 of 5--177 seconds per variant.
 This is because test creation
@@ -136,7 +136,7 @@ Configurations outside the frontier are dominated by the Pareto-optimal points.
 \begin{figure}[b]
   \centering
   \includegraphics[width=\textwidth]{figures/fig_teralizer_efficiency}
-  \caption{Pareto fronts for EvoSuite and Teralizer variants across projects.}
+  \caption{Pareto fronts for \ToolEvoSuite{} and \ToolTeralizer{} variants across projects.}
   \Description{Two scatter plots showing Pareto efficiency analysis.
   Left panel shows eqbench project, right panel shows commons-utils project.
   X-axis shows runtime in seconds, Y-axis shows mutation detection percentage.
@@ -182,7 +182,7 @@ Nevertheless, generalization via \ToolTeralizer{} contributes
 8 additional points to the Pareto frontier.
 Specifically, the combination of 1-second \ToolEvoSuite{} generation
 and \VariantImprovedA{} generalization (Pareto point \#3)
-produces a Pareto optimal result
+produces a Pareto-optimal result
 that has higher detection rate and runtime cost than \#2
 but lower detection rate and runtime cost than \#4.
 The 7 remaining Pareto points \#5--\#11 again extend the Pareto frontier

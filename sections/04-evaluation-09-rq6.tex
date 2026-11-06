@@ -258,7 +258,7 @@ nor evidence that the executed path returns a fixed literal:
 (\TzRealworldWideningRefusalConcretizationPct{}) occur
 after a native operation receives a symbolic argument
 and loses its symbolic relation to that argument
-because SPF does not provide a symbolic model for the operation.
+because \ToolSPF{} does not provide a symbolic model for the operation.
 In \TzRealworldWideningRefusalParametersEmpty{} cases,
 the path condition contains none of the generalizable parameters,
 and in a further \TzRealworldWideningRefusalPathCoverage{} cases
@@ -294,7 +294,7 @@ the mutation testing that supports test suite reduction.
   test or assertion. These exclusions reflect limitations in recognizing and executing tests and
   assertions, identifying MUTs, and obtaining usable specifications from \ToolSPF{}.
   Problems in the instrumented build or during \ToolSPF{} execution leave 112 further
-  projects without a usable extracted specification. During generalized-test creation, widening
+  projects without a usable extracted specification. During generalized test creation, widening
   conservatively refuses \TzRealworldWideningRefusals{} of
   \TzRealworldGeneralizationAttempts{} candidates (\TzRealworldWideningRefusalsPct{}) and
   contributes to the exclusion of every candidate in 74 projects because the extracted evidence cannot establish a sound

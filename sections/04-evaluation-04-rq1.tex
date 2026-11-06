@@ -124,9 +124,9 @@ are simpler than the input constraints of \DatasetsCommons{},
 thus making valid input generation easier
 (as discussed in more detail in Section~\ref{sec:constraint-complexity-eval}).
 \DatasetsCommonsEs{} projects face one additional challenge:
-while they also start from EvoSuite-generated tests,
+while they also start from \ToolEvoSuite{}-generated tests,
 the \DatasetsCommons{} methods involve more complex input specifications,
-making it harder to generate inputs that satisfy these input constraints.
+making it harder to generate inputs that satisfy these constraints.
 \DatasetCommonsDev{} faces both challenges:
 the mature developer-written tests already achieve \TzEffectivenessCommonsDeveloperBaselineMutationScorePct{} detection
 and share the same complex constraints as other \DatasetsCommons{} variants.
@@ -168,7 +168,7 @@ leaving insufficient attempts for testing intermediate values.
 With more \tries{}, \VariantImproved{} variants perform comparably to or better than \VariantNaive{} variants
 as enough attempts remain for both boundary and non-boundary testing.
 \DatasetsCommonsEs{} projects (rows 4--6) show less pronounced degradation at low \tries{},
-because their more complex constraints (Section~\ref{sec:constraint-complexity-eval})
+because their more complex constraints
 cause more boundary inputs to fail filtering,
 forcing earlier exploration of non-boundary values.
 

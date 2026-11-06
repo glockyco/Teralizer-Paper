@@ -77,7 +77,7 @@ We implemented this approach in \ToolTeralizer{}, a prototype tool for Java
 that transforms JUnit tests into property-based \ToolJqwik{}~\cite{link_2022_jqwik} tests.
 \ToolTeralizer{} employs a five-stage pipeline:
 (1)~analyzing tests and their assertions regarding suitability for generalization,
-(2)~identifying tested methods through data flow analysis,
+(2)~identifying tested methods through data-flow analysis,
 (3)~extracting specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic},
 (4)~creating generalized property-based tests, and
 (5)~filtering generalized tests to retain only those that improve fault detection capability.
@@ -131,8 +131,8 @@ The paper is organized as follows.
 Section~\ref{sec:background} introduces the technical foundations of test generalization.
 Section~\ref{sec:approach} presents \ToolTeralizer{}'s five-stage pipeline.
 Section~\ref{sec:evaluation} evaluates the approach through seven research questions:
-the JARVIS comparison (RQ0), mutation-score effects (RQ1 and RQ2),
-test-suite size and runtime (RQ3), efficiency relative to test generation (RQ4),
+the JARVIS comparison (RQ0), mutation score effects (RQ1 and RQ2),
+test suite size and runtime (RQ3), efficiency relative to test generation (RQ4),
 and causes of unsuccessful generalization under controlled and real-world conditions (RQ5 and RQ6).
 Section~\ref{sec:discussion} discusses the results, future directions, and threats to validity.
 Section~\ref{sec:related-work} positions the approach within the broader testing literature,

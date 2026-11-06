@@ -6,9 +6,9 @@ While this transformation improves mutation detection (Section~\ref{sec:primary-
 it also affects other characteristics of the generalized test suites compared to their non-generalized baselines:
 
 \begin{enumerate}
-  \item the number of tests in the test suite (Section~\ref{sec:test-suite-test-count}),
-  \item the number of lines of code in the test suite (Section~\ref{sec:test-suite-line-count}),
-  \item the execution time of the test suite (Section~\ref{sec:test-suite-execution-time}).
+  \item the number of tests in the test suite,
+  \item the number of lines of code in the test suite,
+  \item the execution time of the test suite.
 \end{enumerate}
 
 Section~\ref{sec:test-suite-test-count} reveals how test architecture determines
@@ -161,11 +161,13 @@ Runtime increases are primarily affected by the following factors:
   \item the used generalization approach, i.e., \VariantNaive{} vs. \VariantImproved{} generalization,
   \item the complexity of input partition constraints.
 \end{enumerate}
+\input{tables/tab-runtime-per-project}
+
 
 \paragraph{Added and Removed Tests}
 
 Execution of conventional JUnit tests has a lower runtime cost
-than execution of corresponding jqwik tests.
+than execution of corresponding \ToolJqwik{} tests.
 More specifically, property-based tests
 created with the \VariantBaseline{} generalization strategy 
 take, on average, 149.56 milliseconds (ms) longer to execute
@@ -179,18 +181,42 @@ which have a mean execution time of only 3.6~ms. % 0.0035570506476290337
 % WHERE stage = 'COLLECT_JUNIT_REPORTS_ORIGINAL'
 % AND g.is_included;
 Therefore, overall test suite execution time increases,
-on average, by at least 149.56~ms per jqwik test
+on average, by at least 149.56~ms per \ToolJqwik{} test
 that is added during generalization,
 even if no new test inputs are exercised
 and the added generalized tests are compensated by removed original tests.
-Since these runtime increases are inherent to the use of jqwik,
+Since these runtime increases are inherent to the use of \ToolJqwik{},
 they are orthogonal to our specific generalization approach.
 Any manual or automated transformation of JUnit tests
-to jqwik tests incurs the same runtime overhead,
+to \ToolJqwik{} tests incurs the same runtime overhead,
 and this overhead can only be reduced
-if fewer jqwik tests are created
+if fewer \ToolJqwik{} tests are created
 (e.g., through test suite reduction, as discussed in Section~\ref{sec:test-suite-reduction})
-or if the performance of jqwik is improved.
+or if the performance of \ToolJqwik{} is improved.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=.95\linewidth]{figures/fig_test_runtime_differences}
+  \caption{
+    Runtime comparison between original and generalized tests.
+    The runtime differences measure how much longer generalized tests take to execute, on average, compared to corresponding original tests.
+    We show the difference per test (left) and per try (right).
+  }
+  \Description{Two bar charts comparing runtime overhead of generalized tests.
+  The left chart shows the mean runtime difference in milliseconds between original and generalized tests.
+  BASELINE adds 149.56ms overhead.
+  NAIVE variants show increasing overhead with more tries:
+  286.13ms (10 tries), 348.56ms (50 tries), 1136.21ms (200 tries).
+  IMPROVED variants show lower overhead:
+  189.17ms (10 tries), 246.85ms (50 tries), 395.26ms (200 tries).
+  The right chart shows the mean runtime difference per try in milliseconds.
+  BASELINE shows 149.56ms per try.
+  NAIVE variants show decreasing per-try cost:
+  28.61ms (10 tries), 6.97ms (50 tries), 5.68ms (200 tries).
+  IMPROVED variants show better per-try efficiency:
+  18.92ms (10 tries), 4.94ms (50 tries), 1.98ms (200 tries).}
+  \label{fig:test-runtime-differences}
+\end{figure}
 
 \paragraph{Number of \tries{}}
 
@@ -223,32 +249,6 @@ improvements in per-\texttt{try} efficiency to any specific causes
 would require a more thorough microbenchmarking setup
 that properly accounts for confounding factors such as JVM warmup,
 which is beyond the scope of this evaluation.
-
-\input{tables/tab-runtime-per-project}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=.95\linewidth]{figures/fig_test_runtime_differences}
-  \caption{
-    Runtime comparison between original and generalized tests.
-    The runtime differences measure how much longer generalized tests take to execute, on average, compared to corresponding original tests.
-    We show the difference per test (left) and per try (right).
-  }
-  \Description{Two bar charts comparing runtime overhead of generalized tests.
-  The left chart shows the mean runtime difference in milliseconds between original and generalized tests.
-  BASELINE adds 149.56ms overhead.
-  NAIVE variants show increasing overhead with more tries:
-  286.13ms (10 tries), 348.56ms (50 tries), 1136.21ms (200 tries).
-  IMPROVED variants show lower overhead:
-  189.17ms (10 tries), 246.85ms (50 tries), 395.26ms (200 tries).
-  The right chart shows the mean runtime difference per try in milliseconds.
-  BASELINE shows 149.56ms per try.
-  NAIVE variants show decreasing per-try cost:
-  28.61ms (10 tries), 6.97ms (50 tries), 5.68ms (200 tries).
-  IMPROVED variants show better per-try efficiency:
-  18.92ms (10 tries), 4.94ms (50 tries), 1.98ms (200 tries).}
-  \label{fig:test-runtime-differences}
-\end{figure}
 
 \paragraph{\VariantNaive{} vs.\ \VariantImproved{} Generalization}
 
@@ -293,7 +293,7 @@ because it does not consider any constraints during value generation
 the issue also affects \VariantImproved{} generalization
 in cases where less than 100\% of constraints can be used
 (for further details on constraint use,
-see Sections~\ref{sec:three-variant-design} and \ref{sec:constraint-complexity-eval}).
+see Sections~\ref{sec:three-variant-design} and~\ref{sec:constraint-complexity-eval}).
 For example, as shown in Table~\ref{tab:tests-per-project},
 \VariantImprovedC{} adds 3 times as many tests (206 vs.\ 69) to \DatasetEqBenchA{}
 as it adds to \DatasetCommonsA{},
@@ -318,7 +318,7 @@ but could also reduce the runtime cost of generalized tests.
   LOC increases by 4.9--58.7\% due to explicit constraint encoding and test isolation.
   \VariantImproved{} shows larger increases than \VariantNaive{} because it encodes additional constraints in the input suppliers.
   Runtime increases by 9.4--2,651.5\% across projects and \tries{} settings,
-  reflecting property-based testing overhead, i.e., jqwik framework cost plus increased number of tested inputs.
+  reflecting property-based testing overhead, i.e., \ToolJqwik{} framework cost plus increased number of tested inputs.
   \VariantNaive{} shows larger runtime increases than \VariantImproved{}
   because random generation requires more filter-and-regenerate cycles to satisfy constraints.
 }
