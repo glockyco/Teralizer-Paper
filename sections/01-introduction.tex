@@ -60,9 +60,9 @@ Because specifications are extracted from program semantics,
 the resulting properties are exact for the analyzed implementation along each execution path.
 The generalized test retains the original assertion,
 agrees with its expected value at the original inputs,
-and checks the assertion for all inputs of the same execution path.
-Test generation tools such as \ToolEvoSuite{}~\cite{fraser_2011_evosuite}
-instead infer assertions from the observed behavior of the implementation.
+and checks the assertion across additional inputs from the same execution path to detect later regressions.
+Test generation tools such as \ToolEvoSuite{}~\cite{fraser_2011_evosuite} and Randoop~\cite{pacheco_2007_randoop}
+instead create new tests and infer their regression assertions from the observed behavior of the implementation.
 Generalization requires existing tests, whereas generation creates them,
 so the two techniques are complementary:
 generalization can follow generation when developer-written tests are absent.
