@@ -189,6 +189,12 @@ so only the generalized test can detect the mutation.
 Generalization thus never checks a MUT call or assertion that the original test does not check,
 and it widens only the inputs of each check.
 
+Restricting each generalized test to the path partition $\mathit{pc}$ and symbolic output $\mathit{out}$ serves three purposes compared to unconstrained whole-method differential testing.
+First, $\mathit{pc}$ keeps generated inputs on the execution path whose setup and assertion semantics (e.g., \texttt{assertTrue} or \texttt{assertThrows}) were validated by the original test.
+It also guides input generators toward partition boundaries that uniform sampling over the full input domain rarely reaches (Sections~\ref{sec:primary-effects-eval} and~\ref{sec:constraint-complexity-eval}).
+Second, compiling $\mathit{out}$ into the test yields a self-contained, single-version test that executes in standard test runners without retaining prior program versions alongside the test suite.
+Third, generating one test per assertion-partition pair enables test suite reduction (Section~\ref{sec:test-suite-reduction}) to discard partitions where additional sampling detects no new mutants (Section~\ref{sec:ancillary-effects-eval}).
+
 \input{listings/alg-test-generalization}
 
 % Extraction via single-path symbolic analysis; the approach is solver-free.
@@ -232,8 +238,7 @@ Spoon~\cite{pawlak_2016_spoon} provides the static analysis of the test code for
 (Section~\ref{sec:property-based-testing}),
 and \ToolPit{}~\cite{coles_2016_pit} the mutation testing for stage 5
 (Section~\ref{sec:mutation-testing}).
-However, the underlying approach is independent of any particular language or toolchain,
-i.e., none of the used techniques is specific to Java,
+However, the underlying techniques are independent of any particular language or toolchain,
 and other languages offer counterpart tools,
 e.g., KLEE~\cite{cadar_2008_klee} in place of \ToolSPF{} for C programs
 or Hypothesis~\cite{maciver_2019_hypothesis} in place of \ToolJqwik{} for Python.
