@@ -111,18 +111,27 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{xcolor}
+\usepackage[most]{tcolorbox}
 
 \newcounter{reporttablerow}
 \providecommand{\theHreporttablerow}{\arabic{reporttablerow}}
 
+% Breakable so a long answer can continue on the next page instead of
+% leaving a stretched gap above it.
 \newcommand{\rqanswerbox}[2]{%
-  \par\medskip\noindent
-  \setlength{\fboxsep}{8pt}%
-  \fcolorbox{gray!50}{gray!10}{%
-    \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
-      \textbf{Answer to RQ#1:} #2%
-    }%
-  }%
+  \begin{tcolorbox}[
+    breakable,
+    enhanced jigsaw,
+    colback=gray!10,
+    colframe=gray!50,
+    boxrule=\fboxrule,
+    arc=0pt,
+    left=8pt, right=8pt, top=8pt, bottom=8pt,
+    before skip=\medskipamount,
+    after skip=\medskipamount,
+  ]%
+    \textbf{Answer to RQ#1:} #2%
+  \end{tcolorbox}%
 }
 
 \newcommand{\ToolTeralizer}{\textsc{Teralizer}}
