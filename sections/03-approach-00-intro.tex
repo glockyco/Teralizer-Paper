@@ -15,7 +15,22 @@ and produces generalized property-based tests as output:
 (4)~generalized test creation compiles the extracted specifications into property-based tests,
 and (5)~test suite reduction retains only those original and generalized tests that measurably improve the mutation score of the target project's test suite.
 
-\begin{figure}[b]
+To illustrate the approach, we utilize a running example.
+Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
+for exceptional, good, and bad performance.
+Listing~\ref{lst:original-test} shows a typical unit test
+that tests one input for each performance level.
+While the test detects regressions that affect these three inputs,
+it misses regressions that affect other inputs that follow the same execution paths.
+Consider a mutation that changes \texttt{sales / 2 >= target} in line~3 to \texttt{sales / 2 > target}.
+Despite the change, the test still passes,
+but boundary cases where \texttt{sales = 2 * target} now
+return the good performance bonus instead of the exceptional performance bonus.
+To detect such subtle regressions, \ToolTeralizer{}'s generalized property-based tests
+encode the property implicit in the original assertion for all inputs that follow the covered execution paths
+instead of for a single input/output example.
+
+\begin{figure}[t]
   \centering
   \includegraphics[width=.96\linewidth]{figures/fig_approach.drawio}
   \caption{Overview of \ToolTeralizer{}'s test generalization process.}
@@ -31,21 +46,6 @@ and (5)~test suite reduction retains only those original and generalized tests t
   Thick arrows connect input to Teralizer and Teralizer to output.}
   \label{fig:approach-overview}
 \end{figure}
-
-To illustrate the approach, we utilize a running example.
-Listing~\ref{lst:bonus-method} shows a bonus calculation method with three execution paths
-for exceptional, good, and bad performance.
-Listing~\ref{lst:original-test} shows a typical unit test
-that tests one input for each performance level.
-While the test detects regressions that affect these three inputs,
-it misses regressions that affect other inputs that follow the same execution paths.
-Consider a mutation that changes \texttt{sales / 2 >= target} in line~3 to \texttt{sales / 2 > target}.
-Despite the change, the test still passes,
-but boundary cases where \texttt{sales = 2 * target} now
-return the good performance bonus instead of the exceptional performance bonus.
-To detect such subtle regressions, \ToolTeralizer{}'s generalized property-based tests
-encode the property implicit in the original assertion for all inputs that follow the covered execution paths
-instead of for a single input/output example.
 
 {
 \begin{genericfloat}[t]
