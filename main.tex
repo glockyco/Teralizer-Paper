@@ -268,12 +268,13 @@
 \begin{abstract}
 Conventional unit tests validate individual input-output pairs,
 leaving most inputs along the same execution path untested.
-Property-based testing addresses this limitation by checking properties over generated inputs,
-but developers must define both the properties and their input constraints.
-We present a semantics-based approach that automates this transformation
-by extracting path-exact input/output specifications through single-path symbolic analysis.
+Property-based testing checks properties over generated inputs,
+but developers must define properties and input constraints.
+We present a semantics-based approach that extracts path-exact input/output specifications
+through single-path symbolic analysis.
 \ToolTeralizer{}, our Java prototype, transforms JUnit tests into \ToolJqwik{} property-based tests
-that preserve developer-written assertions while exercising additional inputs.
+for pure methods over primitive and boxed scalars and restricted string operations,
+preserving developer-written assertions across additional inputs.
 Unlike JARVIS, which generalizes repeated examples through predefined abstraction templates,
 \ToolTeralizer{} derives specifications from tests and implementation semantics.
 
