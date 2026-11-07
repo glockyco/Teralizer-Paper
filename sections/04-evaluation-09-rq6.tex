@@ -4,7 +4,8 @@
 RQ5 established exclusion causes under controlled conditions.
 The version 7 evaluation initially selected \TzRealworldSelectedProjects{} RepoReapers projects.
 The initial gate excluded \TzRealworldInitialGateExcludedProjects{},
-and \TzRealworldNoExecutedTestExcludedProjects{} further projects had no executed tests,
+and \TzRealworldNoExecutedTestExcludedProjects{} further projects built with Maven
+but had no executed tests because the build configuration disabled them or Surefire discovered none,
 leaving \TzRealworldEligibleProjects{} eligible projects.
 RQ6 examines how \ToolTeralizer{} performs on this corpus
 (Section~\ref{sec:experimental-framework})
