@@ -45,7 +45,7 @@ JARVIS~\cite{peleg_2018_jarvis} introduced automated CUT-to-PBT transformation
 using black-box analysis with predefined abstraction templates (Section~\ref{sec:jarvis-comparison}),
 which produces overapproximations that require multiple related tests to constrain.
 We instead use white-box symbolic analysis along concrete execution paths,
-extracting path-exact specifications that generalize oracles
+extracting path-specific specifications that generalize oracles
 from individual input-output examples.
 
 \subsection{Specification Inference}%
@@ -75,7 +75,7 @@ semantics-based test generalization would also benefit.
 Alternative approaches to specification inference
 largely avoid type support limitations inherent to symbolic analysis,
 but infer general specifications that describe overall method behavior
-rather than path-exact constraints, which complicates oracle generalization.
+rather than path-specific constraints, which complicates oracle generalization.
 Houdini~\cite{flanagan_2001_houdini} pioneered template-based inference,
 generating candidate annotations and using verification to filter them.
 Daikon~\cite{ernst_2007_daikon} introduced dynamic invariant detection from execution traces.
@@ -128,7 +128,7 @@ that single-path symbolic analysis cannot model.
 Conversely, LLM-generated PBTs can suffer from invalid generators
 or unsound and superficial assertions unless filtered through execution and repair loops~\cite{vikram_2024_pbt,li_2026_probe},
 whereas \ToolTeralizer{} anchors each property in a developer-written assertion,
-derives path-exact specifications from program semantics,
+derives path-specific specifications from program semantics,
 and refuses generalization when path evidence is insufficient.
 Combining LLM-synthesized candidate properties or input generators
 with \ToolTeralizer{}'s concrete and symbolic path validation remains an open direction for future work (Section~\ref{sec:how-to-improve}).

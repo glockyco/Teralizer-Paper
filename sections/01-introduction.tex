@@ -36,12 +36,13 @@ that automatically generalize existing unit tests by deriving properties from pr
 
 We propose a semantics-based approach for automated test generalization
 that analyzes both test and implementation code
-to derive path-exact specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic}.
+to derive path-specific specifications through single-path symbolic analysis~\cite{pasareanu_2013_symbolic}.
 Our method determines which inputs follow the same execution path as existing tests
 and transforms unit tests into property-based tests
 that validate the same assertions across entire input partitions.
 Because specifications are extracted from program semantics,
-the resulting properties are exact for the analyzed implementation along each execution path.
+the resulting properties capture the analyzed implementation's behavior along each execution path
+for operations that symbolic analysis models faithfully.
 The generalized test retains the original assertion,
 agrees with its expected value at the original inputs,
 and checks the assertion across additional inputs from the same execution path to detect later regressions.
@@ -55,7 +56,7 @@ that automatically generalizes unit tests into property-based tests.
 However, JARVIS infers properties from input-output examples based solely on test code,
 relying on predefined abstraction templates that yield overapproximations.
 In contrast, our white-box approach leverages both static and dynamic program analysis
-to extract path-exact specifications for the execution paths exercised by the original tests.
+to extract path-specific specifications for the execution paths exercised by the original tests.
 
 We implemented this approach in \ToolTeralizer{}, a prototype tool for Java
 that transforms JUnit tests into property-based \ToolJqwik{}~\cite{link_2022_jqwik} tests.
