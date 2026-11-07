@@ -267,15 +267,15 @@
 %% article.
 \begin{abstract}
 \textbf{Background:} Property-based testing checks properties across generated inputs,
-finding edge cases unit tests commonly miss.
+finding edge cases that unit tests commonly miss.
 Writing properties can be challenging for practitioners, thus limiting adoption.
-\textbf{Objective:} We propose a semantics-based approach that generalizes unit tests
+\textbf{Objective:} We propose a semantics-based approach that automatically generalizes unit tests
 into property-based regression tests and analyze its effectiveness and applicability barriers.
-\textbf{Design:} Single-path symbolic analysis yields a path condition for same-path inputs
+\textbf{Design:} Single-path symbolic analysis yields a path condition
 and a symbolic output expression, without constraint solving.
 Generalized tests sample inputs satisfying the path condition
 and replace expected values with the symbolic output.
-\ToolTeralizer{} implements the approach for Java, from JUnit to \ToolJqwik{},
+\ToolTeralizer{} implements the approach for Java, from JUnit tests to \ToolJqwik{} properties,
 for pure methods over primitive and boxed scalars and restricted string operations.
 \textbf{Methods and Results:} \ToolTeralizer{} generalizes tests in 9 of JARVIS's 12 benchmark projects,
 whereas JARVIS generalizes 2 of 12.
@@ -285,7 +285,7 @@ and 0.05 to 0.07 on mature developer suites.
 Across \TzRealworldEligibleProjects{} RepoReapers projects, barrier analysis attributes exclusions
 to assertion recognition, tested-method identification, symbolic type support,
 and concrete return values that the analysis cannot relate to the inputs.
-\textbf{Conclusions:} Semantics-based generalization applies more broadly than template-based generalization.
+\textbf{Conclusions:} Semantics-based test generalization applies more broadly than template-based generalization.
 Future work should improve test analysis and symbolic analysis support.
 Artifacts at: \url{https://doi.org/10.5281/zenodo.18242626}
 \end{abstract}
