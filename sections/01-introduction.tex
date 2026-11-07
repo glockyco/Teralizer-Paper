@@ -43,11 +43,12 @@ that validate the same assertions across entire input partitions.
 Because specifications are extracted from program semantics,
 the resulting properties capture the analyzed implementation's behavior along each execution path
 for operations that symbolic analysis models faithfully.
-The generalized test retains the original assertion,
+The approach therefore targets regression detection rather than general bug finding.
+A generalized test retains the original assertion,
 agrees with its expected value at the original inputs,
-and checks the assertion across additional inputs from the same execution path to detect later regressions.
+and checks later versions against the analyzed version across the path's input partition.
 Test generation tools such as \ToolEvoSuite{}~\cite{fraser_2011_evosuite} and Randoop~\cite{pacheco_2007_randoop}
-instead create new tests and infer their regression assertions from the observed behavior of the implementation.
+likewise target regression detection, creating new tests and inferring assertions from the observed behavior of the implementation.
 Generalization requires existing tests, whereas generation creates them,
 so the two techniques are complementary:
 generalization can follow generation when developer-written tests are absent.
