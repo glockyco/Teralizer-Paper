@@ -266,35 +266,28 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Conventional unit tests validate individual input-output pairs,
-leaving most inputs along the same execution path untested.
-Property-based testing addresses this limitation by checking properties over generated inputs,
-but developers must define both the properties and their input constraints.
-We present a semantics-based approach that automates this transformation
-by extracting path-specific input/output specifications through single-path symbolic analysis.
-\ToolTeralizer{}, our Java prototype, transforms JUnit tests into \ToolJqwik{} property-based tests
-for pure methods over primitive and boxed scalars and restricted string operations,
-preserving developer-written assertions across additional inputs.
-Unlike JARVIS, which generalizes repeated examples through predefined abstraction templates,
-\ToolTeralizer{} derives specifications from tests and implementation semantics.
-
-We evaluate \ToolTeralizer{} from controlled benchmarks to real-world projects.
-On JARVIS's 12 benchmark projects, \ToolTeralizer{} produces generalized tests for 9 projects,
-whereas JARVIS reports success for 2.
-On \ToolEvoSuite{}-generated tests for \DatasetEqBench{} and Apache Commons utilities,
-generalization improves mutation scores by 1--4 percentage points.
-For mature developer-written Apache Commons tests,
-the improvement is only 0.05--0.07 percentage points.
-Under real-world conditions, \TzRealworldApplicabilityProjects{} of
-\TzRealworldEligibleProjects{} eligible RepoReapers projects complete all five stages,
-yielding \TzRealworldGeneralizationsFinalUsable{} generalized tests that pass through mutation testing.
-The main barriers are prototype and project-integration limitations,
-insufficient evidence for sound generalized oracles,
-and build, execution, or environment failures.
-These results show that semantics-based test generalization is viable in suitable environments
-but requires broader analysis and modeling support for general use.
-
-Artifacts are available at \url{https://doi.org/10.5281/zenodo.18242626}.
+\textbf{Background:} Property-based testing checks properties across generated inputs,
+finding edge cases unit tests commonly miss.
+Writing properties can be challenging for practitioners, thus limiting adoption.
+\textbf{Objective:} We propose a semantics-based approach that generalizes unit tests
+into property-based regression tests and analyze its effectiveness and applicability barriers.
+\textbf{Design:} Single-path symbolic analysis yields a path condition for same-path inputs
+and a symbolic output expression, without constraint solving.
+Generalized tests sample inputs satisfying the path condition
+and replace expected values with the symbolic output.
+\ToolTeralizer{} implements the approach for Java, from JUnit to \ToolJqwik{},
+for pure methods over primitive and boxed scalars and restricted string operations.
+\textbf{Methods and Results:} \ToolTeralizer{} generalizes tests in 9 of JARVIS's 12 benchmark projects,
+whereas JARVIS reports 2.
+On \DatasetEqBench{} and Apache Commons, generalization raises mutation scores
+by 0.8 to 3.9 percentage points on \ToolEvoSuite{} suites
+and 0.05 to 0.07 on mature developer suites.
+Across \TzRealworldEligibleProjects{} RepoReapers projects, barrier analysis attributes exclusions
+to assertion recognition, tested-method identification, symbolic type support,
+and concrete return values that the analysis cannot relate to the inputs.
+\textbf{Conclusions:} Semantics-based generalization applies more broadly than template-based generalization.
+Future work should improve test analysis and symbolic analysis support.
+Artifacts at: \url{https://doi.org/10.5281/zenodo.18242626}
 \end{abstract}
 
 %%
