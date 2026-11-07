@@ -113,7 +113,27 @@ risk overfitting the implementation
 rather than capturing intended specifications~\cite{barr_2015_oracle},
 and this risk carries through to any subsequent generalization.
 
-% Paragraph 2: Developer perspective and PBT barriers
+% Paragraph 2: Direct LLM-based property-based test generation
+Rather than generating unit tests for subsequent generalization,
+recent LLM-based approaches synthesize property-based tests directly
+from documentation, source code, or execution traces.
+\citeauthor{vikram_2024_pbt}~\cite{vikram_2024_pbt} prompt LLMs with API documentation
+to generate Hypothesis input strategies and property assertions,
+PROBE~\cite{li_2026_probe} combines static guard extraction and cross-function semantic graphs
+with adversarial counter-implementations to strengthen LLM-generated properties,
+and PropGen~\cite{xiong_2026_propgen} derives and refines mobile GUI properties from runtime interaction traces.
+Unlike test generalization, these approaches do not require existing unit tests
+and can propose properties over complex types, stateful interactions, and cross-method relations
+that single-path symbolic analysis cannot model.
+Conversely, LLM-generated PBTs can suffer from invalid generators
+or unsound and superficial assertions unless filtered through execution and repair loops~\cite{vikram_2024_pbt,li_2026_probe},
+whereas \ToolTeralizer{} anchors each property in a developer-written assertion,
+derives path-exact specifications from program semantics,
+and refuses generalization when path evidence is insufficient.
+Combining LLM-synthesized candidate properties or input generators
+with \ToolTeralizer{}'s concrete and symbolic path validation remains an open direction for future work (Section~\ref{sec:how-to-improve}).
+
+% Paragraph 3: Developer perspective and PBT barriers
 For use cases beyond fully automated pipelines,
 developer interaction with generalized tests becomes relevant.
 Studies of test amplification show that developers filter and edit amplified tests extensively
