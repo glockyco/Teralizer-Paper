@@ -123,13 +123,13 @@
 
 ## 11. Perform Submission Verification
 
-- [ ] 11.1 Run the complete manuscript build from a clean generated state and verify the command succeeds without unresolved references or bibliography errors
-- [ ] 11.2 Run the effective local command of the paper's GitHub Actions workflow and the repository's complete style, spelling, hygiene, and pre-commit checks and resolve every task-owned failure
-- [ ] 11.3 Compare all manuscript empirical values with the evidence map and verify each measure has its denominator and provenance owner
-- [ ] 11.4 Recheck the backport manifest and deferred-candidate register, verify every `PORT`, `ADAPT`, and `VERIFY` item has a final disposition and source location, and verify no rejected or undecided candidate changed the manuscript
-- [ ] 11.5 Recheck the reviewer matrix and verify every promised revision exists in the final manuscript or prior-review response
-- [ ] 11.6 Inspect the complete rendered manuscript, cover letter, and prior-review response in their actual PDF surfaces and resolve layout, clipping, reference, table, and figure defects
-- [ ] 11.7 Verify `Teralizer-Paper` is clean except for intended manuscript, correspondence, generated publication, and paper-local OpenSpec files and verify `Teralizer`, the thesis submodule, preserved data, and generated datasets remain unchanged
-- [ ] 11.8 Create the final atomic commit for submission-only corrections and verify the full local check set passes on the committed tree
-- [ ] 11.9 Report the branch as locally verified and push-ready unless the operator explicitly authorizes pushing it to the canonical GitHub remote
+- [x] 11.1 Run the complete manuscript build from a clean generated state and verify the command succeeds without unresolved references or bibliography errors
+- [x] 11.2 Run the effective local command of the paper's GitHub Actions workflow and the repository's complete style, spelling, hygiene, and pre-commit checks and resolve every task-owned failure
+- [x] 11.3 Compare all manuscript empirical values with the evidence map and verify each measure has its denominator and provenance owner
+- [x] 11.4 Recheck the backport manifest and deferred-candidate register, verify every `PORT`, `ADAPT`, and `VERIFY` item has a final disposition and source location, and verify no rejected or undecided candidate changed the manuscript
+- [x] 11.5 Recheck the reviewer matrix and verify every promised revision exists in the final manuscript or prior-review response
+- [x] 11.6 Inspect the complete rendered manuscript, cover letter, and prior-review response in their actual PDF surfaces and resolve layout, clipping, reference, table, and figure defects
+- [x] 11.7 Verify `Teralizer-Paper` is clean except for intended manuscript, correspondence, generated publication, and paper-local OpenSpec files and verify `Teralizer`, the thesis submodule, preserved data, and generated datasets remain unchanged
+- [x] 11.8 Create the final atomic commit for submission-only corrections and verify the full local check set passes on the committed tree
+- [x] 11.9 Report the branch as locally verified and push-ready unless the operator explicitly authorizes pushing it to the canonical GitHub remote
 - [ ] 11.10 If a push is explicitly authorized, push the canonical GitHub remote, observe its CI workflow, and report the exact result
