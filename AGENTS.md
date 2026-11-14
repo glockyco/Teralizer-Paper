@@ -22,6 +22,8 @@ Property-Based Tests" (ACM `acmart`, TOSEM, options `[manuscript,screen,review]`
 CI: GitHub Actions (`.github/workflows/latex-compile.yml`) runs the same `latexmk` build on every
 push and pull request; it must stay green.
 
+Run `python arxiv/build.py` to prepare the arXiv upload under `build/arxiv/`. It strips comments because arXiv publishes sources and ships the compiled bibliography to pin it to the local build, then checks that pdfLaTeX alone reproduces the normal PDF's text and writes the submission metadata.
+
 ## Writing rules (paper-specific)
 - **Every number is reproducibly sourced.** Prefer a committed `data/*.csv` export with a
   `% Data source: <file>.csv` comment. Where no CSV export exists (e.g. the JARVIS scoreboard,
