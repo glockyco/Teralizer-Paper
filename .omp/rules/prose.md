@@ -1,15 +1,19 @@
 ---
-description: Academic prose conventions for the paper sections
+description: Writing rules for the paper's LaTeX sources
 globs:
   - "sections/**/*.tex"
   - "main.tex"
 ---
 
-# Paper prose conventions
+# Paper prose
 
-- Active voice for contributions ("We show ..."); passive acceptable for methodology.
-- Never "we believe/think" — use "evidence suggests" / "data indicates".
-- Avoid "clearly"/"obviously" and marketing adjectives; let evidence speak.
-- Every percentage/number must trace to `data/*.csv` with a `% Data source:` comment.
-- Use macros for tools/datasets; non-breaking space before `\cite`.
-- Structure results as Evidence → Mechanism → Implication.
+- Write tool and dataset names with their macros from `main.tex`, such as `\ToolTeralizer` and `\DatasetEqBench`, never as plain text.
+- Write numbers from the evaluation with their `\Tz...` macros from `tables/generated/macros.tex`. Where none exists, name the source in a `% Source:` comment above the sentence.
+- Use active voice for contributions ("We show ..."). Passive voice is fine for methodology.
+- State what the evidence shows ("the data indicates"), not beliefs ("we believe"). Avoid "clearly", "obviously" and marketing adjectives, and claim no more than the data supports, such as "proves" or "demonstrates" for a trend.
+- Present a result as its evidence, then its mechanism, then its implication.
+- Attach a citation only to a claim it supports specifically, not to its topic.
+- Map every contribution claimed in the introduction to a subsection of the evaluation, and keep each number consistent across sections.
+- Integrate references to tables and figures into the sentence instead of opening a sentence with a bare "Table X".
+- Use a non-breaking space (`~`) before citations (`word~\cite{x}`), in inline enumerations (`(i)~...`) and between a number and its unit (`3~hours`).
+- Keep the abstract between 200 and 250 words.
