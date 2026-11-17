@@ -1,5 +1,5 @@
 ---
-description: Academic prose conventions for the TOSEM paper sections
+description: Academic prose conventions for the paper sections
 globs:
   - "sections/**/*.tex"
   - "main.tex"

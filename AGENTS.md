@@ -1,7 +1,7 @@
-# Repository Guidelines — Teralizer Paper (ACM TOSEM)
+# Repository Guidelines — Teralizer Paper
 
 LaTeX sources for "Teralizer: Semantics-Based Test Generalization from Conventional Unit Tests to
-Property-Based Tests" (ACM `acmart`, TOSEM, options `[manuscript,screen,review]`).
+Property-Based Tests" (ACM `acmart`, options `[manuscript,screen,review]`).
 
 ## Structure
 - `main.tex` — entry point; sections live in `sections/` (`\input{sections/<name>}`).
