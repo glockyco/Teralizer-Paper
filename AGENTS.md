@@ -1,51 +1,21 @@
-# Repository Guidelines — Teralizer Paper
+# Teralizer paper
 
-LaTeX sources for "Teralizer: Semantics-Based Test Generalization from Conventional Unit Tests to
-Property-Based Tests" (ACM `acmart`, options `[manuscript,screen,review]`).
+LaTeX sources of the paper "Teralizer: Semantics-Based Test Generalization from Conventional Unit Tests to Property-Based Tests", set with `acmart`.
 
-## Structure
-- `main.tex` — entry point; sections live in `sections/` (`\input{sections/<name>}`).
-- `figures/`, `tables/` — assets (`\includegraphics{figures/<f>}`, `\input{tables/<f>}`); vector/PDF preferred.
-- `data/` — CSV exports backing paper numbers where an export exists (not every number has a CSV).
-- `main.bib` → `main.bbl`. Tool/dataset macros (`\ToolTeralizer`, `\ToolSPF`, `\ToolJqwik`,
-  `\DatasetEqBench`, `\DatasetCommonsDev`, …) are defined in `main.tex`.
+This repository is public. Correspondence, reviews and the plans that answer them belong in the private repository `glockyco/Teralizer-Paper-Correspondence`, because they must not appear in the public history.
 
-## Commands
-| Task | Command |
-|---|---|
-| Build PDF | `latexmk -pdf -interaction=nonstopmode -file-line-error main.tex` |
-| Watch build | `latexmk -pdf -pvc main.tex` |
-| Lint | `chktex main.tex` (or a single `sections/<f>.tex`) |
-| Word count | `texcount -1 main.tex` |
-| Clean aux | `latexmk -c` (`-C` also removes the PDF) |
+## Paper
 
-CI runs `latexmk` on **both** remotes — GitLab (`.gitlab-ci.yml`, internal AAU) and GitHub Actions
-(`.github/workflows`, public). They must hold the same state; both must be green.
+- `main.tex` holds the preamble, the tool and dataset macros and the order of the files in `sections/`.
+- `.omp/rules/prose.md` holds the writing rules for `main.tex` and `sections/`, and `.omp/rules/bib.md` the rules for `main.bib`.
+- Find, retrieve and verify cited papers and their BibTeX metadata with `skill://research-evidence`.
+- Name the source of every number from the evaluation in a `% Source:` comment above the sentence, such as the analysis report of the Teralizer repository that computes it. Never estimate a number.
 
-## Writing rules (paper-specific)
-- **Every number is reproducibly sourced.** Prefer a committed `data/*.csv` export with a
-  `% Data source: <file>.csv` comment. Where no CSV export exists (e.g. the JARVIS scoreboard,
-  computed from the analysis DB via `jarvis_scoreboard`), cite the reproducible analysis instead
-  (`% Source: <command or planning-doc slug>`). Never fabricate or estimate numbers.
-- Use the **macros** (`\ToolTeralizer`, `\DatasetEqBench`, …), never raw tool/dataset names.
-- **Non-breaking spaces (`~`)**: before citations (`word~\cite{x}`), in inline enumerations
-  (`(i)~...`), and between a number and its unit (`3~hours`).
-- Run `chktex` after editing a `.tex` file; confirm cross-references resolve (build twice if refs changed).
-- Abstract: 200–250 words.
-- Don't open a sentence/paragraph with a bare `Table X`/`Figure Y`; integrate the reference.
-- Bibliography: use `skill://searching-literature`, `skill://retrieving-paper-pdfs`, and
-  `skill://formatting-bibtex-entries` for finding, acquiring, and formatting `main.bib`
-  entries.
+## Build
 
-## Quality bars (self-check before yielding written prose)
-- Every contribution claimed in the introduction maps to a results/evaluation subsection.
-- A citation must support the *specific* claim it is attached to — not just the topic.
-- No "proves"/"demonstrates" beyond what the data shows; numbers consistent across sections.
-
-## Boundaries
-- Never commit build artifacts (`*.aux`, `*.log`, `*.bbl`, `*.synctex.gz`, `*.out`, `*.fls`, `*.fdb_latexmk`).
-  `main.pdf` only on releases, not routine commits.
-- Use repo-relative paths under `figures/`/`tables/`; no absolute paths.
+- Build with `latexmk -pdf -interaction=nonstopmode -file-line-error main.tex`. CI runs the same build on every push and pull request.
+- Run `chktex` on each changed `.tex` file, and build twice when labels or references changed.
 
 ## Commits
-Follow `skill://commit`. Short, imperative subject (e.g. "Rewrite sec:test-suite-reduction").
+
+Follow `skill://commit-policy`. `commitlint.config.js` lists the permitted types, such as `revise` and `bib`.
