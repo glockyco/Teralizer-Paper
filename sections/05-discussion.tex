@@ -489,10 +489,15 @@ neither a generalized test nor an inferred assertion
 states expected behavior independently of the implementation.
 
 \textit{Internal Validity.}
-Our experiments use single runs per configuration.
-While additional runs would produce more robust results,
-we already observe consistent effectiveness and efficiency trends across projects
-and configuration settings with our current setup.
+Our experiments use single runs per configuration
+with fixed random seeds for both \ToolEvoSuite{} and \ToolJqwik{}.
+Results for individual classes, tests, or configurations might therefore differ for other seeds.
+However, our findings are based on a large number of classes and tests
+(Table~\ref{tab:dataset-statistics}),
+and we observe consistent effectiveness and efficiency trends across projects
+and configuration settings.
+We therefore expect the overall results to be representative.
+Additional runs would further increase their robustness.
 Similarly, evaluation of higher \tries{}
 and longer timeouts could provide further evidence of scaling behaviors.
 %
