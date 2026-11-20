@@ -4,5 +4,6 @@
   \label{tab:exclusions-filtering-extended}
   \centering
   \renewcommand{\arraystretch}{1.1}
-  \resizebox{\linewidth}{!}{\input{tables/generated/tab-exclusions-filtering-extended}}
+  % Without \endlinechar=-1, each line end of the input file adds a space to the scaled box.
+  \resizebox{\linewidth}{!}{\endlinechar=-1 \input{tables/generated/tab-exclusions-filtering-extended}}
 \end{table}
