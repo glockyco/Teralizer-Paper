@@ -106,8 +106,9 @@ TOGA~\cite{dinella_2022_toga}, TOGLL~\cite{hossain_2024_togll}, and AsserT5~\cit
 add assertions to tests that lack them.
 All of these expand the pool of available generalization candidates.
 RQ4 demonstrates this combination:
-pairing \ToolEvoSuite{}'s generation with \ToolTeralizer{}'s generalization
-achieves higher mutation scores at lower runtimes than test generation alone.
+pairing short \ToolEvoSuite{} generation with \ToolTeralizer{}'s generalization
+achieves comparable mutation scores to longer \ToolEvoSuite{} generation at lower runtime,
+and higher mutation scores when additional runtime is invested in generalization.
 However, generated tests and inferred oracles
 risk overfitting the implementation
 rather than capturing intended specifications~\cite{barr_2015_oracle},

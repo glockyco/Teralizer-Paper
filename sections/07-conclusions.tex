@@ -18,8 +18,12 @@ On the 12 projects from JARVIS's original evaluation,
 whereas JARVIS reports success for 2.
 Under controlled conditions, generalization improves mutation scores
 by 0.8--3.9 percentage points on generated test suites.
-Pareto analysis also shows that short test generation followed by generalization
-can outperform longer test generation alone.
+% Source: Pareto points #5 and #14 of Table tab:pareto-eqbench against 60-second generation alone.
+For the \DatasetsEqBenchEs{} projects, Pareto analysis also shows
+that 1-second test generation followed by generalization
+matches the mutation detection of 60-second test generation alone at 31.9\% lower runtime.
+Investing additional runtime in generalization increases the detection rate further,
+by up to 3.4~percentage points over 60-second test generation alone.
 For mature developer-written Apache Commons tests,
 the improvement is only 0.05--0.07 percentage points,
 which indicates limited remaining opportunity for the evaluated mutation operators.
