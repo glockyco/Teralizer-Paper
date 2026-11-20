@@ -132,6 +132,15 @@ provide the best detection-to-runtime trade-offs through Pareto analysis.
 Configurations on the frontier represent optimal choices:
 for any given runtime budget, they achieve the highest detection rate.
 Configurations outside the frontier are dominated by the Pareto-optimal points.
+% Source: analysis/output/original/data/evosuite_runtime_analysis.csv of the Teralizer repository
+% (mean total runtime minus mean search runtime per class, for each search budget and dataset).
+The reported runtimes cover the complete executions of the tools for all classes of a project.
+For \ToolEvoSuite{}, they exceed the configured search budgets
+because \ToolEvoSuite{} post-processes the generated tests after the search,
+e.g., by minimizing them, generating assertions,
+and compiling and executing them to remove unstable tests.
+On average, this post-processing takes 42--45~seconds per class under test,
+depending on the search budget and dataset.
 
 \begin{figure}[b]
   \centering
