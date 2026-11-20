@@ -220,6 +220,10 @@ For a non-pure MUT, the pair would additionally depend on state
 that existed during extraction, e.g., field values or file contents,
 and an input that satisfies $\mathit{pc}$ could follow a different execution path
 or produce a different output once that state changes.
+\ToolTeralizer{} does not verify the purity of a MUT itself.
+A generalized test of a non-pure MUT is therefore only excluded
+if it fails when executed against the original program
+(Section~\ref{sec:generalized-test-creation}).
 The current implementation generalizes Java's eight primitive scalar types,
 their boxed forms, and \texttt{String} inputs and outputs within a restricted
 set of string operations.
