@@ -138,7 +138,30 @@ and refuses generalization when path evidence is insufficient.
 Combining LLM-synthesized candidate properties or input generators
 with \ToolTeralizer{}'s concrete and symbolic path validation remains an open direction for future work (Section~\ref{sec:how-to-improve}).
 
-% Paragraph 3: Developer perspective and PBT barriers
+% Paragraph 3: Differential testing
+Differential testing detects regressions by executing two versions of a program
+on the same inputs and comparing their behavior.
+DiffGen~\cite{taneja_2008_diffgen} synthesizes a test driver
+that invokes the old and new version of each changed method
+and uses coverage-based test generation to find inputs
+for which the return values or object states of the two versions differ.
+BERT~\cite{orso_2008_bert,jin_2010_behavioral} generates test inputs for changed classes,
+executes them on both versions,
+and reports differences in return values, object states, and outputs to developers.
+Both approaches rely on the test generator to find inputs that reach the changed code
+and propagate the resulting differences to observable outputs.
+In contrast, the path conditions extracted by \ToolTeralizer{}
+characterize the inputs of each tested execution path,
+so generalized tests sample these input partitions by design
+and are guided toward their boundaries (Section~\ref{sec:approach-concepts}).
+Furthermore, differential testing treats all observable behavior
+of the old version as expected behavior,
+which makes it difficult to distinguish intentional behavior
+from incidental state changes or outputs.
+Test generalization instead only generalizes existing assertions
+(Section~\ref{sec:test-amplification}).
+
+% Paragraph 4: Developer perspective and PBT barriers
 For use cases beyond fully automated pipelines,
 developer interaction with generalized tests becomes relevant.
 Studies of test amplification show that developers filter and edit amplified tests extensively

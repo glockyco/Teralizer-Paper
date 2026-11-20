@@ -191,7 +191,7 @@ so only the generalized test can detect the mutation.
 Generalization thus never checks a MUT call or assertion that the original test does not check.
 It widens only the inputs of each check.
 
-Restricting each generalized test to the path partition $\mathit{pc}$ and symbolic output $\mathit{out}$ serves three purposes compared to unconstrained whole-method differential testing.
+Restricting each generalized test to the path partition $\mathit{pc}$ and symbolic output $\mathit{out}$ serves three purposes compared to unconstrained whole-method differential testing~\cite{taneja_2008_diffgen,jin_2010_behavioral}.
 First, $\mathit{pc}$ keeps generated inputs on the execution path whose setup and assertion semantics (e.g., \texttt{assertTrue} or \texttt{assertThrows}) the original test validated.
 It also guides input generators toward partition boundaries that uniform sampling over the full input domain rarely reaches (Sections~\ref{sec:primary-effects-eval} and~\ref{sec:constraint-complexity-eval}).
 Second, compiling $\mathit{out}$ into the test yields a self-contained, single-version test that runs in standard test runners without retaining prior program versions alongside the test suite.
