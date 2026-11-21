@@ -150,7 +150,7 @@ increases overall test suite runtimes
 for all \DatasetsEqBenchEs{} and \DatasetsCommonsEs{} projects.
 More specifically, test suite runtimes
 show increases of 574.5--1210.0\% for the \DatasetsEqBenchEs{} projects,
-444.1--2651.5\% for the \DatasetsCommonsEs{} projects,
+444.1--2651.4\% for the \DatasetsCommonsEs{} projects,
 and 9.4--57.1\% for the \DatasetCommonsDev{} project.
 Runtime increases are primarily affected by the following factors:
 
@@ -317,7 +317,7 @@ but could also reduce the runtime cost of generalized tests.
   Developer-written tests resist compensation due to multi-assertion architectures (6 added, 0 removed).
   LOC increases by 4.9--58.7\% due to explicit constraint encoding and test isolation.
   \VariantImproved{} shows larger increases than \VariantNaive{} because it encodes additional constraints in the input suppliers.
-  Runtime increases by 9.4--2,651.5\% across projects and \tries{} settings,
+  Runtime increases by 9.4--2,651.4\% across projects and \tries{} settings,
   reflecting property-based testing overhead (\ToolJqwik{} framework cost and more tested inputs).
   \VariantNaive{} generally shows larger runtime increases than \VariantImproved{}
   because random generation requires more filter-and-regenerate cycles to satisfy constraints.
