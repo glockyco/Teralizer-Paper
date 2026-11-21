@@ -96,22 +96,24 @@ Causes for the 2,995 assertion-level failures include \ToolSPF{} errors, \ToolTe
 and exceeded analysis limits.
 %(timeout, specification size limit, depth limit, etc.).
 \ToolSPF{} exceptions constitute 51.4\% of failures (1,540 assertions).
-They occur primarily due to missing models for native methods
-in the current implementation of \ToolSPF{}
-and, to a lesser extent,
-due to implementation bugs in \ToolSPF{}/\ToolJPF{}.
+In 827 cases, \ToolSPF{} throws an ArithmeticException for a symbolic floating-point divisor
+that can be zero, where Java yields infinity or NaN.
+In 534 cases, \ToolJPF{} lacks a model of a library method such as \texttt{Math.log1p},
+and 179 stem from other \ToolSPF{}/\ToolJPF{} limitations and bugs.
 Exceeded analysis limits account for 45.3\%
 of failures (1,358 assertions):
 790 (26.4\%) \ToolSPF{} runs are interrupted
 after exceeding the maximum specification size,
 and 524 (17.5\%) runs exceed the maximum depth limit
 (Listing~\ref{lst:jpf-config}).
-Both of these aim to avoid timeouts and memory exhaustion
-in the presence of complex control flows or complex constraints.
-Further failures are due to timeouts (0.9\%, 28 assertions)
+Both avoid timeouts and memory exhaustion
+for complex control flows or constraints.
+Further failures are timeouts (0.9\%, 28 assertions)
 and out-of-memory errors (0.5\%, 16 assertions)
-which evade preemptive detection via the two preceding measures.
-NullPointerExceptions represent the remaining 3.2\% of failures (97 assertions).
+which evade these measures.
+\ToolTeralizer{} errors cause the remaining 3.2\% (97 assertions):
+89 NullPointerExceptions when writing the specification
+and 8 runs without one for an unrecorded reason.
 
 A total of 5.5\% of identified assertions (1,597) are rejected by the \texttt{ExcludedTest} filter
 because they belong to tests that are already excluded at the test level.
