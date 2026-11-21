@@ -331,7 +331,7 @@ and (iii)~test suite size, which primarily affects maintenance overhead.
 
 \textit{Tool Runtime.}
 Processing costs are dominated by mutation testing,
-which consumes 59.1--95.7\% of total pipeline runtime
+which consumes 59.2--95.7\% of total pipeline runtime
 (Figure~\ref{fig:teralizer-runtimes}).
 However, not all mutation operators benefit equally from generalization
 (Table~\ref{tab:detections-per-mutator}).
@@ -348,7 +348,7 @@ offers an accelerator plugin that could further reduce processing costs.
 Test suite runtime increases caused by generalization stem primarily from \ToolJqwik{} framework overhead
 (approximately 150ms per test, Figure~\ref{fig:test-runtime-differences})
 and filter-and-regenerate cycles when inputs violate constraints.
-\VariantImproved{} reduces filter miss rates by 46.5--58.4\%
+\VariantImproved{} reduces filter miss rates by 46.8--58.4\%
 compared to \VariantNaive{} (Section~\ref{sec:limitations-eval}),
 which reduces execution cost per successfully generated test input from 28.61ms to 18.92ms at 10~\tries{}
 and from 5.68ms to 1.98ms at 200~\tries{} (Figure~\ref{fig:test-runtime-differences}).

@@ -48,9 +48,9 @@ that test suite reduction via mutation testing
 accounts for most of \ToolTeralizer{}'s runtime.
 More specifically, Figure~\ref{fig:teralizer-runtimes} shows
 that Stage~5 (test suite reduction) consumes 1,110--35,538 seconds
-(59.1--95.7\% of total processing time)
+(59.2--95.7\% of total processing time)
 across projects and generalization strategies.
-In contrast, Stages~1~+~2 (project analysis) require only 82--453 seconds (1.2--6.5\%),
+In contrast, Stages~1~+~2 (project analysis) require only 80--451 seconds (1.2--6.4\%),
 Stage~3 (specification extraction) requires 60--2,776 seconds (1.5--36.4\%),
 and Stage~4 (generalized test creation) requires 5--178 seconds (0.1--2.3\%).
 
@@ -80,7 +80,7 @@ and replacing expected values in assertions
 
 \paragraph{Stage 5 Runtimes}
 
-Test suite reduction (Stage~5) accounts for 59.1--95.7\% of total processing time,
+Test suite reduction (Stage~5) accounts for 59.2--95.7\% of total processing time,
 more than all preceding stages combined,
 due to the high runtime cost of mutation testing.
 Mutation testing of the \VariantOriginal{} test suite takes,
@@ -234,7 +234,7 @@ because the more sophisticated input value generation avoids
 
 \rqanswerbox{4}{
   Test generalization requires a substantial one-time investment (3.4--30.9 hours per project)
-  which is primarily due to Stage~5 mutation testing for test suite reduction (59.1--95.7\% of total time).
+  which is primarily due to Stage~5 mutation testing for test suite reduction (59.2--95.7\% of total time).
   Reduction is necessary to filter 21,478 candidate generalizations down to 1,555 retained tests,
   thus avoiding ongoing test suite execution overhead.
   Despite the high processing costs, Pareto analysis shows that
