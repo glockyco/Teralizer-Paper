@@ -264,8 +264,8 @@ However, unverified LLM-generated properties frequently fail on correct implemen
 \textit{Static Analysis.}
 The evaluation results identify several static analysis limitations.
 Interprocedural analysis could recognize assertions delegated to helper methods.
-Support for assertion libraries such as AssertJ, Hamcrest, and Truth could recognize additional
-oracles. Improved MUT identification could add support for further cases.
+Support for AssertJ, Truth, and Hamcrest matchers beyond equality could recognize additional oracles.
+Improved MUT identification could add support for further cases.
 Tests that genuinely lack assertions could be modeled as implicit ``does not throw'' checks,
 thus eliminating the need to exclude tests without assertions
 due to a lack of validated oracles.
@@ -388,7 +388,7 @@ developers could write tests with generalization in mind.
 A developer writes one test per execution path with a typical input,
 and generalization extends it to the boundaries of that path's input partition,
 which \VariantImproved{} targets explicitly (Section~\ref{sec:constraint-encoding}).
-Boundary mutations are where generalization adds the most detection in RQ1
+\VariantImprovedC{} gains about twice as much as \VariantNaiveC{} on boundary mutations
 (\texttt{ConditionalsBoundary} in Table~\ref{tab:detections-per-mutator}),
 so this strategy directs generalization at the inputs a typical-case test is most likely to miss.
 Other input selection strategies within a partition remain future work,
